@@ -1,0 +1,3 @@
+[submodule "lib/apache-arrow-src"]
+	path = lib/apache-arrow-src
+	url = https://github.com/apache/arrow.git
