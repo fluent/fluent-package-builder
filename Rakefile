@@ -2,12 +2,14 @@
 require 'fileutils'
 require 'rake/testtask'
 require 'rake/clean'
+require_relative 'td-agent-package-task'
 
 workdir_prefix = ENV["TD_AGENT_GEM_HOME"] || "local"
 git_workspace = "#{workdir_prefix}/git"
 ENV["GEM_HOME"] = "#{workdir_prefix}/opt/td-agent"
-distname = "td-agent-builder.tar.gz"
 mini_portile2 = Dir.glob(File.join(File.dirname(__FILE__), ENV["GEM_HOME"], 'gems', 'mini_portile2-*', 'lib')).first
+version = "3.5.1"
+distname = "td-agent-builder-#{version}.tar.gz"
 
 namespace :download do
   desc "download core_gems"
@@ -68,5 +70,8 @@ end
 
 task :clean do
   rm_rf workdir_prefix
-  rm distname
+  rm_f distname
 end
+
+task = TDAgentPackageTask.new(version)
+task.define
