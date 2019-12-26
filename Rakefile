@@ -6,6 +6,7 @@ require 'rake/clean'
 workdir_prefix = ENV["TD_AGENT_GEM_HOME"] || "local"
 git_workspace = "#{workdir_prefix}/git"
 ENV["GEM_HOME"] = "#{workdir_prefix}/opt/td-agent"
+mini_portile2 = Dir.glob(File.join(File.dirname(__FILE__), ENV["GEM_HOME"], 'gems', 'mini_portile2-*', 'lib')).first
 
 namespace :download do
   desc "download core_gems"
@@ -52,7 +53,7 @@ namespace :build do
   task :plugin_gems => [:"download:plugin_gems", :fluentd] do
     Dir.glob(File.expand_path(File.join(__dir__, 'plugin_gems', '*.gem'))).sort.each { |gem_path|
       if gem_path.include?("rdkafka")
-        sh "bundle exec gem install --no-document #{gem_path}"
+        sh "PATH=#{mini_portile2}:$PATH gem install --no-document #{gem_path}"
       else
         sh "gem install --no-document #{gem_path}"
       end
