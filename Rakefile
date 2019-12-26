@@ -6,6 +6,7 @@ require 'rake/clean'
 workdir_prefix = ENV["TD_AGENT_GEM_HOME"] || "local"
 git_workspace = "#{workdir_prefix}/git"
 ENV["GEM_HOME"] = "#{workdir_prefix}/opt/td-agent"
+distname = "td-agent-builder.tar.gz"
 mini_portile2 = Dir.glob(File.join(File.dirname(__FILE__), ENV["GEM_HOME"], 'gems', 'mini_portile2-*', 'lib')).first
 
 namespace :download do
@@ -61,6 +62,11 @@ namespace :build do
   end
 end
 
+task :dist do
+  sh "git archive HEAD -o #{distname}"
+end
+
 task :clean do
   rm_rf workdir_prefix
+  rm distname
 end
