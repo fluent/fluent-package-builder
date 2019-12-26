@@ -9,10 +9,13 @@ class TDAgentPackageTask < PackageTask
 
   private
   def define_archive_task
-    file @original_archive_name do
-      File.symlink("../#{@original_archive_name}",
-                   @original_archive_name)
-    end
+    build_archive
+  end
+
+  def build_archive
+    sh("git", "archive", "HEAD",
+       "--prefix", "#{@archive_base_name}/",
+       "--output", @full_archive_name)
   end
 
   def apt_targets_default

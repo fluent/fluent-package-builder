@@ -9,7 +9,6 @@ git_workspace = "#{workdir_prefix}/git"
 ENV["GEM_HOME"] = "#{workdir_prefix}/opt/td-agent"
 mini_portile2 = Dir.glob(File.join(File.dirname(__FILE__), ENV["GEM_HOME"], 'gems', 'mini_portile2-*', 'lib')).first
 version = "3.5.1"
-distname = "td-agent-builder-#{version}.tar.gz"
 
 namespace :download do
   desc "download core_gems"
@@ -64,13 +63,8 @@ namespace :build do
   end
 end
 
-task :dist do
-  sh "git archive HEAD -o #{distname}"
-end
-
 task :clean do
   rm_rf workdir_prefix
-  rm_f distname
 end
 
 task = TDAgentPackageTask.new(version)
