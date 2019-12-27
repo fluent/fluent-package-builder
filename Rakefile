@@ -6,8 +6,8 @@ require_relative 'td-agent-package-task'
 
 workdir_prefix = ENV["TD_AGENT_GEM_HOME"] || "local"
 git_workspace = "#{workdir_prefix}/git"
-ENV["GEM_HOME"] = "#{workdir_prefix}/opt/td-agent"
-mini_portile2 = Dir.glob(File.join(File.dirname(__FILE__), ENV["GEM_HOME"], 'gems', 'mini_portile2-*', 'lib')).first
+gem_install_dir = "#{workdir_prefix}/opt/td-agent"
+mini_portile2 = Dir.glob(File.join(File.dirname(__FILE__), gem_install_dir, 'gems', 'mini_portile2-*', 'lib')).first
 version = "3.5.1"
 
 namespace :download do
@@ -35,7 +35,7 @@ namespace :build do
   desc "core_gems installation"
   task :core_gems => :"download:core_gems" do
     Dir.glob(File.expand_path(File.join(__dir__, 'core_gems', '*.gem'))).sort.each { |gem_path|
-      sh "gem install --no-document #{gem_path}"
+      sh "gem install --no-document #{gem_path} --install-dir #{gem_install_dir}"
     }
   end
 
@@ -46,7 +46,7 @@ namespace :build do
       cd "fluentd" do
         sh "git checkout #{revision}" if revision
         sh "rake build"
-        sh "gem install --no-document pkg/fluentd-*.gem"
+        sh "gem install --no-document pkg/fluentd-*.gem --install-dir #{gem_install_dir}"
       end
     end
   end
@@ -55,9 +55,9 @@ namespace :build do
   task :plugin_gems => [:"download:plugin_gems", :fluentd] do
     Dir.glob(File.expand_path(File.join(__dir__, 'plugin_gems', '*.gem'))).sort.each { |gem_path|
       if gem_path.include?("rdkafka")
-        sh "PATH=#{mini_portile2}:$PATH gem install --no-document #{gem_path}"
+        sh "PATH=#{mini_portile2}:$PATH gem install --no-document #{gem_path} --install-dir #{gem_install_dir}"
       else
-        sh "gem install --no-document #{gem_path}"
+        sh "gem install --no-document #{gem_path} --install-dir #{gem_install_dir}"
       end
     }
   end
