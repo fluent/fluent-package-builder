@@ -1,0 +1,72 @@
+# -*- rpm -*-
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+%define _centos_ver %{?centos_ver:%{centos_ver}}%{!?centos_ver:8}
+%define use_scl_ruby (%{_centos_ver} == 7)
+
+Name:		td-agent
+Version:	@VERSION@
+Release:	@RELEASE@%{?dist}
+Summary:	The stable distribution of Fluentd, called td-agent.
+
+License:	Apache-2.0
+URL:		https://www.treasuredata.com/
+Source0:	td-agent-@VERSION@.tar.gz
+
+%if %{use_scl_ruby}
+BuildRequires:	rh-ruby24-ruby-devel
+BuildRequires:	rh-ruby24-rubygems
+BuildRequires:	rh-ruby24-rubygem-bundler
+%else
+BuildRequires:	ruby-devel
+BuildRequires:	rubygems
+BuildRequires:	rubygem-bundler
+%endif
+BuildRequires:	gcc-c++
+BuildRequires:	jemalloc-devel
+BuildRequires:	git
+BuildRequires:	libzstd-devel
+BuildRequires:	lz4-devel
+BuildRequires:	pkgconfig
+BuildRequires:	zlib-devel
+BuildRequires:	openssl-devel
+BuildRequires:	postgresql-devel
+
+
+%description
+The stable distribution of Fluentd, called td-agent.
+
+%prep
+%setup -q -n td-agent-%{version}
+
+%build
+%if %{use_scl_ruby}
+. /opt/rh/rh-ruby24/enable
+%endif
+rake build:plugin_gems TD_AGENT_GEM_HOME=%{buildroot}
+cd -
+
+%files
+%defattr(-,root,root,-)
+/opt/td-agent/*
+%exclude /git/fluentd/*
+%exclude /git/fluentd/.*
+# Prevent Symlink points to BuildRoot: error.
+%exclude /opt/td-agent/gems/ffi-1.11.3/ext/ffi_c/libffi-x86_64-linux/include/ffitarget.h
+%changelog
