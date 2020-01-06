@@ -7,3 +7,16 @@
 /yum/repositories/
 /yum/tmp/
 /yum/env.sh
+/apt/build.sh
+/apt/env.sh
+/apt/repositories/debian/pool/*/*/*/*/*.diff.gz
+/apt/repositories/debian/pool/*/*/*/*/*.tar.gz
+/apt/repositories/debian/pool/*/*/*/*/*.tar.xz
+/apt/repositories/debian/pool/*/*/*/*/*.build
+/apt/repositories/debian/pool/*/*/*/*/*.changes
+/apt/repositories/debian/pool/*/*/*/*/*.deb
+/apt/repositories/debian/pool/*/*/*/*/*.dsc
+/apt/repositories/debian/dists/
+/apt/repositories/debian/*.db
+/apt/repositories/debian/*.conf
+/apt/tmp/

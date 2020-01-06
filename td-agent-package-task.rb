@@ -44,8 +44,6 @@ class TDAgentPackageTask < PackageTask
 
   def apt_targets_default
     [
-      "debian-stretch",
-      "debian-stretch-i386",
       "debian-buster",
       "debian-buster-i386",
     ]
