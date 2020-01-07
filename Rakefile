@@ -3,12 +3,27 @@ require 'fileutils'
 require 'rake/testtask'
 require 'rake/clean'
 require_relative 'td-agent-package-task'
+require 'erb'
+
+def windows?
+  RUBY_PLATFORM =~ /mswin|msys|mingw|cygwin|bccwin|wince|emc/
+end
+
+version = "3.5.1"
+package_name = "td-agent"
 
 workdir_prefix = ENV["TD_AGENT_GEM_HOME"] || "local"
 git_workspace = "#{workdir_prefix}/git"
-gem_install_dir = "#{workdir_prefix}/opt/td-agent"
+root_dir = if windows?
+             "C:"
+           else
+             "/"
+           end
+install_dir_base = File.join("opt", package_name)
+gem_install_dir = File.join("#{workdir_prefix}", "#{install_dir_base}")
 mini_portile2 = Dir.glob(File.join(File.dirname(__FILE__), gem_install_dir, 'gems', 'mini_portile2-*', 'lib')).first
-version = "3.5.1"
+resources_path = 'resources'
+
 
 namespace :download do
   desc "download core_gems"
@@ -61,11 +76,42 @@ namespace :build do
       end
     }
   end
+
+  desc "create configuration files from template"
+  task :config do
+    install_path = workdir_prefix
+    package_dir_opt = File.join(root_dir, install_dir_base)
+    template = ->(*parts) { File.join('templates', *parts) }
+    generate_from_template = ->(dst, src, erb_binding, opts={}) {
+      mode = opts.fetch(:mode, 0755)
+      destination = dst.gsub('td-agent', package_name)
+      FileUtils.mkdir_p File.dirname(destination)
+      File.open(destination, 'w', mode) do |f|
+        f.write ERB.new(File.read(src), nil, '<>').result(erb_binding)
+      end
+    }
+
+    # setup /etc/td-agent
+    ['td-agent.conf', 'td-agent.conf.tmpl', ['logrotate.d', 'td-agent.logrotate']].each { |item|
+      conf_path = File.join(resources_path, 'etc', 'td-agent', *([item].flatten))
+      generate_from_template.call conf_path, template.call('etc', 'td-agent', *([item].flatten)), binding, mode: 0644
+    }
+
+    ["td-agent", "td-agent-gem"].each { |command|
+      sbin_path = File.join(install_path, 'usr', 'sbin', command)
+      # templates/usr/sbin/yyyy.erb -> INSTALL_PATH/usr/sbin/yyyy
+      generate_from_template.call sbin_path, template.call('usr', 'sbin', "#{command}.erb"), binding, mode: 0755
+    }
+
+    FileUtils.remove_entry_secure(File.join(install_path, 'etc'), true)
+    # ./resources/etc -> INSTALL_PATH/etc
+    FileUtils.cp_r(File.join('resources', 'etc'), install_path)
+  end
 end
 
 task :clean do
   rm_rf workdir_prefix
 end
 
-task = TDAgentPackageTask.new(version)
+task = TDAgentPackageTask.new(package_name, version)
 task.define

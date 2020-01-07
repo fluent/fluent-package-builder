@@ -1,0 +1,16 @@
+/var/log/<%= package_name %>/<%= package_name %>.log {
+  daily
+  rotate 30
+  compress
+  delaycompress
+  notifempty
+  create 640 <%= package_name %> <%= package_name %>
+  sharedscripts
+  postrotate
+    pid=/var/run/<%= package_name %>/<%= package_name %>.pid
+    if [ -s "$pid" ]
+    then
+      kill -USR1 "$(cat $pid)"
+    fi
+  endscript
+}
