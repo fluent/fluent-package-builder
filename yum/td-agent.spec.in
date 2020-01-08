@@ -47,6 +47,8 @@ BuildRequires:	pkgconfig
 BuildRequires:	zlib-devel
 BuildRequires:	openssl-devel
 BuildRequires:	postgresql-devel
+%{?systemd_requires}
+BuildRequires: systemd
 
 
 %description
@@ -68,6 +70,7 @@ cd -
 /opt/@PACKAGE@/*
 %{_sysconfdir}/@PACKAGE@/logrotate.d/@PACKAGE@.logrotate
 %{_sysconfdir}/@PACKAGE@/@PACKAGE@.conf.tmpl
+%{_unitdir}/@PACKAGE@.service
 %{_sbindir}/td-agent
 %{_sbindir}/td-agent-gem
 %config(noreplace) %{_sysconfdir}/@PACKAGE@/@PACKAGE@.conf
