@@ -1,0 +1,7 @@
+#!/usr/bin/ruby
+ENV["GEM_HOME"]="<%= package_dir_opt %>/"
+ENV["GEM_PATH"]="<%= package_dir_opt %>/"
+ENV["FLUENT_CONF"]="/etc/<%= package_name %>/<%= package_name %>.conf"
+ENV["FLUENT_PLUGIN"]="/etc/<%= package_name %>/plugin"
+ENV["FLUENT_SOCKET"]="/var/run/<%= package_name %>/<%= package_name %>.sock"
+load "<%= package_dir_opt %>/bin/fluentd"

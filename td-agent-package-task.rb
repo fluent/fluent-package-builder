@@ -1,9 +1,9 @@
 require_relative "./lib/apache-arrow-src/dev/tasks/linux-packages/package-task"
 
 class TDAgentPackageTask < PackageTask
-  def initialize(version)
-    super("td-agent", version, detect_release_time)
-    @archive_tar_name = "td-agent-#{version}.tar"
+  def initialize(package_name, version)
+    super(package_name, version, detect_release_time)
+    @archive_tar_name = "#{package_name}-#{version}.tar"
     @archive_name = "#{@archive_tar_name}.gz"
   end
 
