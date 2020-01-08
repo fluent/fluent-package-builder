@@ -16,7 +16,7 @@ namespace :download do
     sh "bin/gem_downloader core_gems.rb"
   end
 
-  desc "clone fluentd repoditory"
+  desc "clone fluentd repository"
   task :fluentd do
     revision = nil
     mkdir_p git_workspace
