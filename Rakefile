@@ -67,10 +67,5 @@ task :clean do
   rm_rf workdir_prefix
 end
 
-task :dist do
-  task = TDAgentPackageTask.new(version)
-  task.dist
-end
-
 task = TDAgentPackageTask.new(version)
 task.define

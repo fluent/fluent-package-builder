@@ -8,26 +8,12 @@ class TDAgentPackageTask < PackageTask
     @original_archive_name = @archive_name
   end
 
-  def dist
-    define_dist_task
-  end
-
-  def define
-    define_apt_task
-    define_yum_task
-    define_version_task
-  end
-
   private
 
-  def define_dist_task
-    define_archive_task
-    desc "Create release package"
-    task :dist
-  end
-
   def define_archive_task
-    build_archive
+    file @original_archive_name do
+      build_archive
+    end
   end
 
   def build_archive
