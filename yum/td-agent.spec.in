@@ -20,14 +20,14 @@
 %define _centos_ver %{?centos_ver:%{centos_ver}}%{!?centos_ver:8}
 %define use_scl_ruby (%{_centos_ver} == 7)
 
-Name:		td-agent
+Name:		@PACKAGE@
 Version:	@VERSION@
 Release:	@RELEASE@%{?dist}
-Summary:	The stable distribution of Fluentd, called td-agent.
+Summary:	The stable distribution of Fluentd, called @PACKAGE@.
 
 License:	Apache-2.0
 URL:		https://www.treasuredata.com/
-Source0:	td-agent-@VERSION@.tar.gz
+Source0:	@PACKAGE@-@VERSION@.tar.gz
 
 %if %{use_scl_ruby}
 BuildRequires:	rh-ruby24-ruby-devel
@@ -53,7 +53,7 @@ BuildRequires:	postgresql-devel
 The stable distribution of Fluentd, called td-agent.
 
 %prep
-%setup -q -n td-agent-%{version}
+%setup -q -n @PACKAGE@-%{version}
 
 %build
 %if %{use_scl_ruby}
