@@ -1,0 +1,28 @@
+Source: td-agent
+Section: net
+Priority: optional
+Maintainer: Fluentd developers <fluentd@googlegroups.com>
+Uploaders: HATAKE Hiroshi <hatake@clear-code.com>
+Build-Depends:
+  debhelper (>= 10),
+  cdbs,
+  autotools-dev,
+  pkg-config,
+  liblz4-dev,
+  zlib1g-dev,
+  ruby-dev,
+  ruby-bundler,
+  rake,
+  libjemalloc-dev,
+  libzstd-dev,
+  libssl-dev
+Standards-Version: 4.3.0
+Homepage: http://www.fluentd.org/
+
+Package: td-agent
+Architecture: any
+Depends:
+  ruby,
+  ${misc:Depends},
+  ${shlibs:Depends},
+Description: Treasure Agent: A data collector for Treasure Data
