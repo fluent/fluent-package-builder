@@ -5,13 +5,12 @@ class TDAgentPackageTask < PackageTask
     super("td-agent", version, detect_release_time)
     @archive_tar_name = "td-agent-#{version}.tar"
     @archive_name = "#{@archive_tar_name}.gz"
-    @original_archive_name = @archive_name
   end
 
   private
 
   def define_archive_task
-    file @original_archive_name do
+    file @archive_name do
       build_archive
     end
   end
