@@ -104,7 +104,7 @@ namespace :build do
     ]
     conf_paths.each { |item|
       conf_path = File.join(resources_path, 'etc', *item)
-      generate_from_template.call conf_path, template.call('etc', *item), binding, mode: 0644
+      generate_from_template.call(conf_path, template.call('etc', *item), binding, mode: 0644)
     }
 
     unless macos?
@@ -116,14 +116,14 @@ namespace :build do
                           end
       template_path = template.call('etc', 'systemd', 'td-agent.service.erb')
       if File.exist?(template_path)
-        generate_from_template.call systemd_file_path, template_path, binding, mode: 0755
+        generate_from_template.call(systemd_file_path, template_path, binding, mode: 0755)
       end
     end
 
     ["td-agent", "td-agent-gem"].each { |command|
       sbin_path = File.join(install_path, 'usr', 'sbin', command)
       # templates/usr/sbin/yyyy.erb -> INSTALL_PATH/usr/sbin/yyyy
-      generate_from_template.call sbin_path, template.call('usr', 'sbin', "#{command}.erb"), binding, mode: 0755
+      generate_from_template.call(sbin_path, template.call('usr', 'sbin', "#{command}.erb"), binding, mode: 0755)
     }
 
     FileUtils.remove_entry_secure(File.join(install_path, 'etc'), true)
