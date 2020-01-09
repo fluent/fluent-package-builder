@@ -1,0 +1,112 @@
+#! /bin/sh
+
+set -e
+
+. /usr/share/debconf/confmodule
+
+prevver="$2"
+
+add_system_user() {
+    if ! getent passwd <%= package_name %> >/dev/null; then
+        adduser --group --system --home /var/lib/<%= package_name %> <%= package_name %>
+    fi
+}
+
+add_directories() {
+    mkdir -p /var/run/<%= package_name %>
+    mkdir -p /etc/<%= package_name %>
+    mkdir -p /etc/<%= package_name %>/plugin
+    mkdir -p /var/log/<%= package_name %>
+}
+
+fixperms() {
+    dpkg-statoverride --list /var/run/<%= package_name %> >/dev/null || \
+        dpkg-statoverride --update --add <%= package_name %> <%= package_name %> 0755 /var/run/<%= package_name %>
+    dpkg-statoverride --list /etc/<%= package_name %> >/dev/null || \
+        dpkg-statoverride --update --add <%= package_name %> <%= package_name %> 0755 /etc/<%= package_name %>
+    dpkg-statoverride --list /var/log/<%= package_name %> >/dev/null || \
+        dpkg-statoverride --update --add <%= package_name %> <%= package_name %> 0755 /var/log/<%= package_name %>
+}
+
+update_conffile() {
+    CONFFILE="$1"
+    TMPL="$2"
+
+    if [ -e "$CONFFILE" ]; then
+        md5sum="`md5sum \"$CONFFILE\" | sed -e \"s/ .*//\"`"
+        old_md5sum="`sed -n -e \"/^Conffiles:/,/^[^ ]/{\\\\' $TMPL'{s/.* //;p}}\" /var/lib/dpkg/status`"
+        if [ -z "$old_md5sum" ]; then
+           # backward compatibility
+            old_md5sum="`sed -n -e \"/^Conffiles:/,/^[^ ]/{\\\\' $CONFFILE'{s/.* //;p}}\" /var/lib/dpkg/status`"
+        fi
+
+        if [ "$md5sum" != "$old_md5sum" ]; then
+            echo "Conffile $CONFFILE has been modified. Remain untouched."
+            # do nothing
+        else
+            echo "Updating conffile $CONFFILE ..."
+            cp -f "$TMPL" "$CONFFILE"
+        fi
+    else
+        echo "Installing default conffile $CONFFILE ..."
+        cp -f "$TMPL" "$CONFFILE"
+    fi
+
+    # 2011/11/13 Kazuki Ohta <k@treasure-data.com>
+    # Before td-agent v1.1.0, fluentd has a bug of loading plugin before
+    # changing to the right user. Then, these directories were created with
+    # root permission. The following lines fix that problem.
+    if [ -d "/var/log/<%= package_name %>/buffer/" ]; then
+        chown -R <%= package_name %>:<%= package_name %> /var/log/<%= package_name %>/buffer/
+    fi
+    if [ -d "/tmp/<%= package_name %>/" ]; then
+        chown -R <%= package_name %>:<%= package_name %> /tmp/<%= package_name %>/
+    fi
+}
+
+case "$1" in
+    configure)
+        add_system_user
+        add_directories
+        fixperms
+        update_conffile /etc/<%= package_name %>/<%= package_name %>.conf /etc/<%= package_name %>/<%= package_name %>.conf.tmpl
+        ;;
+    abort-upgrade|abort-deconfigure|abort-remove)
+        :
+        ;;
+    *)
+        echo "Called with unknown argument $1, bailing out."
+        exit 1
+        ;;
+esac
+
+
+chmod 755 /usr/sbin/<%= package_name %>
+chmod 755 /usr/sbin/<%= package_name %>-gem
+if [ -f /usr/sbin/<%= package_name %>-ui ]; then
+    chmod 755 /usr/sbin/<%= package_name %>-ui
+fi
+if [ -f /usr/bin/td ]; then
+    chmod 755 /usr/bin/td
+fi
+
+if [ ! -e "/etc/default/<%= package_name %>" ]; then
+  cat > /etc/default/<%= package_name %> <<EOF
+# This file is sourced by /bin/sh from /etc/init.d/<%= package_name %>
+# Options to pass to <%= package_name %>
+TD_AGENT_OPTIONS=""
+
+EOF
+fi
+
+if [ -d "/etc/systemd/system/" ]; then
+    chmod 644 /etc/systemd/system/<%= package_name %>.service
+fi
+
+<% if install_message %>
+if [ "$1" = "configure" ]; then
+  echo "<%= install_message %>"
+fi
+<% end %>
+
+#DEBHELPER#
