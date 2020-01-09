@@ -4,13 +4,19 @@ require 'rake/testtask'
 require 'rake/clean'
 require_relative 'td-agent-package-task'
 require 'erb'
+require 'shellwords'
 
 def windows?
   RUBY_PLATFORM =~ /mswin|msys|mingw|cygwin|bccwin|wince|emc/
 end
 
+def macos?
+  RUBY_PLATFORM =~ /darwin|mac os/
+end
+
 version = "3.5.1"
 package_name = "td-agent"
+pkg_type = ENV["PACKAGE_TYPE"] || "rpm"
 
 workdir_prefix = ENV["TD_AGENT_GEM_HOME"] || "local"
 git_workspace = "#{workdir_prefix}/git"
@@ -97,6 +103,19 @@ namespace :build do
       generate_from_template.call conf_path, template.call('etc', 'td-agent', *([item].flatten)), binding, mode: 0644
     }
 
+    unless macos?
+      systemd_file_path = case pkg_type
+                          when "rpm"
+                            File.join(resources_path, 'usr', 'lib', 'systemd', 'system', package_name + ".service")
+                          when "deb"
+                            File.join(resources_path, 'etc', 'systemd', 'system', package_name + ".service")
+                          end
+      template_path = template.call('etc', 'systemd', 'td-agent.service.erb')
+      if File.exist?(template_path)
+        generate_from_template.call systemd_file_path, template_path, binding, mode: 0755
+      end
+    end
+
     ["td-agent", "td-agent-gem"].each { |command|
       sbin_path = File.join(install_path, 'usr', 'sbin', command)
       # templates/usr/sbin/yyyy.erb -> INSTALL_PATH/usr/sbin/yyyy
@@ -106,6 +125,10 @@ namespace :build do
     FileUtils.remove_entry_secure(File.join(install_path, 'etc'), true)
     # ./resources/etc -> INSTALL_PATH/etc
     FileUtils.cp_r(File.join('resources', 'etc'), install_path)
+    if pkg_type == "rpm"
+      # ./resources/usr -> INSTALL_PATH/usr
+      FileUtils.cp_r(File.join('resources', 'usr'), install_path)
+    end
   end
 end
 

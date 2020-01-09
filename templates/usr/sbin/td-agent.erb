@@ -1,4 +1,5 @@
 #!/usr/bin/ruby
+# XXX: Fix shebang for CentOS 7 SCL Ruby
 ENV["GEM_HOME"]="<%= package_dir_opt %>/"
 ENV["GEM_PATH"]="<%= package_dir_opt %>/"
 ENV["FLUENT_CONF"]="/etc/<%= package_name %>/<%= package_name %>.conf"

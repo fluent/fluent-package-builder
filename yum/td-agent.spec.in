@@ -47,6 +47,9 @@ BuildRequires:	pkgconfig
 BuildRequires:	zlib-devel
 BuildRequires:	openssl-devel
 BuildRequires:	postgresql-devel
+%{?systemd_requires}
+BuildRequires: systemd
+Requires(pre): /usr/bin/getent, /usr/sbin/adduser
 
 
 %description
@@ -62,12 +65,23 @@ The stable distribution of Fluentd, called td-agent.
 rake build:config TD_AGENT_GEM_HOME=%{buildroot}
 rake build:plugin_gems TD_AGENT_GEM_HOME=%{buildroot}
 cd -
+mkdir -p %{buildroot}%{_localstatedir}/run/@PACKAGE@
+mkdir -p %{buildroot}%{_localstatedir}/log/@PACKAGE@
+
+%pre
+if ! getent group @PACKAGE@ >/dev/null; then
+    /usr/sbin/groupadd -r @PACKAGE@
+fi
+if ! getent passwd @PACKAGE@ >/dev/null; then
+    /usr/sbin/adduser -r -g @PACKAGE@ -d %{_localstatedir}/lib/@PACKAGE@ -s /sbin/nologin -c '@PACKAGE@' @PACKAGE@
+fi
 
 %files
 %defattr(-,root,root,-)
 /opt/@PACKAGE@/*
 %{_sysconfdir}/@PACKAGE@/logrotate.d/@PACKAGE@.logrotate
 %{_sysconfdir}/@PACKAGE@/@PACKAGE@.conf.tmpl
+%{_unitdir}/@PACKAGE@.service
 %{_sbindir}/td-agent
 %{_sbindir}/td-agent-gem
 %config(noreplace) %{_sysconfdir}/@PACKAGE@/@PACKAGE@.conf
@@ -75,4 +89,7 @@ cd -
 %exclude /git/fluentd/.*
 # Prevent Symlink points to BuildRoot: error.
 %exclude /opt/@PACKAGE@/gems/ffi-1.11.3/ext/ffi_c/libffi-x86_64-linux/include/ffitarget.h
+%attr(0755,td-agent,td-agent) %dir %{_localstatedir}/run/@PACKAGE@
+%attr(0755,td-agent,td-agent) %dir %{_localstatedir}/log/@PACKAGE@
+%attr(0755,td-agent,td-agent) %dir %{_sysconfdir}/@PACKAGE@
 %changelog
