@@ -97,16 +97,14 @@ namespace :build do
       end
     }
 
-    # setup /etc/td-agent
-    ['td-agent.conf', 'td-agent.conf.tmpl'].each { |item|
-      conf_path = File.join(resources_path, 'etc', 'td-agent', *([item].flatten))
-      generate_from_template.call conf_path, template.call('etc', 'td-agent', *([item].flatten)), binding, mode: 0644
-    }
-
-    # setup /etc/logrotate.d
-    [['logrotate.d', 'td-agent.logrotate']].each { |item|
-      conf_path = File.join(resources_path, 'etc', *([item].flatten))
-      generate_from_template.call conf_path, template.call('etc', *([item].flatten)), binding, mode: 0644
+    conf_paths = [
+      ['td-agent', 'td-agent.conf'],
+      ['td-agent', 'td-agent.conf.tmpl'],
+      ['logrotate.d', 'td-agent.logrotate']
+    ]
+    conf_paths.each { |item|
+      conf_path = File.join(resources_path, 'etc', *item)
+      generate_from_template.call conf_path, template.call('etc', *item), binding, mode: 0644
     }
 
     unless macos?
