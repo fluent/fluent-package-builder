@@ -1,1 +1,5 @@
 opt/td-agent/*
+usr/sbin/*
+etc/logrotate.d/*
+etc/systemd/system/*
+etc/td-agent/*
