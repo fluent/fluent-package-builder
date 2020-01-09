@@ -1,4 +1,4 @@
-require_relative "./apache-arrow-src/dev/tasks/linux-packages/package-task"
+require_relative "apache-arrow-src/dev/tasks/linux-packages/package-task"
 
 class TDAgentPackageTask < PackageTask
   def initialize(package_name, version)

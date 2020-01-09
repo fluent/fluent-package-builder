@@ -2,7 +2,7 @@
 require 'fileutils'
 require 'rake/testtask'
 require 'rake/clean'
-require_relative './lib/td-agent-package-task'
+require_relative 'lib/td-agent-package-task'
 require 'erb'
 require 'shellwords'
 
