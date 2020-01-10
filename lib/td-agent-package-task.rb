@@ -1,4 +1,4 @@
-require_relative "apache-arrow-src/dev/tasks/linux-packages/package-task"
+require_relative 'package-task'
 require 'rake/clean'
 
 class TDAgentPackageTask < PackageTask
@@ -21,12 +21,6 @@ class TDAgentPackageTask < PackageTask
     sh("git", "archive", "HEAD",
        "--prefix", "#{@archive_base_name}/",
        "--output", @full_archive_name)
-    sh("gunzip", @full_archive_name)
-    sh("tar", "rf",
-       @archive_tar_name,
-       File.join("lib", "apache-arrow-src", "dev", "tasks", "linux-packages", "package-task.rb"),
-       "--transform", "s,^lib,#{@archive_base_name}/lib,")
-    sh("gzip", @archive_tar_name)
   end
 
   def apt_targets_default
