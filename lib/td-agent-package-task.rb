@@ -1,10 +1,12 @@
 require_relative "apache-arrow-src/dev/tasks/linux-packages/package-task"
+require 'rake/clean'
 
 class TDAgentPackageTask < PackageTask
   def initialize(package_name, version)
     super(package_name, version, detect_release_time)
     @archive_tar_name = "#{package_name}-#{version}.tar"
     @archive_name = "#{@archive_tar_name}.gz"
+    CLEAN.include(@archive_name)
   end
 
   private

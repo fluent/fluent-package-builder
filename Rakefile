@@ -152,9 +152,7 @@ namespace :build do
   end
 end
 
-task :clean do
-  rm_rf workdir_prefix
-end
+CLEAN.include(workdir_prefix)
 
 task = TDAgentPackageTask.new(package_name, version)
 task.define
