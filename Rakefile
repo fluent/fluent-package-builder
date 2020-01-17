@@ -55,22 +55,21 @@ namespace :download do
   end
 
   def download_gems(gems_path)
-    gp = GemsParser.parse(File.read(gems_path))
-    index = 0
-    file_format = "%0#{(gp.target_files.length - 1).to_s.length}d-%s-%s.gem"
+    gems_parser = GemsParser.parse(File.read(gems_path))
+    file_format = "%0#{(gems_parser.target_files.length - 1).to_s.length}d-%s-%s.gem"
 
-    FileUtils.remove_dir(gp.target_dir, true)
-    Dir.mkdir(gp.target_dir)
-    Dir.chdir(gp.target_dir) {
-      gp.target_files.each { |n, v, an|
-        path = sprintf(file_format, index, n, v)
+    FileUtils.remove_dir(gems_parser.target_dir, true)
+    Dir.mkdir(gems_parser.target_dir)
+    Dir.chdir(gems_parser.target_dir) {
+      gems_parser.target_files.each_with_index { |target, index|
+        name, version = target
+        path = sprintf(file_format, index, name, version)
         loop {
-          `curl -o #{path} -L http://rubygems.org/downloads/#{n}-#{v}.gem`
+          `curl -o #{path} -L http://rubygems.org/downloads/#{name}-#{version}.gem`
           `gem install --explain #{path} --no-document`
           break if $?.success?
           sleep 1
         }
-        index += 1
       }
     }
   end
