@@ -62,17 +62,17 @@ namespace :download do
     Dir.chdir(gems_parser.target_dir) do
       gems_parser.target_files.each_with_index do |target, index|
         name, version = target
+        if version.include?("-")
+          version_option = "--version #{version.sub(/\-.*/, '')}"
+        else
+          version_option = "--version #{version} --platform ruby"
+        end
         gem = "#{name}-#{version}.gem"
         path = sprintf("%0#{digits}d-%s", index, gem)
-        loop do
-          sh("gem fetch #{name} --version #{version}")
-          sh("gem install --explain #{gem} --no-document")
-          if $?.success?
-            sh("mv #{gem} #{path}")
-            break
-          end
-          sleep 1
-        end
+        sh("gem fetch #{name} #{version_option}")
+        sh("gem install --explain #{gem} --no-document")
+        FileUtils.mv("#{gem}", "#{path}")
+        sleep 1
       end
     end
   end
