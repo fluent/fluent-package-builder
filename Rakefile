@@ -1,8 +1,9 @@
 #!/usr/bin/env rake
+require_relative 'lib/td-agent-package-task'
+require_relative 'lib/gems_parser'
 require 'fileutils'
 require 'rake/testtask'
 require 'rake/clean'
-require_relative 'lib/td-agent-package-task'
 require 'erb'
 require 'shellwords'
 
@@ -36,7 +37,7 @@ install_message = nil
 namespace :download do
   desc "download core_gems"
   task :core_gems do
-    sh "bin/gem_downloader core_gems.rb"
+    download_gems("core_gems.rb")
   end
 
   desc "clone fluentd repository"
@@ -50,7 +51,28 @@ namespace :download do
 
   desc "download plugin_gems"
   task :plugin_gems do
-    sh "bin/gem_downloader plugin_gems.rb"
+    download_gems("plugin_gems.rb")
+  end
+
+  def download_gems(gems_path)
+    gp = GemsParser.parse(File.read(gems_path))
+    index = 0
+    file_format = "%0#{(gp.target_files.length - 1).to_s.length}d-%s-%s.gem"
+
+    FileUtils.remove_dir(gp.target_dir, true)
+    Dir.mkdir(gp.target_dir)
+    Dir.chdir(gp.target_dir) {
+      gp.target_files.each { |n, v, an|
+        path = sprintf(file_format, index, n, v)
+        loop {
+          `curl -o #{path} -L http://rubygems.org/downloads/#{n}-#{v}.gem`
+          `gem install --explain #{path} --no-document`
+          break if $?.success?
+          sleep 1
+        }
+        index += 1
+      }
+    }
   end
 end
 
