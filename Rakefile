@@ -30,7 +30,6 @@ install_dir_base = File.join("opt", package_name)
 gem_install_dir = File.join("#{workdir_prefix}", "#{install_dir_base}")
 mini_portile2 = Dir.glob(File.join(File.dirname(__FILE__), gem_install_dir, 'gems', 'mini_portile2-*', 'lib')).first
 resources_path = 'resources'
-package_scripts_path = "package-scripts"
 install_message = nil
 
 
@@ -120,12 +119,7 @@ namespace :build do
       end
     }
 
-    # copy pre/post scripts into omnibus path (./package-scripts/td-agentN)
-    FileUtils.mkdir_p(package_scripts_path)
-    Dir.glob(File.join(package_scripts_path, '*')).each { |f|
-      FileUtils.rm_f(f) if File.file?(f)
-    }
-    # templates/package-scripts/td-agent/xxxx/* -> ./package-scripts/td-agentN
+    # copy pre/post scripts into "debian" directory
     Dir.glob(template.call('package-scripts', 'td-agent', pkg_type, '*')).each { |f|
       case pkg_type
       when "deb"
