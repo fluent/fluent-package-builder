@@ -6,6 +6,7 @@ require 'rake/testtask'
 require 'rake/clean'
 require 'erb'
 require 'shellwords'
+require 'open-uri'
 
 def windows?
   RUBY_PLATFORM =~ /mswin|msys|mingw|cygwin|bccwin|wince|emc/
@@ -55,18 +56,30 @@ namespace :download do
 
   def download_gems(gems_path)
     gems_parser = GemsParser.parse(File.read(gems_path))
-    file_format = "%0#{(gems_parser.target_files.length - 1).to_s.length}d-%s-%s.gem"
+    digits = (gems_parser.target_files.length - 1).to_s.length
 
     FileUtils.remove_dir(gems_parser.target_dir, true)
     Dir.mkdir(gems_parser.target_dir)
     Dir.chdir(gems_parser.target_dir) {
       gems_parser.target_files.each_with_index { |target, index|
         name, version = target
-        path = sprintf(file_format, index, name, version)
+        path = sprintf("%0#{digits}d-%s-%s.gem", index, name, version)
         loop {
-          `curl -o #{path} -L http://rubygems.org/downloads/#{name}-#{version}.gem`
+          gem = "#{name}-#{version}.gem"
+          url = "http://rubygems.org/downloads/#{gem}"
+          print "Downloading #{gem} ... "
+          URI.open(url) do |in_file|
+            open(path, "w+b") do |out_file|
+              out_file.write(in_file.read)
+            end
+          end
           `gem install --explain #{path} --no-document`
-          break if $?.success?
+          if $?.success?
+            puts "done"
+            break
+          else
+            puts "failed!"
+          end
           sleep 1
         }
       }
