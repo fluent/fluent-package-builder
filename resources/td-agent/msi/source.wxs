@@ -25,21 +25,19 @@
 
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="WINDOWSVOLUME">
-<% hierarchy.each.with_index do |(name, id), index| -%>
-        <%= '  '*index %><Directory Id="<%= id %>" Name="<%= name %>">
-<% end -%>
-<% hierarchy.keys.each.with_index do |_, index| -%>
-        <%= '  '*(hierarchy.size - index-1) %></Directory>
-<% end -%>
+        <Directory Id="OPTLOCATION" Name="opt">
+          <Directory Id="PROJECTLOCATION" Name="td-agent">
+          </Directory>
+        </Directory>
       </Directory>
       <Directory Id="ProgramMenuFolder">
         <Directory Id="ApplicationProgramFolder" Name="!(loc.ProductName)" />
       </Directory>
     </Directory>
 
-    <DirectoryRef Id="<%= hierarchy.values.last %>">
+    <DirectoryRef Id="PROJECTLOCATION">
       <Directory Id="TDAgentEtcDir" Name="etc">
-        <Directory Id="TDAgentConfDir" Name="<%= hierarchy.keys.last %>">
+        <Directory Id="TDAgentConfDir" Name="td-agent">
           <Component Id="TDAgentConf"
                      Guid="534F3E10-B04E-4C17-9DAA-A390068BA8EB"
                      Permanent="yes"
@@ -64,7 +62,7 @@
     </DirectoryRef>
 
     <!-- Set the components defined in our fragment files that will be used for our feature  -->
-    <Feature Id="ProjectFeature" Title="!(loc.FeatureMainName)" Absent="disallow" AllowAdvertise="no" Level="1" ConfigurableDirectory="<%= wix_install_dir %>">
+    <Feature Id="ProjectFeature" Title="!(loc.FeatureMainName)" Absent="disallow" AllowAdvertise="no" Level="1" ConfigurableDirectory="OPTLOCATION">
       <ComponentGroupRef Id="ProjectDir" />
       <ComponentRef Id="ApplicationShortcut" />
     </Feature>
@@ -73,7 +71,7 @@
     <Icon Id="project.ico" SourceFile="Resources\assets\icon.ico"/>
     <Property Id="ARPPRODUCTICON" Value="project.ico" />
     <Property Id="ARPHELPLINK" Value="http://www.fluentd.org/" />
-    <Property Id="WIXUI_INSTALLDIR" Value="<%= wix_install_dir %>" />
+    <Property Id="WIXUI_INSTALLDIR" Value="OPTLOCATION" />
 
     <UIRef Id="ProjectUI_InstallDir"/>
     <UI Id="ProjectUI_InstallDir">
