@@ -64,6 +64,7 @@
     <Feature Id="ProjectFeature" Title="!(loc.FeatureMainName)" Absent="disallow" AllowAdvertise="no" Level="1" ConfigurableDirectory="OPTLOCATION">
       <ComponentGroupRef Id="ProjectDir" />
       <ComponentRef Id="ApplicationShortcut" />
+      <ComponentRef Id="TDAgentConf" />
     </Feature>
 
     <!-- UI Stuff -->
