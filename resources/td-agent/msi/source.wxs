@@ -43,8 +43,7 @@
                      Permanent="yes"
                      NeverOverwrite="yes">
             <File Id="TDAgentConf"
-                Name="td-agent.conf"
-                Source="$(var.TDAgentConfDir)\td-agent.conf"/>
+                  Name="td-agent.conf"/>
           </Component>
         </Directory>
       </Directory>
