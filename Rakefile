@@ -45,7 +45,7 @@ namespace :download do
     revision = nil
     mkdir_p git_workspace
     cd git_workspace do
-      sh "git clone https://github.com/fluent/fluentd.git" unless File.exists?("fluentd")
+      sh("git clone https://github.com/fluent/fluentd.git") unless File.exists?("fluentd")
     end
   end
 
@@ -83,7 +83,7 @@ namespace :build do
   desc "core_gems installation"
   task :core_gems => :"download:core_gems" do
     Dir.glob(File.expand_path(File.join(__dir__, 'core_gems', '*.gem'))).sort.each { |gem_path|
-      sh "gem install --no-document #{gem_path} --install-dir #{gem_install_dir}"
+      sh("gem install --no-document #{gem_path} --install-dir #{gem_install_dir}")
     }
   end
 
@@ -92,9 +92,9 @@ namespace :build do
     revision = nil
     cd git_workspace do
       cd "fluentd" do
-        sh "git checkout #{revision}" if revision
-        sh "rake build"
-        sh "gem install --no-document pkg/fluentd-*.gem --install-dir #{gem_install_dir}"
+        sh("git checkout #{revision}") if revision
+        sh("rake build")
+        sh("gem install --no-document pkg/fluentd-*.gem --install-dir #{gem_install_dir}")
       end
     end
   end
@@ -103,9 +103,9 @@ namespace :build do
   task :plugin_gems => [:"download:plugin_gems", :fluentd] do
     Dir.glob(File.expand_path(File.join(__dir__, 'plugin_gems', '*.gem'))).sort.each { |gem_path|
       if gem_path.include?("rdkafka")
-        sh "PATH=#{mini_portile2}:$PATH gem install --no-document #{gem_path} --install-dir #{gem_install_dir}"
+        sh("PATH=#{mini_portile2}:$PATH gem install --no-document #{gem_path} --install-dir #{gem_install_dir}")
       else
-        sh "gem install --no-document #{gem_path} --install-dir #{gem_install_dir}"
+        sh("gem install --no-document #{gem_path} --install-dir #{gem_install_dir}")
       end
     }
   end
