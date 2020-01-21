@@ -7,7 +7,7 @@ export DH_RUBY = --gem-install
 	dh $@
 
 override_dh_auto_build:
-	rake build:config TD_AGENT_GEM_HOME=. PACKAGE_TYPE=deb
+	rake build:deb_config TD_AGENT_GEM_HOME=.
 	rake build:plugin_gems TD_AGENT_GEM_HOME=.
 
 override_dh_auto_clean:

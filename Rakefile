@@ -17,7 +17,6 @@ end
 
 version = "3.5.1"
 package_name = "td-agent"
-pkg_type = ENV["PACKAGE_TYPE"] || "rpm"
 
 workdir_prefix = ENV["TD_AGENT_GEM_HOME"] || "local"
 git_workspace = "#{workdir_prefix}/git"
@@ -124,18 +123,27 @@ namespace :build do
     end
   end
 
-  desc "create configuration files from template"
-  task :config do
-    # copy pre/post scripts into "debian" directory
-    Dir.glob(template_path('package-scripts', 'td-agent', pkg_type, '*')).each { |f|
-      case pkg_type
-      when "deb"
-        package_script = File.join("debian", File.basename(f))
-        generate_from_template(package_script, f, binding,
-                               { mode: 0755, package_name: package_name})
-      end
-    }
+  def generate_systemd_unit_file(dest_path, erb_binding, opts={})
+    package_name = opts.fetch(package_name, "td-agent")
+    template_file_path = template_path('etc', 'systemd', 'td-agent.service.erb')
+    if File.exist?(template_file_path)
+      generate_from_template(dest_path, template_file_path, erb_binding,
+                             { mode: 0755, package_name: package_name})
+    end
+  end
 
+  desc "create debian package script files from template"
+  task :deb_scripts do
+    # copy pre/post scripts into "debian" directory
+    Dir.glob(template_path('package-scripts', 'td-agent', "deb", '*')).each { |f|
+      package_script = File.join("debian", File.basename(f))
+      generate_from_template(package_script, f, binding,
+                             { mode: 0755, package_name: package_name})
+    }
+  end
+
+  desc "create td-agent configuration files from template"
+  task :td_agent_config do
     conf_paths = [
       ['td-agent', 'td-agent.conf'],
       ['td-agent', 'td-agent.conf.tmpl'],
@@ -146,21 +154,10 @@ namespace :build do
       generate_from_template(conf_path, template_path('etc', *item), binding,
                              { mode: 0644, package_name: package_name})
     }
+  end
 
-    unless macos?
-      systemd_file_path = case pkg_type
-                          when "rpm"
-                            File.join(install_path, 'usr', 'lib', 'systemd', 'system', package_name + ".service")
-                          when "deb"
-                            File.join(install_path, 'etc', 'systemd', 'system', package_name + ".service")
-                          end
-      template_file_path = template_path('etc', 'systemd', 'td-agent.service.erb')
-      if File.exist?(template_file_path)
-        generate_from_template(systemd_file_path, template_file_path, binding,
-                               { mode: 0755, package_name: package_name})
-      end
-    end
-
+  desc "create sbin script files from template"
+  task :sbin_scripts do
     ["td-agent", "td-agent-gem"].each { |command|
       sbin_path = File.join(install_path, 'usr', 'sbin', command)
       # templates/usr/sbin/yyyy.erb -> INSTALL_PATH/usr/sbin/yyyy
@@ -168,6 +165,26 @@ namespace :build do
                              { mode: 0755, package_name: package_name})
     }
   end
+
+  desc "create systemd unit file for Red Hat like systems"
+  task :rpm_systemd do
+    pkg_type = "rpm"
+    dest_path =  File.join(install_path, 'usr', 'lib', 'systemd', 'system', package_name + ".service")
+    generate_systemd_unit_file(dest_path, binding, { package_name: package_name })
+  end
+
+  desc "create systemd unit file for Debian like systems"
+  task :deb_systemd do
+    pkg_type = "deb"
+    dest_path = File.join(install_path, 'etc', 'systemd', 'system', package_name + ".service")
+    generate_systemd_unit_file(dest_path, binding, { package_name: package_name })
+  end
+
+  desc "create configuration files for Red Hat like systems"
+  task :rpm_config => [:td_agent_config, :sbin_scripts, :rpm_systemd]
+
+  desc "create configuration files for Debian like systems"
+  task :deb_config => [:td_agent_config, :sbin_scripts, :deb_systemd, :deb_scripts]
 end
 
 CLEAN.include(workdir_prefix)
