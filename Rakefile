@@ -21,11 +21,6 @@ pkg_type = ENV["PACKAGE_TYPE"] || "rpm"
 
 workdir_prefix = ENV["TD_AGENT_GEM_HOME"] || "local"
 git_workspace = "#{workdir_prefix}/git"
-root_dir = if windows?
-             "C:"
-           else
-             "/"
-           end
 install_dir_base = File.join("opt", package_name)
 gem_install_dir = File.join("#{workdir_prefix}", "#{install_dir_base}")
 mini_portile2 = Dir.glob(File.join(File.dirname(__FILE__), gem_install_dir, 'gems', 'mini_portile2-*', 'lib')).first
@@ -111,8 +106,6 @@ namespace :build do
 
   desc "create configuration files from template"
   task :config do
-    install_path = workdir_prefix
-    package_dir_opt = File.join(root_dir, install_dir_base)
     template = ->(*parts) { File.join('templates', *parts) }
     generate_from_template = ->(dst, src, erb_binding, opts={}) {
       mode = opts.fetch(:mode, 0755)
@@ -155,6 +148,7 @@ namespace :build do
       end
     end
 
+    install_path = workdir_prefix
     ["td-agent", "td-agent-gem"].each { |command|
       sbin_path = File.join(install_path, 'usr', 'sbin', command)
       # templates/usr/sbin/yyyy.erb -> INSTALL_PATH/usr/sbin/yyyy
