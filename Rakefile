@@ -31,7 +31,7 @@ package_dir_opt = File.join(root_dir, install_dir_base)
 gem_install_dir = File.join("#{workdir_prefix}", "#{install_dir_base}")
 mini_portile2 = Dir.glob(File.join(File.dirname(__FILE__), gem_install_dir, 'gems', 'mini_portile2-*', 'lib')).first
 install_message = nil
-debian_pkg_scripts = ["postinst", "postrm", "prerm"]
+debian_pkg_scripts = ["preinst", "postinst", "prerm", "postrm"]
 
 
 namespace :download do
@@ -138,9 +138,10 @@ namespace :build do
     # copy pre/post scripts into "debian" directory
     debian_pkg_scripts.each do |script|
       src = template_path('package-scripts', 'td-agent', "deb", script)
+      next unless File.exist?(src)
       dest = File.join("debian", File.basename(script))
       generate_from_template(dest, src, binding,
-                             { mode: 0755, package_name: package_name})
+                             { mode: 0755, package_name: package_name })
     end
   end
 
@@ -154,7 +155,7 @@ namespace :build do
     conf_paths.each { |item|
       conf_path = File.join(install_path, 'etc', *item)
       generate_from_template(conf_path, template_path('etc', *item), binding,
-                             { mode: 0644, package_name: package_name})
+                             { mode: 0644, package_name: package_name })
     }
   end
 
@@ -164,7 +165,7 @@ namespace :build do
       sbin_path = File.join(install_path, 'usr', 'sbin', command)
       # templates/usr/sbin/yyyy.erb -> INSTALL_PATH/usr/sbin/yyyy
       generate_from_template(sbin_path, template_path('usr', 'sbin', "#{command}.erb"), binding,
-                             { mode: 0755, package_name: package_name})
+                             { mode: 0755, package_name: package_name })
     }
   end
 
