@@ -31,7 +31,6 @@ install_path = workdir_prefix
 package_dir_opt = File.join(root_dir, install_dir_base)
 gem_install_dir = File.join("#{workdir_prefix}", "#{install_dir_base}")
 mini_portile2 = Dir.glob(File.join(File.dirname(__FILE__), gem_install_dir, 'gems', 'mini_portile2-*', 'lib')).first
-resources_path = 'resources'
 install_message = nil
 
 
@@ -143,7 +142,7 @@ namespace :build do
       ['logrotate.d', 'td-agent.logrotate']
     ]
     conf_paths.each { |item|
-      conf_path = File.join(resources_path, 'etc', *item)
+      conf_path = File.join(install_path, 'etc', *item)
       generate_from_template(conf_path, template_path('etc', *item), binding,
                              { mode: 0644, package_name: package_name})
     }
@@ -151,9 +150,9 @@ namespace :build do
     unless macos?
       systemd_file_path = case pkg_type
                           when "rpm"
-                            File.join(resources_path, 'usr', 'lib', 'systemd', 'system', package_name + ".service")
+                            File.join(install_path, 'usr', 'lib', 'systemd', 'system', package_name + ".service")
                           when "deb"
-                            File.join(resources_path, 'etc', 'systemd', 'system', package_name + ".service")
+                            File.join(install_path, 'etc', 'systemd', 'system', package_name + ".service")
                           end
       template_file_path = template_path('etc', 'systemd', 'td-agent.service.erb')
       if File.exist?(template_file_path)
@@ -168,14 +167,6 @@ namespace :build do
       generate_from_template(sbin_path, template_path('usr', 'sbin', "#{command}.erb"), binding,
                              { mode: 0755, package_name: package_name})
     }
-
-    FileUtils.remove_entry_secure(File.join(install_path, 'etc'), true)
-    # ./resources/etc -> INSTALL_PATH/etc
-    FileUtils.cp_r(File.join('resources', 'etc'), install_path)
-    if pkg_type == "rpm"
-      # ./resources/usr -> INSTALL_PATH/usr
-      FileUtils.cp_r(File.join('resources', 'usr'), install_path)
-    end
   end
 end
 
