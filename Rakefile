@@ -31,6 +31,7 @@ package_dir_opt = File.join(root_dir, install_dir_base)
 gem_install_dir = File.join("#{workdir_prefix}", "#{install_dir_base}")
 mini_portile2 = Dir.glob(File.join(File.dirname(__FILE__), gem_install_dir, 'gems', 'mini_portile2-*', 'lib')).first
 install_message = nil
+debian_pkg_scripts = ["postinst", "postrm", "prerm"]
 
 
 namespace :download do
@@ -135,11 +136,12 @@ namespace :build do
   desc "create debian package script files from template"
   task :deb_scripts do
     # copy pre/post scripts into "debian" directory
-    Dir.glob(template_path('package-scripts', 'td-agent', "deb", '*')).each { |f|
-      package_script = File.join("debian", File.basename(f))
-      generate_from_template(package_script, f, binding,
+    debian_pkg_scripts.each do |script|
+      src = template_path('package-scripts', 'td-agent', "deb", script)
+      dest = File.join("debian", File.basename(script))
+      generate_from_template(dest, src, binding,
                              { mode: 0755, package_name: package_name})
-    }
+    end
   end
 
   desc "create td-agent configuration files from template"
@@ -188,6 +190,9 @@ namespace :build do
 end
 
 CLEAN.include(workdir_prefix)
+debian_pkg_scripts.each do |script|
+  CLEAN.include(File.join("debian", script))
+end
 
 task = TDAgentPackageTask.new(package_name, version)
 task.define
