@@ -27,6 +27,8 @@ root_dir = if windows?
              "/"
            end
 install_dir_base = File.join("opt", package_name)
+install_path = workdir_prefix
+package_dir_opt = File.join(root_dir, install_dir_base)
 gem_install_dir = File.join("#{workdir_prefix}", "#{install_dir_base}")
 mini_portile2 = Dir.glob(File.join(File.dirname(__FILE__), gem_install_dir, 'gems', 'mini_portile2-*', 'lib')).first
 resources_path = 'resources'
@@ -109,26 +111,29 @@ namespace :build do
     }
   end
 
+  def template_path(*path_parts)
+    File.join('templates', *path_parts)
+  end
+
+  def generate_from_template(dest, src, erb_binding, opts={})
+    mode = opts.fetch(:mode, 0755)
+    package_name = opts.fetch(package_name, "td-agent")
+    destination = dest.gsub('td-agent', package_name)
+    FileUtils.mkdir_p(File.dirname(destination))
+    File.open(destination, 'w', mode) do |f|
+      f.write ERB.new(File.read(src), nil, '<>').result(erb_binding)
+    end
+  end
+
   desc "create configuration files from template"
   task :config do
-    install_path = workdir_prefix
-    package_dir_opt = File.join(root_dir, install_dir_base)
-    template = ->(*parts) { File.join('templates', *parts) }
-    generate_from_template = ->(dst, src, erb_binding, opts={}) {
-      mode = opts.fetch(:mode, 0755)
-      destination = dst.gsub('td-agent', package_name)
-      FileUtils.mkdir_p File.dirname(destination)
-      File.open(destination, 'w', mode) do |f|
-        f.write ERB.new(File.read(src), nil, '<>').result(erb_binding)
-      end
-    }
-
     # copy pre/post scripts into "debian" directory
-    Dir.glob(template.call('package-scripts', 'td-agent', pkg_type, '*')).each { |f|
+    Dir.glob(template_path('package-scripts', 'td-agent', pkg_type, '*')).each { |f|
       case pkg_type
       when "deb"
         package_script = File.join("debian", File.basename(f))
-        generate_from_template.call package_script, f, binding, mode: 0755
+        generate_from_template(package_script, f, binding,
+                               { mode: 0755, package_name: package_name})
       end
     }
 
@@ -139,7 +144,8 @@ namespace :build do
     ]
     conf_paths.each { |item|
       conf_path = File.join(resources_path, 'etc', *item)
-      generate_from_template.call(conf_path, template.call('etc', *item), binding, mode: 0644)
+      generate_from_template(conf_path, template_path('etc', *item), binding,
+                             { mode: 0644, package_name: package_name})
     }
 
     unless macos?
@@ -149,16 +155,18 @@ namespace :build do
                           when "deb"
                             File.join(resources_path, 'etc', 'systemd', 'system', package_name + ".service")
                           end
-      template_path = template.call('etc', 'systemd', 'td-agent.service.erb')
-      if File.exist?(template_path)
-        generate_from_template.call(systemd_file_path, template_path, binding, mode: 0755)
+      template_file_path = template_path('etc', 'systemd', 'td-agent.service.erb')
+      if File.exist?(template_file_path)
+        generate_from_template(systemd_file_path, template_file_path, binding,
+                               { mode: 0755, package_name: package_name})
       end
     end
 
     ["td-agent", "td-agent-gem"].each { |command|
       sbin_path = File.join(install_path, 'usr', 'sbin', command)
       # templates/usr/sbin/yyyy.erb -> INSTALL_PATH/usr/sbin/yyyy
-      generate_from_template.call(sbin_path, template.call('usr', 'sbin', "#{command}.erb"), binding, mode: 0755)
+      generate_from_template(sbin_path, template_path('usr', 'sbin', "#{command}.erb"), binding,
+                             { mode: 0755, package_name: package_name})
     }
 
     FileUtils.remove_entry_secure(File.join(install_path, 'etc'), true)
