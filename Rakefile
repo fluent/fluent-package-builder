@@ -18,17 +18,16 @@ end
 version = "3.5.1"
 package_name = "td-agent"
 
-workdir_prefix = ENV["TD_AGENT_GEM_HOME"] || "local"
-git_workspace = "#{workdir_prefix}/git"
+install_path = ENV["TD_AGENT_GEM_HOME"] || "local"
+git_workspace = "#{install_path}/git"
 root_dir = if windows?
              "C:"
            else
              "/"
            end
 install_dir_base = File.join("opt", package_name)
-install_path = workdir_prefix
 package_dir_opt = File.join(root_dir, install_dir_base)
-gem_install_dir = File.join("#{workdir_prefix}", "#{install_dir_base}")
+gem_install_dir = File.join("#{install_path}", "#{install_dir_base}")
 mini_portile2 = Dir.glob(File.join(File.dirname(__FILE__), gem_install_dir, 'gems', 'mini_portile2-*', 'lib')).first
 install_message = nil
 debian_pkg_scripts = ["preinst", "postinst", "prerm", "postrm"]
@@ -190,7 +189,7 @@ namespace :build do
   task :deb_config => [:td_agent_config, :sbin_scripts, :deb_systemd, :deb_scripts]
 end
 
-CLEAN.include(workdir_prefix)
+CLEAN.include(install_path)
 debian_pkg_scripts.each do |script|
   CLEAN.include(File.join("debian", script))
 end
