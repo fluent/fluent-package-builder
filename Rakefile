@@ -20,15 +20,10 @@ package_name = "td-agent"
 
 install_path = ENV["TD_AGENT_GEM_HOME"] || "local"
 git_workspace = "#{install_path}/git"
-root_dir = if windows?
-             "C:"
-           else
-             "/"
-           end
+root_dir = windows? ? "C:" : "/" # TODO
 install_dir_base = File.join("opt", package_name)
 package_dir_opt = File.join(root_dir, install_dir_base)
 gem_install_dir = File.join("#{install_path}", "#{install_dir_base}")
-mini_portile2 = Dir.glob(File.join(File.dirname(__FILE__), gem_install_dir, 'gems', 'mini_portile2-*', 'lib')).first
 install_message = nil
 debian_pkg_scripts = ["preinst", "postinst", "prerm", "postrm"]
 
@@ -101,11 +96,7 @@ namespace :build do
   desc "plugin_gems installation"
   task :plugin_gems => [:"download:plugin_gems", :fluentd] do
     Dir.glob(File.expand_path(File.join(__dir__, 'plugin_gems', '*.gem'))).sort.each { |gem_path|
-      if gem_path.include?("rdkafka")
-        sh("PATH=#{mini_portile2}:$PATH gem install --no-document #{gem_path} --install-dir #{gem_install_dir}")
-      else
-        sh("gem install --no-document #{gem_path} --install-dir #{gem_install_dir}")
-      end
+      sh("gem install --no-document #{gem_path} --install-dir #{gem_install_dir}")
     }
   end
 
