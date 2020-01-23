@@ -26,6 +26,7 @@ package_dir_opt = File.join(root_dir, install_dir_base)
 gem_install_dir = File.join("#{install_path}", "#{install_dir_base}")
 install_message = nil
 debian_pkg_scripts = ["preinst", "postinst", "prerm", "postrm"]
+upgrade_code = "76dcb0b2-81ad-4a07-bf3b-1db567594171"
 
 
 namespace :download do
@@ -173,11 +174,22 @@ namespace :build do
     generate_systemd_unit_file(dest_path, binding, { package_name: package_name })
   end
 
+  desc "create config files for WiX Toolset"
+  task :wix_config do
+    display_version = version
+    dest = File.join('msi', 'parameters.wxi')
+    src  = File.join('msi', 'parameters.wxi.erb')
+    generate_from_template(dest, src, binding, { mode: 0644, package_name: package_name })
+  end
+
   desc "create configuration files for Red Hat like systems"
   task :rpm_config => [:td_agent_config, :sbin_scripts, :rpm_systemd]
 
   desc "create configuration files for Debian like systems"
   task :deb_config => [:td_agent_config, :sbin_scripts, :deb_systemd, :deb_scripts]
+
+  desc "create configuration files for Windows"
+  task :msi_config => [:td_agent_config, :sbin_scripts, :wix_config]
 end
 
 CLEAN.include(install_path)
