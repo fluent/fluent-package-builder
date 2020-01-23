@@ -129,8 +129,7 @@ namespace :build do
       src = template_path('package-scripts', 'td-agent', "deb", script)
       next unless File.exist?(src)
       dest = File.join("debian", File.basename(script))
-      generate_from_template(dest, src, binding,
-                             { mode: 0755 })
+      generate_from_template(dest, src, binding, { mode: 0755 })
     end
   end
 
@@ -142,40 +141,39 @@ namespace :build do
       ['logrotate.d', 'td-agent.logrotate']
     ]
     conf_paths.each { |item|
-      conf_path = File.join(install_path, 'etc', *item)
-      generate_from_template(conf_path, template_path('etc', *item), binding)
+      src = template_path('etc', *item)
+      dest = File.join(install_path, 'etc', *item)
+      generate_from_template(dest, src, binding)
     }
   end
 
   desc "create sbin script files from template"
   task :sbin_scripts do
     ["td-agent", "td-agent-gem"].each { |command|
-      sbin_path = File.join(install_path, 'usr', 'sbin', command)
-      # templates/usr/sbin/yyyy.erb -> INSTALL_PATH/usr/sbin/yyyy
-      generate_from_template(sbin_path, template_path('usr', 'sbin', "#{command}.erb"), binding,
-                             { mode: 0755 })
+      src = template_path('usr', 'sbin', "#{command}.erb")
+      dest = File.join(install_path, 'usr', 'sbin', command)
+      generate_from_template(dest, src, binding, { mode: 0755 })
     }
   end
 
   desc "create systemd unit file for Red Hat like systems"
   task :rpm_systemd do
     pkg_type = "rpm"
-    dest_path =  File.join(install_path, 'usr', 'lib', 'systemd', 'system', package_name + ".service")
-    generate_systemd_unit_file(dest_path, binding)
+    dest =  File.join(install_path, 'usr', 'lib', 'systemd', 'system', package_name + ".service")
+    generate_systemd_unit_file(dest, binding)
   end
 
   desc "create systemd unit file for Debian like systems"
   task :deb_systemd do
     pkg_type = "deb"
-    dest_path = File.join(install_path, 'etc', 'systemd', 'system', package_name + ".service")
-    generate_systemd_unit_file(dest_path, binding)
+    dest = File.join(install_path, 'etc', 'systemd', 'system', package_name + ".service")
+    generate_systemd_unit_file(dest, binding)
   end
 
   desc "create config files for WiX Toolset"
   task :wix_config do
-    display_version = version
-    dest = File.join('msi', 'parameters.wxi')
     src  = File.join('msi', 'parameters.wxi.erb')
+    dest = File.join('msi', 'parameters.wxi')
     generate_from_template(dest, src, binding)
   end
 
