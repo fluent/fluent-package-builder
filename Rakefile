@@ -106,7 +106,7 @@ namespace :build do
   end
 
   def generate_from_template(dest, src, erb_binding, opts={})
-    mode = opts.fetch(:mode, 0755)
+    mode = opts.fetch(:mode, 0644)
     package_name = erb_binding.local_variable_get(:package_name)
     destination = dest.gsub('td-agent', package_name)
     FileUtils.mkdir_p(File.dirname(destination))
@@ -143,8 +143,7 @@ namespace :build do
     ]
     conf_paths.each { |item|
       conf_path = File.join(install_path, 'etc', *item)
-      generate_from_template(conf_path, template_path('etc', *item), binding,
-                             { mode: 0644 })
+      generate_from_template(conf_path, template_path('etc', *item), binding)
     }
   end
 
@@ -177,7 +176,7 @@ namespace :build do
     display_version = version
     dest = File.join('msi', 'parameters.wxi')
     src  = File.join('msi', 'parameters.wxi.erb')
-    generate_from_template(dest, src, binding, { mode: 0644 })
+    generate_from_template(dest, src, binding)
   end
 
   desc "create configuration files for Red Hat like systems"
