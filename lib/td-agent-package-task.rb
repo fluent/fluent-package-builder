@@ -18,9 +18,11 @@ class TDAgentPackageTask < PackageTask
   end
 
   def build_archive
-    sh("git", "archive", "HEAD",
-       "--prefix", "#{@archive_base_name}/",
-       "--output", @full_archive_name)
+    cd ".." do
+      sh("git", "archive", "HEAD",
+         "--prefix", "#{@archive_base_name}/",
+         "--output", @full_archive_name)
+    end
   end
 
   def apt_targets_default

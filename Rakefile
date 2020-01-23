@@ -1,196 +1,62 @@
-#!/usr/bin/env rake
-require_relative 'lib/td-agent-package-task'
-require_relative 'lib/gems_parser'
-require 'fileutils'
-require 'rake/testtask'
-require 'rake/clean'
-require 'erb'
-require 'shellwords'
+packages = [
+  "td-agent",
+]
 
-def windows?
-  RUBY_PLATFORM =~ /mswin|msys|mingw|cygwin|bccwin|wince|emc/
-end
-
-def macos?
-  RUBY_PLATFORM =~ /darwin|mac os/
-end
-
-version = "3.5.1"
-package_name = "td-agent"
-
-install_path = ENV["TD_AGENT_GEM_HOME"] || "local"
-git_workspace = "#{install_path}/git"
-root_dir = windows? ? "C:" : "/" # TODO
-install_dir_base = File.join("opt", package_name)
-package_dir_opt = File.join(root_dir, install_dir_base)
-gem_install_dir = File.join("#{install_path}", "#{install_dir_base}")
-install_message = nil
-debian_pkg_scripts = ["preinst", "postinst", "prerm", "postrm"]
-upgrade_code = "76dcb0b2-81ad-4a07-bf3b-1db567594171"
-
-
-namespace :download do
-  desc "download core_gems"
-  task :core_gems do
-    download_gems("core_gems.rb")
-  end
-
-  desc "clone fluentd repository"
-  task :fluentd do
-    revision = nil
-    mkdir_p git_workspace
-    cd git_workspace do
-      sh("git clone https://github.com/fluent/fluentd.git") unless File.exists?("fluentd")
-    end
-  end
-
-  desc "download plugin_gems"
-  task :plugin_gems do
-    download_gems("plugin_gems.rb")
-  end
-
-  def download_gems(gems_path)
-    gems_parser = GemsParser.parse(File.read(gems_path))
-    digits = (gems_parser.target_files.length - 1).to_s.length
-
-    FileUtils.remove_dir(gems_parser.target_dir, true)
-    Dir.mkdir(gems_parser.target_dir)
-    Dir.chdir(gems_parser.target_dir) do
-      gems_parser.target_files.each_with_index do |target, index|
-        name, version = target
-        if version.include?("-")
-          version_option = "--version #{version.sub(/\-.*/, '')}"
-        else
-          version_option = "--version #{version} --platform ruby"
-        end
-        gem = "#{name}-#{version}.gem"
-        path = sprintf("%0#{digits}d-%s", index, gem)
-        sh("gem fetch #{name} #{version_option}")
-        sh("gem install --explain #{gem} --no-document")
-        FileUtils.mv("#{gem}", "#{path}")
-        sleep 1
-      end
+task :clean do
+  packages.each do |package|
+    cd(package) do
+      ruby("-S", "rake", "clean")
     end
   end
 end
 
 namespace :build do
-  desc "core_gems installation"
-  task :core_gems => :"download:core_gems" do
-    Dir.glob(File.expand_path(File.join(__dir__, 'core_gems', '*.gem'))).sort.each { |gem_path|
-      sh("gem install --no-document #{gem_path} --install-dir #{gem_install_dir}")
-    }
+  desc "create configuration files for Debian like systems"
+  task :deb_config do
+    packages.each do |package|
+      cd(package) do
+        ruby("-S", "rake", "build:deb_config")
+      end
+    end
   end
 
-  desc "fluentd installation"
-  task :fluentd => [:"download:fluentd", :core_gems] do
-    revision = nil
-    cd git_workspace do
-      cd "fluentd" do
-        sh("git checkout #{revision}") if revision
-        sh("rake build")
-        sh("gem install --no-document pkg/fluentd-*.gem --install-dir #{gem_install_dir}")
+  desc "create configuration files for Red Hat like systems"
+  task :rpm_config do
+    packages.each do |package|
+      cd(package) do
+        ruby("-S", "rake", "build:rpm_config")
       end
     end
   end
 
   desc "plugin_gems installation"
-  task :plugin_gems => [:"download:plugin_gems", :fluentd] do
-    Dir.glob(File.expand_path(File.join(__dir__, 'plugin_gems', '*.gem'))).sort.each { |gem_path|
-      sh("gem install --no-document #{gem_path} --install-dir #{gem_install_dir}")
-    }
-  end
-
-  def template_path(*path_parts)
-    File.join('templates', *path_parts)
-  end
-
-  def generate_from_template(dest, src, erb_binding, opts={})
-    mode = opts.fetch(:mode, 0644)
-    package_name = erb_binding.local_variable_get(:package_name)
-    destination = dest.gsub('td-agent', package_name)
-    FileUtils.mkdir_p(File.dirname(destination))
-    File.open(destination, 'w', mode) do |f|
-      f.write ERB.new(File.read(src), nil, '<>').result(erb_binding)
+  task :plugin_gems do
+    packages.each do |package|
+      cd(package) do
+        ruby("-S", "rake", "build:plugin_gems")
+      end
     end
   end
-
-  def generate_systemd_unit_file(dest_path, erb_binding, opts={})
-    template_file_path = template_path('etc', 'systemd', 'td-agent.service.erb')
-    if File.exist?(template_file_path)
-      generate_from_template(dest_path, template_file_path, erb_binding, { mode: 0755 })
-    end
-  end
-
-  desc "create debian package script files from template"
-  task :deb_scripts do
-    # copy pre/post scripts into "debian" directory
-    debian_pkg_scripts.each do |script|
-      src = template_path('package-scripts', 'td-agent', "deb", script)
-      next unless File.exist?(src)
-      dest = File.join("debian", File.basename(script))
-      generate_from_template(dest, src, binding, { mode: 0755 })
-    end
-  end
-
-  desc "create td-agent configuration files from template"
-  task :td_agent_config do
-    conf_paths = [
-      ['td-agent', 'td-agent.conf'],
-      ['td-agent', 'td-agent.conf.tmpl'],
-      ['logrotate.d', 'td-agent.logrotate']
-    ]
-    conf_paths.each { |item|
-      src = template_path('etc', *item)
-      dest = File.join(install_path, 'etc', *item)
-      generate_from_template(dest, src, binding)
-    }
-  end
-
-  desc "create sbin script files from template"
-  task :sbin_scripts do
-    ["td-agent", "td-agent-gem"].each { |command|
-      src = template_path('usr', 'sbin', "#{command}.erb")
-      dest = File.join(install_path, 'usr', 'sbin', command)
-      generate_from_template(dest, src, binding, { mode: 0755 })
-    }
-  end
-
-  desc "create systemd unit file for Red Hat like systems"
-  task :rpm_systemd do
-    pkg_type = "rpm"
-    dest =  File.join(install_path, 'usr', 'lib', 'systemd', 'system', package_name + ".service")
-    generate_systemd_unit_file(dest, binding)
-  end
-
-  desc "create systemd unit file for Debian like systems"
-  task :deb_systemd do
-    pkg_type = "deb"
-    dest = File.join(install_path, 'etc', 'systemd', 'system', package_name + ".service")
-    generate_systemd_unit_file(dest, binding)
-  end
-
-  desc "create config files for WiX Toolset"
-  task :wix_config do
-    src  = File.join('msi', 'parameters.wxi.erb')
-    dest = File.join('msi', 'parameters.wxi')
-    generate_from_template(dest, src, binding)
-  end
-
-  desc "create configuration files for Red Hat like systems"
-  task :rpm_config => [:td_agent_config, :sbin_scripts, :rpm_systemd]
-
-  desc "create configuration files for Debian like systems"
-  task :deb_config => [:td_agent_config, :sbin_scripts, :deb_systemd, :deb_scripts]
-
-  desc "create configuration files for Windows"
-  task :msi_config => [:td_agent_config, :sbin_scripts, :wix_config]
 end
 
-CLEAN.include(install_path)
-debian_pkg_scripts.each do |script|
-  CLEAN.include(File.join("debian", script))
+namespace :apt do
+  desc "Build deb packages"
+  task :build do
+    packages.each do |package|
+      cd(package) do
+        ruby("-S", "rake", "apt:build")
+      end
+    end
+  end
 end
 
-task = TDAgentPackageTask.new(package_name, version)
-task.define
+namespace :yum do
+  desc "Build RPM packages"
+  task :build do
+    packages.each do |package|
+      cd(package) do
+        ruby("-S", "rake", "yum:build")
+      end
+    end
+  end
+end
