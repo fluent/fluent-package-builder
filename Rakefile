@@ -107,7 +107,7 @@ namespace :build do
 
   def generate_from_template(dest, src, erb_binding, opts={})
     mode = opts.fetch(:mode, 0755)
-    package_name = opts.fetch(package_name, "td-agent")
+    package_name = erb_binding.local_variable_get(:package_name)
     destination = dest.gsub('td-agent', package_name)
     FileUtils.mkdir_p(File.dirname(destination))
     File.open(destination, 'w', mode) do |f|
@@ -116,11 +116,9 @@ namespace :build do
   end
 
   def generate_systemd_unit_file(dest_path, erb_binding, opts={})
-    package_name = opts.fetch(package_name, "td-agent")
     template_file_path = template_path('etc', 'systemd', 'td-agent.service.erb')
     if File.exist?(template_file_path)
-      generate_from_template(dest_path, template_file_path, erb_binding,
-                             { mode: 0755, package_name: package_name})
+      generate_from_template(dest_path, template_file_path, erb_binding, { mode: 0755 })
     end
   end
 
@@ -132,7 +130,7 @@ namespace :build do
       next unless File.exist?(src)
       dest = File.join("debian", File.basename(script))
       generate_from_template(dest, src, binding,
-                             { mode: 0755, package_name: package_name })
+                             { mode: 0755 })
     end
   end
 
@@ -146,7 +144,7 @@ namespace :build do
     conf_paths.each { |item|
       conf_path = File.join(install_path, 'etc', *item)
       generate_from_template(conf_path, template_path('etc', *item), binding,
-                             { mode: 0644, package_name: package_name })
+                             { mode: 0644 })
     }
   end
 
@@ -156,7 +154,7 @@ namespace :build do
       sbin_path = File.join(install_path, 'usr', 'sbin', command)
       # templates/usr/sbin/yyyy.erb -> INSTALL_PATH/usr/sbin/yyyy
       generate_from_template(sbin_path, template_path('usr', 'sbin', "#{command}.erb"), binding,
-                             { mode: 0755, package_name: package_name })
+                             { mode: 0755 })
     }
   end
 
@@ -164,14 +162,14 @@ namespace :build do
   task :rpm_systemd do
     pkg_type = "rpm"
     dest_path =  File.join(install_path, 'usr', 'lib', 'systemd', 'system', package_name + ".service")
-    generate_systemd_unit_file(dest_path, binding, { package_name: package_name })
+    generate_systemd_unit_file(dest_path, binding)
   end
 
   desc "create systemd unit file for Debian like systems"
   task :deb_systemd do
     pkg_type = "deb"
     dest_path = File.join(install_path, 'etc', 'systemd', 'system', package_name + ".service")
-    generate_systemd_unit_file(dest_path, binding, { package_name: package_name })
+    generate_systemd_unit_file(dest_path, binding)
   end
 
   desc "create config files for WiX Toolset"
@@ -179,7 +177,7 @@ namespace :build do
     display_version = version
     dest = File.join('msi', 'parameters.wxi')
     src  = File.join('msi', 'parameters.wxi.erb')
-    generate_from_template(dest, src, binding, { mode: 0644, package_name: package_name })
+    generate_from_template(dest, src, binding, { mode: 0644 })
   end
 
   desc "create configuration files for Red Hat like systems"
