@@ -68,7 +68,7 @@
     </Feature>
 
     <!-- UI Stuff -->
-    <Icon Id="project.ico" SourceFile="Resources\assets\icon.ico"/>
+    <Icon Id="project.ico" SourceFile="assets\icon.ico"/>
     <Property Id="ARPPRODUCTICON" Value="project.ico" />
     <Property Id="ARPHELPLINK" Value="http://www.fluentd.org/" />
     <Property Id="WIXUI_INSTALLDIR" Value="OPTLOCATION" />
@@ -81,13 +81,13 @@
       <TextStyle Id="WixUI_Font_Title_White" FaceName="Tahoma" Size="9" Bold="yes" Red="255" Green="255" Blue="255" />
     </UI>
 
-    <WixVariable Id="WixUILicenseRtf" Value="Resources\assets\LICENSE.rtf" />
-    <WixVariable Id="WixUIDialogBmp" Value="Resources\assets\dialog_background.bmp" />
-    <WixVariable Id="WixUIBannerBmp" Value="Resources\assets\banner_background.bmp" />
+    <WixVariable Id="WixUILicenseRtf" Value="assets\LICENSE.rtf" />
+    <WixVariable Id="WixUIDialogBmp" Value="assets\dialog_background.bmp" />
+    <WixVariable Id="WixUIBannerBmp" Value="assets\banner_background.bmp" />
 
-    <WixVariable Id="WixUIExclamationIco" Value="Resources\assets\icon.ico" />
-    <WixVariable Id="WixUIInfoIco" Value="Resources\assets\icon.ico" />
-    <WixVariable Id="WixUINewIco" Value="Resources\assets\icon.ico" />
-    <WixVariable Id="WixUIUpIco" Value="Resources\assets\icon.ico" />
+    <WixVariable Id="WixUIExclamationIco" Value="assets\icon.ico" />
+    <WixVariable Id="WixUIInfoIco" Value="assets\icon.ico" />
+    <WixVariable Id="WixUINewIco" Value="assets\icon.ico" />
+    <WixVariable Id="WixUIUpIco" Value="assets\icon.ico" />
   </Product>
 </Wix>
