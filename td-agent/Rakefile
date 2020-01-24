@@ -66,7 +66,8 @@ namespace :download do
         gem = "#{name}-#{version}.gem"
         path = sprintf("%0#{digits}d-%s", index, gem)
         sh("gem", "fetch", "#{name}", *version_option)
-        sh("gem", "install", "--explain", "#{gem}", "--no-document")
+        `gem install --explain #{gem} --no-document`
+        fail "Failed to download #{gem}!" unless $?.success?
         FileUtils.mv("#{gem}", "#{path}")
         sleep 1
       end
