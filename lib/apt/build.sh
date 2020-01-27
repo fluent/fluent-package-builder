@@ -69,11 +69,14 @@ elif [ -d "/host/tmp/debian.${platform}" ]; then
 else
   run cp -rp "/host/tmp/debian" debian
 fi
+# setup lintian profile
+run mkdir -p ~/.lintian/profiles/td-agent/
+run cp "/host/tmp/debian/lintian/td-agent/${distribution}.profile" ~/.lintian/profiles/td-agent/${distribution}.profile
 # export DEB_BUILD_OPTIONS=noopt
 if [ "${DEBUG:-no}" = "yes" ]; then
-  run debuild -us -uc
+  run debuild -us -uc --lintian-opts td-agent/${distribution}
 else
-  run debuild -us -uc > /dev/null
+  run debuild -us -uc --lintian-opts td-agent/${distribution} > /dev/null
 fi
 run cd -
 
