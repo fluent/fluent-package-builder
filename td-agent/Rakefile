@@ -201,23 +201,26 @@ namespace :build do
       staging_dir = File.join("..", install_path)
       sh(heat_path,
          "dir", staging_dir,
-         "-nologo", "-srd", "-sreg", "-gg",
-         "-cg", "ProjectDir",
-         "-dr", "PROJECTLOCATION",
-         "-var", "var.ProjectSourceDir",
+         "-nologo", # Skip heat logo
+         "-srd",    # Suppress harvesting the root directory as an element
+         "-sreg",   # Suppress registry harvesting
+         "-gg",                          # Generate guides
+         "-cg", "ProjectDir",            # Component Group Name
+         "-dr", "PROJECTLOCATION",       # Root directory reference
+         "-var", "var.ProjectSourceDir", # Substitue File/@Source="SourceDir"
          "-out", 'project-files.wxs')
 
       sh(candle_path,
-         "-nologo",
-         "-dProjectSourceDir=#{staging_dir}",
+         "-nologo",                           # Skip candle logo
+         "-dProjectSourceDir=#{staging_dir}", # Define a parameter
          'project-files.wxs',
          'source.wxs')
 
       sh(light_path,
-         "-nologo",
-         "-ext", "WixUIExtension",
-         "-cultures:en-us",
-         "-loc", "localization-en-us.wxl",
+         "-nologo",                        # Skip light logo
+         "-ext", "WixUIExtension",         # Extension assembly
+         "-cultures:en-us",                # Localization
+         "-loc", "localization-en-us.wxl", # Localization file
          'project-files.wixobj',
          'source.wixobj',
          "-out", 'td-agent.msi')
