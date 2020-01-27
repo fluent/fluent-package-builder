@@ -186,6 +186,43 @@ namespace :build do
 
   desc "create configuration files for Windows"
   task :msi_config => [:td_agent_config, :sbin_scripts, :wix_config]
+
+  desc "Build MSI package"
+  task :msi do
+    wix_dir = ENV["WIX"]
+    fail "Can't find WiX commands path" if wix_dir.empty?
+
+    wix_bin_dir = File.join(wix_dir, "bin")
+    heat_path = File.join(wix_bin_dir, "heat")
+    candle_path = File.join(wix_bin_dir, "candle")
+    light_path = File.join(wix_bin_dir, "light")
+
+    Dir.chdir("msi") do
+      staging_dir = File.join("..", install_path)
+      sh(heat_path,
+         "dir", staging_dir,
+         "-nologo", "-srd", "-sreg", "-gg",
+         "-cg", "ProjectDir",
+         "-dr", "PROJECTLOCATION",
+         "-var", "var.ProjectSourceDir",
+         "-out", 'project-files.wxs')
+
+      sh(candle_path,
+         "-nologo",
+         "-dProjectSourceDir=#{staging_dir}",
+         'project-files.wxs',
+         'source.wxs')
+
+      sh(light_path,
+         "-nologo",
+         "-ext", "WixUIExtension",
+         "-cultures:en-us",
+         "-loc", "localization-en-us.wxl",
+         'project-files.wixobj',
+         'source.wixobj',
+         "-out", 'td-agent.msi')
+    end
+  end
 end
 
 CLEAN.include(install_path)
