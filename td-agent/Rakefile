@@ -19,7 +19,7 @@ version = "3.5.1"
 package_name = "td-agent"
 
 install_path = ENV["TD_AGENT_GEM_HOME"] || "local"
-git_workspace = "#{install_path}/git"
+git_workspace = "git/fluentd"
 root_dir = windows? ? "C:" : "/" # TODO
 install_dir_base = File.join("opt", package_name)
 package_dir_opt = File.join(root_dir, install_dir_base)
