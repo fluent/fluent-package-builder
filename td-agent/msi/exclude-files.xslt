@@ -19,8 +19,8 @@
 
     <!-- Exclude patterns -->
     <xsl:key
-        name="exe-search"
+        name="conf-search"
         match="wix:Component[wix:File/@Source = '$(var.ProjectSourceDir)\etc\td-agent\td-agent.conf']"
         use="@Id" />
-    <xsl:template match="*[self::wix:Component or self::wix:ComponentRef][key('exe-search', @Id)]" />
+    <xsl:template match="*[self::wix:Component or self::wix:ComponentRef][key('conf-search', @Id)]" />
 </xsl:stylesheet>
