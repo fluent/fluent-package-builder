@@ -10,4 +10,9 @@
 /td-agent/apt/build.sh
 /td-agent/apt/env.sh
 /td-agent/apt/repositories/
-/td-agent/apt/tmp/
+/td-agent/apt/tmp/[
+/td-agent/msi/parameters.wxi
+/td-agent/msi/project-files.wxs
+*.wixobj
+*.wixpdb
+*.msi
