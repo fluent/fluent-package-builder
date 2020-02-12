@@ -11,10 +11,6 @@ def windows?
   RUBY_PLATFORM =~ /mswin|mingw/
 end
 
-def macos?
-  RUBY_PLATFORM =~ /darwin|mac os/
-end
-
 version = "3.5.1"
 package_name = "td-agent"
 
