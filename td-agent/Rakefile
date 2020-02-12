@@ -8,7 +8,7 @@ require 'erb'
 require 'shellwords'
 
 def windows?
-  RUBY_PLATFORM =~ /mswin|msys|mingw|cygwin|bccwin|wince|emc/
+  RUBY_PLATFORM =~ /mswin|mingw/
 end
 
 def macos?
