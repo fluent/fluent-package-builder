@@ -197,6 +197,14 @@ namespace :build do
     candle_path = File.join(wix_bin_dir, "candle")
     light_path = File.join(wix_bin_dir, "light")
 
+    if RUBY_PLATFORM =~ /x64/
+      arch = "x64"
+    elsif RUBY_PLATFORM =~ /i386/
+      arch = "x86"
+    else
+      fail "Unknown platform: #{RUBY_PLATFORM}"
+    end
+
     Dir.chdir("msi") do
       staging_dir = File.join("..", install_path)
 
@@ -217,8 +225,8 @@ namespace :build do
       sh(candle_path,
          "-nologo",                           # Skip candle logo
          "-dProjectSourceDir=#{staging_dir}", # Define a parameter
-         'project-files.wxs',
-         'source.wxs')
+         "project-files.wxs",
+         "source.wxs")
 
       # Link
       sh(light_path,
@@ -226,9 +234,9 @@ namespace :build do
          "-ext", "WixUIExtension",         # Extension assembly
          "-cultures:en-us",                # Localization
          "-loc", "localization-en-us.wxl", # Localization file
-         'project-files.wixobj',
-         'source.wixobj',
-         "-out", 'td-agent.msi')
+         "project-files.wixobj",
+         "source.wixobj",
+         "-out", "td-agent-#{version}-#{arch}.msi")
     end
   end
 end
