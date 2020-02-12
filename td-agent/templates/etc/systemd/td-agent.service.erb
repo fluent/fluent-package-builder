@@ -21,11 +21,11 @@ EnvironmentFile=-/etc/default/<%= package_name %>
 <% else %>
 EnvironmentFile=-/etc/sysconfig/<%= package_name %>
 <% end %>
-PIDFile=<%= Shellwords.shellescape(File.join(root_dir, "var", "run", package_name, "#{package_name}.pid")) %>
+PIDFile=<%= Shellwords.shellescape(File.join(root_path, "var", "run", package_name, "#{package_name}.pid")) %>
 RuntimeDirectory=<%= Shellwords.shellescape(package_name) %>
 Type=forking
 # XXX: Fix fluentd executables path
-ExecStart=/opt/td-agent/bin/fluentd --log <%= Shellwords.shellescape(File.join(root_dir, "var", "log", package_name, "#{package_name}.log")) %> --daemon <%= Shellwords.shellescape(File.join(root_dir, "var", "run", package_name, "#{package_name}.pid")) %> $TD_AGENT_OPTIONS
+ExecStart=/opt/td-agent/bin/fluentd --log <%= Shellwords.shellescape(File.join(root_path, "var", "log", package_name, "#{package_name}.log")) %> --daemon <%= Shellwords.shellescape(File.join(root_path, "var", "run", package_name, "#{package_name}.pid")) %> $TD_AGENT_OPTIONS
 ExecStop=/bin/kill -TERM ${MAINPID}
 ExecReload=/bin/kill -HUP ${MAINPID}
 Restart=always

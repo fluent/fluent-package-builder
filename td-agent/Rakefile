@@ -160,6 +160,7 @@ namespace :build do
   desc "create systemd unit file for Red Hat like systems"
   task :rpm_systemd do
     pkg_type = "rpm"
+    root_path = "/"
     dest =  File.join(install_path, 'usr', 'lib', 'systemd', 'system', package_name + ".service")
     generate_systemd_unit_file(dest, binding)
   end
@@ -167,6 +168,7 @@ namespace :build do
   desc "create systemd unit file for Debian like systems"
   task :deb_systemd do
     pkg_type = "deb"
+    root_path = "/"
     dest = File.join(install_path, 'etc', 'systemd', 'system', package_name + ".service")
     generate_systemd_unit_file(dest, binding)
   end
