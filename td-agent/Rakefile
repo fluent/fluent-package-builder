@@ -20,15 +20,15 @@ if windows?
   default_root = "C:"
   install_dir = File.join("#{default_root}", "opt", "#{package_name}")
   gem_install_dir = File.join("#{staging_path}", "opt", "#{package_name}")
+  upgrade_code = "76dcb0b2-81ad-4a07-bf3b-1db567594171"
 else
   default_root = "/opt"
   install_dir = File.join("#{default_root}", "#{package_name}")
   gem_install_dir = File.join("#{staging_path}", "#{install_dir}")
 end
 install_message = nil
-debian_pkg_scripts = ["preinst", "postinst", "prerm", "postrm"]
-upgrade_code = "76dcb0b2-81ad-4a07-bf3b-1db567594171"
 
+CLEAN.include(staging_path)
 
 namespace :download do
   desc "download core_gems"
@@ -122,6 +122,11 @@ namespace :build do
     if File.exist?(template_file_path)
       generate_from_template(dest_path, template_file_path, erb_binding, { mode: 0755 })
     end
+  end
+
+  debian_pkg_scripts = ["preinst", "postinst", "prerm", "postrm"]
+  debian_pkg_scripts.each do |script|
+    CLEAN.include(File.join("debian", script))
   end
 
   desc "create debian package script files from template"
@@ -242,11 +247,6 @@ namespace :build do
          "-out", "td-agent-#{version}-#{arch}.msi")
     end
   end
-end
-
-CLEAN.include(staging_path)
-debian_pkg_scripts.each do |script|
-  CLEAN.include(File.join("debian", script))
 end
 
 task = TDAgentPackageTask.new(package_name, version)
