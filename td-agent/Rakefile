@@ -14,16 +14,16 @@ end
 version = "3.5.1"
 package_name = "td-agent"
 
-install_path = ENV["TD_AGENT_GEM_HOME"] || "local"
+stading_path = ENV["TD_AGENT_STAGING_PATH"] || "staging"
 git_workspace = "git/fluentd"
 if windows?
   default_root = "C:"
   install_dir = File.join("#{default_root}", "opt", "#{package_name}")
-  gem_install_dir = File.join("#{install_path}", "opt", "#{package_name}")
+  gem_install_dir = File.join("#{stading_path}", "opt", "#{package_name}")
 else
   default_root = "/opt"
   install_dir = File.join("#{default_root}", "#{package_name}")
-  gem_install_dir = File.join("#{install_path}", "#{install_dir}")
+  gem_install_dir = File.join("#{stading_path}", "#{install_dir}")
 end
 install_message = nil
 debian_pkg_scripts = ["preinst", "postinst", "prerm", "postrm"]
@@ -144,7 +144,7 @@ namespace :build do
     ]
     conf_paths.each { |item|
       src = template_path('etc', *item)
-      dest = File.join(install_path, 'etc', *item)
+      dest = File.join(stading_path, 'etc', *item)
       generate_from_template(dest, src, binding)
     }
   end
@@ -153,7 +153,7 @@ namespace :build do
   task :sbin_scripts do
     ["td-agent", "td-agent-gem"].each { |command|
       src = template_path('usr', 'sbin', "#{command}.erb")
-      dest = File.join(install_path, 'usr', 'sbin', command)
+      dest = File.join(stading_path, 'usr', 'sbin', command)
       generate_from_template(dest, src, binding, { mode: 0755 })
     }
   end
@@ -162,7 +162,7 @@ namespace :build do
   task :rpm_systemd do
     pkg_type = "rpm"
     root_path = "/"
-    dest =  File.join(install_path, 'usr', 'lib', 'systemd', 'system', package_name + ".service")
+    dest =  File.join(stading_path, 'usr', 'lib', 'systemd', 'system', package_name + ".service")
     generate_systemd_unit_file(dest, binding)
   end
 
@@ -170,7 +170,7 @@ namespace :build do
   task :deb_systemd do
     pkg_type = "deb"
     root_path = "/"
-    dest = File.join(install_path, 'etc', 'systemd', 'system', package_name + ".service")
+    dest = File.join(stading_path, 'etc', 'systemd', 'system', package_name + ".service")
     generate_systemd_unit_file(dest, binding)
   end
 
@@ -209,7 +209,7 @@ namespace :build do
     end
 
     Dir.chdir("msi") do
-      staging_dir = File.join("..", install_path)
+      staging_dir = File.join("..", stading_path)
 
       # Pick up package contents
       sh(heat_path,
@@ -244,7 +244,7 @@ namespace :build do
   end
 end
 
-CLEAN.include(install_path)
+CLEAN.include(stading_path)
 debian_pkg_scripts.each do |script|
   CLEAN.include(File.join("debian", script))
 end

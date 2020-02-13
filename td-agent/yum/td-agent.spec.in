@@ -62,8 +62,8 @@ The stable distribution of Fluentd, called td-agent.
 %if %{use_scl_ruby}
 . /opt/rh/rh-ruby24/enable
 %endif
-rake build:rpm_config TD_AGENT_GEM_HOME=%{buildroot}
-rake build:plugin_gems TD_AGENT_GEM_HOME=%{buildroot}
+rake build:rpm_config  TD_AGENT_STAGING_PATH=%{buildroot}
+rake build:plugin_gems TD_AGENT_STAGING_PATH=%{buildroot}
 cd -
 mkdir -p %{buildroot}%{_localstatedir}/run/@PACKAGE@
 mkdir -p %{buildroot}%{_localstatedir}/log/@PACKAGE@
