@@ -30,12 +30,25 @@ install_message = nil
 
 CLEAN.include(staging_path)
 
+# Debian
+CLEAN.include("apt/tmp")
+CLEAN.include("apt/build.sh")
+CLEAN.include("apt/env.sh")
+CLEAN.include("debian/tmp")
+CLOBBER.include("apt/repositories")
+
+# Red Hat
+CLEAN.include("yum/tmp")
+CLEAN.include("yum/build.sh")
+CLEAN.include("yum/env.sh")
+CLOBBER.include("yum/repositories")
+
 # Windows
-CLEAN.include("./msi/parameters.wxi")
-CLEAN.include("./msi/project-files.wxs")
-CLEAN.include("./msi/*.wixobj")
-CLEAN.include("./msi/*.wixpdb")
-CLOBBER.include("./msi/*.msi")
+CLEAN.include("msi/parameters.wxi")
+CLEAN.include("msi/project-files.wxs")
+CLEAN.include("msi/*.wixobj")
+CLEAN.include("msi/*.wixpdb")
+CLOBBER.include("msi/*.msi")
 
 namespace :download do
   desc "Download core_gems"
