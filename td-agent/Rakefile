@@ -16,14 +16,15 @@ package_name = "td-agent"
 
 install_path = ENV["TD_AGENT_GEM_HOME"] || "local"
 git_workspace = "git/fluentd"
-default_root = "/opt"
-install_dir_base = "#{package_name}"
 if windows?
   default_root = "C:"
-  install_dir_base = File.join("opt", "#{package_name}")
+  install_dir = File.join("#{default_root}", "opt", "#{package_name}")
+  gem_install_dir = File.join("#{install_path}", "opt", "#{package_name}")
+else
+  default_root = "/opt"
+  install_dir = File.join("#{default_root}", "#{package_name}")
+  gem_install_dir = File.join("#{install_path}", "#{install_dir}")
 end
-install_dir = File.join("#{default_root}", "#{install_dir_base}")
-gem_install_dir = File.join("#{install_path}", "#{install_dir_base}")
 install_message = nil
 debian_pkg_scripts = ["preinst", "postinst", "prerm", "postrm"]
 upgrade_code = "76dcb0b2-81ad-4a07-bf3b-1db567594171"
