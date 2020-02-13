@@ -2,10 +2,20 @@ packages = [
   "td-agent",
 ]
 
+desc "Remove any temporary products"
 task :clean do
   packages.each do |package|
     cd(package) do
       ruby("-S", "rake", "clean")
+    end
+  end
+end
+
+desc "Remove any generated files"
+task :clobber do
+  packages.each do |package|
+    cd(package) do
+      ruby("-S", "rake", "clobber")
     end
   end
 end
