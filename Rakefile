@@ -11,7 +11,7 @@ task :clean do
 end
 
 namespace :build do
-  desc "create configuration files for Debian like systems"
+  desc "Create configuration files for Debian like systems"
   task :deb_config do
     packages.each do |package|
       cd(package) do
@@ -20,7 +20,7 @@ namespace :build do
     end
   end
 
-  desc "create configuration files for Red Hat like systems"
+  desc "Create configuration files for Red Hat like systems"
   task :rpm_config do
     packages.each do |package|
       cd(package) do
@@ -29,7 +29,7 @@ namespace :build do
     end
   end
 
-  desc "plugin_gems installation"
+  desc "Install plugin_gems"
   task :plugin_gems do
     packages.each do |package|
       cd(package) do
