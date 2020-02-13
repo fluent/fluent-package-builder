@@ -85,11 +85,11 @@ namespace :download do
           version_option = ["--version", "#{version}", "--platform", "ruby"]
         end
         gem = "#{name}-#{version}.gem"
-        path = sprintf("%0#{digits}d-%s", index, gem)
+        numbered_gem = sprintf("%0#{digits}d-%s", index, gem)
         sh("gem", "fetch", "#{name}", *version_option)
         `gem install --explain #{gem} --no-document`
         fail "Failed to download #{gem}!" unless $?.success?
-        FileUtils.mv("#{gem}", "#{path}")
+        FileUtils.mv("#{gem}", "#{numbered_gem}")
         sleep 1
       end
     end
