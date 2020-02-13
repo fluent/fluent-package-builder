@@ -85,8 +85,6 @@ fi
 %{_sbindir}/td-agent
 %{_sbindir}/td-agent-gem
 %config(noreplace) %{_sysconfdir}/@PACKAGE@/@PACKAGE@.conf
-%exclude /git/fluentd/*
-%exclude /git/fluentd/.*
 # Prevent Symlink points to BuildRoot: error.
 %exclude /opt/@PACKAGE@/gems/ffi-1.11.3/ext/ffi_c/libffi-x86_64-linux/include/ffitarget.h
 %attr(0755,td-agent,td-agent) %dir %{_localstatedir}/run/@PACKAGE@
