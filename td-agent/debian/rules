@@ -7,8 +7,8 @@ export DH_RUBY = --gem-install
 	dh $@
 
 override_dh_auto_install:
-	rake build:deb_config  TD_AGENT_STAGING_PATH=../debian/tmp
-	rake build:plugin_gems TD_AGENT_STAGING_PATH=../debian/tmp
+	rake build:deb_config TD_AGENT_STAGING_PATH=../debian/tmp
+	rake build:gems       TD_AGENT_STAGING_PATH=../debian/tmp
 
 override_dh_auto_clean:
 	rake clean

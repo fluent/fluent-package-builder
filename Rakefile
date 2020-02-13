@@ -29,11 +29,11 @@ namespace :build do
     end
   end
 
-  desc "Install plugin_gems"
-  task :plugin_gems do
+  desc "Install all gems"
+  task :gems do
     packages.each do |package|
       cd(package) do
-        ruby("-S", "rake", "build:plugin_gems")
+        ruby("-S", "rake", "build:gems")
       end
     end
   end

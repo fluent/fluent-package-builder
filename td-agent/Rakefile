@@ -103,6 +103,9 @@ namespace :build do
     }
   end
 
+  desc "Install all gems"
+  task :gems => [:plugin_gems]
+
   def template_path(*path_parts)
     File.join('templates', *path_parts)
   end
