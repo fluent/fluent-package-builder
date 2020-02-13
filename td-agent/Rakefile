@@ -30,6 +30,13 @@ install_message = nil
 
 CLEAN.include(staging_path)
 
+# Windows
+CLEAN.include("./msi/parameters.wxi")
+CLEAN.include("./msi/project-files.wxs")
+CLEAN.include("./msi/*.wixobj")
+CLEAN.include("./msi/*.wixpdb")
+CLOBBER.include("./msi/*.msi")
+
 namespace :download do
   desc "Download core_gems"
   task :core_gems do
