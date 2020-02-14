@@ -1,6 +1,6 @@
 /.bundle/
 /vendor/
-/td-agent/local/
+/td-agent/staging/
 /td-agent/core_gems/
 /td-agent/plugin_gems/
 /td-agent/yum/build.sh
