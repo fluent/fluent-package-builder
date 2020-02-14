@@ -9,9 +9,9 @@ User=<%= Shellwords.shellescape(package_name) %>
 Group=<%= Shellwords.shellescape(package_name) %>
 LimitNOFILE=65536
 # XXX: What version should we use jemalloc?
-# Environment=LD_PRELOAD=<%= install_dir %>/embedded/lib/libjemalloc.so
-Environment=GEM_HOME=<%= install_dir %>/
-Environment=GEM_PATH=<%= install_dir %>/
+# Environment=LD_PRELOAD=<%= install_path %>/embedded/lib/libjemalloc.so
+Environment=GEM_HOME=<%= install_path %>/
+Environment=GEM_PATH=<%= install_path %>/
 Environment=FLUENT_CONF=/etc/<%= package_name %>/<%= package_name %>.conf
 Environment=FLUENT_PLUGIN=/etc/<%= package_name %>/plugin
 Environment=FLUENT_SOCKET=/var/run/<%= package_name %>/<%= package_name %>.sock

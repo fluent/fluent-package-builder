@@ -18,13 +18,13 @@ staging_path = ENV["TD_AGENT_STAGING_PATH"] || "staging"
 git_workspace = "git/fluentd"
 if windows?
   default_root = "C:"
-  install_dir = File.join("#{default_root}", "opt", "#{package_name}")
+  install_path = File.join("#{default_root}", "opt", "#{package_name}")
   gem_install_dir = File.join("#{staging_path}", "opt", "#{package_name}")
   upgrade_code = "76dcb0b2-81ad-4a07-bf3b-1db567594171"
 else
   default_root = "/opt"
-  install_dir = File.join("#{default_root}", "#{package_name}")
-  gem_install_dir = File.join("#{staging_path}", "#{install_dir}")
+  install_path = File.join("#{default_root}", "#{package_name}")
+  gem_install_dir = File.join("#{staging_path}", "#{install_path}")
 end
 install_message = nil
 
