@@ -1,0 +1,34 @@
+name: Linux
+on:
+  push:
+  pull_request:
+jobs:
+  build:
+    name: Build
+    strategy:
+      fail-fast: false
+      matrix:
+        label:
+          - Debian GNU/Linux buster amd64
+          - CentOS 7
+          - CentOS 8
+        include:
+          - label: Debian GNU/Linux buster amd64
+            id: debian-buster-amd64
+            rake_arguments: apt:build APT_TARGETS=debian-buster
+          - label: CentOS 7
+            id: centos-7
+            rake_arguments: yum:build YUM_TARGETS=centos-7
+          - label: CentOS 8
+            id: centos-8
+            rake_arguments: yum:build YUM_TARGETS=centos-8
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt -V install ruby
+      - name: Build with docker
+        run: |
+          rake ${{ matrix.rake_arguments }}
