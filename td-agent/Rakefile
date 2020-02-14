@@ -219,7 +219,7 @@ namespace :build do
   task :msi_config => [:td_agent_config, :sbin_scripts, :wix_config]
 
   desc "Build MSI package"
-  task :msi do
+  task :msi => [:msi_config, :gems] do
     wix_dir = ENV["WIX"]
     fail "Can't find WiX commands path" if wix_dir.empty?
 

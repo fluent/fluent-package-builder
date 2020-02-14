@@ -70,3 +70,14 @@ namespace :yum do
     end
   end
 end
+
+namespace :msi do
+  desc "Build MSI package"
+  task :build do
+    packages.each do |package|
+      cd(package) do
+        ruby("-S", "rake", "build:msi")
+      end
+    end
+  end
+end
