@@ -29,6 +29,8 @@ end
 install_message = nil
 
 CLEAN.include(staging_path)
+CLEAN.include("core_gems")
+CLEAN.include("plugin_gems")
 
 # Debian
 CLEAN.include("apt/tmp")
