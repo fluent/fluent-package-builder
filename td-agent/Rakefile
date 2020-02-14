@@ -76,9 +76,9 @@ namespace :download do
     gems_parser = GemsParser.parse(File.read(gems_path))
     digits = (gems_parser.target_files.length - 1).to_s.length
 
-    FileUtils.remove_dir(gems_parser.target_dir, true)
-    Dir.mkdir(gems_parser.target_dir)
-    Dir.chdir(gems_parser.target_dir) do
+    remove_dir(gems_parser.target_dir, true)
+    mkdir(gems_parser.target_dir)
+    cd(gems_parser.target_dir) do
       gems_parser.target_files.each_with_index do |target, index|
         name, version = target
         if version.include?("-")
@@ -91,7 +91,7 @@ namespace :download do
         sh("gem", "fetch", "#{name}", *version_option)
         `gem install --explain #{gem} --no-document`
         fail "Failed to download #{gem}!" unless $?.success?
-        FileUtils.mv("#{gem}", "#{numbered_gem}")
+        mv("#{gem}", "#{numbered_gem}")
         sleep 1
       end
     end
@@ -136,7 +136,7 @@ namespace :build do
     mode = opts.fetch(:mode, 0644)
     package_name = erb_binding.local_variable_get(:package_name)
     destination = dest.gsub('td-agent', package_name)
-    FileUtils.mkdir_p(File.dirname(destination))
+    mkdir_p(File.dirname(destination))
     File.open(destination, 'w', mode) do |f|
       f.write ERB.new(File.read(src), nil, '<>').result(erb_binding)
     end
@@ -238,7 +238,7 @@ namespace :build do
       fail "Unknown platform: #{RUBY_PLATFORM}"
     end
 
-    Dir.chdir("msi") do
+    cd("msi") do
       staging_dir = File.join("..", staging_path)
 
       # Pick up package contents
