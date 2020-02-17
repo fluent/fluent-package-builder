@@ -74,9 +74,9 @@ run mkdir -p ~/.lintian/profiles/td-agent/
 run cp "/host/tmp/debian/lintian/td-agent/${distribution}.profile" ~/.lintian/profiles/td-agent/${distribution}.profile
 # export DEB_BUILD_OPTIONS=noopt
 if [ "${DEBUG:-no}" = "yes" ]; then
-  run debuild -us -uc --lintian-opts td-agent/${distribution}
+  run debuild -us -uc --lintian-opts --profile td-agent/${distribution}
 else
-  run debuild -us -uc --lintian-opts td-agent/${distribution} > /dev/null
+  run debuild -us -uc --lintian-opts --profile td-agent/${distribution} > /dev/null
 fi
 run cd -
 
