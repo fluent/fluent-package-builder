@@ -2,7 +2,7 @@
 # XXX: Fix shebang for CentOS 7 SCL Ruby
 ENV["GEM_HOME"]="<%= install_path %>/"
 ENV["GEM_PATH"]="<%= install_path %>/"
-ENV["FLUENT_CONF"]="/etc/<%= package_name %>/<%= package_name %>.conf"
-ENV["FLUENT_PLUGIN"]="/etc/<%= package_name %>/plugin"
-ENV["FLUENT_SOCKET"]="/var/run/<%= package_name %>/<%= package_name %>.sock"
+ENV["FLUENT_CONF"]="/etc/<%= project_name %>/<%= project_name %>.conf"
+ENV["FLUENT_PLUGIN"]="/etc/<%= project_name %>/plugin"
+ENV["FLUENT_SOCKET"]="/var/run/<%= project_name %>/<%= project_name %>.sock"
 load "<%= install_path %>/bin/fluentd"

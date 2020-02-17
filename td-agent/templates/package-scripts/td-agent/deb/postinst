@@ -7,25 +7,25 @@ set -e
 prevver="$2"
 
 add_system_user() {
-    if ! getent passwd <%= package_name %> >/dev/null; then
-        adduser --group --system --home /var/lib/<%= package_name %> <%= package_name %>
+    if ! getent passwd <%= project_name %> >/dev/null; then
+        adduser --group --system --home /var/lib/<%= project_name %> <%= project_name %>
     fi
 }
 
 add_directories() {
-    mkdir -p /var/run/<%= package_name %>
-    mkdir -p /etc/<%= package_name %>
-    mkdir -p /etc/<%= package_name %>/plugin
-    mkdir -p /var/log/<%= package_name %>
+    mkdir -p /var/run/<%= project_name %>
+    mkdir -p /etc/<%= project_name %>
+    mkdir -p /etc/<%= project_name %>/plugin
+    mkdir -p /var/log/<%= project_name %>
 }
 
 fixperms() {
-    dpkg-statoverride --list /var/run/<%= package_name %> >/dev/null || \
-        dpkg-statoverride --update --add <%= package_name %> <%= package_name %> 0755 /var/run/<%= package_name %>
-    dpkg-statoverride --list /etc/<%= package_name %> >/dev/null || \
-        dpkg-statoverride --update --add <%= package_name %> <%= package_name %> 0755 /etc/<%= package_name %>
-    dpkg-statoverride --list /var/log/<%= package_name %> >/dev/null || \
-        dpkg-statoverride --update --add <%= package_name %> <%= package_name %> 0755 /var/log/<%= package_name %>
+    dpkg-statoverride --list /var/run/<%= project_name %> >/dev/null || \
+        dpkg-statoverride --update --add <%= project_name %> <%= project_name %> 0755 /var/run/<%= project_name %>
+    dpkg-statoverride --list /etc/<%= project_name %> >/dev/null || \
+        dpkg-statoverride --update --add <%= project_name %> <%= project_name %> 0755 /etc/<%= project_name %>
+    dpkg-statoverride --list /var/log/<%= project_name %> >/dev/null || \
+        dpkg-statoverride --update --add <%= project_name %> <%= project_name %> 0755 /var/log/<%= project_name %>
 }
 
 update_conffile() {
@@ -56,11 +56,11 @@ update_conffile() {
     # Before td-agent v1.1.0, fluentd has a bug of loading plugin before
     # changing to the right user. Then, these directories were created with
     # root permission. The following lines fix that problem.
-    if [ -d "/var/log/<%= package_name %>/buffer/" ]; then
-        chown -R <%= package_name %>:<%= package_name %> /var/log/<%= package_name %>/buffer/
+    if [ -d "/var/log/<%= project_name %>/buffer/" ]; then
+        chown -R <%= project_name %>:<%= project_name %> /var/log/<%= project_name %>/buffer/
     fi
-    if [ -d "/tmp/<%= package_name %>/" ]; then
-        chown -R <%= package_name %>:<%= package_name %> /tmp/<%= package_name %>/
+    if [ -d "/tmp/<%= project_name %>/" ]; then
+        chown -R <%= project_name %>:<%= project_name %> /tmp/<%= project_name %>/
     fi
 }
 
@@ -69,7 +69,7 @@ case "$1" in
         add_system_user
         add_directories
         fixperms
-        update_conffile /etc/<%= package_name %>/<%= package_name %>.conf /etc/<%= package_name %>/<%= package_name %>.conf.tmpl
+        update_conffile /etc/<%= project_name %>/<%= project_name %>.conf /etc/<%= project_name %>/<%= project_name %>.conf.tmpl
         ;;
     abort-upgrade|abort-deconfigure|abort-remove)
         :
@@ -81,26 +81,26 @@ case "$1" in
 esac
 
 
-chmod 755 /usr/sbin/<%= package_name %>
-chmod 755 /usr/sbin/<%= package_name %>-gem
-if [ -f /usr/sbin/<%= package_name %>-ui ]; then
-    chmod 755 /usr/sbin/<%= package_name %>-ui
+chmod 755 /usr/sbin/<%= project_name %>
+chmod 755 /usr/sbin/<%= project_name %>-gem
+if [ -f /usr/sbin/<%= project_name %>-ui ]; then
+    chmod 755 /usr/sbin/<%= project_name %>-ui
 fi
 if [ -f /usr/bin/td ]; then
     chmod 755 /usr/bin/td
 fi
 
-if [ ! -e "/etc/default/<%= package_name %>" ]; then
-  cat > /etc/default/<%= package_name %> <<EOF
-# This file is sourced by /bin/sh from /etc/init.d/<%= package_name %>
-# Options to pass to <%= package_name %>
+if [ ! -e "/etc/default/<%= project_name %>" ]; then
+  cat > /etc/default/<%= project_name %> <<EOF
+# This file is sourced by /bin/sh from /etc/init.d/<%= project_name %>
+# Options to pass to <%= project_name %>
 TD_AGENT_OPTIONS=""
 
 EOF
 fi
 
 if [ -d "/etc/systemd/system/" ]; then
-    chmod 644 /etc/systemd/system/<%= package_name %>.service
+    chmod 644 /etc/systemd/system/<%= project_name %>.service
 fi
 
 <% if install_message %>

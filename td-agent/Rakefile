@@ -12,18 +12,18 @@ def windows?
 end
 
 version = "3.5.1"
-package_name = "td-agent"
+project_name = "td-agent"
 
 staging_path = ENV["TD_AGENT_STAGING_PATH"] || "staging"
 git_workspace = "git/fluentd"
 if windows?
   default_root = "C:"
-  install_path = File.join("#{default_root}", "opt", "#{package_name}")
-  gem_install_dir = File.join("#{staging_path}", "opt", "#{package_name}")
+  install_path = File.join("#{default_root}", "opt", "#{project_name}")
+  gem_install_dir = File.join("#{staging_path}", "opt", "#{project_name}")
   upgrade_code = "76dcb0b2-81ad-4a07-bf3b-1db567594171"
 else
   default_root = "/opt"
-  install_path = File.join("#{default_root}", "#{package_name}")
+  install_path = File.join("#{default_root}", "#{project_name}")
   gem_install_dir = File.join("#{staging_path}", "#{install_path}")
 end
 install_message = nil
@@ -134,8 +134,8 @@ namespace :build do
 
   def generate_from_template(dest, src, erb_binding, opts={})
     mode = opts.fetch(:mode, 0644)
-    package_name = erb_binding.local_variable_get(:package_name)
-    destination = dest.gsub('td-agent', package_name)
+    project_name = erb_binding.local_variable_get(:project_name)
+    destination = dest.gsub('td-agent', project_name)
     mkdir_p(File.dirname(destination))
     File.open(destination, 'w', mode) do |f|
       f.write ERB.new(File.read(src), nil, '<>').result(erb_binding)
@@ -192,7 +192,7 @@ namespace :build do
   task :rpm_systemd do
     pkg_type = "rpm"
     root_path = "/"
-    dest =  File.join(staging_path, 'usr', 'lib', 'systemd', 'system', package_name + ".service")
+    dest =  File.join(staging_path, 'usr', 'lib', 'systemd', 'system', project_name + ".service")
     generate_systemd_unit_file(dest, binding)
   end
 
@@ -200,7 +200,7 @@ namespace :build do
   task :deb_systemd do
     pkg_type = "deb"
     root_path = "/"
-    dest = File.join(staging_path, 'etc', 'systemd', 'system', package_name + ".service")
+    dest = File.join(staging_path, 'etc', 'systemd', 'system', project_name + ".service")
     generate_systemd_unit_file(dest, binding)
   end
 
@@ -274,5 +274,5 @@ namespace :build do
   end
 end
 
-task = TDAgentPackageTask.new(package_name, version)
+task = TDAgentPackageTask.new(project_name, version)
 task.define
