@@ -10,10 +10,6 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@master
-      - name: Install dependencies
-        run: |
-          choco install ruby --version 2.5.1.2
-          choco install wixtoolset
       - name: Build
         run: |
           rake msi:build
