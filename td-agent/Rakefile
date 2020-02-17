@@ -20,7 +20,6 @@ if windows?
   default_root = "C:"
   install_path = File.join("#{default_root}", "opt", "#{project_name}")
   gem_install_dir = File.join("#{staging_path}", "opt", "#{project_name}")
-  upgrade_code = "76dcb0b2-81ad-4a07-bf3b-1db567594171"
 else
   default_root = "/opt"
   install_path = File.join("#{default_root}", "#{project_name}")
