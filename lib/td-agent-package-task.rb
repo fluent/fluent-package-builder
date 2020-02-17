@@ -29,6 +29,7 @@ class TDAgentPackageTask < PackageTask
     [
       "debian-buster",
       "debian-buster-i386",
+      "ubuntu-bionic",
     ]
   end
 
