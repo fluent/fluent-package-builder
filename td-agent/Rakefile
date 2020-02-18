@@ -11,8 +11,8 @@ require 'pathname'
 PACKAGE_NAME = "td-agent"
 PACKAGE_VERSION = "3.5.1"
 
+fluentd_source_dir = "downloads/fluentd"
 staging_dir = ENV["TD_AGENT_STAGING_DIR"] || "staging"
-git_workspace = "git/fluentd"
 gem_install_dir = File.join("#{staging_dir}", "opt", "#{PACKAGE_NAME}")
 
 CLEAN.include(staging_dir)
@@ -48,8 +48,8 @@ namespace :download do
   desc "Clone fluentd repository"
   task :fluentd do
     revision = nil
-    mkdir_p git_workspace
-    cd git_workspace do
+    mkdir_p fluentd_source_dir
+    cd fluentd_source_dir do
       sh("git", "clone", "https://github.com/fluent/fluentd.git") unless File.exists?("fluentd")
     end
   end
@@ -96,7 +96,7 @@ namespace :build do
   desc "Install fluentd"
   task :fluentd => [:"download:fluentd", :core_gems] do
     revision = nil
-    cd git_workspace do
+    cd fluentd_source_dir do
       cd "fluentd" do
         sh("git", "checkout", "#{revision}") if revision
         sh("rake", "build")
