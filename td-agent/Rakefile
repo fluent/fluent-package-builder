@@ -157,7 +157,9 @@ namespace :build do
     config.each do |key, value|
       erb_binding.local_variable_set(key, value)
     end
-    mkdir_p(File.dirname(destination))
+    directory = File.dirname(destination)
+    mkdir_p(File.dirname(destination)) unless File.exists?(directory)
+    puts "Generate #{destination}"
     File.open(destination, 'w', mode) do |f|
       f.write ERB.new(File.read(src), nil, '<>').result(erb_binding)
     end
