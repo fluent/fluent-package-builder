@@ -12,7 +12,7 @@ PACKAGE_NAME = "td-agent"
 PACKAGE_VERSION = "3.5.1"
 
 fluentd_source_dir = "downloads/fluentd"
-staging_dir = ENV["TD_AGENT_STAGING_DIR"] || "staging"
+staging_dir = ENV["TD_AGENT_STAGING_PATH"] || "staging"
 gem_install_dir = File.join("#{staging_dir}", "opt", "#{PACKAGE_NAME}")
 
 CLEAN.include(staging_dir)
