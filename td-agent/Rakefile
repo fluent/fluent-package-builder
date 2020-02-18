@@ -7,25 +7,12 @@ require 'rake/clean'
 require 'erb'
 require 'shellwords'
 
-def windows?
-  RUBY_PLATFORM =~ /mswin|mingw/
-end
-
-version = "3.5.1"
-project_name = "td-agent"
+PACKAGE_NAME = "td-agent"
+PACKAGE_VERSION = "3.5.1"
 
 staging_path = ENV["TD_AGENT_STAGING_PATH"] || "staging"
 git_workspace = "git/fluentd"
-if windows?
-  default_root = "C:"
-  install_path = File.join("#{default_root}", "opt", "#{project_name}")
-  gem_install_dir = File.join("#{staging_path}", "opt", "#{project_name}")
-else
-  default_root = "/opt"
-  install_path = File.join("#{default_root}", "#{project_name}")
-  gem_install_dir = File.join("#{staging_path}", "#{install_path}")
-end
-install_message = nil
+gem_install_dir = File.join("#{staging_path}", "opt", "#{PACKAGE_NAME}")
 
 CLEAN.include(staging_path)
 CLEAN.include("core_gems")
@@ -127,24 +114,55 @@ namespace :build do
   desc "Install all gems"
   task :gems => [:plugin_gems]
 
+  def windows?
+    RUBY_PLATFORM =~ /mswin|mingw/
+  end
+
+  def template_config(params = nil)
+    config = {
+      project_name: PACKAGE_NAME,
+      install_path: nil,
+      install_message: nil,
+      root_path: "/", # for systemd unit file
+      pkg_type: nil,
+    }
+
+    if windows?
+      # "default_root" is defined in omnibus, and it's used in
+      # omnibus-td-agent/config/projects/td-agent3.rb.
+      # To avoid confusion, we use same default_root value with omnibus.
+      default_root = "C:"
+      config[:install_path] = File.join("#{default_root}", "opt", "#{PACKAGE_NAME}")
+    else
+      default_root = "/opt"
+      config[:install_path] = File.join("#{default_root}", "#{PACKAGE_NAME}")
+    end
+
+    config.merge(params) if params
+    config
+  end
+
   def template_path(*path_parts)
     File.join('templates', *path_parts)
   end
 
-  def generate_from_template(dest, src, erb_binding, opts={})
+  def generate_from_template(dest, src, config, opts={})
     mode = opts.fetch(:mode, 0644)
-    project_name = erb_binding.local_variable_get(:project_name)
-    destination = dest.gsub('td-agent', project_name)
+    destination = dest.gsub('td-agent', config[:project_name])
+    erb_binding = binding
+    config.each do |key, value|
+      erb_binding.local_variable_set(key, value)
+    end
     mkdir_p(File.dirname(destination))
     File.open(destination, 'w', mode) do |f|
       f.write ERB.new(File.read(src), nil, '<>').result(erb_binding)
     end
   end
 
-  def generate_systemd_unit_file(dest_path, erb_binding, opts={})
+  def generate_systemd_unit_file(dest_path, config, opts={})
     template_file_path = template_path('etc', 'systemd', 'td-agent.service.erb')
     if File.exist?(template_file_path)
-      generate_from_template(dest_path, template_file_path, erb_binding, { mode: 0755 })
+      generate_from_template(dest_path, template_file_path, config, { mode: 0755 })
     end
   end
 
@@ -160,7 +178,7 @@ namespace :build do
       src = template_path('package-scripts', 'td-agent', "deb", script)
       next unless File.exist?(src)
       dest = File.join("debian", File.basename(script))
-      generate_from_template(dest, src, binding, { mode: 0755 })
+      generate_from_template(dest, src, template_config, { mode: 0755 })
     end
   end
 
@@ -174,7 +192,7 @@ namespace :build do
     conf_paths.each { |item|
       src = template_path('etc', *item)
       dest = File.join(staging_path, 'etc', *item)
-      generate_from_template(dest, src, binding)
+      generate_from_template(dest, src, template_config)
     }
   end
 
@@ -183,31 +201,29 @@ namespace :build do
     ["td-agent", "td-agent-gem"].each { |command|
       src = template_path('usr', 'sbin', "#{command}.erb")
       dest = File.join(staging_path, 'usr', 'sbin', command)
-      generate_from_template(dest, src, binding, { mode: 0755 })
+      generate_from_template(dest, src, template_config, { mode: 0755 })
     }
   end
 
   desc "Create systemd unit file for Red Hat like systems"
   task :rpm_systemd do
-    pkg_type = "rpm"
-    root_path = "/"
-    dest =  File.join(staging_path, 'usr', 'lib', 'systemd', 'system', project_name + ".service")
-    generate_systemd_unit_file(dest, binding)
+    dest =  File.join(staging_path, 'usr', 'lib', 'systemd', 'system', PACKAGE_NAME + ".service")
+    params = {pkg_type: "rpm"}
+    generate_systemd_unit_file(dest, template_config(params))
   end
 
   desc "Create systemd unit file for Debian like systems"
   task :deb_systemd do
-    pkg_type = "deb"
-    root_path = "/"
-    dest = File.join(staging_path, 'etc', 'systemd', 'system', project_name + ".service")
-    generate_systemd_unit_file(dest, binding)
+    dest = File.join(staging_path, 'etc', 'systemd', 'system', PACKAGE_NAME + ".service")
+    params = {pkg_type: "deb"}
+    generate_systemd_unit_file(dest, template_config(params))
   end
 
   desc "Create config files for WiX Toolset"
   task :wix_config do
     src  = File.join('msi', 'parameters.wxi.erb')
     dest = File.join('msi', 'parameters.wxi')
-    generate_from_template(dest, src, binding)
+    generate_from_template(dest, src, template_config)
   end
 
   desc "Create configuration files for Red Hat like systems"
@@ -277,10 +293,10 @@ namespace :build do
          "-loc", "localization-en-us.wxl", # Localization file
          "project-files.wixobj",
          "source.wixobj",
-         "-out", "td-agent-#{version}-#{arch}.msi")
+         "-out", "td-agent-#{PACKAGE_VERSION}-#{arch}.msi")
     end
   end
 end
 
-task = TDAgentPackageTask.new(project_name, version)
+task = TDAgentPackageTask.new(PACKAGE_NAME, PACKAGE_VERSION)
 task.define
