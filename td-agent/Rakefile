@@ -121,6 +121,7 @@ namespace :build do
   def template_config(params = nil)
     config = {
       project_name: PACKAGE_NAME,
+      version: PACKAGE_VERSION,
       install_path: nil,
       install_message: nil,
       root_path: "/", # for systemd unit file
