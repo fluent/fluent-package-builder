@@ -28,7 +28,6 @@ class TDAgentPackageTask < PackageTask
   def apt_targets_default
     [
       "debian-buster",
-      "debian-buster-i386",
       "ubuntu-bionic",
     ]
   end
