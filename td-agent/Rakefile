@@ -138,8 +138,11 @@ namespace :build do
       config[:install_path] = File.join("#{default_root}", "#{PACKAGE_NAME}")
     end
 
-    config.merge(params) if params
-    config
+    if params
+      config.merge(params)
+    else
+      config
+    end
   end
 
   def template_path(*path_parts)
