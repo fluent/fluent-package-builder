@@ -6,15 +6,16 @@ require 'rake/testtask'
 require 'rake/clean'
 require 'erb'
 require 'shellwords'
+require 'pathname'
 
 PACKAGE_NAME = "td-agent"
 PACKAGE_VERSION = "3.5.1"
 
-staging_path = ENV["TD_AGENT_STAGING_PATH"] || "staging"
+staging_dir = ENV["TD_AGENT_STAGING_DIR"] || "staging"
 git_workspace = "git/fluentd"
-gem_install_dir = File.join("#{staging_path}", "opt", "#{PACKAGE_NAME}")
+gem_install_dir = File.join("#{staging_dir}", "opt", "#{PACKAGE_NAME}")
 
-CLEAN.include(staging_path)
+CLEAN.include(staging_dir)
 CLEAN.include("core_gems")
 CLEAN.include("plugin_gems")
 
@@ -197,7 +198,7 @@ namespace :build do
     ]
     conf_paths.each { |item|
       src = template_path('etc', *item)
-      dest = File.join(staging_path, 'etc', *item)
+      dest = File.join(staging_dir, 'etc', *item)
       generate_from_template(dest, src, template_config)
     }
   end
@@ -206,21 +207,21 @@ namespace :build do
   task :sbin_scripts do
     ["td-agent", "td-agent-gem"].each { |command|
       src = template_path('usr', 'sbin', "#{command}.erb")
-      dest = File.join(staging_path, 'usr', 'sbin', command)
+      dest = File.join(staging_dir, 'usr', 'sbin', command)
       generate_from_template(dest, src, template_config, { mode: 0755 })
     }
   end
 
   desc "Create systemd unit file for Red Hat like systems"
   task :rpm_systemd do
-    dest =  File.join(staging_path, 'usr', 'lib', 'systemd', 'system', PACKAGE_NAME + ".service")
+    dest =  File.join(staging_dir, 'usr', 'lib', 'systemd', 'system', PACKAGE_NAME + ".service")
     params = {pkg_type: "rpm"}
     generate_systemd_unit_file(dest, template_config(params))
   end
 
   desc "Create systemd unit file for Debian like systems"
   task :deb_systemd do
-    dest = File.join(staging_path, 'etc', 'systemd', 'system', PACKAGE_NAME + ".service")
+    dest = File.join(staging_dir, 'etc', 'systemd', 'system', PACKAGE_NAME + ".service")
     params = {pkg_type: "deb"}
     generate_systemd_unit_file(dest, template_config(params))
   end
@@ -269,11 +270,15 @@ namespace :build do
     end
 
     cd("msi") do
-      staging_dir = File.join("..", staging_path)
+      if Pathname(staging_dir).relative?
+        src_dir = File.join("..", staging_dir)
+      else
+        src_dir = staging_dir
+      end
 
       # Pick up package contents
       sh(heat_path,
-         "dir", staging_dir,
+         "dir", src_dir,
          "-nologo", # Skip heat logo
          "-srd",    # Suppress harvesting the root directory as an element
          "-sreg",   # Suppress registry harvesting
@@ -286,8 +291,8 @@ namespace :build do
 
       # Build
       sh(candle_path,
-         "-nologo",                           # Skip candle logo
-         "-dProjectSourceDir=#{staging_dir}", # Define a parameter
+         "-nologo",                       # Skip candle logo
+         "-dProjectSourceDir=#{src_dir}", # Define a parameter
          "project-files.wxs",
          "source.wxs")
 
