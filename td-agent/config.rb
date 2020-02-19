@@ -1,0 +1,7 @@
+PACKAGE_NAME = "td-agent"
+PACKAGE_VERSION = "3.5.1"
+
+DOWNLOADS_DIR = "downloads"
+FLUENTD_SOURCE_DIR = File.join(DOWNLOADS_DIR, "fluentd")
+STAGING_DIR = ENV["TD_AGENT_STAGING_PATH"] || "staging"
+GEM_INSTALL_DIR = File.join("#{STAGING_DIR}", "opt", "#{PACKAGE_NAME}")

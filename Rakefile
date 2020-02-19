@@ -76,7 +76,7 @@ namespace :msi do
   task :build do
     packages.each do |package|
       cd(package) do
-        ruby("-S", "rake", "build:msi")
+        ruby("-S", "rake", "msi:build")
       end
     end
   end

@@ -1,21 +1,13 @@
 #!/usr/bin/env rake
+
 require_relative '../lib/td-agent-package-task'
 require_relative '../lib/gems_parser'
-require 'fileutils'
+require_relative 'config.rb'
 require 'rake/testtask'
 require 'rake/clean'
 require 'erb'
 require 'shellwords'
 require 'pathname'
-
-PACKAGE_NAME = "td-agent"
-PACKAGE_VERSION = "3.5.1"
-
-DOWNLOADS_DIR = "downloads"
-FLUENTD_SOURCE_DIR = File.join(DOWNLOADS_DIR, "fluentd")
-STAGING_DIR = ENV["TD_AGENT_STAGING_PATH"] || "staging"
-GEM_INSTALL_DIR = File.join("#{STAGING_DIR}", "opt", "#{PACKAGE_NAME}")
-
 
 CLEAN.include(STAGING_DIR)
 CLEAN.include(DOWNLOADS_DIR)
@@ -40,25 +32,33 @@ CLEAN.include("msi/*.wixobj")
 CLEAN.include("msi/*.wixpdb")
 CLOBBER.include("msi/*.msi")
 
-namespace :download do
-  desc "Download core_gems"
-  task :core_gems do
-    download_gems("core_gems.rb")
-  end
+class DownloadTask
+  include Rake::DSL
 
-  desc "Clone fluentd repository"
-  task :fluentd do
-    revision = nil
-    mkdir_p FLUENTD_SOURCE_DIR
-    cd FLUENTD_SOURCE_DIR do
-      sh("git", "clone", "https://github.com/fluent/fluentd.git") unless File.exists?("fluentd")
+  def define
+    namespace :download do
+      desc "Download core_gems"
+      task :core_gems do
+        download_gems("core_gems.rb")
+      end
+
+      desc "Download plugin_gems"
+      task :plugin_gems do
+        download_gems("plugin_gems.rb")
+      end
+
+      desc "Clone fluentd repository"
+      task :fluentd do
+        revision = nil
+        mkdir_p FLUENTD_SOURCE_DIR
+        cd FLUENTD_SOURCE_DIR do
+          sh("git", "clone", "https://github.com/fluent/fluentd.git") unless File.exists?("fluentd")
+        end
+      end
     end
   end
 
-  desc "Download plugin_gems"
-  task :plugin_gems do
-    download_gems("plugin_gems.rb")
-  end
+  private
 
   def download_gems(gems_path)
     gems_parser = GemsParser.parse(File.read(gems_path))
@@ -87,35 +87,112 @@ namespace :download do
   end
 end
 
-namespace :build do
-  desc "Install core_gems"
-  task :core_gems => :"download:core_gems" do
-    Dir.glob(File.expand_path(File.join(DOWNLOADS_DIR, 'core_gems', '*.gem'))).sort.each { |gem_path|
-      sh("gem", "install", "--no-document", "#{gem_path}", "--install-dir", "#{GEM_INSTALL_DIR}")
-    }
-  end
+class BuildTask
+  include Rake::DSL
 
-  desc "Install fluentd"
-  task :fluentd => [:"download:fluentd", :core_gems] do
-    revision = nil
-    cd FLUENTD_SOURCE_DIR do
-      cd "fluentd" do
-        sh("git", "checkout", "#{revision}") if revision
-        sh("rake", "build")
-        sh("gem", "install", "--no-document", "pkg/fluentd-*.gem", "--install-dir", "#{GEM_INSTALL_DIR}")
+  def define
+    namespace :build do
+      desc "Install core_gems"
+      task :core_gems => :"download:core_gems" do
+        Dir.glob(File.expand_path(File.join(DOWNLOADS_DIR, 'core_gems', '*.gem'))).sort.each { |gem_path|
+          sh("gem", "install", "--no-document", "#{gem_path}", "--install-dir", "#{GEM_INSTALL_DIR}")
+        }
       end
+
+      desc "Install fluentd"
+      task :fluentd => [:"download:fluentd", :core_gems] do
+        revision = nil
+        cd FLUENTD_SOURCE_DIR do
+          cd "fluentd" do
+            sh("git", "checkout", "#{revision}") if revision
+            sh("rake", "build")
+            sh("gem", "install", "--no-document", "pkg/fluentd-*.gem", "--install-dir", "#{GEM_INSTALL_DIR}")
+          end
+        end
+      end
+
+      desc "Install plugin_gems"
+      task :plugin_gems => [:"download:plugin_gems", :fluentd] do
+        Dir.glob(File.expand_path(File.join(__dir__, 'plugin_gems', '*.gem'))).sort.each { |gem_path|
+          sh("gem", "install", "--no-document", "#{gem_path}", "--install-dir", "#{GEM_INSTALL_DIR}")
+        }
+      end
+
+      desc "Install all gems"
+      task :gems => [:plugin_gems]
+
+      debian_pkg_scripts = ["preinst", "postinst", "prerm", "postrm"]
+      debian_pkg_scripts.each do |script|
+        CLEAN.include(File.join("debian", script))
+      end
+
+      desc "Create debian package script files from template"
+      task :deb_scripts do
+        # copy pre/post scripts into "debian" directory
+        debian_pkg_scripts.each do |script|
+          src = template_path('package-scripts', 'td-agent', "deb", script)
+          next unless File.exist?(src)
+          dest = File.join("debian", File.basename(script))
+          generate_from_template(dest, src, template_config, { mode: 0755 })
+        end
+      end
+
+      desc "Create td-agent configuration files from template"
+      task :td_agent_config do
+        conf_paths = [
+          ['td-agent', 'td-agent.conf'],
+          ['td-agent', 'td-agent.conf.tmpl'],
+          ['logrotate.d', 'td-agent.logrotate']
+        ]
+        conf_paths.each { |item|
+          src = template_path('etc', *item)
+          dest = File.join(STAGING_DIR, 'etc', *item)
+          generate_from_template(dest, src, template_config)
+        }
+      end
+
+      desc "Create sbin script files from template"
+      task :sbin_scripts do
+        ["td-agent", "td-agent-gem"].each { |command|
+          src = template_path('usr', 'sbin', "#{command}.erb")
+          dest = File.join(STAGING_DIR, 'usr', 'sbin', command)
+          generate_from_template(dest, src, template_config, { mode: 0755 })
+        }
+      end
+
+      desc "Create systemd unit file for Red Hat like systems"
+      task :rpm_systemd do
+        dest =  File.join(STAGING_DIR, 'usr', 'lib', 'systemd', 'system', PACKAGE_NAME + ".service")
+        params = {pkg_type: "rpm"}
+        generate_systemd_unit_file(dest, template_config(params))
+      end
+
+      desc "Create systemd unit file for Debian like systems"
+      task :deb_systemd do
+        dest = File.join(STAGING_DIR, 'etc', 'systemd', 'system', PACKAGE_NAME + ".service")
+        params = {pkg_type: "deb"}
+        generate_systemd_unit_file(dest, template_config(params))
+      end
+
+      desc "Create config files for WiX Toolset"
+      task :wix_config do
+        src  = File.join('msi', 'parameters.wxi.erb')
+        dest = File.join('msi', 'parameters.wxi')
+        generate_from_template(dest, src, template_config)
+      end
+
+      desc "Create configuration files for Red Hat like systems"
+      task :rpm_config => [:td_agent_config, :sbin_scripts, :rpm_systemd]
+
+      desc "Create configuration files for Debian like systems"
+      task :deb_config => [:td_agent_config, :sbin_scripts, :deb_systemd, :deb_scripts]
+
+      desc "Create configuration files for Windows"
+      task :msi_config => [:td_agent_config, :sbin_scripts, :wix_config]
     end
   end
 
-  desc "Install plugin_gems"
-  task :plugin_gems => [:"download:plugin_gems", :fluentd] do
-    Dir.glob(File.expand_path(File.join(__dir__, 'plugin_gems', '*.gem'))).sort.each { |gem_path|
-      sh("gem", "install", "--no-document", "#{gem_path}", "--install-dir", "#{GEM_INSTALL_DIR}")
-    }
-  end
-
-  desc "Install all gems"
-  task :gems => [:plugin_gems]
+  private
 
   def windows?
     RUBY_PLATFORM =~ /mswin|mingw/
@@ -174,75 +251,73 @@ namespace :build do
       generate_from_template(dest_path, template_file_path, config, { mode: 0755 })
     end
   end
+end
 
-  debian_pkg_scripts = ["preinst", "postinst", "prerm", "postrm"]
-  debian_pkg_scripts.each do |script|
-    CLEAN.include(File.join("debian", script))
-  end
+class MSIPackageTask
+  include Rake::DSL
 
-  desc "Create debian package script files from template"
-  task :deb_scripts do
-    # copy pre/post scripts into "debian" directory
-    debian_pkg_scripts.each do |script|
-      src = template_path('package-scripts', 'td-agent', "deb", script)
-      next unless File.exist?(src)
-      dest = File.join("debian", File.basename(script))
-      generate_from_template(dest, src, template_config, { mode: 0755 })
+  def define
+    namespace :msi do
+      desc "Build MSI package"
+      task :build => [:"build:msi_config", :"build:gems"] do
+        wix_dir = ENV["WIX"]
+        fail "Can't find WiX commands path" if wix_dir.empty?
+
+        wix_bin_dir = windows_path(wix_dir, "bin")
+        heat_path = windows_path(wix_bin_dir, "heat")
+        candle_path = windows_path(wix_bin_dir, "candle")
+        light_path = windows_path(wix_bin_dir, "light")
+
+        if RUBY_PLATFORM =~ /x64/
+          arch = "x64"
+        elsif RUBY_PLATFORM =~ /i386/
+          arch = "x86"
+        else
+          fail "Unknown platform: #{RUBY_PLATFORM}"
+        end
+
+        cd("msi") do
+          if Pathname(STAGING_DIR).relative?
+            src_dir = File.join("..", STAGING_DIR)
+          else
+            src_dir = STAGING_DIR
+          end
+
+          # Pick up package contents
+          sh(heat_path,
+             "dir", src_dir,
+             "-nologo", # Skip heat logo
+             "-srd",    # Suppress harvesting the root directory as an element
+             "-sreg",   # Suppress registry harvesting
+             "-gg",                          # Generate guides
+             "-cg", "ProjectDir",            # Component Group Name
+             "-dr", "PROJECTLOCATION",       # Root directory reference
+             "-var", "var.ProjectSourceDir", # Substitue File/@Source="SourceDir"
+             "-t",   "exclude-files.xslt",   # XSLT for exclude files
+             "-out", 'project-files.wxs')
+
+          # Build
+          sh(candle_path,
+             "-nologo",                       # Skip candle logo
+             "-dProjectSourceDir=#{src_dir}", # Define a parameter
+             "project-files.wxs",
+             "source.wxs")
+
+          # Link
+          sh(light_path,
+             "-nologo",                        # Skip light logo
+             "-ext", "WixUIExtension",         # Extension assembly
+             "-cultures:en-us",                # Localization
+             "-loc", "localization-en-us.wxl", # Localization file
+             "project-files.wixobj",
+             "source.wixobj",
+             "-out", "td-agent-#{PACKAGE_VERSION}-#{arch}.msi")
+        end
+      end
     end
   end
 
-  desc "Create td-agent configuration files from template"
-  task :td_agent_config do
-    conf_paths = [
-      ['td-agent', 'td-agent.conf'],
-      ['td-agent', 'td-agent.conf.tmpl'],
-      ['logrotate.d', 'td-agent.logrotate']
-    ]
-    conf_paths.each { |item|
-      src = template_path('etc', *item)
-      dest = File.join(STAGING_DIR, 'etc', *item)
-      generate_from_template(dest, src, template_config)
-    }
-  end
-
-  desc "Create sbin script files from template"
-  task :sbin_scripts do
-    ["td-agent", "td-agent-gem"].each { |command|
-      src = template_path('usr', 'sbin', "#{command}.erb")
-      dest = File.join(STAGING_DIR, 'usr', 'sbin', command)
-      generate_from_template(dest, src, template_config, { mode: 0755 })
-    }
-  end
-
-  desc "Create systemd unit file for Red Hat like systems"
-  task :rpm_systemd do
-    dest =  File.join(STAGING_DIR, 'usr', 'lib', 'systemd', 'system', PACKAGE_NAME + ".service")
-    params = {pkg_type: "rpm"}
-    generate_systemd_unit_file(dest, template_config(params))
-  end
-
-  desc "Create systemd unit file for Debian like systems"
-  task :deb_systemd do
-    dest = File.join(STAGING_DIR, 'etc', 'systemd', 'system', PACKAGE_NAME + ".service")
-    params = {pkg_type: "deb"}
-    generate_systemd_unit_file(dest, template_config(params))
-  end
-
-  desc "Create config files for WiX Toolset"
-  task :wix_config do
-    src  = File.join('msi', 'parameters.wxi.erb')
-    dest = File.join('msi', 'parameters.wxi')
-    generate_from_template(dest, src, template_config)
-  end
-
-  desc "Create configuration files for Red Hat like systems"
-  task :rpm_config => [:td_agent_config, :sbin_scripts, :rpm_systemd]
-
-  desc "Create configuration files for Debian like systems"
-  task :deb_config => [:td_agent_config, :sbin_scripts, :deb_systemd, :deb_scripts]
-
-  desc "Create configuration files for Windows"
-  task :msi_config => [:td_agent_config, :sbin_scripts, :wix_config]
+  private
 
   def windows_path(*pieces)
     path = File.join(*pieces)
@@ -252,64 +327,16 @@ namespace :build do
       path
     end
   end
-
-  desc "Build MSI package"
-  task :msi => [:msi_config, :gems] do
-    wix_dir = ENV["WIX"]
-    fail "Can't find WiX commands path" if wix_dir.empty?
-
-    wix_bin_dir = windows_path(wix_dir, "bin")
-    heat_path = windows_path(wix_bin_dir, "heat")
-    candle_path = windows_path(wix_bin_dir, "candle")
-    light_path = windows_path(wix_bin_dir, "light")
-
-    if RUBY_PLATFORM =~ /x64/
-      arch = "x64"
-    elsif RUBY_PLATFORM =~ /i386/
-      arch = "x86"
-    else
-      fail "Unknown platform: #{RUBY_PLATFORM}"
-    end
-
-    cd("msi") do
-      if Pathname(STAGING_DIR).relative?
-        src_dir = File.join("..", STAGING_DIR)
-      else
-        src_dir = STAGING_DIR
-      end
-
-      # Pick up package contents
-      sh(heat_path,
-         "dir", src_dir,
-         "-nologo", # Skip heat logo
-         "-srd",    # Suppress harvesting the root directory as an element
-         "-sreg",   # Suppress registry harvesting
-         "-gg",                          # Generate guides
-         "-cg", "ProjectDir",            # Component Group Name
-         "-dr", "PROJECTLOCATION",       # Root directory reference
-         "-var", "var.ProjectSourceDir", # Substitue File/@Source="SourceDir"
-         "-t",   "exclude-files.xslt",   # XSLT for exclude files
-         "-out", 'project-files.wxs')
-
-      # Build
-      sh(candle_path,
-         "-nologo",                       # Skip candle logo
-         "-dProjectSourceDir=#{src_dir}", # Define a parameter
-         "project-files.wxs",
-         "source.wxs")
-
-      # Link
-      sh(light_path,
-         "-nologo",                        # Skip light logo
-         "-ext", "WixUIExtension",         # Extension assembly
-         "-cultures:en-us",                # Localization
-         "-loc", "localization-en-us.wxl", # Localization file
-         "project-files.wixobj",
-         "source.wixobj",
-         "-out", "td-agent-#{PACKAGE_VERSION}-#{arch}.msi")
-    end
-  end
 end
 
-task = TDAgentPackageTask.new(PACKAGE_NAME, PACKAGE_VERSION)
-task.define
+download_task = DownloadTask.new
+download_task.define
+
+build_task = BuildTask.new
+build_task.define
+
+msi_package_task = MSIPackageTask.new
+msi_package_task.define
+
+linux_package_task = TDAgentPackageTask.new(PACKAGE_NAME, PACKAGE_VERSION)
+linux_package_task.define
