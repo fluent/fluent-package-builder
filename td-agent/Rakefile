@@ -261,7 +261,7 @@ class MSIPackageTask
       desc "Build MSI package"
       task :build => [:"build:msi_config", :"build:gems"] do
         wix_dir = ENV["WIX"]
-        fail "Can't find WiX commands path" if wix_dir.empty?
+        fail "Can't find WiX commands path" if wix_dir.nil? || wix_dir.empty?
 
         wix_bin_dir = windows_path(wix_dir, "bin")
         heat_path = windows_path(wix_bin_dir, "heat")
