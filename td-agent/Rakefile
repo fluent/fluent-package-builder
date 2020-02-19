@@ -11,13 +11,14 @@ require 'pathname'
 PACKAGE_NAME = "td-agent"
 PACKAGE_VERSION = "3.5.1"
 
-fluentd_source_dir = "downloads/fluentd"
-staging_dir = ENV["TD_AGENT_STAGING_PATH"] || "staging"
-gem_install_dir = File.join("#{staging_dir}", "opt", "#{PACKAGE_NAME}")
+DOWNLOADS_DIR = "downloads"
+FLUENTD_SOURCE_DIR = File.join(DOWNLOADS_DIR, "fluentd")
+STAGING_DIR = ENV["TD_AGENT_STAGING_PATH"] || "staging"
+GEM_INSTALL_DIR = File.join("#{STAGING_DIR}", "opt", "#{PACKAGE_NAME}")
 
-CLEAN.include(staging_dir)
-CLEAN.include("core_gems")
-CLEAN.include("plugin_gems")
+
+CLEAN.include(STAGING_DIR)
+CLEAN.include(DOWNLOADS_DIR)
 
 # Debian
 CLEAN.include("apt/tmp")
@@ -48,8 +49,8 @@ namespace :download do
   desc "Clone fluentd repository"
   task :fluentd do
     revision = nil
-    mkdir_p fluentd_source_dir
-    cd fluentd_source_dir do
+    mkdir_p FLUENTD_SOURCE_DIR
+    cd FLUENTD_SOURCE_DIR do
       sh("git", "clone", "https://github.com/fluent/fluentd.git") unless File.exists?("fluentd")
     end
   end
@@ -63,9 +64,10 @@ namespace :download do
     gems_parser = GemsParser.parse(File.read(gems_path))
     digits = (gems_parser.target_files.length - 1).to_s.length
 
-    remove_dir(gems_parser.target_dir, true)
-    mkdir(gems_parser.target_dir)
-    cd(gems_parser.target_dir) do
+    target_dir = File.join(DOWNLOADS_DIR, gems_parser.target_dir)
+    remove_dir(target_dir, true)
+    mkdir_p(target_dir)
+    cd(target_dir) do
       gems_parser.target_files.each_with_index do |target, index|
         name, version = target
         if version.include?("-")
@@ -88,19 +90,19 @@ end
 namespace :build do
   desc "Install core_gems"
   task :core_gems => :"download:core_gems" do
-    Dir.glob(File.expand_path(File.join(__dir__, 'core_gems', '*.gem'))).sort.each { |gem_path|
-      sh("gem", "install", "--no-document", "#{gem_path}", "--install-dir", "#{gem_install_dir}")
+    Dir.glob(File.expand_path(File.join(DOWNLOADS_DIR, 'core_gems', '*.gem'))).sort.each { |gem_path|
+      sh("gem", "install", "--no-document", "#{gem_path}", "--install-dir", "#{GEM_INSTALL_DIR}")
     }
   end
 
   desc "Install fluentd"
   task :fluentd => [:"download:fluentd", :core_gems] do
     revision = nil
-    cd fluentd_source_dir do
+    cd FLUENTD_SOURCE_DIR do
       cd "fluentd" do
         sh("git", "checkout", "#{revision}") if revision
         sh("rake", "build")
-        sh("gem", "install", "--no-document", "pkg/fluentd-*.gem", "--install-dir", "#{gem_install_dir}")
+        sh("gem", "install", "--no-document", "pkg/fluentd-*.gem", "--install-dir", "#{GEM_INSTALL_DIR}")
       end
     end
   end
@@ -108,7 +110,7 @@ namespace :build do
   desc "Install plugin_gems"
   task :plugin_gems => [:"download:plugin_gems", :fluentd] do
     Dir.glob(File.expand_path(File.join(__dir__, 'plugin_gems', '*.gem'))).sort.each { |gem_path|
-      sh("gem", "install", "--no-document", "#{gem_path}", "--install-dir", "#{gem_install_dir}")
+      sh("gem", "install", "--no-document", "#{gem_path}", "--install-dir", "#{GEM_INSTALL_DIR}")
     }
   end
 
@@ -198,7 +200,7 @@ namespace :build do
     ]
     conf_paths.each { |item|
       src = template_path('etc', *item)
-      dest = File.join(staging_dir, 'etc', *item)
+      dest = File.join(STAGING_DIR, 'etc', *item)
       generate_from_template(dest, src, template_config)
     }
   end
@@ -207,21 +209,21 @@ namespace :build do
   task :sbin_scripts do
     ["td-agent", "td-agent-gem"].each { |command|
       src = template_path('usr', 'sbin', "#{command}.erb")
-      dest = File.join(staging_dir, 'usr', 'sbin', command)
+      dest = File.join(STAGING_DIR, 'usr', 'sbin', command)
       generate_from_template(dest, src, template_config, { mode: 0755 })
     }
   end
 
   desc "Create systemd unit file for Red Hat like systems"
   task :rpm_systemd do
-    dest =  File.join(staging_dir, 'usr', 'lib', 'systemd', 'system', PACKAGE_NAME + ".service")
+    dest =  File.join(STAGING_DIR, 'usr', 'lib', 'systemd', 'system', PACKAGE_NAME + ".service")
     params = {pkg_type: "rpm"}
     generate_systemd_unit_file(dest, template_config(params))
   end
 
   desc "Create systemd unit file for Debian like systems"
   task :deb_systemd do
-    dest = File.join(staging_dir, 'etc', 'systemd', 'system', PACKAGE_NAME + ".service")
+    dest = File.join(STAGING_DIR, 'etc', 'systemd', 'system', PACKAGE_NAME + ".service")
     params = {pkg_type: "deb"}
     generate_systemd_unit_file(dest, template_config(params))
   end
@@ -270,10 +272,10 @@ namespace :build do
     end
 
     cd("msi") do
-      if Pathname(staging_dir).relative?
-        src_dir = File.join("..", staging_dir)
+      if Pathname(STAGING_DIR).relative?
+        src_dir = File.join("..", STAGING_DIR)
       else
-        src_dir = staging_dir
+        src_dir = STAGING_DIR
       end
 
       # Pick up package contents

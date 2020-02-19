@@ -1,8 +1,7 @@
 /.bundle/
 /vendor/
 /td-agent/staging/
-/td-agent/core_gems/
-/td-agent/plugin_gems/
+/td-agent/downloads/
 /td-agent/yum/build.sh
 /td-agent/yum/repositories/
 /td-agent/yum/tmp/
