@@ -100,8 +100,23 @@ class BuildTask
     namespace :build do
       desc "Install core_gems"
       task :core_gems => :"download:core_gems" do
-        Dir.glob(File.expand_path(File.join(DOWNLOADS_DIR, 'core_gems', '*.gem'))).sort.each { |gem_path|
-          sh("gem", "install", "--no-document", "#{gem_path}", "--install-dir", "#{GEM_INSTALL_DIR}")
+        pattern = File.join(DOWNLOADS_DIR, 'core_gems', '*.gem')
+        Dir.glob(File.expand_path(pattern)).sort.each { |gem_path|
+          sh("gem", "install",
+             "--no-document",
+             "--install-dir", "#{GEM_INSTALL_DIR}",
+             "#{gem_path}")
+        }
+      end
+
+      desc "Install plugin_gems"
+      task :plugin_gems => [:"download:plugin_gems", :fluentd] do
+        pattern = File.join(__dir__, 'plugin_gems', '*.gem')
+        Dir.glob(File.expand_path(pattern)).sort.each { |gem_path|
+          sh("gem", "install",
+             "--no-document",
+             "--install-dir", "#{GEM_INSTALL_DIR}",
+             "#{gem_path}")
         }
       end
 
@@ -111,15 +126,11 @@ class BuildTask
         cd(File.join(DOWNLOADS_DIR, "fluentd")) do
           sh("git", "checkout", "-b", "#{PACKAGE_NAME}-#{PACKAGE_VERSION}", "#{revision}") if revision
           sh("rake", "build")
-          sh("gem", "install", "--no-document", "pkg/fluentd-*.gem", "--install-dir", "#{GEM_INSTALL_DIR}")
+          sh("gem", "install",
+             "--no-document",
+             "--install-dir", "#{GEM_INSTALL_DIR}",
+             "pkg/fluentd-*.gem")
         end
-      end
-
-      desc "Install plugin_gems"
-      task :plugin_gems => [:"download:plugin_gems", :fluentd] do
-        Dir.glob(File.expand_path(File.join(__dir__, 'plugin_gems', '*.gem'))).sort.each { |gem_path|
-          sh("gem", "install", "--no-document", "#{gem_path}", "--install-dir", "#{GEM_INSTALL_DIR}")
-        }
       end
 
       desc "Install all gems"
