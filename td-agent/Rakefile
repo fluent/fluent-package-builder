@@ -50,8 +50,8 @@ class DownloadTask
       desc "Clone fluentd repository"
       task :fluentd do
         revision = nil
-        mkdir_p FLUENTD_SOURCE_DIR
-        cd FLUENTD_SOURCE_DIR do
+        mkdir_p DOWNLOADS_DIR unless File.exists?(DOWNLOADS_DIR)
+        cd DOWNLOADS_DIR do
           sh("git", "clone", "https://github.com/fluent/fluentd.git") unless File.exists?("fluentd")
         end
       end
@@ -66,7 +66,7 @@ class DownloadTask
 
     target_dir = File.join(DOWNLOADS_DIR, gems_parser.target_dir)
     remove_dir(target_dir, true)
-    mkdir_p(target_dir)
+    mkdir_p(target_dir) unless File.exists?(target_dir)
     cd(target_dir) do
       gems_parser.target_files.each_with_index do |target, index|
         name, version = target
@@ -104,12 +104,10 @@ class BuildTask
       desc "Install fluentd"
       task :fluentd => [:"download:fluentd", :core_gems] do
         revision = nil
-        cd FLUENTD_SOURCE_DIR do
-          cd "fluentd" do
-            sh("git", "checkout", "#{revision}") if revision
-            sh("rake", "build")
-            sh("gem", "install", "--no-document", "pkg/fluentd-*.gem", "--install-dir", "#{GEM_INSTALL_DIR}")
-          end
+        cd (File.join(DOWNLOADS_DIR, "fluentd")) do
+          sh("git", "checkout", "#{revision}") if revision
+          sh("rake", "build")
+          sh("gem", "install", "--no-document", "pkg/fluentd-*.gem", "--install-dir", "#{GEM_INSTALL_DIR}")
         end
       end
 
@@ -240,7 +238,7 @@ class BuildTask
       erb_binding.local_variable_set(key, value)
     end
     directory = File.dirname(destination)
-    mkdir_p(File.dirname(destination)) unless File.exists?(directory)
+    mkdir_p(directory) unless File.exists?(directory)
     puts "Generate #{destination}"
     File.open(destination, 'w', mode) do |f|
       f.write ERB.new(File.read(src), nil, '<>').result(erb_binding)
