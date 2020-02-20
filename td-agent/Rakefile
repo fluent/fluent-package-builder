@@ -90,6 +90,8 @@ end
 class BuildTask
   include Rake::DSL
 
+  GEM_INSTALL_DIR = File.join("#{STAGING_DIR}", "opt", "#{PACKAGE_NAME}")
+
   def define
     namespace :build do
       desc "Install core_gems"
