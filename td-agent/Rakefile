@@ -1,6 +1,6 @@
 #!/usr/bin/env rake
 
-require_relative '../lib/td-agent-package-task'
+require_relative '../lib/package-task'
 require_relative '../lib/gems_parser'
 require_relative 'config.rb'
 require 'rake/testtask'
@@ -268,6 +268,55 @@ class BuildTask
   end
 end
 
+class LinuxPackageTask < PackageTask
+  def initialize(package_name, version)
+    super(package_name, version, detect_release_time)
+    @archive_tar_name = "#{package_name}-#{version}.tar"
+    @archive_name = "#{@archive_tar_name}.gz"
+    CLEAN.include(@archive_name)
+  end
+
+  private
+
+  def define_archive_task
+    file @archive_name do
+      build_archive
+    end
+  end
+
+  def build_archive
+    cd ".." do
+      sh("git", "archive", "HEAD",
+         "--prefix", "#{@archive_base_name}/",
+         "--output", @full_archive_name)
+    end
+  end
+
+  def apt_targets_default
+    [
+      "debian-buster",
+      "ubuntu-bionic",
+    ]
+  end
+
+  def yum_targets_default
+    [
+      "centos-7",
+      "centos-8",
+    ]
+  end
+
+  private
+  def detect_release_time
+    release_time_env = ENV["TD_AGENT_RELEASE_TIME"]
+    if release_time_env
+      Time.parse(release_time_env).utc
+    else
+      Time.now.utc
+    end
+  end
+end
+
 class MSIPackageTask
   include Rake::DSL
 
@@ -350,8 +399,8 @@ download_task.define
 build_task = BuildTask.new
 build_task.define
 
+linux_package_task = LinuxPackageTask.new(PACKAGE_NAME, PACKAGE_VERSION)
+linux_package_task.define
+
 msi_package_task = MSIPackageTask.new
 msi_package_task.define
-
-linux_package_task = TDAgentPackageTask.new(PACKAGE_NAME, PACKAGE_VERSION)
-linux_package_task.define
