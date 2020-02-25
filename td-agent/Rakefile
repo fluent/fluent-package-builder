@@ -324,22 +324,6 @@ class MSIPackageTask
     namespace :msi do
       desc "Build MSI package"
       task :build => [:"build:msi_config", :"build:gems"] do
-        wix_dir = ENV["WIX"]
-        fail "Can't find WiX commands path" if wix_dir.nil? || wix_dir.empty?
-
-        wix_bin_dir = windows_path(wix_dir, "bin")
-        heat_path = windows_path(wix_bin_dir, "heat")
-        candle_path = windows_path(wix_bin_dir, "candle")
-        light_path = windows_path(wix_bin_dir, "light")
-
-        if RUBY_PLATFORM =~ /x64/
-          arch = "x64"
-        elsif RUBY_PLATFORM =~ /i386/
-          arch = "x86"
-        else
-          fail "Unknown platform: #{RUBY_PLATFORM}"
-        end
-
         cd("msi") do
           if Pathname(STAGING_DIR).relative?
             src_dir = File.join("..", STAGING_DIR)
@@ -389,6 +373,38 @@ class MSIPackageTask
       path.gsub(File::SEPARATOR, File::ALT_SEPARATOR)
     else
       path
+    end
+  end
+
+  def wix_dir
+    dir = ENV["WIX"]
+    fail "Can't find WiX commands path" if dir.nil? || dir.empty?
+    dir
+  end
+
+  def wix_bin_dir
+    windows_path(wix_dir, "bin")
+  end
+
+  def heat_path
+    windows_path(wix_bin_dir, "heat")
+  end
+
+  def candle_path
+    windows_path(wix_bin_dir, "candle")
+  end
+
+  def light_path
+    windows_path(wix_bin_dir, "light")
+  end
+
+  def arch
+    if RUBY_PLATFORM =~ /x64/
+      "x64"
+    elsif RUBY_PLATFORM =~ /i386/
+      "x86"
+    else
+      fail "Unknown platform: #{RUBY_PLATFORM}"
     end
   end
 end
