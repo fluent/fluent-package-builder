@@ -17,6 +17,15 @@
   * [Docker Desktop for Windows](https://hub.docker.com/editions/community/docker-ce-desktop-windows) (optional)
     If you use Docker, you don't need to install other prerequisites except Ruby.
 
+If you don't use Docker, you need to set up build environment manually by the following commands:
+
+```
+% ridk install 3
+% gem install bundler
+```
+
+See also [td-agent/msi/Dockerfile].
+
 ## How to build .rpm package
 
 ```console
