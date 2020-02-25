@@ -24,7 +24,7 @@ If you don't use Docker, you need to set up build environment manually by the fo
 % gem install bundler
 ```
 
-See also [td-agent/msi/Dockerfile].
+See also [Dockerfile for Windows](td-agent/msi/Dockerfile).
 
 ## How to build .rpm package
 
