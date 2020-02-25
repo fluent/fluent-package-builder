@@ -320,6 +320,10 @@ end
 class MSIPackageTask
   include Rake::DSL
 
+  def initialize
+    @package = PACKAGE_NAME
+  end
+
   def define
     namespace :msi do
       desc "Build MSI package"
@@ -362,7 +366,38 @@ class MSIPackageTask
              "-out", "td-agent-#{PACKAGE_VERSION}-#{arch}.msi")
         end
       end
+
+      # Experimental support to build MSI by Docker Desktop for Windows
+      task :docker do
+        run_docker("windows", arch)
+      end
     end
+  end
+
+  # TODO: Unify with PackageTask
+  def run_docker(os, architecture=nil)
+    top_dir = File.expand_path('../.')
+    id = os
+    id = "#{id}-#{architecture}" if architecture
+    docker_tag = "#{@package}-#{id}"
+    build_command_line = [
+      "docker",
+      "build",
+      "--tag", docker_tag,
+    ]
+    run_command_line = [
+      "docker",
+      "run",
+      "--rm",
+      "--tty",
+      "--volume", "#{top_dir}:c:/td-agent-builder:rw",
+    ]
+    docker_context = "msi"
+    build_command_line << docker_context
+    run_command_line.concat([docker_tag, 'c:\td-agent-builder\td-agent\msi\build.bat'])
+
+    sh(*build_command_line)
+    sh(*run_command_line)
   end
 
   private
