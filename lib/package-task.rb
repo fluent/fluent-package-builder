@@ -197,7 +197,7 @@ class PackageTask
     end
 
     env_sh = "#{apt_dir}/env.sh"
-    File.open(env_sh, "w") do |file|
+    File.open(env_sh, "wb") do |file|
       file.puts(<<-ENV)
 PACKAGE=#{@package}
 VERSION=#{@deb_upstream_version}
@@ -314,7 +314,7 @@ VERSION=#{@deb_upstream_version}
        File.join(tmp_dir, rpm_archive_name))
 
     env_sh = "#{yum_dir}/env.sh"
-    File.open(env_sh, "w") do |file|
+    File.open(env_sh, "wb") do |file|
       file.puts(<<-ENV)
 SOURCE_ARCHIVE=#{rpm_archive_name}
 PACKAGE=#{@rpm_package}
@@ -328,7 +328,7 @@ RELEASE=#{@rpm_release}
     spec_data = spec_in_data.gsub(/@(.+?)@/) do |matched|
       yum_expand_variable($1) || matched
     end
-    File.open(spec, "w") do |spec_file|
+    File.open(spec, "wb") do |spec_file|
       spec_file.print(spec_data)
     end
 
@@ -416,7 +416,7 @@ RELEASE=#{@rpm_release}
       content = ""
     end
     content = yield(content)
-    File.open(path, "w") do |file|
+    File.open(path, "wb") do |file|
       file.puts(content)
     end
   end
