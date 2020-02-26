@@ -5,6 +5,10 @@ class GemsParser
     gp
   end
 
+  def self.windows?
+    /mswin|mingw/ =~ RUBY_PLATFORM
+  end
+
   def initialize
     @target_dir = nil
     @target_files = []
@@ -22,10 +26,6 @@ class GemsParser
 
   def download(name, ver)
     @target_files << [name, ver]
-  end
-
-  def windows?
-    /mswin|mingw/ =~ RUBY_PLATFORM
   end
 
   def td_agent_2?

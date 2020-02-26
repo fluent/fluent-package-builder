@@ -210,7 +210,7 @@ class BuildTask
   private
 
   def windows?
-    RUBY_PLATFORM =~ /mswin|mingw/
+    GemsParser.windows?
   end
 
   def template_config(params = nil)
