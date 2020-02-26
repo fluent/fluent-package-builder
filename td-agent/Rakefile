@@ -329,11 +329,7 @@ class MSIPackageTask
       desc "Build MSI package"
       task :build => [:"build:msi_config", :"build:gems"] do
         cd("msi") do
-          if Pathname(STAGING_DIR).relative?
-            src_dir = File.join("..", STAGING_DIR)
-          else
-            src_dir = STAGING_DIR
-          end
+          src_dir = STAGING_DIR
 
           # Pick up package contents
           sh(heat_path,
