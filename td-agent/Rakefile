@@ -51,12 +51,8 @@ class DownloadTask
       task :fluentd do
         mkdir_p DOWNLOADS_DIR unless File.exists?(DOWNLOADS_DIR)
         cd(DOWNLOADS_DIR) do
-          if File.exists?("fluentd")
-            sh("git", "fetch", "--all")
-            sh("git", "reset", "--hard", "origin/master")
-          else
-            sh("git", "clone", "https://github.com/fluent/fluentd.git")
-          end
+          remove_dir("fluentd", true) if File.exists?("fluentd")
+          sh("git", "clone", "https://github.com/fluent/fluentd.git")
         end
       end
     end
