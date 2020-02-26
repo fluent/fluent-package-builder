@@ -325,44 +325,53 @@ class MSIPackageTask
   def define
     namespace :msi do
       desc "Build MSI package"
-      task :build => [:"build:msi_config", :"build:gems"] do
-        cd("msi") do
-          # Pick up package contents
-          sh(heat_path,
-             "dir", @staging_dir,
-             "-nologo", # Skip heat logo
-             "-srd",    # Suppress harvesting the root directory as an element
-             "-sreg",   # Suppress registry harvesting
-             "-gg",                          # Generate guides
-             "-cg", "ProjectDir",            # Component Group Name
-             "-dr", "PROJECTLOCATION",       # Root directory reference
-             "-var", "var.ProjectSourceDir", # Substitue File/@Source="SourceDir"
-             "-t",   "exclude-files.xslt",   # XSLT for exclude files
-             "-out", 'project-files.wxs')
-
-          # Build
-          sh(candle_path,
-             "-nologo",                            # Skip candle logo
-             "-dProjectSourceDir=#{@staging_dir}", # Define a parameter
-             "project-files.wxs",
-             "source.wxs")
-
-          # Link
-          sh(light_path,
-             "-nologo",                        # Skip light logo
-             "-ext", "WixUIExtension",         # Extension assembly
-             "-cultures:en-us",                # Localization
-             "-loc", "localization-en-us.wxl", # Localization file
-             "project-files.wixobj",
-             "source.wixobj",
-             "-out", "td-agent-#{PACKAGE_VERSION}-#{arch}.msi")
-        end
+      task :build do
+        Rake::Task["msi:selfbuild"].invoke
       end
 
-      # Experimental support to build MSI by Docker Desktop for Windows
-      task :docker do
+      desc "Build MSI package by Docker"
+      task :dockerbuild do
         run_docker("windows", arch)
       end
+
+      desc "Build MSI package"
+      task :selfbuild => [:"build:msi_config", :"build:gems"] do
+        run_build
+      end
+    end
+  end
+
+  def run_build
+    cd("msi") do
+      # Pick up package contents
+      sh(heat_path,
+         "dir", @staging_dir,
+         "-nologo", # Skip heat logo
+         "-srd",    # Suppress harvesting the root directory as an element
+         "-sreg",   # Suppress registry harvesting
+         "-gg",                          # Generate guides
+         "-cg", "ProjectDir",            # Component Group Name
+         "-dr", "PROJECTLOCATION",       # Root directory reference
+         "-var", "var.ProjectSourceDir", # Substitue File/@Source="SourceDir"
+         "-t",   "exclude-files.xslt",   # XSLT for exclude files
+         "-out", 'project-files.wxs')
+
+      # Build
+      sh(candle_path,
+         "-nologo",                            # Skip candle logo
+         "-dProjectSourceDir=#{@staging_dir}", # Define a parameter
+         "project-files.wxs",
+         "source.wxs")
+
+      # Link
+      sh(light_path,
+         "-nologo",                        # Skip light logo
+         "-ext", "WixUIExtension",         # Extension assembly
+         "-cultures:en-us",                # Localization
+         "-loc", "localization-en-us.wxl", # Localization file
+         "project-files.wixobj",
+         "source.wixobj",
+         "-out", "td-agent-#{PACKAGE_VERSION}-#{arch}.msi")
     end
   end
 
