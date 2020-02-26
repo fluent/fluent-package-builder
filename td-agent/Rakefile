@@ -265,9 +265,9 @@ class BuildTask
 end
 
 class LinuxPackageTask < PackageTask
-  def initialize(package_name, version)
-    super(package_name, version, detect_release_time)
-    @archive_tar_name = "#{package_name}-#{version}.tar"
+  def initialize
+    super(PACKAGE_NAME, PACKAGE_VERSION, detect_release_time)
+    @archive_tar_name = "#{@package}-#{@version}.tar"
     @archive_name = "#{@archive_tar_name}.gz"
     CLEAN.include(@archive_name)
   end
@@ -318,6 +318,8 @@ class MSIPackageTask
 
   def initialize
     @package = PACKAGE_NAME
+    @version = PACKAGE_VERSION
+    @staging_dir = STAGING_DIR
   end
 
   def define
@@ -325,11 +327,9 @@ class MSIPackageTask
       desc "Build MSI package"
       task :build => [:"build:msi_config", :"build:gems"] do
         cd("msi") do
-          src_dir = STAGING_DIR
-
           # Pick up package contents
           sh(heat_path,
-             "dir", src_dir,
+             "dir", @staging_dir,
              "-nologo", # Skip heat logo
              "-srd",    # Suppress harvesting the root directory as an element
              "-sreg",   # Suppress registry harvesting
@@ -342,8 +342,8 @@ class MSIPackageTask
 
           # Build
           sh(candle_path,
-             "-nologo",                       # Skip candle logo
-             "-dProjectSourceDir=#{src_dir}", # Define a parameter
+             "-nologo",                            # Skip candle logo
+             "-dProjectSourceDir=#{@staging_dir}", # Define a parameter
              "project-files.wxs",
              "source.wxs")
 
@@ -442,7 +442,7 @@ download_task.define
 build_task = BuildTask.new
 build_task.define
 
-linux_package_task = LinuxPackageTask.new(PACKAGE_NAME, PACKAGE_VERSION)
+linux_package_task = LinuxPackageTask.new
 linux_package_task.define
 
 msi_package_task = MSIPackageTask.new
