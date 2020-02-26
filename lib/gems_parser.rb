@@ -28,6 +28,10 @@ class GemsParser
     @target_files << [name, ver]
   end
 
+  def windows?
+    GemsParser.windows?
+  end
+
   def td_agent_2?
     !td_agent_3?
   end
