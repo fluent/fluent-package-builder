@@ -369,7 +369,7 @@ class MSIPackageTask
          "-loc", "localization-en-us.wxl", # Localization file
          "project-files.wixobj",
          "source.wixobj",
-         "-out", "td-agent-#{PACKAGE_VERSION}-#{arch}.msi")
+         "-out", "td-agent-#{@version}-#{arch}.msi")
     end
   end
 
