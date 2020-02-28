@@ -311,7 +311,7 @@ class LinuxPackageTask < PackageTask
   end
 end
 
-class MSIPackageTask
+class WindowsPackageTask
   include Rake::DSL
 
   def initialize
@@ -452,5 +452,5 @@ build_task.define
 linux_package_task = LinuxPackageTask.new
 linux_package_task.define
 
-msi_package_task = MSIPackageTask.new
+msi_package_task = WindowsPackageTask.new
 msi_package_task.define
