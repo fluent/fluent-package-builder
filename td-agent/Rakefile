@@ -452,5 +452,5 @@ build_task.define
 linux_package_task = LinuxPackageTask.new
 linux_package_task.define
 
-msi_package_task = WindowsPackageTask.new
-msi_package_task.define
+windows_package_task = WindowsPackageTask.new
+windows_package_task.define
