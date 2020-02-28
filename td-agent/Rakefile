@@ -256,7 +256,7 @@ class BuildTask
     end
   end
 
-  def generate_systemd_unit_file(dest_path, config, opts={})
+  def generate_systemd_unit_file(dest_path, config)
     template_file_path = template_path('etc', 'systemd', 'td-agent.service.erb')
     if File.exist?(template_file_path)
       generate_from_template(dest_path, template_file_path, config, { mode: 0755 })
