@@ -1,92 +1,28 @@
-packages = [
+PACKAGES = [
   "td-agent",
 ]
 
-desc "Remove any temporary products"
-task :clean do
-  packages.each do |package|
-    cd(package) do
-      ruby("-S", "rake", "clean")
-    end
-  end
-end
-
-desc "Remove any generated files"
-task :clobber do
-  packages.each do |package|
-    cd(package) do
-      ruby("-S", "rake", "clobber")
-    end
-  end
-end
-
-namespace :build do
-  desc "Create configuration files for Debian like systems"
-  task :deb_config do
+def define_bulked_task(name, description, packages = PACKAGES)
+  desc description
+  task name.to_sym do
     packages.each do |package|
       cd(package) do
-        ruby("-S", "rake", "build:deb_config")
-      end
-    end
-  end
-
-  desc "Create configuration files for Red Hat like systems"
-  task :rpm_config do
-    packages.each do |package|
-      cd(package) do
-        ruby("-S", "rake", "build:rpm_config")
-      end
-    end
-  end
-
-  desc "Install all gems"
-  task :gems do
-    packages.each do |package|
-      cd(package) do
-        ruby("-S", "rake", "build:gems")
+        ruby("-S", "rake", name.to_s)
       end
     end
   end
 end
 
-namespace :apt do
-  desc "Build deb packages"
-  task :build do
-    packages.each do |package|
-      cd(package) do
-        ruby("-S", "rake", "apt:build")
-      end
-    end
-  end
-end
-
-namespace :yum do
-  desc "Build RPM packages"
-  task :build do
-    packages.each do |package|
-      cd(package) do
-        ruby("-S", "rake", "yum:build")
-      end
-    end
-  end
-end
-
-namespace :msi do
-  desc "Build MSI package"
-  task :build do
-    packages.each do |package|
-      cd(package) do
-        ruby("-S", "rake", "msi:build")
-      end
-    end
-  end
-
-  desc "Build MSI package by Docker"
-  task :dockerbuild do
-    packages.each do |package|
-      cd(package) do
-        ruby("-S", "rake", "msi:dockerbuild")
-      end
-    end
-  end
+[
+  ["clean",            "Remove any temporary products"],
+  ["clobber",          "Remove any generated files"],
+  ["build:deb_config", "Create configuration files for Debian like systems"],
+  ["build:rpm_config", "Create configuration files for Red Hat like systems"],
+  ["build:gems",       "Install all gems"],
+  ["apt:build",        "Build deb packages"],
+  ["yum:build",        "Build RPM packages"],
+  ["msi:build",        "Build MSI package"],
+  ["msi:dockerbuild",  "Build MSI package by Docker"],
+].each do |params|
+  define_bulked_task(*params)
 end
