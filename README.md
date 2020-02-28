@@ -47,5 +47,5 @@ See also [Dockerfile for Windows](td-agent/msi/Dockerfile).
 or if you use Docker:
 
 ```console
-% rake msi:docker
+% rake msi:dockerbuild
 ```

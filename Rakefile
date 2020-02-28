@@ -80,4 +80,13 @@ namespace :msi do
       end
     end
   end
+
+  desc "Build MSI package by Docker"
+  task :dockerbuild do
+    packages.each do |package|
+      cd(package) do
+        ruby("-S", "rake", "msi:dockerbuild")
+      end
+    end
+  end
 end
