@@ -175,14 +175,14 @@ class BuildTask
       task :rpm_systemd do
         dest =  File.join(STAGING_DIR, 'usr', 'lib', 'systemd', 'system', PACKAGE_NAME + ".service")
         params = {pkg_type: "rpm"}
-        generate_systemd_unit_file(dest, template_config(params))
+        render_systemd_unit_file(dest, template_config(params))
       end
 
       desc "Create systemd unit file for Debian like systems"
       task :deb_systemd do
         dest = File.join(STAGING_DIR, 'etc', 'systemd', 'system', PACKAGE_NAME + ".service")
         params = {pkg_type: "deb"}
-        generate_systemd_unit_file(dest, template_config(params))
+        render_systemd_unit_file(dest, template_config(params))
       end
 
       desc "Create config files for WiX Toolset"
@@ -259,7 +259,7 @@ class BuildTask
     end
   end
 
-  def generate_systemd_unit_file(dest_path, config)
+  def render_systemd_unit_file(dest_path, config)
     template_file_path = template_path('etc', 'systemd', 'td-agent.service.erb')
     render_template(dest_path, template_file_path, config, { mode: 0755 })
   end
