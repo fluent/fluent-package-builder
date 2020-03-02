@@ -144,7 +144,7 @@ class BuildTask
           src = template_path('package-scripts', 'td-agent', "deb", script)
           next unless File.exist?(src)
           dest = File.join("debian", File.basename(script))
-          generate_from_template(dest, src, template_config, { mode: 0755 })
+          render_template(dest, src, template_config, { mode: 0755 })
         end
       end
 
@@ -158,7 +158,7 @@ class BuildTask
         conf_paths.each do |item|
           src = template_path('etc', *item)
           dest = File.join(STAGING_DIR, 'etc', *item)
-          generate_from_template(dest, src, template_config)
+          render_template(dest, src, template_config)
         end
       end
 
@@ -167,7 +167,7 @@ class BuildTask
         ["td-agent", "td-agent-gem"].each do |command|
           src = template_path('usr', 'sbin', "#{command}.erb")
           dest = File.join(STAGING_DIR, 'usr', 'sbin', command)
-          generate_from_template(dest, src, template_config, { mode: 0755 })
+          render_template(dest, src, template_config, { mode: 0755 })
         end
       end
 
@@ -189,7 +189,7 @@ class BuildTask
       task :wix_config do
         src  = File.join('msi', 'parameters.wxi.erb')
         dest = File.join('msi', 'parameters.wxi')
-        generate_from_template(dest, src, template_config)
+        render_template(dest, src, template_config)
       end
 
       desc "Create configuration files for Red Hat like systems"
@@ -241,24 +241,27 @@ class BuildTask
     File.join('templates', *path_parts)
   end
 
-  def generate_from_template(dest, src, config, opts={})
-    mode = opts.fetch(:mode, 0644)
-    destination = dest.gsub('td-agent', config[:project_name])
+  def render_template(dest, src, config, opts={})
     erb_binding = binding
     config.each do |key, value|
       erb_binding.local_variable_set(key, value)
     end
+
+    destination = dest.gsub('td-agent', config[:project_name])
     directory = File.dirname(destination)
-    mkdir_p(directory) unless File.exists?(directory)
+    mode = opts.fetch(:mode, 0644)
+
     puts "Generate #{destination}"
+    mkdir_p(directory) unless File.exists?(directory)
     File.open(destination, 'w', mode) do |f|
-      f.write ERB.new(File.read(src), nil, '<>').result(erb_binding)
+      template = ERB.new(File.read(src), nil, '<>')
+      f.write(template.result(erb_binding))
     end
   end
 
   def generate_systemd_unit_file(dest_path, config)
     template_file_path = template_path('etc', 'systemd', 'td-agent.service.erb')
-    generate_from_template(dest_path, template_file_path, config, { mode: 0755 })
+    render_template(dest_path, template_file_path, config, { mode: 0755 })
   end
 end
 
