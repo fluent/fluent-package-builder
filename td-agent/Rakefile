@@ -97,23 +97,23 @@ class BuildTask
       desc "Install core_gems"
       task :core_gems => :"download:core_gems" do
         pattern = File.join(DOWNLOADS_DIR, 'core_gems', '*.gem')
-        Dir.glob(File.expand_path(pattern)).sort.each { |gem_path|
+        Dir.glob(File.expand_path(pattern)).sort.each do |gem_path|
           sh("gem", "install",
              "--no-document",
              "--install-dir", "#{GEM_INSTALL_DIR}",
              "#{gem_path}")
-        }
+        end
       end
 
       desc "Install plugin_gems"
       task :plugin_gems => [:"download:plugin_gems", :fluentd] do
         pattern = File.join(__dir__, 'plugin_gems', '*.gem')
-        Dir.glob(File.expand_path(pattern)).sort.each { |gem_path|
+        Dir.glob(File.expand_path(pattern)).sort.each do |gem_path|
           sh("gem", "install",
              "--no-document",
              "--install-dir", "#{GEM_INSTALL_DIR}",
              "#{gem_path}")
-        }
+        end
       end
 
       desc "Install fluentd"
@@ -155,20 +155,20 @@ class BuildTask
           ['td-agent', 'td-agent.conf.tmpl'],
           ['logrotate.d', 'td-agent.logrotate']
         ]
-        conf_paths.each { |item|
+        conf_paths.each do |item|
           src = template_path('etc', *item)
           dest = File.join(STAGING_DIR, 'etc', *item)
           generate_from_template(dest, src, template_config)
-        }
+        end
       end
 
       desc "Create sbin script files from template"
       task :sbin_scripts do
-        ["td-agent", "td-agent-gem"].each { |command|
+        ["td-agent", "td-agent-gem"].each do |command|
           src = template_path('usr', 'sbin', "#{command}.erb")
           dest = File.join(STAGING_DIR, 'usr', 'sbin', command)
           generate_from_template(dest, src, template_config, { mode: 0755 })
-        }
+        end
       end
 
       desc "Create systemd unit file for Red Hat like systems"
