@@ -188,19 +188,18 @@ class PackageTask
 
   def apt_build
     tmp_dir = "#{apt_dir}/tmp"
+    package_dir = "#{File.basename(Dir.pwd)}"
     rm_rf(tmp_dir)
     mkdir_p(tmp_dir)
     cp(deb_archive_name,
        File.join(tmp_dir, deb_archive_name))
-    Dir.glob("debian*") do |debian_dir|
-      cp_r(debian_dir, "#{tmp_dir}/#{debian_dir}")
-    end
 
     env_sh = "#{apt_dir}/env.sh"
     File.open(env_sh, "wb") do |file|
       file.puts(<<-ENV)
 PACKAGE=#{@package}
 VERSION=#{@deb_upstream_version}
+PACKAGEDIR=#{package_dir}
       ENV
     end
 

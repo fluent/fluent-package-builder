@@ -62,12 +62,12 @@ case "${VERSION}" in
 esac
 run cd ${PACKAGE}-${VERSION}/
 platform="${distribution}-${code_name}"
-if [ -d "${PACKAGE}/${platform}-${architecture}" ]; then
-  run cp -rp "${PACKAGE}/${platform}-${architecture}" debian
-elif [ -d "${PACKAGE}/debian.${platform}" ]; then
-  run cp -rp "${PACKAGE}/debian.${platform}" debian
+if [ -d "${PACKAGEDIR}/${platform}-${architecture}" ]; then
+  run cp -rp "${PACKAGEDIR}/${platform}-${architecture}" debian
+elif [ -d "${PACKAGEDIR}/debian.${platform}" ]; then
+  run cp -rp "${PACKAGEDIR}/debian.${platform}" debian
 else
-  run cp -rp "${PACKAGE}/debian" debian
+  run cp -rp "${PACKAGEDIR}/debian" debian
 fi
 
 # setup lintian profile
