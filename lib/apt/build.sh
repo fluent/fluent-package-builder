@@ -62,13 +62,14 @@ case "${VERSION}" in
 esac
 run cd ${PACKAGE}-${VERSION}/
 platform="${distribution}-${code_name}"
-if [ -d "/host/tmp/debian.${platform}-${architecture}" ]; then
-  run cp -rp "/host/tmp/debian.${platform}-${architecture}" debian
-elif [ -d "/host/tmp/debian.${platform}" ]; then
-  run cp -rp "/host/tmp/debian.${platform}" debian
+if [ -d "${PACKAGE}/${platform}-${architecture}" ]; then
+  run cp -rp "${PACKAGE}/${platform}-${architecture}" debian
+elif [ -d "${PACKAGE}/debian.${platform}" ]; then
+  run cp -rp "${PACKAGE}/debian.${platform}" debian
 else
-  run cp -rp "/host/tmp/debian" debian
+  run cp -rp "${PACKAGE}/debian" debian
 fi
+
 # setup lintian profile
 run mkdir -p ~/.lintian/profiles/td-agent/
 run cp "/host/tmp/debian/lintian/td-agent/${distribution}.profile" ~/.lintian/profiles/td-agent/${distribution}.profile
