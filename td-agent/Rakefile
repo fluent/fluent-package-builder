@@ -96,6 +96,7 @@ class BuildTask
     namespace :build do
       desc "Install core_gems"
       task :core_gems => :"download:core_gems" do
+        mkdir_p(GEM_INSTALL_DIR) unless File.exists?(GEM_INSTALL_DIR)
         pattern = File.join(DOWNLOADS_DIR, 'core_gems', '*.gem')
         Dir.glob(File.expand_path(pattern)).sort.each do |gem_path|
           sh("gem", "install",
@@ -107,6 +108,7 @@ class BuildTask
 
       desc "Install plugin_gems"
       task :plugin_gems => [:"download:plugin_gems", :fluentd] do
+        mkdir_p(GEM_INSTALL_DIR) unless File.exists?(GEM_INSTALL_DIR)
         pattern = File.join(__dir__, 'plugin_gems', '*.gem')
         Dir.glob(File.expand_path(pattern)).sort.each do |gem_path|
           sh("gem", "install",
@@ -118,6 +120,7 @@ class BuildTask
 
       desc "Install fluentd"
       task :fluentd => [:"download:fluentd", :core_gems] do
+        mkdir_p(GEM_INSTALL_DIR) unless File.exists?(GEM_INSTALL_DIR)
         revision = FLUENTD_REVISION
         cd(File.join(DOWNLOADS_DIR, "fluentd")) do
           sh("git", "checkout", "-b", "#{PACKAGE_NAME}-#{PACKAGE_VERSION}", "#{revision}") if revision
