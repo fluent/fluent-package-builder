@@ -6,18 +6,19 @@
 
   * [Docker](https://docs.docker.com/install/)
   * Ruby
+  * Git
 
-### For building Windows (.msi) package
+### For building Windows package (.msi)
 
   * Windows OS
   * Ruby
     * [RubyInstaller](https://rubyinstaller.org/) 2.4.* or 2.5.* are recommended.
-  * [WiX Toolset](https://wixtoolset.org/)
   * [Git for Windows](https://gitforwindows.org/)
+  * [WiX Toolset](https://wixtoolset.org/)
   * [Docker Desktop for Windows](https://hub.docker.com/editions/community/docker-ce-desktop-windows) (optional)
-    If you use Docker, you don't need to install other prerequisites except Ruby.
+    If you use Docker, you don't need to install WiX Toolset.
 
-If you don't use Docker, you need to set up build environment manually by the following commands:
+If you don't use Docker, you need to set up build environment manually by the following commands after intalling above dependencies:
 
 ```
 % ridk install 3
