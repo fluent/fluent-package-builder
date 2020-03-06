@@ -36,16 +36,15 @@ class DownloadTask
   include Rake::DSL
 
   def define
+    define_gem_files("core_gems")
+    define_gem_files("plugin_gems")
+
     namespace :download do
       desc "Download core_gems"
-      task :core_gems do
-        download_gems("core_gems.rb")
-      end
+      task :core_gems => @files_core_gems
 
       desc "Download plugin_gems"
-      task :plugin_gems do
-        download_gems("plugin_gems.rb")
-      end
+      task :plugin_gems => @files_plugin_gems
 
       desc "Clone fluentd repository"
       task :fluentd do
@@ -60,30 +59,38 @@ class DownloadTask
 
   private
 
-  def download_gems(gems_path)
-    gems_parser = GemsParser.parse(File.read(gems_path))
+  def define_gem_files(category)
+    paths = []
+    gems_parser = GemsParser.parse(File.read("#{category}.rb"))
     digits = (gems_parser.target_files.length - 1).to_s.length
-
     target_dir = File.join(DOWNLOADS_DIR, gems_parser.target_dir)
-    remove_dir(target_dir, true)
-    mkdir_p(target_dir) unless File.exists?(target_dir)
-    cd(target_dir) do
-      gems_parser.target_files.each_with_index do |target, index|
-        name, version = target
-        if version.include?("-")
-          version_option = ["--version", "#{version.sub(/\-.*/, '')}"]
-        else
-          version_option = ["--version", "#{version}", "--platform", "ruby"]
+
+    gems_parser.target_files.each_with_index do |target, index|
+      name, version = target
+      gem = "#{name}-#{version}.gem"
+      numbered_gem = sprintf("%0#{digits}d-%s", index, gem)
+      path = File.join(target_dir, numbered_gem)
+      paths << path
+
+      file path do
+        mkdir_p(target_dir) unless File.exists?(target_dir)
+        cd(target_dir) do
+          if version.include?("-")
+            version_option = ["--version", "#{version.sub(/\-.*/, '')}"]
+          else
+            version_option = ["--version", "#{version}", "--platform", "ruby"]
+          end
+          gem = "#{name}-#{version}.gem"
+          numbered_gem = sprintf("%0#{digits}d-%s", index, gem)
+          sh("gem", "fetch", "#{name}", *version_option)
+          `gem install --explain #{gem} --no-document`
+          fail "Failed to download #{gem}!" unless $?.success?
+          mv("#{gem}", "#{numbered_gem}")
         end
-        gem = "#{name}-#{version}.gem"
-        numbered_gem = sprintf("%0#{digits}d-%s", index, gem)
-        sh("gem", "fetch", "#{name}", *version_option)
-        `gem install --explain #{gem} --no-document`
-        fail "Failed to download #{gem}!" unless $?.success?
-        mv("#{gem}", "#{numbered_gem}")
-        sleep 1
       end
     end
+
+    instance_variable_set("@files_#{category}", paths)
   end
 end
 
