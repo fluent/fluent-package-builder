@@ -8,24 +8,27 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        label:
-          - Debian GNU/Linux buster amd64
-          - Ubuntu 18.04 bionic amd64
-          - CentOS 7 amd64
-          - CentOS 8 amd64
+        os:
+          - debian-buster
+          - ubuntu-bionic
+          - centos-7
+          - centos-8
+        arch:
+          - amd64
+          - arm64
         include:
-          - label: Debian GNU/Linux buster amd64
-            id: debian-buster-amd64
-            rake_arguments: apt:build APT_TARGETS=debian-buster
-          - label: Ubuntu 18.04 bionic amd64
-            id: ubuntu-bionic
-            rake_arguments: apt:build APT_TARGETS=ubuntu-bionic
-          - label: CentOS 7 amd64
-            id: centos-7
-            rake_arguments: yum:build YUM_TARGETS=centos-7
-          - label: CentOS 8 amd64
-            id: centos-8
-            rake_arguments: yum:build YUM_TARGETS=centos-8
+          - os: debian-buster
+            arch: arm64
+            taget_suffix: -arm64
+          - os: ubuntu-bionic
+            arch: arm64
+            target_suffix: -arm64
+          - os: centos-7
+            arch: arm64
+            target_suffix: -aarch64
+          - os: centos-8
+            arch: arm64
+            target_suffix: -aarch64
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
@@ -33,6 +36,14 @@ jobs:
         run: |
           sudo apt update
           sudo apt -V install ruby
-      - name: Build with docker
+          sudo apt -V install qemu-user-static
+      - name: Build deb with Docker
+        if: matrix.os == 'debian-buster' || matrix.os == 'ubuntu-bionic'
         run: |
-          rake ${{ matrix.rake_arguments }}
+          cp /usr/bin/qemu-aarch64-static td-agent/apt/${{ matrix.os }}/
+          rake apt:build APT_TARGETS=${{ matrix.os }}${{ matrix.target_suffix }}
+      - name: Build rpm with Docker
+        if: matrix.os == 'centos-7' || matrix.os == 'centos-8'
+        run: |
+          cp /usr/bin/qemu-aarch64-static td-agent/yum/${{ matrix.os }}/
+          rake yum:build YUM_TARGETS=${{ matrix.os }}${{ matrix.target_suffix }}
