@@ -10,7 +10,7 @@ require 'shellwords'
 require 'pathname'
 
 CLEAN.include(STAGING_DIR)
-CLEAN.include(DOWNLOADS_DIR)
+CLOBBER.include(DOWNLOADS_DIR)
 
 # Debian
 CLEAN.include("apt/tmp")
@@ -34,6 +34,8 @@ CLOBBER.include("msi/*.msi")
 
 class DownloadTask
   include Rake::DSL
+
+  attr_accessor :files_core_gems, :files_plugin_gems
 
   def define
     define_gem_files("core_gems")
@@ -276,7 +278,8 @@ class BuildTask
 end
 
 class LinuxPackageTask < PackageTask
-  def initialize
+  def initialize(download_task)
+    @download_task = download_task
     super(PACKAGE_NAME, PACKAGE_VERSION, detect_release_time)
     @archive_tar_name = "#{@package}-#{@version}.tar"
     @archive_name = "#{@archive_tar_name}.gz"
@@ -286,16 +289,24 @@ class LinuxPackageTask < PackageTask
   private
 
   def define_archive_task
-    file @archive_name do
+    dependencies = [
+      *@download_task.files_core_gems,
+      *@download_task.files_plugin_gems,
+    ]
+    file @archive_name => dependencies do
       build_archive
     end
   end
 
   def build_archive
-    cd ".." do
+    cd("..") do
       sh("git", "archive", "HEAD",
          "--prefix", "#{@archive_base_name}/",
          "--output", @full_archive_name)
+      sh("tar", "xvf", @full_archive_name)
+      cp_r("td-agent/downloads", "#{@archive_base_name}/td-agent")
+      sh("tar", "cvfz", @full_archive_name, "#{@archive_base_name}")
+      rm_rf("#{@archive_base_name}")
     end
   end
 
@@ -462,7 +473,7 @@ download_task.define
 build_task = BuildTask.new
 build_task.define
 
-linux_package_task = LinuxPackageTask.new
+linux_package_task = LinuxPackageTask.new(download_task)
 linux_package_task.define
 
 windows_package_task = WindowsPackageTask.new
