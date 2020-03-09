@@ -1,4 +1,4 @@
-opt/td-agent/*
+opt/*
 usr/sbin/*
 etc/logrotate.d/*
 etc/systemd/system/*

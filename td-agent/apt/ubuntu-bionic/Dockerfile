@@ -26,6 +26,8 @@ RUN \
 
 ARG DEBUG
 
+RUN sed -i'' -e 's/^# deb-src/deb-src/g' /etc/apt/sources.list
+
 RUN \
   quiet=$([ "${DEBUG}" = "yes" ] || echo "-qq") && \
   apt update ${quiet} && \
@@ -46,6 +48,7 @@ RUN \
     tar \
     lsb-release \
     zlib1g-dev && \
+  apt build-dep -y ruby && \
   apt clean && \
   rm -rf /var/lib/apt/lists/*
 # Prohibit to use rubygems-integration's rake

@@ -27,6 +27,7 @@ RUN \
 ARG DEBUG
 
 RUN sed -i'' -e 's/main$/main contrib non-free/g' /etc/apt/sources.list
+RUN grep '^deb' /etc/apt/sources.list | sed -e 's/^deb /deb-src /g' >> /etc/apt/sources.list
 
 RUN \
   quiet=$([ "${DEBUG}" = "yes" ] || echo "-qq") && \
@@ -48,6 +49,7 @@ RUN \
     tar \
     lsb-release \
     zlib1g-dev && \
+  apt build-dep -y ruby && \
   apt clean && \
   rm -rf /var/lib/apt/lists/*
 # Prohibit to use rubygems-integration's rake

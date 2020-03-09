@@ -8,6 +8,8 @@ require 'rake/clean'
 require 'erb'
 require 'shellwords'
 require 'pathname'
+require 'open-uri'
+require 'digest'
 
 CLEAN.include(STAGING_DIR)
 CLOBBER.include(DOWNLOADS_DIR)
@@ -32,16 +34,28 @@ CLEAN.include("msi/*.wixobj")
 CLEAN.include("msi/*.wixpdb")
 CLOBBER.include("msi/*.msi")
 
+def windows?
+  GemsParser.windows?
+end
+
 class DownloadTask
   include Rake::DSL
 
-  attr_accessor :files_core_gems, :files_plugin_gems
+  attr_accessor :file_ruby_source
+
+  def files
+    [@file_ruby_source, *@files_core_gems, *@files_plugin_gems]
+  end
 
   def define
+    define_ruby_files
     define_gem_files("core_gems")
     define_gem_files("plugin_gems")
 
     namespace :download do
+      desc "Download Ruby source"
+      task :ruby => @file_ruby_source
+
       desc "Download core_gems"
       task :core_gems => @files_core_gems
 
@@ -60,6 +74,37 @@ class DownloadTask
   end
 
   private
+
+  def define_ruby_files
+    define_ruby_source_file
+  end
+
+  def define_ruby_source_file
+    ruby_version = BUNDLED_RUBY_VERSION
+    ruby_sha256sum = BUNDLED_RUBY_SHA256SUM
+
+    ruby_src_url_base = "https://cache.ruby-lang.org/pub/ruby/"
+    ruby_tarball = "ruby-#{ruby_version}.tar.gz"
+    ruby_tarball_tmp = "#{ruby_tarball}.part"
+    ruby_feature_version = ruby_version.match(/^(\d+\.\d+)/)[0]
+    url = "#{ruby_src_url_base}#{ruby_feature_version}/#{ruby_tarball}"
+
+    @file_ruby_source = File.join(DOWNLOADS_DIR, ruby_tarball)
+
+    file @file_ruby_source do
+      mkdir_p DOWNLOADS_DIR unless File.exists?(DOWNLOADS_DIR)
+      cd(DOWNLOADS_DIR) do
+        open(url) do |in_file|
+          open(ruby_tarball_tmp, "wb") do |out_file|
+            out_file.write(in_file.read)
+          end
+        end
+        digest = Digest::SHA256.file(ruby_tarball_tmp)
+        fail "Downloaded #{ruby_tarball} is broken!!!" if digest != ruby_sha256sum
+        mv(ruby_tarball_tmp, ruby_tarball)
+      end
+    end
+  end
 
   def define_gem_files(category)
     paths = []
@@ -101,10 +146,40 @@ class BuildTask
 
   GEM_INSTALL_DIR = File.join("#{STAGING_DIR}", "opt", "#{PACKAGE_NAME}")
 
+  def initialize(download_task)
+    @download_task = download_task
+  end
+
+  def build_ruby_from_source
+    ruby_tarball = @download_task.file_ruby_source
+    ruby_source_dir = ruby_tarball.gsub(/\.tar\.gz$/, '')
+
+    sh("tar", "xvf", ruby_tarball, "-C", DOWNLOADS_DIR)
+
+    configure_opts = [
+      "--enable-shared",
+      "--prefix=/opt/embedded",
+      "--disable-install-doc",
+    ]
+    cd(ruby_source_dir) do
+      sh("./configure #{configure_opts.join(' ')}")
+      sh("make", "install", "DESTDIR=#{STAGING_DIR}")
+    end
+  end
+
   def define
     namespace :build do
+      desc "Install Ruby"
+      task :ruby => [:"download:ruby"] do
+        if windows?
+          # TODO
+        else
+          build_ruby_from_source
+        end
+      end
+
       desc "Install core_gems"
-      task :core_gems => :"download:core_gems" do
+      task :core_gems => [:"download:core_gems", :ruby] do
         mkdir_p(GEM_INSTALL_DIR) unless File.exists?(GEM_INSTALL_DIR)
         pattern = File.join(DOWNLOADS_DIR, 'core_gems', '*.gem')
         Dir.glob(File.expand_path(pattern)).sort.each do |gem_path|
@@ -217,10 +292,6 @@ class BuildTask
 
   private
 
-  def windows?
-    GemsParser.windows?
-  end
-
   def template_config(params = nil)
     config = {
       project_name: PACKAGE_NAME,
@@ -289,11 +360,7 @@ class LinuxPackageTask < PackageTask
   private
 
   def define_archive_task
-    dependencies = [
-      *@download_task.files_core_gems,
-      *@download_task.files_plugin_gems,
-    ]
-    file @archive_name => dependencies do
+    file @archive_name => @download_task.files do
       build_archive
     end
   end
@@ -470,7 +537,7 @@ end
 download_task = DownloadTask.new
 download_task.define
 
-build_task = BuildTask.new
+build_task = BuildTask.new(download_task)
 build_task.define
 
 linux_package_task = LinuxPackageTask.new(download_task)

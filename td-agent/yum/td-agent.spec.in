@@ -78,7 +78,7 @@ fi
 
 %files
 %defattr(-,root,root,-)
-/opt/@PACKAGE@/*
+/opt/*
 %{_sysconfdir}/logrotate.d/@PACKAGE@.logrotate
 %{_sysconfdir}/@PACKAGE@/@PACKAGE@.conf.tmpl
 %{_unitdir}/@PACKAGE@.service
