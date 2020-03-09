@@ -23,12 +23,14 @@ jobs:
           - os: ubuntu-bionic
             arch: arm64
             target_suffix: -arm64
-          - os: centos-7
-            arch: arm64
-            target_suffix: -aarch64
           - os: centos-8
             arch: arm64
             target_suffix: -aarch64
+        exclude:
+          # centos-release-scl isn't available for aarch64:
+          # https://bugs.centos.org/view.php?id=16644
+          - os: centos-7
+            arch: arm64
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
