@@ -41,10 +41,15 @@ end
 class DownloadTask
   include Rake::DSL
 
-  attr_accessor :file_ruby_source
+  attr_reader :file_ruby_source, :file_ruby_installer_x64
 
   def files
-    [@file_ruby_source, *@files_core_gems, *@files_plugin_gems]
+    [
+      @file_ruby_source,
+      @file_ruby_installer_x64,
+      *@files_core_gems,
+      *@files_plugin_gems
+    ]
   end
 
   def define
@@ -75,34 +80,59 @@ class DownloadTask
 
   private
 
+  def download_file(url, filename, sha256sum = nil)
+    tmp_filename = "#{filename}.part"
+
+    mkdir_p DOWNLOADS_DIR unless File.exists?(DOWNLOADS_DIR)
+    cd(DOWNLOADS_DIR) do
+      puts "Downloading #{filename}..."
+      open(url) do |in_file|
+        open(tmp_filename, "wb") do |out_file|
+          out_file.write(in_file.read)
+        end
+      end
+
+      unless sha256sum.nil?
+        digest = Digest::SHA256.file(tmp_filename)
+        fail "Downloaded #{tmp_filename} is broken!!!" if digest != sha256sum
+      end
+
+      mv(tmp_filename, filename)
+    end
+  end
+
   def define_ruby_files
     define_ruby_source_file
+    define_ruby_installer_file
   end
 
   def define_ruby_source_file
-    ruby_version = BUNDLED_RUBY_VERSION
-    ruby_sha256sum = BUNDLED_RUBY_SHA256SUM
+    version = BUNDLED_RUBY_VERSION
+    sha256sum = BUNDLED_RUBY_SOURCE_SHA256SUM
+    filename = "ruby-#{version}.tar.gz"
+    feature_version = version.match(/^(\d+\.\d+)/)[0]
+    url_base = "https://cache.ruby-lang.org/pub/ruby/"
+    url = "#{url_base}#{feature_version}/#{filename}"
 
-    ruby_src_url_base = "https://cache.ruby-lang.org/pub/ruby/"
-    ruby_tarball = "ruby-#{ruby_version}.tar.gz"
-    ruby_tarball_tmp = "#{ruby_tarball}.part"
-    ruby_feature_version = ruby_version.match(/^(\d+\.\d+)/)[0]
-    url = "#{ruby_src_url_base}#{ruby_feature_version}/#{ruby_tarball}"
-
-    @file_ruby_source = File.join(DOWNLOADS_DIR, ruby_tarball)
+    @file_ruby_source = File.join(DOWNLOADS_DIR, filename)
 
     file @file_ruby_source do
-      mkdir_p DOWNLOADS_DIR unless File.exists?(DOWNLOADS_DIR)
-      cd(DOWNLOADS_DIR) do
-        open(url) do |in_file|
-          open(ruby_tarball_tmp, "wb") do |out_file|
-            out_file.write(in_file.read)
-          end
-        end
-        digest = Digest::SHA256.file(ruby_tarball_tmp)
-        fail "Downloaded #{ruby_tarball} is broken!!!" if digest != ruby_sha256sum
-        mv(ruby_tarball_tmp, ruby_tarball)
-      end
+      download_file(url, filename, sha256sum)
+    end
+  end
+
+  def define_ruby_installer_file
+    version = BUNDLED_RUBY_VERSION
+    release = BUNDLED_RUBY_INSTALLER_X64_RELEASE
+    sha256sum = BUNDLED_RUBY_INSTALLER_X64_SHA256SUM
+    filename = "rubyinstaller-#{version}-#{release}-x64.7z"
+    url_base = "https://github.com/oneclick/rubyinstaller2/releases/download/"
+    url = "#{url_base}RubyInstaller-#{version}-#{release}/#{filename}"
+
+    @file_ruby_installer_x64 = File.join(DOWNLOADS_DIR, filename)
+
+    file @file_ruby_installer_x64 do
+      download_file(url, filename, sha256sum)
     end
   end
 
@@ -151,10 +181,10 @@ class BuildTask
   end
 
   def build_ruby_from_source
-    ruby_tarball = @download_task.file_ruby_source
-    ruby_source_dir = ruby_tarball.gsub(/\.tar\.gz$/, '')
+    tarball = @download_task.file_ruby_source
+    ruby_source_dir = tarball.gsub(/\.tar\.gz$/, '')
 
-    sh("tar", "xvf", ruby_tarball, "-C", DOWNLOADS_DIR)
+    sh("tar", "xvf", tarball, "-C", DOWNLOADS_DIR)
 
     configure_opts = [
       "--enable-shared",
