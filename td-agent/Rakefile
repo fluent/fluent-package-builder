@@ -38,6 +38,15 @@ def windows?
   GemsParser.windows?
 end
 
+def ensure_directory(dirname)
+  mkdir_p(dirname) unless File.exists?(dirname)
+  if block_given?
+    cd(dirname) do
+      yield
+    end
+  end
+end
+
 class DownloadTask
   include Rake::DSL
 
@@ -59,7 +68,7 @@ class DownloadTask
 
     namespace :download do
       desc "Download Ruby source"
-      task :ruby => @file_ruby_source
+      task :ruby => [@file_ruby_source, @file_ruby_installer_x64]
 
       desc "Download core_gems"
       task :core_gems => @files_core_gems
@@ -69,8 +78,7 @@ class DownloadTask
 
       desc "Clone fluentd repository"
       task :fluentd do
-        mkdir_p DOWNLOADS_DIR unless File.exists?(DOWNLOADS_DIR)
-        cd(DOWNLOADS_DIR) do
+        ensure_directory(DOWNLOADS_DIR) do
           remove_dir("fluentd", true) if File.exists?("fluentd")
           sh("git", "clone", "https://github.com/fluent/fluentd.git")
         end
@@ -83,8 +91,7 @@ class DownloadTask
   def download_file(url, filename, sha256sum = nil)
     tmp_filename = "#{filename}.part"
 
-    mkdir_p DOWNLOADS_DIR unless File.exists?(DOWNLOADS_DIR)
-    cd(DOWNLOADS_DIR) do
+    ensure_directory(DOWNLOADS_DIR) do
       puts "Downloading #{filename}..."
       open(url) do |in_file|
         open(tmp_filename, "wb") do |out_file|
@@ -150,8 +157,7 @@ class DownloadTask
       paths << path
 
       file path do
-        mkdir_p(target_dir) unless File.exists?(target_dir)
-        cd(target_dir) do
+        ensure_directory(target_dir) do
           if version.include?("-")
             version_option = ["--version", "#{version.sub(/\-.*/, '')}"]
           else
@@ -180,29 +186,12 @@ class BuildTask
     @download_task = download_task
   end
 
-  def build_ruby_from_source
-    tarball = @download_task.file_ruby_source
-    ruby_source_dir = tarball.gsub(/\.tar\.gz$/, '')
-
-    sh("tar", "xvf", tarball, "-C", DOWNLOADS_DIR)
-
-    configure_opts = [
-      "--enable-shared",
-      "--prefix=/opt/embedded",
-      "--disable-install-doc",
-    ]
-    cd(ruby_source_dir) do
-      sh("./configure #{configure_opts.join(' ')}")
-      sh("make", "install", "DESTDIR=#{STAGING_DIR}")
-    end
-  end
-
   def define
     namespace :build do
       desc "Install Ruby"
       task :ruby => [:"download:ruby"] do
         if windows?
-          # TODO
+          extract_ruby_installer
         else
           build_ruby_from_source
         end
@@ -210,7 +199,7 @@ class BuildTask
 
       desc "Install core_gems"
       task :core_gems => [:"download:core_gems", :ruby] do
-        mkdir_p(GEM_INSTALL_DIR) unless File.exists?(GEM_INSTALL_DIR)
+        ensure_directory(GEM_INSTALL_DIR)
         pattern = File.join(DOWNLOADS_DIR, 'core_gems', '*.gem')
         Dir.glob(File.expand_path(pattern)).sort.each do |gem_path|
           sh("gem", "install",
@@ -222,7 +211,7 @@ class BuildTask
 
       desc "Install plugin_gems"
       task :plugin_gems => [:"download:plugin_gems", :fluentd] do
-        mkdir_p(GEM_INSTALL_DIR) unless File.exists?(GEM_INSTALL_DIR)
+        ensure_directory(GEM_INSTALL_DIR)
         pattern = File.join(__dir__, 'plugin_gems', '*.gem')
         Dir.glob(File.expand_path(pattern)).sort.each do |gem_path|
           sh("gem", "install",
@@ -234,7 +223,7 @@ class BuildTask
 
       desc "Install fluentd"
       task :fluentd => [:"download:fluentd", :core_gems] do
-        mkdir_p(GEM_INSTALL_DIR) unless File.exists?(GEM_INSTALL_DIR)
+        ensure_directory(GEM_INSTALL_DIR)
         revision = FLUENTD_REVISION
         cd(File.join(DOWNLOADS_DIR, "fluentd")) do
           sh("git", "checkout", "-b", "#{PACKAGE_NAME}-#{PACKAGE_VERSION}", "#{revision}") if revision
@@ -365,7 +354,7 @@ class BuildTask
     mode = opts.fetch(:mode, 0644)
 
     puts "Generate #{destination}"
-    mkdir_p(directory) unless File.exists?(directory)
+    ensure_directory(directory)
     File.open(destination, 'w', mode) do |f|
       template = ERB.new(File.read(src), nil, '<>')
       f.write(template.result(erb_binding))
@@ -375,6 +364,32 @@ class BuildTask
   def render_systemd_unit_file(dest_path, config)
     template_file_path = template_path('etc', 'systemd', 'td-agent.service.erb')
     render_template(dest_path, template_file_path, config, { mode: 0755 })
+  end
+
+  def build_ruby_from_source
+    tarball = @download_task.file_ruby_source
+    ruby_source_dir = tarball.sub(/\.tar\.gz$/, '')
+
+    sh("tar", "xvf", tarball, "-C", DOWNLOADS_DIR)
+
+    configure_opts = [
+      "--enable-shared",
+      "--prefix=/opt/embedded",
+      "--disable-install-doc",
+    ]
+    cd(ruby_source_dir) do
+      sh("./configure #{configure_opts.join(' ')}")
+      sh("make", "install", "DESTDIR=#{STAGING_DIR}")
+    end
+  end
+
+  def extract_ruby_installer
+    path = File.expand_path(@download_task.file_ruby_installer_x64)
+    dirname = File.basename(path).sub(/\.7z$/, '')
+    ensure_directory(GEM_INSTALL_DIR) do
+      sh("7z", "x", "-y", path)
+      mv(dirname, "embedded")
+    end
   end
 end
 
