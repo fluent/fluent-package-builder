@@ -404,7 +404,11 @@ class LinuxPackageTask < PackageTask
   private
 
   def define_archive_task
-    file @archive_name => @download_task.files do
+    repo_files = `git ls-files --full-name`.split("\n").collect do |path|
+      File.join("..", "#{path}")
+    end
+
+    file @archive_name => [*repo_files, *@download_task.files]  do
       build_archive
     end
   end
