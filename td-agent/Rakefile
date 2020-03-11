@@ -374,7 +374,7 @@ class BuildTask
 
     configure_opts = [
       "--enable-shared",
-      "--prefix=/opt/embedded",
+      "--prefix=/opt/#{PACKAGE_NAME}/embedded",
       "--disable-install-doc",
     ]
     cd(ruby_source_dir) do
