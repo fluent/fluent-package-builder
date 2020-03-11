@@ -10,6 +10,7 @@ require 'shellwords'
 require 'pathname'
 require 'open-uri'
 require 'digest'
+require 'etc'
 
 CLEAN.include(STAGING_DIR)
 CLOBBER.include(DOWNLOADS_DIR)
@@ -370,7 +371,7 @@ class BuildTask
     ]
     cd(ruby_source_dir) do
       sh("./configure #{configure_opts.join(' ')}")
-      sh("make", "install", "DESTDIR=#{STAGING_DIR}")
+      sh("make", "install", "-j#{Etc.nprocessors}", "DESTDIR=#{STAGING_DIR}")
     end
   end
 
