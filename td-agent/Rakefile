@@ -210,7 +210,7 @@ class BuildTask
       desc "Install plugin_gems"
       task :plugin_gems => [:"download:plugin_gems", :fluentd] do
         ensure_directory(GEM_INSTALL_DIR)
-        pattern = File.join(__dir__, 'plugin_gems', '*.gem')
+        pattern = File.join(DOWNLOADS_DIR, 'plugin_gems', '*.gem')
         Dir.glob(File.expand_path(pattern)).sort.each do |gem_path|
           gem_install(gem_path)
         end
