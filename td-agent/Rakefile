@@ -12,6 +12,9 @@ require 'open-uri'
 require 'digest'
 require 'etc'
 
+DOWNLOADS_DIR = File.expand_path(ENV["TD_AGENT_DOWNLOADS_PATH"] || "downloads")
+STAGING_DIR   = File.expand_path(ENV["TD_AGENT_STAGING_PATH"]   || "staging")
+
 CLEAN.include(STAGING_DIR)
 CLOBBER.include(DOWNLOADS_DIR)
 
@@ -429,7 +432,7 @@ class LinuxPackageTask < PackageTask
          "--prefix", "#{@archive_base_name}/",
          "--output", @full_archive_name)
       sh("tar", "xvf", @full_archive_name)
-      cp_r("td-agent/downloads", "#{@archive_base_name}/td-agent")
+      cp_r(DOWNLOADS_DIR, "#{@archive_base_name}/td-agent")
       sh("tar", "cvfz", @full_archive_name, "#{@archive_base_name}")
       rm_rf("#{@archive_base_name}")
     end
