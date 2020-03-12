@@ -27,6 +27,7 @@ RUN @"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -I
 # Install toolchain
 RUN \
   choco install -y git wixtoolset 7zip && \
+  choco install -y msys2 --params /NoUpdate && \
   choco install -y ruby --version 2.5.1.2 && \
   refreshenv && \
   ridk install 3 && \

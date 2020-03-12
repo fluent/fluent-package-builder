@@ -395,16 +395,13 @@ class BuildTask
          "-aoa", # Overwrite all existing files without prompt
          path)
       mv(src_dir, dest_dir)
+      sh("#{STAGING_DIR}/opt/#{PACKAGE_NAME}/embedded/bin/ridk", "install", "3")
     end
   end
 
   def gem_install(gem_path)
-    if windows?
-      # TODO: Setup build env for native extensions
-      gem_command = "gem"
-    else
-      gem_command = "/opt/#{PACKAGE_NAME}/embedded/bin/gem"
-    end
+    gem_command = "/opt/#{PACKAGE_NAME}/embedded/bin/gem"
+    gem_command = File.join(STAGING_DIR, gem_command) if windows?
 
     sh("#{gem_command}", "install",
        "--no-document",
@@ -512,6 +509,8 @@ class WindowsPackageTask
   private
 
   def run_build
+    output_dir = MSI_OUTPUT_DIR.gsub(File::ALT_SEPARATOR, File::SEPARATOR)
+
     cd("msi") do
       # Pick up package contents
       sh(heat_path,
@@ -541,7 +540,7 @@ class WindowsPackageTask
          "-loc", "localization-en-us.wxl", # Localization file
          "project-files.wixobj",
          "source.wixobj",
-         "-out", File.join(MSI_OUTPUT_DIR, "#{@package}-#{@version}-#{arch}.msi"))
+         "-out", File.join(output_dir, "#{@package}-#{@version}-#{arch}.msi"))
     end
   end
 
