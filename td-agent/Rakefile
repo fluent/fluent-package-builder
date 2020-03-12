@@ -436,7 +436,13 @@ class LinuxPackageTask < PackageTask
          "--prefix", "#{@archive_base_name}/",
          "--output", @full_archive_name)
       sh("tar", "xvf", @full_archive_name)
-      cp_r(DOWNLOADS_DIR, "#{@archive_base_name}/td-agent")
+      @download_task.files.each do |path|
+        relative_path = Pathname(path).relative_path_from(Pathname(DOWNLOADS_DIR)).to_path
+        dest_downloads_dir = "#{@archive_base_name}/td-agent/downloads"
+        ensure_directory(File.join(dest_downloads_dir, File.dirname(relative_path))) do
+          cp_r(path, ".")
+        end
+      end
       sh("tar", "cvfz", @full_archive_name, "#{@archive_base_name}")
       rm_rf("#{@archive_base_name}")
     end
