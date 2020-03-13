@@ -1,2 +1,6 @@
-cd c:\td-agent-builder
-rake msi:build
+SET SRC_DIR=%~dp0
+CALL "%SRC_DIR%env.bat"
+
+tar xvf "%SRC_DIR%..\%PACKAGE%-%VERSION%.tar.gz"
+cd "%PACKAGE%-%VERSION%"
+rake msi:selfbuild "TD_AGENT_MSI_OUTPUT_PATH=%SRC_DIR%"

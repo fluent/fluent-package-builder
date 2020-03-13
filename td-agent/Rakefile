@@ -12,8 +12,8 @@ require 'open-uri'
 require 'digest'
 require 'etc'
 
-DOWNLOADS_DIR = File.expand_path(ENV["TD_AGENT_DOWNLOADS_PATH"] || "downloads")
-STAGING_DIR   = File.expand_path(ENV["TD_AGENT_STAGING_PATH"]   || "staging")
+DOWNLOADS_DIR  = File.expand_path(ENV["TD_AGENT_DOWNLOADS_PATH"] || "downloads")
+STAGING_DIR    = File.expand_path(ENV["TD_AGENT_STAGING_PATH"]   || "staging")
 
 CLEAN.include(STAGING_DIR)
 CLOBBER.include(DOWNLOADS_DIR)
@@ -32,6 +32,7 @@ CLEAN.include("yum/env.sh")
 CLOBBER.include("yum/repositories")
 
 # Windows
+CLEAN.include("msi/env.bat")
 CLEAN.include("msi/parameters.wxi")
 CLEAN.include("msi/project-files.wxs")
 CLEAN.include("msi/*.wixobj")
@@ -481,6 +482,8 @@ end
 class WindowsPackageTask
   include Rake::DSL
 
+  MSI_OUTPUT_DIR = ENV["TD_AGENT_MSI_OUTPUT_PATH"] || "."
+
   def initialize
     @package = PACKAGE_NAME
     @version = PACKAGE_VERSION
@@ -489,22 +492,24 @@ class WindowsPackageTask
 
   def define
     namespace :msi do
-      desc "Build MSI package"
+      desc "Build MSI package (alias for msi:selfbuild)"
       task :build do
         Rake::Task["msi:selfbuild"].invoke
-      end
-
-      desc "Build MSI package by Docker"
-      task :dockerbuild do
-        run_docker("windows", arch)
       end
 
       desc "Build MSI package"
       task :selfbuild => [:"build:msi_config", :"build:gems"] do
         run_build
       end
+
+      desc "Build MSI package by Docker"
+      task :dockerbuild => ["#{PACKAGE_NAME}-#{PACKAGE_VERSION}.tar.gz"] do
+        run_docker("windows", arch)
+      end
     end
   end
+
+  private
 
   def run_build
     cd("msi") do
@@ -536,7 +541,18 @@ class WindowsPackageTask
          "-loc", "localization-en-us.wxl", # Localization file
          "project-files.wixobj",
          "source.wixobj",
-         "-out", "#{@package}-#{@version}-#{arch}.msi")
+         "-out", File.join(MSI_OUTPUT_DIR, "#{@package}-#{@version}-#{arch}.msi"))
+    end
+  end
+
+  def write_env
+    env_bat = "msi/env.bat"
+    File.open(env_bat, "w") do |file|
+      file.puts(<<-ENV)
+SET PACKAGE=#{@package}
+SET VERSION=#{@version}
+SET ARCH=#{arch}
+      ENV
     end
   end
 
@@ -562,11 +578,11 @@ class WindowsPackageTask
     build_command_line << docker_context
     run_command_line.concat([docker_tag, 'c:\td-agent-builder\td-agent\msi\build.bat'])
 
+    write_env
+
     sh(*build_command_line)
     sh(*run_command_line)
   end
-
-  private
 
   def windows_path(*pieces)
     path = File.join(*pieces)
