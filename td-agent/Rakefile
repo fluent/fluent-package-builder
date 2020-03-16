@@ -536,7 +536,7 @@ class WindowsPackageTask
          "-loc", "localization-en-us.wxl", # Localization file
          "project-files.wixobj",
          "source.wixobj",
-         "-out", "td-agent-#{@version}-#{arch}.msi")
+         "-out", "#{@package}-#{@version}-#{arch}.msi")
     end
   end
 
