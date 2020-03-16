@@ -22,7 +22,7 @@ end
   ["apt:build",        "Build deb packages"],
   ["yum:build",        "Build RPM packages"],
   ["msi:build",        "Build MSI package (alias for msi:dockerbuild)"],
-  ["msi:selfbuild",    "Build MSI package"],
+  ["msi:selfbuild",    "Build MSI package without using Docker"],
   ["msi:dockerbuild",  "Build MSI package by Docker"],
 ].each do |params|
   define_bulked_task(*params)

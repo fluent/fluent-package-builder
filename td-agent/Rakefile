@@ -506,7 +506,7 @@ class WindowsPackageTask
         Rake::Task["msi:dockerbuild"].invoke
       end
 
-      desc "Build MSI package"
+      desc "Build MSI package without using Docker"
       task :selfbuild => [:"build:msi_config", :"build:gems"] do
         run_build
       end
