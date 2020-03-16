@@ -10,9 +10,6 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@master
-      - name: Install dependencies
-        run: |
-          choco install -y msys2 --params /NoUpdate
       - name: Build
         run: |
-          rake msi:build
+          rake msi:dockerbuild
