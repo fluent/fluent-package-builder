@@ -397,7 +397,6 @@ class BuildTask
       sh("7z",
          "x",    # Extract files with full paths
          "-y",   # Assume yes on all queries
-         "-aoa", # Overwrite all existing files without prompt
          path)
       mv(src_dir, dest_dir)
       sh("#{ruby_install_dir}/bin/ridk", "install", "3")
