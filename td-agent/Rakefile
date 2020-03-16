@@ -489,9 +489,9 @@ class WindowsPackageTask
 
   def define
     namespace :msi do
-      desc "Build MSI package (alias for msi:selfbuild)"
+      desc "Build MSI package (alias for msi:dockerbuild)"
       task :build do
-        Rake::Task["msi:selfbuild"].invoke
+        Rake::Task["msi:dockerbuild"].invoke
       end
 
       desc "Build MSI package"

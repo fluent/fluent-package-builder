@@ -21,7 +21,7 @@ end
   ["build:gems",       "Install all gems"],
   ["apt:build",        "Build deb packages"],
   ["yum:build",        "Build RPM packages"],
-  ["msi:build",        "Build MSI package (alias for msi:selfbuild)"],
+  ["msi:build",        "Build MSI package (alias for msi:dockerbuild)"],
   ["msi:selfbuild",    "Build MSI package"],
   ["msi:dockerbuild",  "Build MSI package by Docker"],
 ].each do |params|

@@ -4,29 +4,21 @@
 
 ### For building .rpm & .deb packages
 
+  * Any host OS that is supported by Docker
+    * Debian buster or Ubuntu 18.04 are recommended
   * [Docker](https://docs.docker.com/install/)
   * Ruby 2.2 or later
   * Git
 
 ### For building Windows package (.msi)
 
-  * Windows OS
-  * Ruby
-    * [RubyInstaller](https://rubyinstaller.org/) 2.2 or later.
+  * Windows OS (10 or 2019 are verified)
+  * [Docker Desktop for Windows](https://hub.docker.com/editions/community/docker-ce-desktop-windows)
+    * You need to switch to "Windows containers" before using it.
+  * [RubyInstaller](https://rubyinstaller.org/) 2.2 or later.
   * [Git for Windows](https://gitforwindows.org/)
-  * [WiX Toolset](https://wixtoolset.org/)
-  * [7-Zip](https://www.7-zip.org/)
-  * [Docker Desktop for Windows](https://hub.docker.com/editions/community/docker-ce-desktop-windows) (optional)
-    * If you use Docker, you don't need to install WiX Toolset and 7-Zip.
 
-If you don't use Docker, you need to set up build environment manually by the following commands after intalling above dependencies:
-
-```
-% ridk install 3
-% gem install bundler
-```
-
-See also [Dockerfile for Windows](td-agent/msi/Dockerfile).
+If you want to build it without Docker, you need to setup additional prerequisites by your self. See [Dockerfile for Windows](td-agent/msi/Dockerfile) for more detail.
 
 ## How to build .rpm package
 
@@ -46,8 +38,8 @@ See also [Dockerfile for Windows](td-agent/msi/Dockerfile).
 % rake msi:build
 ```
 
-or if you use Docker:
+or if you don't use Docker:
 
 ```console
-% rake msi:dockerbuild
+% rake msi:selfbuild
 ```
