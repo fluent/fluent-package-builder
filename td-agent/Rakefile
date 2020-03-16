@@ -382,15 +382,18 @@ class BuildTask
   end
 
   def extract_ruby_installer
-    path = File.expand_path(@download_task.file_ruby_installer_x64)
-    dirname = File.basename(path).sub(/\.7z$/, '')
     ensure_directory(GEM_INSTALL_DIR) do
+      path = File.expand_path(@download_task.file_ruby_installer_x64)
+      src_dir = File.basename(path).sub(/\.7z$/, '')
+      dest_dir = "embedded"
+
+      rm_rf(dest_dir)
       sh("7z",
          "x",    # Extract files with full paths
          "-y",   # Assume yes on all queries
          "-aoa", # Overwrite all existing files without prompt
          path)
-      mv(dirname, "embedded")
+      mv(src_dir, dest_dir)
     end
   end
 
