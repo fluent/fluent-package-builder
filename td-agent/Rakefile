@@ -209,6 +209,7 @@ class BuildTask
       task :ruby => [:"download:ruby"] do
         if windows?
           extract_ruby_installer
+          setup_windows_build_env
         else
           build_ruby_from_source
         end
@@ -399,8 +400,11 @@ class BuildTask
          "-y",   # Assume yes on all queries
          path)
       mv(src_dir, dest_dir)
-      sh("#{ruby_install_dir}/bin/ridk", "install", "3")
     end
+  end
+
+  def setup_windows_build_env
+    sh("#{ruby_install_dir}/bin/ridk", "install", "3")
   end
 
   def install_prefix
