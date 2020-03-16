@@ -185,8 +185,6 @@ end
 class BuildTask
   include Rake::DSL
 
-  GEM_INSTALL_DIR = File.join("#{STAGING_DIR}", "opt", "#{PACKAGE_NAME}")
-
   def initialize(download_task)
     @download_task = download_task
   end
@@ -204,25 +202,17 @@ class BuildTask
 
       desc "Install core_gems"
       task :core_gems => [:"download:core_gems", :ruby] do
-        ensure_directory(GEM_INSTALL_DIR)
-        pattern = File.join(DOWNLOADS_DIR, 'core_gems', '*.gem')
-        Dir.glob(File.expand_path(pattern)).sort.each do |gem_path|
-          gem_install(gem_path)
-        end
+        install_gems('core_gems')
       end
 
       desc "Install plugin_gems"
       task :plugin_gems => [:"download:plugin_gems", :fluentd] do
-        ensure_directory(GEM_INSTALL_DIR)
-        pattern = File.join(DOWNLOADS_DIR, 'plugin_gems', '*.gem')
-        Dir.glob(File.expand_path(pattern)).sort.each do |gem_path|
-          gem_install(gem_path)
-        end
+        install_gems('plugin_gems')
       end
 
       desc "Install fluentd"
       task :fluentd => [:"download:fluentd", :core_gems] do
-        ensure_directory(GEM_INSTALL_DIR)
+        ensure_directory(gem_install_dir)
         revision = FLUENTD_REVISION
         cd(File.join(DOWNLOADS_DIR, "fluentd")) do
           sh("git", "checkout", "-b", "#{PACKAGE_NAME}-#{PACKAGE_VERSION}", "#{revision}") if revision
@@ -383,7 +373,7 @@ class BuildTask
   end
 
   def extract_ruby_installer
-    ensure_directory(GEM_INSTALL_DIR) do
+    ensure_directory(gem_install_dir) do
       path = File.expand_path(@download_task.file_ruby_installer_x64)
       src_dir = File.basename(path).sub(/\.7z$/, '')
       dest_dir = "embedded"
@@ -399,14 +389,26 @@ class BuildTask
     end
   end
 
+  def gem_install_dir
+    File.join("#{STAGING_DIR}", "opt", "#{PACKAGE_NAME}")
+  end
+
   def gem_install(gem_path)
     gem_command = "/opt/#{PACKAGE_NAME}/embedded/bin/gem"
     gem_command = File.join(STAGING_DIR, gem_command) if windows?
 
     sh("#{gem_command}", "install",
        "--no-document",
-       "--install-dir", "#{GEM_INSTALL_DIR}",
+       "--install-dir", "#{gem_install_dir}",
        "#{gem_path}")
+  end
+
+  def install_gems(category)
+    ensure_directory(gem_install_dir)
+    pattern = File.join(DOWNLOADS_DIR, category, '*.gem')
+    Dir.glob(File.expand_path(pattern)).sort.each do |gem_path|
+      gem_install(gem_path)
+    end
   end
 end
 
