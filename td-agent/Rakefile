@@ -373,10 +373,11 @@ class BuildTask
   end
 
   def extract_ruby_installer
-    ensure_directory(gem_install_dir) do
+    ruby_install_dir = File.join(STAGING_DIR, install_prefix)
+    ensure_directory(File.dirname(ruby_install_dir)) do
       path = File.expand_path(@download_task.file_ruby_installer_x64)
       src_dir = File.basename(path).sub(/\.7z$/, '')
-      dest_dir = "embedded"
+      dest_dir = File.basename(ruby_install_dir)
 
       rm_rf(dest_dir)
       sh("7z",
@@ -385,7 +386,7 @@ class BuildTask
          "-aoa", # Overwrite all existing files without prompt
          path)
       mv(src_dir, dest_dir)
-      sh("#{STAGING_DIR}#{install_prefix}/bin/ridk", "install", "3")
+      sh("#{ruby_install_dir}/bin/ridk", "install", "3")
     end
   end
 
