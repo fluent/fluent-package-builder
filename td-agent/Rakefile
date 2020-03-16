@@ -149,12 +149,11 @@ class DownloadTask
   end
 
   def define_ruby_installer_file
-    version = BUNDLED_RUBY_VERSION
-    release = BUNDLED_RUBY_INSTALLER_X64_RELEASE
+    version = BUNDLED_RUBY_INSTALLER_X64_VERSION
     sha256sum = BUNDLED_RUBY_INSTALLER_X64_SHA256SUM
-    filename = "rubyinstaller-#{version}-#{release}-x64.7z"
+    filename = "rubyinstaller-#{version}-x64.7z"
     url_base = "https://github.com/oneclick/rubyinstaller2/releases/download/"
-    url = "#{url_base}RubyInstaller-#{version}-#{release}/#{filename}"
+    url = "#{url_base}RubyInstaller-#{version}/#{filename}"
 
     @file_ruby_installer_x64 = File.join(DOWNLOADS_DIR, filename)
 
