@@ -360,7 +360,7 @@ class BuildTask
 
     configure_opts = [
       "--enable-shared",
-      "--prefix=/opt/#{PACKAGE_NAME}/embedded",
+      "--prefix=#{install_prefix}",
       "--disable-install-doc",
     ]
     cd(ruby_source_dir) do
@@ -385,18 +385,28 @@ class BuildTask
          "-aoa", # Overwrite all existing files without prompt
          path)
       mv(src_dir, dest_dir)
-      sh("#{STAGING_DIR}/opt/#{PACKAGE_NAME}/embedded/bin/ridk", "install", "3")
+      sh("#{STAGING_DIR}#{install_prefix}/bin/ridk", "install", "3")
     end
   end
 
+  def install_prefix
+    "/opt/#{PACKAGE_NAME}/embedded"
+  end
+
+  def gem_command
+    command = "#{install_prefix}/bin/gem"
+    command = File.join(STAGING_DIR, command) if windows?
+    command
+  end
+
   def gem_install_dir
-    File.join("#{STAGING_DIR}", "opt", "#{PACKAGE_NAME}")
+    dir = `#{gem_command} env gemdir`.strip
+    fail "Failed to get default installation directory for gems!" unless $?.success?
+    dir = File.join(STAGING_DIR, dir) unless windows?
+    dir
   end
 
   def gem_install(gem_path)
-    gem_command = "/opt/#{PACKAGE_NAME}/embedded/bin/gem"
-    gem_command = File.join(STAGING_DIR, gem_command) if windows?
-
     sh("#{gem_command}", "install",
        "--no-document",
        "--install-dir", "#{gem_install_dir}",
