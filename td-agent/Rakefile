@@ -71,18 +71,21 @@ class DownloadTask
   include Rake::DSL
 
   attr_reader :file_ruby_source, :file_ruby_installer_x64
+  attr_reader :file_fluentd_archive
 
   def files
     [
       @file_ruby_source,
       @file_ruby_installer_x64,
+      @file_fluentd_archive,
       *@files_core_gems,
-      *@files_plugin_gems
+      *@files_plugin_gems,
     ]
   end
 
   def define
     define_ruby_files
+    define_fluentd_archive
     define_gem_files("core_gems")
     define_gem_files("plugin_gems")
 
@@ -90,19 +93,14 @@ class DownloadTask
       desc "Download Ruby source"
       task :ruby => [@file_ruby_source, @file_ruby_installer_x64]
 
+      desc "Clone fluentd repository and create a tarball"
+      task :fluentd => @file_fluentd_archive
+
       desc "Download core_gems"
       task :core_gems => @files_core_gems
 
       desc "Download plugin_gems"
       task :plugin_gems => @files_plugin_gems
-
-      desc "Clone fluentd repository"
-      task :fluentd do
-        ensure_directory(DOWNLOADS_DIR) do
-          remove_dir("fluentd", true) if File.exists?("fluentd")
-          sh("git", "clone", "https://github.com/fluent/fluentd.git")
-        end
-      end
     end
   end
 
@@ -159,6 +157,21 @@ class DownloadTask
 
     file @file_ruby_installer_x64 do
       download_file(url, filename, sha256sum)
+    end
+  end
+
+  def define_fluentd_archive
+    @file_fluentd_archive = File.join(DOWNLOADS_DIR, "fluentd-#{FLUENTD_REVISION}.tar.gz")
+    file @file_fluentd_archive do
+      ensure_directory(DOWNLOADS_DIR) do
+        remove_dir("fluentd", true) if File.exists?("fluentd")
+        sh("git", "clone", "https://github.com/fluent/fluentd.git")
+        cd("fluentd") do
+          sh("git", "archive", FLUENTD_REVISION,
+             "--prefix", "fluentd-#{FLUENTD_REVISION}/",
+             "--output", @file_fluentd_archive)
+        end
+      end
     end
   end
 
@@ -228,11 +241,12 @@ class BuildTask
       desc "Install fluentd"
       task :fluentd => [:"download:fluentd", :core_gems] do
         ensure_directory(gem_install_dir)
-        revision = FLUENTD_REVISION
-        cd(File.join(DOWNLOADS_DIR, "fluentd")) do
-          sh("git", "checkout", "-b", "#{PACKAGE_NAME}-#{PACKAGE_VERSION}", "#{revision}") if revision
-          sh("rake", "build")
-          gem_install("pkg/fluentd-*.gem")
+        cd(DOWNLOADS_DIR) do
+          sh("tar", "xvf", @download_task.file_fluentd_archive)
+          cd("fluentd-#{FLUENTD_REVISION}") do
+            sh("rake", "build")
+            gem_install("pkg/fluentd-*.gem")
+          end
         end
       end
 
