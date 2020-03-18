@@ -1,5 +1,9 @@
 # td-agent-builder
 
+## About td-agent-builder
+
+td-agent-builder is a new build system for [td-agent](http://docs.treasuredata.com/articles/td-agent) which aims to replace the traditional build system [omnibus-td-agent](https://github.com/treasure-data/omnibus-td-agent) since it has several problems due to [Omnibus](https://github.com/chef/omnibus)'s limitations.
+
 ## Prerequisites
 
 ### For building .rpm & .deb packages
