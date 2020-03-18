@@ -240,7 +240,6 @@ class BuildTask
 
       desc "Install fluentd"
       task :fluentd => [:"download:fluentd", :core_gems] do
-        ensure_directory(gem_install_dir)
         cd(DOWNLOADS_DIR) do
           sh("tar", "xvf", @download_task.file_fluentd_archive)
           cd("fluentd-#{FLUENTD_REVISION}") do
@@ -436,6 +435,7 @@ class BuildTask
   end
 
   def gem_install(gem_path)
+    ensure_directory(gem_install_dir)
     sh("#{gem_command}", "install",
        "--no-document",
        "--install-dir", "#{gem_install_dir}",
@@ -443,7 +443,6 @@ class BuildTask
   end
 
   def install_gems(category)
-    ensure_directory(gem_install_dir)
     pattern = File.join(DOWNLOADS_DIR, category, '*.gem')
     Dir.glob(File.expand_path(pattern)).sort.each do |gem_path|
       gem_install(gem_path)
