@@ -1,7 +1,6 @@
 #!/usr/bin/ruby
-# XXX: Fix shebang for CentOS 7 SCL Ruby
-ENV["GEM_HOME"]="<%= install_path %>/"
-ENV["GEM_PATH"]="<%= install_path %>/"
+ENV["GEM_HOME"]="<%= gem_install_path %>/"
+ENV["GEM_PATH"]="<%= gem_install_path %>/"
 ENV["FLUENT_CONF"]="/etc/<%= project_name %>/<%= project_name %>.conf"
 ENV["FLUENT_PLUGIN"]="/etc/<%= project_name %>/plugin"
 ENV["FLUENT_SOCKET"]="/var/run/<%= project_name %>/<%= project_name %>.sock"

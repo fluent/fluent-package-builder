@@ -329,16 +329,11 @@ class BuildTask
     config = {
       project_name: PACKAGE_NAME,
       version: PACKAGE_VERSION,
-      install_path: install_prefix,
+      install_path: File.join(default_root, install_prefix),
+      gem_install_path: gem_install_dir,
       install_message: nil,
-      root_path: "/", # for systemd unit file
       pkg_type: nil,
     }
-
-    if windows?
-      default_root = "C:"
-      config[:install_path] = File.join(default_root, install_prefix)
-    end
 
     if params
       config.merge(params)
@@ -413,6 +408,14 @@ class BuildTask
     sh("#{ruby_staging_dir}/bin/ridk", "install", "3")
   end
 
+  def default_root
+    if windows?
+      "C:"
+    else
+      "/"
+    end
+  end
+
   def install_prefix
     "/opt/#{PACKAGE_NAME}"
   end
@@ -427,18 +430,47 @@ class BuildTask
     command
   end
 
-  def gem_install_dir
+  def gem_dir_version
+    if windows?
+      ruby_version = BUNDLED_RUBY_INSTALLER_X64_VERSION
+    else
+      ruby_version = BUNDLED_RUBY_VERSION
+    end
+    rb_major, rb_minor, rb_teeny = ruby_version.split("-", 2).first.split(".", 3)
+    "#{rb_major}.#{rb_minor}.0" # gem path's teeny version is always 0
+  end
+
+  def gem_install_dir(with_drive_letter: true)
+    dir = File.join("#{install_prefix}", "lib/ruby/gems/#{gem_dir_version}")
+    if windows? && with_drive_letter
+      File.join(default_root, dir)
+    else
+      dir
+    end
+  end
+
+  def gem_staging_dir
     dir = `#{gem_command} env gemdir`.strip
     fail "Failed to get default installation directory for gems!" unless $?.success?
-    dir = File.join(STAGING_DIR, dir) unless windows?
-    dir
+    if windows?
+      expected = File.join(STAGING_DIR, gem_install_dir(with_drive_letter: false))
+      if dir != expected
+        fail "Unsupposed gemdir: #{dir} (expected: #{expected})"
+      end
+      dir
+    else
+      if dir != gem_install_dir
+        fail "Unsupposed gemdir: #{dir} (expected: #{gem_install_dir})"
+      end
+      File.join(STAGING_DIR, dir)
+    end
   end
 
   def gem_install(gem_path)
-    ensure_directory(gem_install_dir)
+    ensure_directory(gem_staging_dir)
     sh("#{gem_command}", "install",
        "--no-document",
-       "--install-dir", "#{gem_install_dir}",
+       "--install-dir", "#{gem_staging_dir}",
        "#{gem_path}")
   end
 
