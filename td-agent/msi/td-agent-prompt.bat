@@ -1,3 +1,3 @@
 @echo off
-set PATH="%~dp0embedded\bin";%PATH%
+set PATH="%~dp0bin";%PATH%
 title Td-agent Command Prompt

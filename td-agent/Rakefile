@@ -330,21 +330,15 @@ class BuildTask
     config = {
       project_name: PACKAGE_NAME,
       version: PACKAGE_VERSION,
-      install_path: nil,
+      install_path: install_prefix,
       install_message: nil,
       root_path: "/", # for systemd unit file
       pkg_type: nil,
     }
 
     if windows?
-      # "default_root" is defined in omnibus, and it's used in
-      # omnibus-td-agent/config/projects/td-agent3.rb.
-      # To avoid confusion, we use same default_root value with omnibus.
       default_root = "C:"
-      config[:install_path] = File.join("#{default_root}", "opt", "#{PACKAGE_NAME}")
-    else
-      default_root = "/opt"
-      config[:install_path] = File.join("#{default_root}", "#{PACKAGE_NAME}")
+      config[:install_path] = File.join(default_root, install_prefix)
     end
 
     if params
@@ -421,7 +415,7 @@ class BuildTask
   end
 
   def install_prefix
-    "/opt/#{PACKAGE_NAME}/embedded"
+    "/opt/#{PACKAGE_NAME}"
   end
 
   def ruby_staging_dir
