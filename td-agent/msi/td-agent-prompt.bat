@@ -1,3 +1,3 @@
 @echo off
-set PATH="%~dp0bin";%PATH%
+set PATH="%~dp0ruby\bin";%PATH%
 title Td-agent Command Prompt

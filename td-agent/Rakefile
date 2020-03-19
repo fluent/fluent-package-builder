@@ -391,10 +391,10 @@ class BuildTask
   end
 
   def extract_ruby_installer
-    ensure_directory(File.dirname(ruby_staging_dir)) do
+    ensure_directory(File.dirname(ruby_installer_staging_dir)) do
       path = File.expand_path(@download_task.file_ruby_installer_x64)
       src_dir = File.basename(path).sub(/\.7z$/, '')
-      dest_dir = File.basename(ruby_staging_dir)
+      dest_dir = File.basename(ruby_installer_staging_dir)
 
       rm_rf(dest_dir)
       sh("7z",
@@ -406,7 +406,7 @@ class BuildTask
   end
 
   def setup_windows_build_env
-    sh("#{ruby_staging_dir}/bin/ridk", "install", "3")
+    sh("#{ruby_installer_staging_dir}/bin/ridk", "install", "3")
   end
 
   def default_root
@@ -421,14 +421,16 @@ class BuildTask
     "/opt/#{PACKAGE_NAME}"
   end
 
-  def ruby_staging_dir
-    File.join(STAGING_DIR, install_prefix)
+  def ruby_installer_staging_dir
+    File.join(STAGING_DIR, "ruby")
   end
 
   def gem_command
-    command = "#{install_prefix}/bin/gem"
-    command = File.join(STAGING_DIR, command) if windows?
-    command
+    if windows?
+      File.join(ruby_installer_staging_dir, "bin/gem")
+    else
+      "#{install_prefix}/bin/gem"
+    end
   end
 
   def gem_dir_version
@@ -442,11 +444,10 @@ class BuildTask
   end
 
   def gem_install_dir(with_drive_letter: true)
-    dir = File.join("#{install_prefix}", "lib/ruby/gems/#{gem_dir_version}")
-    if windows? && with_drive_letter
-      File.join(default_root, dir)
+    if windows?
+      File.join(default_root, "#{install_prefix}", "ruby", "lib/ruby/gems/#{gem_dir_version}")
     else
-      dir
+      File.join("#{install_prefix}", "lib/ruby/gems/#{gem_dir_version}")
     end
   end
 
@@ -454,7 +455,7 @@ class BuildTask
     dir = `#{gem_command} env gemdir`.strip
     fail "Failed to get default installation directory for gems!" unless $?.success?
     if windows?
-      expected = File.join(STAGING_DIR, gem_install_dir(with_drive_letter: false))
+      expected = File.join(ruby_installer_staging_dir, "lib/ruby/gems/#{gem_dir_version}")
       if dir != expected
         fail "Unsupposed gemdir: #{dir} (expected: #{expected})"
       end
