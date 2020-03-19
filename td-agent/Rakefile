@@ -376,8 +376,9 @@ class BuildTask
     sh("tar", "xvf", tarball, "-C", DOWNLOADS_DIR)
 
     configure_opts = [
-      "--enable-shared",
       "--prefix=#{install_prefix}",
+      "--with-jemalloc",
+      "--enable-shared",
       "--disable-install-doc",
     ]
     cd(ruby_source_dir) do
