@@ -22,8 +22,6 @@ td-agent-builder is a new build system for [td-agent](http://docs.treasuredata.c
   * [RubyInstaller](https://rubyinstaller.org/) 2.2 or later.
   * [Git for Windows](https://gitforwindows.org/)
 
-If you want to build it without Docker, you need to setup additional prerequisites by your self. See [Dockerfile for Windows](td-agent/msi/Dockerfile) for more detail.
-
 ## How to build .rpm package
 
 ```console
@@ -105,9 +103,3 @@ But if you use older GNU/Linux platforms (e.g. Ubuntu 18.04 or before) as your h
 ```
 
 A td-agent-${version}-x64.msi package will be built under td-agent/msi directory.
-
-If you don't want to use Docker, run `msi:selfbuild` task instead:
-
-```console
-% rake msi:selfbuild
-```
