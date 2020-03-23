@@ -425,6 +425,14 @@ class BuildTask
     File.join(STAGING_DIR, "ruby")
   end
 
+  def staging_bindir
+    if windows?
+      expected = File.join(ruby_installer_staging_dir, "bin")
+    else
+      bindir = File.join(STAGING_DIR, install_prefix, "bin")
+    end
+  end
+
   def gem_command
     if windows?
       File.join(ruby_installer_staging_dir, "bin/gem")
@@ -469,10 +477,12 @@ class BuildTask
   end
 
   def gem_install(gem_path)
+    ensure_directory(staging_bindir)
     ensure_directory(gem_staging_dir)
     sh("#{gem_command}", "install",
        "--no-document",
        "--install-dir", "#{gem_staging_dir}",
+       "--bindir", "#{staging_bindir}",
        "#{gem_path}")
   end
 
