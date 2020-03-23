@@ -43,7 +43,7 @@ You can find other supported platforms under td-agent/yum directory.
 
 ### Note for AArch64 platforms
 
-You can also built packages for AArch64 platforms like this:
+You can also build packages for AArch64 platforms like this:
 
 ```console
 % rake yum:build YUM_TARGETS="centos-8-aarch64"
