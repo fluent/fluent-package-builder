@@ -103,3 +103,21 @@ But if you use older GNU/Linux platforms (e.g. Ubuntu 18.04 or before) as your h
 ```
 
 A td-agent-${version}-x64.msi package will be built under td-agent/msi directory.
+
+## How to bump up the package version
+
+* Edit td-agent/config.rb to choose Ruby & Fluentd versions
+* Edit td-agent/core_gems.rb & td-agent/plugin_gems.rb to choose bundled gems
+* Bump up the versions of rpm & deb packages by the following command:
+```
+% cd td-agent
+% rake version:update
+% git diff  # Check the change log
+% git commit -a
+```
+* Build packages
+```
+% rake deb:build
+% rake yum:build
+% rake msi:build
+```
