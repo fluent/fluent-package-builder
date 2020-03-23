@@ -8,3 +8,8 @@ td-agent: executable-not-elf-or-script
 td-agent: missing-dep-for-interpreter
 td-agent: gz-file-not-gzip
 td-agent: no-upstream-changelog
+td-agent: library-not-linked-against-libc
+td-agent: wrong-path-for-interpreter
+td-agent: duplicate-font-file
+td-agent: jar-not-in-usr-share
+td-agent: incorrect-libdir-in-la-file
