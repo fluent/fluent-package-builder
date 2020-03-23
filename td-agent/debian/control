@@ -22,7 +22,6 @@ Homepage: http://www.fluentd.org/
 Package: td-agent
 Architecture: any
 Depends:
-  ruby,
   ${misc:Depends},
   ${shlibs:Depends},
 Description: Treasure Agent: A data collector for Treasure Data
