@@ -46,7 +46,6 @@ BuildRequires:	lz4-devel
 BuildRequires:	pkgconfig
 BuildRequires:	zlib-devel
 BuildRequires:	openssl-devel
-BuildRequires:	postgresql-devel
 %{?systemd_requires}
 BuildRequires: systemd
 Requires(pre): /usr/bin/getent, /usr/sbin/adduser

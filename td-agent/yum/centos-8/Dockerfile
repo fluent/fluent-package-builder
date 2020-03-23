@@ -40,7 +40,6 @@ RUN \
     rpm-build \
     rpmdevtools \
     openssl-devel \
-    postgresql-devel \
     tar \
     zlib-devel && \
   yum clean ${quiet} all
