@@ -505,12 +505,14 @@ class BuildTask
   def gem_install(gem_path)
     ensure_directory(staging_bindir)
     ensure_directory(gem_staging_dir)
+    env_restore = ENV["MAKEFLAGS"]
     ENV["MAKEFLAGS"] = "-j#{Etc.nprocessors}"
     sh("#{gem_command}", "install",
        "--no-document",
        "--install-dir", "#{gem_staging_dir}",
        "--bindir", "#{staging_bindir}",
        "#{gem_path}")
+    ENV["MAKEFLAGS"] = env_restore
   end
 
   def install_gems(category)
@@ -545,11 +547,11 @@ class BuildTask
   def collect_gem_licenses
     puts "Collecting licenses of gems..."
 
-    restore = ENV["GEM_PATH"]
+    env_restore = ENV["GEM_PATH"]
     ENV["GEM_PATH"] = gem_staging_dir
     gems_descriptions = `#{gem_command} list -d`
     gems_descriptions.gsub!(STAGING_DIR, "") unless windows?
-    ENV["GEM_PATH"] = restore
+    ENV["GEM_PATH"] = env_restore
 
     ensure_directory(licenses_staging_dir) do
       File.open("LICENSES-gems.txt", 'w', 0644) do |f|
