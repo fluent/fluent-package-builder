@@ -528,8 +528,10 @@ class BuildTask
       end
       tarball = @download_task.file_ruby_source
       ruby_source_dir = File.basename(tarball.sub(/\.tar\.gz$/, ''))
-      sh("tar", "xf", tarball, File.join(ruby_source_dir, "COPYING"), "--strip", "1")
-      mv("COPYING", "LICENSE-Ruby.txt")
+      license_file = File.join(ruby_source_dir, "COPYING")
+      sh("tar", "xf", tarball, license_file)
+      mv(license_file, "LICENSE-Ruby.txt")
+      rm_rf(ruby_source_dir)
     end
   end
 
