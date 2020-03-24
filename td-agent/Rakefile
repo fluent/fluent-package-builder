@@ -543,6 +543,8 @@ class BuildTask
   end
 
   def collect_gem_licenses
+    puts "Collecting licenses of gems..."
+
     restore = ENV["GEM_PATH"]
     ENV["GEM_PATH"] = gem_staging_dir
     gems_descriptions = `#{gem_command} list -d`
