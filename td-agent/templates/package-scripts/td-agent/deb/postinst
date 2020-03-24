@@ -81,11 +81,6 @@ case "$1" in
 esac
 
 
-chmod 755 /usr/sbin/<%= project_name %>
-chmod 755 /usr/sbin/<%= project_name %>-gem
-if [ -f /usr/sbin/<%= project_name %>-ui ]; then
-    chmod 755 /usr/sbin/<%= project_name %>-ui
-fi
 if [ -f /usr/bin/td ]; then
     chmod 755 /usr/bin/td
 fi
@@ -97,10 +92,6 @@ if [ ! -e "/etc/default/<%= project_name %>" ]; then
 TD_AGENT_OPTIONS=""
 
 EOF
-fi
-
-if [ -d "/etc/systemd/system/" ]; then
-    chmod 644 /etc/systemd/system/<%= project_name %>.service
 fi
 
 <% if install_message %>

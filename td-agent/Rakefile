@@ -370,7 +370,7 @@ class BuildTask
 
   def render_systemd_unit_file(dest_path, config)
     template_file_path = template_path('etc', 'systemd', 'td-agent.service.erb')
-    render_template(dest_path, template_file_path, config, { mode: 0755 })
+    render_template(dest_path, template_file_path, config)
   end
 
   def build_ruby_from_source
