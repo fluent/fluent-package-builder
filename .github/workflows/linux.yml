@@ -19,7 +19,7 @@ jobs:
         include:
           - os: debian-buster
             arch: arm64
-            taget_suffix: -arm64
+            target_suffix: -arm64
           - os: ubuntu-bionic
             arch: arm64
             target_suffix: -arm64
