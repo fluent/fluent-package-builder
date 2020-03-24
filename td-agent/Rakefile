@@ -252,6 +252,16 @@ class BuildTask
       desc "Install all gems"
       task :gems => [:plugin_gems]
 
+      desc "Collect licenses of bundled softwares"
+      task :licenses => [:gems] do
+        install_ruby_license
+        install_td_agent_license
+        collect_gem_licenses
+      end
+
+      desc "Install all components"
+      task :all => [:licenses]
+
       debian_pkg_scripts = ["preinst", "postinst", "prerm", "postrm"]
       debian_pkg_scripts.each do |script|
         CLEAN.include(File.join("..", "debian", script))
@@ -463,6 +473,18 @@ class BuildTask
     end
   end
 
+  def td_agent_staging_dir
+    if windows?
+      STAGING_DIR
+    else
+      File.join(STAGING_DIR, install_prefix)
+    end
+  end
+
+  def licenses_staging_dir
+    File.join(td_agent_staging_dir, "LICENSES")
+  end
+
   def gem_staging_dir
     dir = `#{gem_command} env gemdir`.strip
     fail "Failed to get default installation directory for gems!" unless $?.success?
@@ -495,6 +517,40 @@ class BuildTask
     pattern = File.join(DOWNLOADS_DIR, category, '*.gem')
     Dir.glob(File.expand_path(pattern)).sort.each do |gem_path|
       gem_install(gem_path)
+    end
+  end
+
+  def install_ruby_license
+    ensure_directory(licenses_staging_dir) do
+      if windows?
+        src  = File.join(ruby_installer_staging_dir, "LICENSE.txt")
+        mv(src, "LICENSE-RubyInstaller.txt")
+      end
+      tarball = @download_task.file_ruby_source
+      ruby_source_dir = File.basename(tarball.sub(/\.tar\.gz$/, ''))
+      sh("tar", "xf", tarball, File.join(ruby_source_dir, "COPYING"), "--strip", "1")
+      mv("COPYING", "LICENSE-Ruby.txt")
+    end
+  end
+
+  def install_td_agent_license
+    ensure_directory(licenses_staging_dir)
+    src = File.join(__dir__, "..", "LICENSE")
+    dest = File.join(licenses_staging_dir, "LICENSE-td-agent.txt")
+    cp(src, dest)
+  end
+
+  def collect_gem_licenses
+    restore = ENV["GEM_PATH"]
+    ENV["GEM_PATH"] = gem_staging_dir
+    gems_descriptions = `#{gem_command} list -d`
+    gems_descriptions.gsub!(STAGING_DIR, "") unless windows?
+    ENV["GEM_PATH"] = restore
+
+    ensure_directory(licenses_staging_dir) do
+      File.open("LICENSES-gems.txt", 'w', 0644) do |f|
+        f.write(gems_descriptions)
+      end
     end
   end
 end
@@ -584,7 +640,7 @@ class WindowsPackageTask
       end
 
       desc "Build MSI package without using Docker"
-      task :selfbuild => [:"build:msi_config", :"build:gems"] do
+      task :selfbuild => [:"build:msi_config", :"build:all"] do
         run_build
       end
 

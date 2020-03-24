@@ -35,7 +35,7 @@ end
   ["clobber",          "Remove any generated files"],
   ["build:deb_config", "Create configuration files for Debian like systems"],
   ["build:rpm_config", "Create configuration files for Red Hat like systems"],
-  ["build:gems",       "Install all gems"],
+  ["build:all",        "Install all components"],
   ["apt:build",        "Build deb packages"],
   ["yum:build",        "Build RPM packages"],
   ["msi:build",        "Build MSI package (alias for msi:dockerbuild)"],
