@@ -465,7 +465,7 @@ class BuildTask
     "#{rb_major}.#{rb_minor}.0" # gem path's teeny version is always 0
   end
 
-  def gem_install_dir(with_drive_letter: true)
+  def gem_install_dir
     if windows?
       File.join(default_root, "#{install_prefix}", "ruby", "lib/ruby/gems/#{gem_dir_version}")
     else
