@@ -6,7 +6,6 @@ Uploaders: HATAKE Hiroshi <hatake@clear-code.com>
 Build-Depends:
   debhelper (>= 10),
   cdbs,
-  autotools-dev,
   pkg-config,
   liblz4-dev,
   zlib1g-dev,
