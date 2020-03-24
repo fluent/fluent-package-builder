@@ -49,3 +49,13 @@ jobs:
         run: |
           cp /usr/bin/qemu-aarch64-static td-agent/yum/${{ matrix.os }}/
           rake yum:build YUM_TARGETS=${{ matrix.os }}${{ matrix.target_suffix }}
+      - uses: actions/upload-artifact@master
+        if: matrix.os == 'debian-buster' || matrix.os == 'ubuntu-bionic'
+        with:
+          name: packages-${{ matrix.os }}${{ matrix.target_suffix }}
+          path: td-agent/apt/repositories
+      - uses: actions/upload-artifact@master
+        if: matrix.os == 'centos-7' || matrix.os == 'centos-8'
+        with:
+          name: packages-${{ matrix.os }}${{ matrix.target_suffix }}
+          path: td-agent/yum/repositories

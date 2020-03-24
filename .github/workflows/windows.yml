@@ -13,3 +13,7 @@ jobs:
       - name: Build
         run: |
           rake msi:dockerbuild
+      - uses: actions/upload-artifact@master
+        with:
+          name: packages-windows-x86_64
+          path: td-agent/msi/repositories

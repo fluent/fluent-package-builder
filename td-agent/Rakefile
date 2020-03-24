@@ -661,6 +661,7 @@ class WindowsPackageTask
 
   def run_build
     output_dir = MSI_OUTPUT_DIR.gsub(File::ALT_SEPARATOR, File::SEPARATOR)
+    ensure_directory(output_dir)
 
     cd("msi") do
       # Pick up package contents
