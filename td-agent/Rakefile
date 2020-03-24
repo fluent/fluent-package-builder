@@ -254,16 +254,20 @@ class BuildTask
 
       debian_pkg_scripts = ["preinst", "postinst", "prerm", "postrm"]
       debian_pkg_scripts.each do |script|
-        CLEAN.include(File.join("debian", script))
+        CLEAN.include(File.join("..", "debian", script))
       end
 
       desc "Create debian package script files from template"
       task :deb_scripts do
-        # copy pre/post scripts into "debian" directory
+        # Note: "debian" directory in this directory isn't used dilectly, it's
+        # copied to the top directory of td-agent-builder in Docker container.
+        # Since this task is executed in the container, package scripts should
+        # be generated to the "debian" directory under the top directory
+        # instead of this directory's one.
         debian_pkg_scripts.each do |script|
           src = template_path('package-scripts', 'td-agent', "deb", script)
           next unless File.exist?(src)
-          dest = File.join("debian", File.basename(script))
+          dest = File.join("..", "debian", File.basename(script))
           render_template(dest, src, template_config, { mode: 0755 })
         end
       end
