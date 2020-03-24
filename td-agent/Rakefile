@@ -286,11 +286,11 @@ class BuildTask
         end
       end
 
-      desc "Create sbin script files from template"
-      task :sbin_scripts do
-        ["td-agent", "td-agent-gem"].each do |command|
-          src = template_path('usr', 'sbin', "#{command}.erb")
-          dest = File.join(STAGING_DIR, 'usr', 'sbin', command)
+      desc "Create bin script files from template"
+      task :bin_scripts do
+        ["usr/bin/td", "usr/sbin/td-agent", "usr/sbin/td-agent-gem"].each do |script|
+          src = template_path("#{script}.erb")
+          dest = File.join(STAGING_DIR, script)
           render_template(dest, src, template_config, { mode: 0755 })
         end
       end
@@ -317,13 +317,13 @@ class BuildTask
       end
 
       desc "Create configuration files for Red Hat like systems"
-      task :rpm_config => [:td_agent_config, :sbin_scripts, :rpm_systemd]
+      task :rpm_config => [:td_agent_config, :bin_scripts, :rpm_systemd]
 
       desc "Create configuration files for Debian like systems"
-      task :deb_config => [:td_agent_config, :sbin_scripts, :deb_systemd, :deb_scripts]
+      task :deb_config => [:td_agent_config, :bin_scripts, :deb_systemd, :deb_scripts]
 
       desc "Create configuration files for Windows"
-      task :msi_config => [:td_agent_config, :sbin_scripts, :wix_config]
+      task :msi_config => [:td_agent_config, :wix_config]
     end
   end
 

@@ -1,4 +1,5 @@
 opt/*
+usr/bin/*
 usr/sbin/*
 etc/logrotate.d/*
 etc/systemd/system/*

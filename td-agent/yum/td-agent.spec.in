@@ -81,6 +81,7 @@ fi
 %{_sysconfdir}/logrotate.d/@PACKAGE@.logrotate
 %{_sysconfdir}/@PACKAGE@/@PACKAGE@.conf.tmpl
 %{_unitdir}/@PACKAGE@.service
+%{_bindir}/td
 %{_sbindir}/td-agent
 %{_sbindir}/td-agent-gem
 %config(noreplace) %{_sysconfdir}/@PACKAGE@/@PACKAGE@.conf
