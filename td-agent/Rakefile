@@ -405,22 +405,20 @@ class BuildTask
   end
 
   def extract_ruby_installer
-    ensure_directory(File.dirname(ruby_installer_staging_dir)) do
+    ensure_directory(td_agent_staging_dir) do
       path = File.expand_path(@download_task.file_ruby_installer_x64)
       src_dir = File.basename(path).sub(/\.7z$/, '')
-      dest_dir = File.basename(ruby_installer_staging_dir)
-
-      rm_rf(dest_dir)
       sh("7z",
          "x",    # Extract files with full paths
          "-y",   # Assume yes on all queries
          path)
-      mv(src_dir, dest_dir)
+      mv(Dir.glob(File.join(src_dir, "*")), ".")
+      rm_rf(src_dir)
     end
   end
 
   def setup_windows_build_env
-    sh("#{ruby_installer_staging_dir}/bin/ridk", "install", "3")
+    sh("#{td_agent_staging_dir}/bin/ridk", "install", "3")
   end
 
   def default_root
@@ -435,21 +433,17 @@ class BuildTask
     "/opt/#{PACKAGE_NAME}"
   end
 
-  def ruby_installer_staging_dir
-    File.join(STAGING_DIR, "ruby")
-  end
-
   def staging_bindir
     if windows?
-      expected = File.join(ruby_installer_staging_dir, "bin")
+      File.join(td_agent_staging_dir, "bin")
     else
-      bindir = File.join(STAGING_DIR, install_prefix, "bin")
+      File.join(STAGING_DIR, install_prefix, "bin")
     end
   end
 
   def gem_command
     if windows?
-      File.join(ruby_installer_staging_dir, "bin/gem")
+      File.join(td_agent_staging_dir, "bin/gem")
     else
       "#{install_prefix}/bin/gem"
     end
@@ -489,7 +483,7 @@ class BuildTask
     dir = `#{gem_command} env gemdir`.strip
     fail "Failed to get default installation directory for gems!" unless $?.success?
     if windows?
-      expected = File.join(ruby_installer_staging_dir, "lib/ruby/gems/#{gem_dir_version}")
+      expected = File.join(td_agent_staging_dir, "lib/ruby/gems/#{gem_dir_version}")
       if dir != expected
         fail "Unsupposed gemdir: #{dir} (expected: #{expected})"
       end
@@ -525,7 +519,7 @@ class BuildTask
   def install_ruby_license
     ensure_directory(licenses_staging_dir) do
       if windows?
-        src  = File.join(ruby_installer_staging_dir, "LICENSE.txt")
+        src  = File.join(td_agent_staging_dir, "LICENSE.txt")
         mv(src, "LICENSE-RubyInstaller.txt")
       end
       tarball = @download_task.file_ruby_source
