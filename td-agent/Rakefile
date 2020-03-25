@@ -358,7 +358,7 @@ class BuildTask
     unless windows?
       path_config = {
         install_path: install_prefix,
-        gem_install_path: gem_install_dir,
+        gem_install_path: File.join(install_prefix, gem_dir_suffix),
       }
       config.merge!(path_config)
     end
@@ -469,8 +469,8 @@ class BuildTask
     "#{rb_major}.#{rb_minor}.0" # gem path's teeny version is always 0
   end
 
-  def gem_install_dir
-    File.join("#{install_prefix}", "lib/ruby/gems/#{gem_dir_version}")
+  def gem_dir_suffix
+    "lib/ruby/gems/#{gem_dir_version}"
   end
 
   def licenses_staging_dir
@@ -478,20 +478,19 @@ class BuildTask
   end
 
   def gem_staging_dir
-    dir = `#{gem_command} env gemdir`.strip
+    gemdir = `#{gem_command} env gemdir`.strip
     fail "Failed to get default installation directory for gems!" unless $?.success?
+
     if windows?
-      expected = File.join(td_agent_staging_dir, "lib/ruby/gems/#{gem_dir_version}")
-      if dir != expected
-        fail "Unsupposed gemdir: #{dir} (expected: #{expected})"
-      end
-      dir
+      expected = File.join(td_agent_staging_dir, gem_dir_suffix)
+      staging_dir = expected
     else
-      if dir != gem_install_dir
-        fail "Unsupposed gemdir: #{dir} (expected: #{gem_install_dir})"
-      end
-      File.join(STAGING_DIR, dir)
+      expected = File.join(install_prefix, gem_dir_suffix)
+      staging_dir = File.join(STAGING_DIR, expected)
     end
+    fail "Unsupposed gemdir: #{gemdir} (expected: #{expected})" unless gemdir == expected
+
+    staging_dir
   end
 
   def gem_install(gem_path)
