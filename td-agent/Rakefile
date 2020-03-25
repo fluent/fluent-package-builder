@@ -314,6 +314,7 @@ class BuildTask
       task :win_batch_files do
         ensure_directory(staging_bindir)
         cp("msi/td-agent-prompt.bat", td_agent_staging_dir)
+        cp("msi/td-agent-post-install.bat", staging_bindir)
         cp("msi/td-agent.bat", staging_bindir)
         cp("msi/td-agent-gem.bat", staging_bindir)
       end
