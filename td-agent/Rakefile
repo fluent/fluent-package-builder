@@ -440,6 +440,8 @@ class BuildTask
   end
 
   def td_agent_staging_dir
+    # The staging directory on windows doesn't have install_prefix,
+    # it's added by the installer.
     if windows?
       STAGING_DIR
     else
@@ -482,11 +484,11 @@ class BuildTask
     fail "Failed to get default installation directory for gems!" unless $?.success?
 
     if windows?
-      expected = File.join(td_agent_staging_dir, gem_dir_suffix)
+      expected    = File.join(td_agent_staging_dir, gem_dir_suffix)
       staging_dir = expected
     else
-      expected = File.join(install_prefix, gem_dir_suffix)
-      staging_dir = File.join(STAGING_DIR, expected)
+      expected    = File.join(install_prefix,       gem_dir_suffix)
+      staging_dir = File.join(td_agent_staging_dir, gem_dir_suffix)
     end
     fail "Unsupposed gemdir: #{gemdir} (expected: #{expected})" unless gemdir == expected
 
