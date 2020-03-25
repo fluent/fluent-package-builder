@@ -307,11 +307,10 @@ class BuildTask
 
       desc "Install additional .bat files for Windows"
       task :win_batch_files do
-        staging_bin_dir = File.join(td_agent_staging_dir, "bin")
-        ensure_directory(staging_bin_dir)
+        ensure_directory(staging_bindir)
         cp("msi/td-agent-prompt.bat", td_agent_staging_dir)
-        cp("msi/td-agent.bat", staging_bin_dir)
-        cp("msi/td-agent-gem.bat", staging_bin_dir)
+        cp("msi/td-agent.bat", staging_bindir)
+        cp("msi/td-agent-gem.bat", staging_bindir)
       end
 
       desc "Create systemd unit file for Red Hat like systems"
@@ -454,7 +453,7 @@ class BuildTask
 
   def gem_command
     if windows?
-      File.join(staging_bin_dir, "gem")
+      File.join(staging_bindir, "gem")
     else
       "#{install_prefix}/bin/gem"
     end
