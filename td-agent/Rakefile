@@ -352,11 +352,17 @@ class BuildTask
     config = {
       project_name: PACKAGE_NAME,
       version: PACKAGE_VERSION,
-      install_path: File.join(default_root, install_prefix),
-      gem_install_path: gem_install_dir,
       install_message: nil,
       pkg_type: nil,
     }
+
+    unless windows?
+      path_config = {
+        install_path: install_prefix,
+        gem_install_path: gem_install_dir,
+      }
+      config.merge!(path_config)
+    end
 
     if params
       config.merge(params)
@@ -430,29 +436,25 @@ class BuildTask
     sh("#{td_agent_staging_dir}/bin/ridk", "install", "3")
   end
 
-  def default_root
-    if windows?
-      "C:"
-    else
-      "/"
-    end
-  end
-
   def install_prefix
     "/opt/#{PACKAGE_NAME}"
   end
 
-  def staging_bindir
+  def td_agent_staging_dir
     if windows?
-      File.join(td_agent_staging_dir, "bin")
+      STAGING_DIR
     else
-      File.join(STAGING_DIR, install_prefix, "bin")
+      File.join(STAGING_DIR, install_prefix)
     end
+  end
+
+  def staging_bindir
+    File.join(td_agent_staging_dir, "bin")
   end
 
   def gem_command
     if windows?
-      File.join(td_agent_staging_dir, "bin/gem")
+      File.join(staging_bin_dir, "gem")
     else
       "#{install_prefix}/bin/gem"
     end
@@ -469,19 +471,7 @@ class BuildTask
   end
 
   def gem_install_dir
-    if windows?
-      File.join(default_root, "#{install_prefix}", "ruby", "lib/ruby/gems/#{gem_dir_version}")
-    else
-      File.join("#{install_prefix}", "lib/ruby/gems/#{gem_dir_version}")
-    end
-  end
-
-  def td_agent_staging_dir
-    if windows?
-      STAGING_DIR
-    else
-      File.join(STAGING_DIR, install_prefix)
-    end
+    File.join("#{install_prefix}", "lib/ruby/gems/#{gem_dir_version}")
   end
 
   def licenses_staging_dir
