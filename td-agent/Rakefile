@@ -305,6 +305,15 @@ class BuildTask
         end
       end
 
+      desc "Install additional .bat files for Windows"
+      task :win_batch_files do
+        staging_bin_dir = File.join(td_agent_staging_dir, "bin")
+        ensure_directory(staging_bin_dir)
+        cp("msi/td-agent-prompt.bat", td_agent_staging_dir)
+        cp("msi/td-agent.bat", staging_bin_dir)
+        cp("msi/td-agent-gem.bat", staging_bin_dir)
+      end
+
       desc "Create systemd unit file for Red Hat like systems"
       task :rpm_systemd do
         dest =  File.join(STAGING_DIR, 'usr', 'lib', 'systemd', 'system', PACKAGE_NAME + ".service")
@@ -333,7 +342,7 @@ class BuildTask
       task :deb_config => [:td_agent_config, :bin_scripts, :deb_systemd, :deb_scripts]
 
       desc "Create configuration files for Windows"
-      task :msi_config => [:td_agent_config, :wix_config]
+      task :msi_config => [:td_agent_config, :wix_config, :win_batch_files]
     end
   end
 
@@ -412,7 +421,7 @@ class BuildTask
          "x",    # Extract files with full paths
          "-y",   # Assume yes on all queries
          path)
-      mv(Dir.glob(File.join(src_dir, "*")), ".")
+      cp_r(Dir.glob(File.join(src_dir, "*")), ".")
       rm_rf(src_dir)
     end
   end

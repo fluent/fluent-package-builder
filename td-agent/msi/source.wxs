@@ -36,11 +36,6 @@
     </Directory>
 
     <DirectoryRef Id="PROJECTLOCATION">
-      <Component Id="TDAgentPrompt" Guid="EB649FD5-0601-4AD1-A58A-29C7344CA3A1">
-        <File Id="TDAgentPrompt"
-              Name="td-agent-prompt.bat"
-              Source="td-agent-prompt.bat" />
-      </Component>
       <Directory Id="TDAgentEtcDir" Name="etc">
         <Directory Id="TDAgentConfDir" Name="td-agent">
           <Component Id="TDAgentConf"
@@ -70,7 +65,6 @@
     <Feature Id="ProjectFeature" Title="!(loc.FeatureMainName)" Absent="disallow" AllowAdvertise="no" Level="1" ConfigurableDirectory="OPTLOCATION">
       <ComponentGroupRef Id="ProjectDir" />
       <ComponentRef Id="ApplicationShortcut" />
-      <ComponentRef Id="TDAgentPrompt" />
       <ComponentRef Id="TDAgentConf" />
     </Feature>
 
