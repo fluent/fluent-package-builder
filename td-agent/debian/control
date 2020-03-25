@@ -20,6 +20,7 @@ Homepage: http://www.fluentd.org/
 
 Package: td-agent
 Architecture: any
+Pre-Depends: adduser
 Depends:
   ${misc:Depends},
   ${shlibs:Depends},
