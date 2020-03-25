@@ -314,7 +314,7 @@ class BuildTask
 
       desc "Create systemd unit file for Debian like systems"
       task :deb_systemd do
-        dest = File.join(STAGING_DIR, 'etc', 'systemd', 'system', PACKAGE_NAME + ".service")
+        dest = File.join(STAGING_DIR, 'lib', 'systemd', 'system', PACKAGE_NAME + ".service")
         params = {pkg_type: "deb"}
         render_systemd_unit_file(dest, template_config(params))
       end

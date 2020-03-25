@@ -2,5 +2,5 @@ opt/*
 usr/bin/*
 usr/sbin/*
 etc/logrotate.d/*
-etc/systemd/system/*
 etc/td-agent/*
+lib/systemd/system/*
