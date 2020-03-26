@@ -284,21 +284,26 @@ class BuildTask
 
       desc "Create td-agent configuration files from template"
       task :td_agent_config do
-        conf_paths = [
-          ['td-agent', 'td-agent.conf'],
-          ['td-agent', 'td-agent.conf.tmpl'],
-          ['logrotate.d', 'td-agent.logrotate']
+        configs = [
+          "etc/td-agent/td-agent.conf",
+          "etc/td-agent/td-agent.conf.tmpl",
+          "etc/logrotate.d/td-agent.logrotate",
         ]
-        conf_paths.each do |item|
-          src = template_path('etc', *item)
-          dest = File.join(STAGING_DIR, 'etc', *item)
+        configs.each do |config|
+          src = template_path(config)
+          dest = File.join(STAGING_DIR, config)
           render_template(dest, src, template_config)
         end
       end
 
       desc "Create bin script files from template"
       task :bin_scripts do
-        ["usr/bin/td", "usr/sbin/td-agent", "usr/sbin/td-agent-gem"].each do |script|
+        scripts = [
+          "usr/bin/td",
+          "usr/sbin/td-agent",
+          "usr/sbin/td-agent-gem",
+        ]
+        scripts.each do |script|
           src = template_path("#{script}.erb")
           dest = File.join(STAGING_DIR, script)
           render_template(dest, src, template_config, { mode: 0755 })
