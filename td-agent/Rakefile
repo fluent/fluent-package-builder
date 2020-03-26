@@ -278,7 +278,7 @@ class BuildTask
           src = template_path('package-scripts', 'td-agent', "deb", script)
           next unless File.exist?(src)
           dest = File.join("..", "debian", File.basename(script))
-          render_template(dest, src, template_config, { mode: 0755 })
+          render_template(dest, src, template_params, { mode: 0755 })
         end
       end
 
@@ -292,7 +292,7 @@ class BuildTask
         configs.each do |config|
           src = template_path(config)
           dest = File.join(STAGING_DIR, config)
-          render_template(dest, src, template_config)
+          render_template(dest, src, template_params)
         end
       end
 
@@ -306,7 +306,7 @@ class BuildTask
         scripts.each do |script|
           src = template_path("#{script}.erb")
           dest = File.join(STAGING_DIR, script)
-          render_template(dest, src, template_config, { mode: 0755 })
+          render_template(dest, src, template_params, { mode: 0755 })
         end
       end
 
@@ -322,21 +322,21 @@ class BuildTask
       task :rpm_systemd do
         dest =  File.join(STAGING_DIR, 'usr', 'lib', 'systemd', 'system', PACKAGE_NAME + ".service")
         params = {pkg_type: "rpm"}
-        render_systemd_unit_file(dest, template_config(params))
+        render_systemd_unit_file(dest, template_params(params))
       end
 
       desc "Create systemd unit file for Debian like systems"
       task :deb_systemd do
         dest = File.join(STAGING_DIR, 'lib', 'systemd', 'system', PACKAGE_NAME + ".service")
         params = {pkg_type: "deb"}
-        render_systemd_unit_file(dest, template_config(params))
+        render_systemd_unit_file(dest, template_params(params))
       end
 
       desc "Create config files for WiX Toolset"
       task :wix_config do
         src  = File.join('msi', 'parameters.wxi.erb')
         dest = File.join('msi', 'parameters.wxi')
-        render_template(dest, src, template_config)
+        render_template(dest, src, template_params)
       end
 
       desc "Create configuration files for Red Hat like systems"
@@ -352,7 +352,7 @@ class BuildTask
 
   private
 
-  def template_config(params = nil)
+  def template_params(params = nil)
     config = {
       project_name: PACKAGE_NAME,
       version: PACKAGE_VERSION,
@@ -361,11 +361,11 @@ class BuildTask
     }
 
     unless windows?
-      path_config = {
+      path_params = {
         install_path: install_prefix,
         gem_install_path: File.join(install_prefix, gem_dir_suffix),
       }
-      config.merge!(path_config)
+      config.merge!(path_params)
     end
 
     if params
