@@ -197,10 +197,10 @@ class DownloadTask
           end
           gem = "#{name}-#{version}.gem"
           numbered_gem = sprintf("%0#{digits}d-%s", index, gem)
-          sh("gem", "fetch", "#{name}", *version_option)
+          sh("gem", "fetch", name, *version_option)
           `gem install --explain #{gem} --no-document`
           fail "Failed to download #{gem}!" unless $?.success?
-          mv("#{gem}", "#{numbered_gem}")
+          mv(gem, numbered_gem)
         end
       end
     end
@@ -509,11 +509,11 @@ class BuildTask
     ensure_directory(gem_staging_dir)
     env_restore = ENV["MAKEFLAGS"]
     ENV["MAKEFLAGS"] = "-j#{Etc.nprocessors}"
-    sh("#{gem_command}", "install",
+    sh(gem_command, "install",
        "--no-document",
-       "--install-dir", "#{gem_staging_dir}",
-       "--bindir", "#{staging_bindir}",
-       "#{gem_path}")
+       "--install-dir", gem_staging_dir,
+       "--bindir", staging_bindir,
+       gem_path)
     ENV["MAKEFLAGS"] = env_restore
   end
 
@@ -576,7 +576,7 @@ class LinuxPackageTask < PackageTask
 
   def define_archive_task
     repo_files = `git ls-files --full-name`.split("\n").collect do |path|
-      File.join("..", "#{path}")
+      File.join("..", path)
     end
 
     file @archive_name => [*repo_files, *@download_task.files]  do
@@ -599,8 +599,8 @@ class LinuxPackageTask < PackageTask
         ensure_directory(dest_dir)
         cp_r(path, dest_dir)
       end
-      sh("tar", "cvfz", @full_archive_name, "#{@archive_base_name}")
-      rm_rf("#{@archive_base_name}")
+      sh("tar", "cvfz", @full_archive_name, @archive_base_name)
+      rm_rf(@archive_base_name)
     end
   end
 
