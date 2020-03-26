@@ -463,6 +463,9 @@ class BuildTask
     if windows?
       File.join(staging_bindir, "gem")
     else
+      # On GNU/Linux we don't use gem command in staging path, use the one
+      # installed in the proper path instead since Ruby doesn't support
+      # running without install (although there are some solutions like rbenv).
       "#{install_prefix}/bin/gem"
     end
   end
