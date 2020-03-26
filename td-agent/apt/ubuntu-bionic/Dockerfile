@@ -51,7 +51,3 @@ RUN \
   apt build-dep -y ruby && \
   apt clean && \
   rm -rf /var/lib/apt/lists/*
-# Prohibit to use rubygems-integration's rake
-RUN \
-  gem install rake -v 12.3.3 && \
-    rm -rf /usr/lib/ruby/gems/*/cache/*.gem
