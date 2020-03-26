@@ -164,13 +164,15 @@ class DownloadTask
     @file_fluentd_archive = File.join(DOWNLOADS_DIR, "fluentd-#{FLUENTD_REVISION}.tar.gz")
     file @file_fluentd_archive do
       ensure_directory(DOWNLOADS_DIR) do
-        remove_dir("fluentd", true) if File.exists?("fluentd")
+        dirname = "fluentd-#{FLUENTD_REVISION}"
+        rm_rf("fluentd") if File.exists?("fluentd")
+        rm_rf(dirname) if File.exists?(dirname)
         sh("git", "clone", "https://github.com/fluent/fluentd.git")
         cd("fluentd") do
-          sh("git", "archive", FLUENTD_REVISION,
-             "--prefix", "fluentd-#{FLUENTD_REVISION}/",
-             "--output", @file_fluentd_archive)
+          sh("git", "checkout", FLUENTD_REVISION)
         end
+        mv("fluentd", dirname)
+        sh("tar", "cvfz", "#{dirname}.tar.gz", dirname)
       end
     end
   end
