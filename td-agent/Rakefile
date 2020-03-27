@@ -690,6 +690,7 @@ class WindowsPackageTask
       sh(candle_path,
          "-nologo",                            # Skip candle logo
          "-dProjectSourceDir=#{@staging_dir}", # Define a parameter
+         "-arch", "#{arch}",
          "project-files.wxs",
          "source.wxs")
 
