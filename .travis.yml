@@ -1,0 +1,15 @@
+language: ruby
+os: linux
+dist: bionic
+arch: arm64
+services:
+  - docker
+jobs:
+  - env: RAKE_TASK="apt:build" APT_TARGETS="debian-buster"
+  - env: RAKE_TASK="apt:build" APT_TARGETS="ubuntu-bionic"
+  # centos-release-scl isn't available for centos-7 on aarch64
+  # TODO: Use rbenv instead
+  # - env: RAKE_TASK="yum:build" YUM_TARGETS="centos-7"
+  - env: RAKE_TASK="yum:build" YUM_TARGETS="centos-8"
+script:
+  - rake $RAKE_TASK
