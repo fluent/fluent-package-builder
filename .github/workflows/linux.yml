@@ -13,24 +13,6 @@ jobs:
           - ubuntu-bionic
           - centos-7
           - centos-8
-        arch:
-          - amd64
-          - arm64
-        include:
-          - os: debian-buster
-            arch: arm64
-            target_suffix: -arm64
-          - os: ubuntu-bionic
-            arch: arm64
-            target_suffix: -arm64
-          - os: centos-8
-            arch: arm64
-            target_suffix: -aarch64
-        exclude:
-          # centos-release-scl isn't available for aarch64:
-          # https://bugs.centos.org/view.php?id=16644
-          - os: centos-7
-            arch: arm64
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
@@ -38,24 +20,21 @@ jobs:
         run: |
           sudo apt update
           sudo apt -V install ruby
-          sudo apt -V install qemu-user-static
       - name: Build deb with Docker
         if: matrix.os == 'debian-buster' || matrix.os == 'ubuntu-bionic'
         run: |
-          cp /usr/bin/qemu-aarch64-static td-agent/apt/${{ matrix.os }}/
-          rake apt:build APT_TARGETS=${{ matrix.os }}${{ matrix.target_suffix }}
+          rake apt:build APT_TARGETS=${{ matrix.os }}
       - name: Build rpm with Docker
         if: matrix.os == 'centos-7' || matrix.os == 'centos-8'
         run: |
-          cp /usr/bin/qemu-aarch64-static td-agent/yum/${{ matrix.os }}/
-          rake yum:build YUM_TARGETS=${{ matrix.os }}${{ matrix.target_suffix }}
+          rake yum:build YUM_TARGETS=${{ matrix.os }}
       - uses: actions/upload-artifact@master
         if: matrix.os == 'debian-buster' || matrix.os == 'ubuntu-bionic'
         with:
-          name: packages-${{ matrix.os }}${{ matrix.target_suffix }}
+          name: packages-${{ matrix.os }}
           path: td-agent/apt/repositories
       - uses: actions/upload-artifact@master
         if: matrix.os == 'centos-7' || matrix.os == 'centos-8'
         with:
-          name: packages-${{ matrix.os }}${{ matrix.target_suffix }}
+          name: packages-${{ matrix.os }}
           path: td-agent/yum/repositories
