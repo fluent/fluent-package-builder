@@ -509,14 +509,19 @@ class BuildTask
   def gem_install(gem_path)
     ensure_directory(staging_bindir)
     ensure_directory(gem_staging_dir)
-    env_restore = ENV["MAKEFLAGS"]
+
+    makeflags = ENV["MAKEFLAGS"]
+    gem_home  = ENV["GEM_HOME"]
     ENV["MAKEFLAGS"] = "-j#{Etc.nprocessors}"
+    ENV["GEM_HOME"]  = gem_staging_dir
+
     sh(gem_command, "install",
        "--no-document",
-       "--install-dir", gem_staging_dir,
        "--bindir", staging_bindir,
        gem_path)
-    ENV["MAKEFLAGS"] = env_restore
+
+    ENV["GEM_HOME"]  = gem_home
+    ENV["MAKEFLAGS"] = makeflags
   end
 
   def install_gems(category)
