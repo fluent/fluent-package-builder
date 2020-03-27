@@ -119,7 +119,13 @@ class DownloadTask
 
       unless sha256sum.nil?
         digest = Digest::SHA256.file(tmp_filename)
-        fail "Downloaded #{tmp_filename} is broken!!!" if digest != sha256sum
+        if digest != sha256sum
+          fail "
+          sha256sum of #{filename} did not matched!!!
+            expected: #{sha256sum}
+            actual:   #{digest}
+          "
+        end
       end
 
       mv(tmp_filename, filename)
