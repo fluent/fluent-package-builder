@@ -11,6 +11,7 @@ jobs:
         os:
           - debian-buster
           - ubuntu-bionic
+          - centos-6
           - centos-7
           - centos-8
     runs-on: ubuntu-latest
@@ -25,7 +26,7 @@ jobs:
         run: |
           rake apt:build APT_TARGETS=${{ matrix.os }}
       - name: Build rpm with Docker
-        if: matrix.os == 'centos-7' || matrix.os == 'centos-8'
+        if: matrix.os == 'centos-6' || matrix.os == 'centos-7' || matrix.os == 'centos-8'
         run: |
           rake yum:build YUM_TARGETS=${{ matrix.os }}
       - uses: actions/upload-artifact@master
@@ -34,7 +35,7 @@ jobs:
           name: packages-${{ matrix.os }}
           path: td-agent/apt/repositories
       - uses: actions/upload-artifact@master
-        if: matrix.os == 'centos-7' || matrix.os == 'centos-8'
+        if: matrix.os == 'centos-6' || matrix.os == 'centos-7' || matrix.os == 'centos-8'
         with:
           name: packages-${{ matrix.os }}
           path: td-agent/yum/repositories
