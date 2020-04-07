@@ -1,3 +1,9 @@
+td-agent (3.7.0-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Hiroshi Hatake <hatake@clear-code.com>  Tue, 07 Apr 2020 11:27:14 +0900
+
 td-agent (3.6.0-1) unstable; urgency=low
 
   * New upstream release.
