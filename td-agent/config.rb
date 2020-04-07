@@ -1,7 +1,7 @@
 PACKAGE_NAME = "td-agent"
-PACKAGE_VERSION = "3.6.0"
+PACKAGE_VERSION = "3.7.0"
 
-FLUENTD_REVISION = "9d113029d4550ce576d8825bfa9612aa3e55bff0" # v1.9.2
+FLUENTD_REVISION = "7e3022efbb972d1a46fb66d1a6e2698abb46564e" # v1.10.0
 
 # https://www.ruby-lang.org/en/downloads/
 BUNDLED_RUBY_VERSION = "2.4.9"
