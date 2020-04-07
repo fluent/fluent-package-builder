@@ -161,12 +161,6 @@ if [ -n "${TD_AGENT_PID_FILE}" ]; then
   TD_AGENT_ARGS="${TD_AGENT_ARGS} --daemon ${TD_AGENT_PID_FILE}"
 fi
 
-# Use jemalloc to avoid memory fragmentation
-# TODO: Use custom built version?
-if [ -f "/usr/lib64/libjemalloc.so.1" ]; then
-  export LD_PRELOAD="/usr/lib64/libjemalloc.so.1"
-fi
-
 kill_by_file() {
   local sig="$1"
   shift 1
