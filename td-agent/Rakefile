@@ -334,6 +334,13 @@ class BuildTask
         render_systemd_unit_file(dest, template_params(params))
       end
 
+      desc "Create sysv init file for Red Hat like systems"
+      task :rpm_sysvinit do
+        dest =  File.join(STAGING_DIR, 'etc', 'init.d', PACKAGE_NAME)
+        params = {pkg_type: "rpm"}
+        render_sysv_init_file(dest, template_params(params))
+      end
+
       desc "Create systemd unit file for Debian like systems"
       task :deb_systemd do
         dest = File.join(STAGING_DIR, 'lib', 'systemd', 'system', PACKAGE_NAME + ".service")
@@ -348,8 +355,11 @@ class BuildTask
         render_template(dest, src, template_params)
       end
 
-      desc "Create configuration files for Red Hat like systems"
+      desc "Create configuration files for Red Hat like systems with systemd"
       task :rpm_config => [:td_agent_config, :bin_scripts, :rpm_systemd]
+
+      desc "Create configuration files for Red Hat like systems without systemd"
+      task :rpm_old_config => [:td_agent_config, :bin_scripts, :rpm_sysvinit]
 
       desc "Create configuration files for Debian like systems"
       task :deb_config => [:td_agent_config, :bin_scripts, :deb_systemd, :deb_scripts]
@@ -409,6 +419,11 @@ class BuildTask
   def render_systemd_unit_file(dest_path, config)
     template_file_path = template_path('etc', 'systemd', 'td-agent.service.erb')
     render_template(dest_path, template_file_path, config)
+  end
+
+  def render_sysv_init_file(dest_path, config)
+    template_file_path = template_path('etc', 'init.d', 'td-agent.erb')
+    render_template(dest_path, template_file_path, config, {mode: 0755})
   end
 
   def build_ruby_from_source
@@ -626,6 +641,7 @@ class LinuxPackageTask < PackageTask
 
   def yum_targets_default
     [
+      "centos-6",
       "centos-7",
       "centos-8",
     ]

@@ -18,7 +18,8 @@
 # under the License.
 
 %define _centos_ver %{?centos_ver:%{centos_ver}}%{!?centos_ver:8}
-%define use_scl_ruby (%{_centos_ver} == 7)
+%define use_scl_ruby (%{_centos_ver} <= 7)
+%define use_systemd (%{_centos_ver} >= 7)
 
 Name:		@PACKAGE@
 Version:	@VERSION@
@@ -46,8 +47,12 @@ BuildRequires:	lz4-devel
 BuildRequires:	pkgconfig
 BuildRequires:	zlib-devel
 BuildRequires:	openssl-devel
+%if %{use_systemd}
 %{?systemd_requires}
 BuildRequires: systemd
+%else
+Requires: redhat-lsb-core
+%endif
 Requires(pre): /usr/bin/getent, /usr/sbin/adduser
 
 
@@ -61,8 +66,13 @@ The stable distribution of Fluentd, called td-agent.
 %if %{use_scl_ruby}
 . /opt/rh/rh-ruby24/enable
 %endif
+%if %{use_systemd}
 rake build:rpm_config TD_AGENT_STAGING_PATH=%{buildroot}
-rake build:all        TD_AGENT_STAGING_PATH=%{buildroot}
+%else
+rake build:rpm_old_config TD_AGENT_STAGING_PATH=%{buildroot}
+%endif
+rake build:all TD_AGENT_STAGING_PATH=%{buildroot}
+
 cd -
 mkdir -p %{buildroot}%{_localstatedir}/run/@PACKAGE@
 mkdir -p %{buildroot}%{_localstatedir}/log/@PACKAGE@
@@ -80,7 +90,11 @@ fi
 /opt/*
 %{_sysconfdir}/logrotate.d/@PACKAGE@.logrotate
 %{_sysconfdir}/@PACKAGE@/@PACKAGE@.conf.tmpl
+%if %{use_systemd}
 %{_unitdir}/@PACKAGE@.service
+%else
+%{_sysconfdir}/init.d/@PACKAGE@
+%endif
 %{_bindir}/td
 %{_sbindir}/td-agent
 %{_sbindir}/td-agent-gem
