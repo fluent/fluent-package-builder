@@ -30,13 +30,14 @@ td-agent-builder is a new build system for [td-agent](http://docs.treasuredata.c
 
 By default, yum repositories for following platforms will be built under td-agent/yum/repositories/ directory:
 
+  * CentOS 6 (x86_64)
   * CentOS 7 (x86_64)
   * CentOS 8 (x86_64)
 
 You can choose target platforms by `YUM_TARGETS` environment variable like this:
 
 ```console
-% rake yum:build YUM_TARGETS="centos-7,centos-8"
+% rake yum:build YUM_TARGETS="centos-6,centos-7,centos-8"
 ```
 
 You can find other supported platforms under td-agent/yum directory.
