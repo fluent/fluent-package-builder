@@ -32,11 +32,7 @@ class GemsParser
     GemsParser.windows?
   end
 
-  def td_agent_2?
-    !td_agent_3?
-  end
-
-  def td_agent_3?
-    (ENV['BUILD_TD_AGENT_VERSION'] || 3).to_s == '3'
+  def td_agent_4?
+    (ENV['BUILD_TD_AGENT_VERSION'] || 4).to_s == '4'
   end
 end
