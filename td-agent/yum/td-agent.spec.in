@@ -54,6 +54,11 @@ BuildRequires: systemd
 Requires: redhat-lsb-core
 %endif
 Requires(pre): /usr/bin/getent, /usr/sbin/adduser
+Requires: jemalloc
+Requires: libzstd
+Requires: lz4
+Requires: zlib
+Requires: openssl
 
 
 %description
