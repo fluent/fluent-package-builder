@@ -426,6 +426,18 @@ class BuildTask
     render_template(dest_path, template_file_path, config, {mode: 0755})
   end
 
+  def apply_ruby_patches
+    return if BUNDLED_RUBY_PATCHES.nil?
+    BUNDLED_RUBY_PATCHES.each do |patch|
+      patch_name, version_condition = patch
+      dependency = Gem::Dependency.new('', version_condition)
+      if dependency.match?('', BUNDLED_RUBY_VERSION)
+        patch_path = File.join(__dir__, "patches", patch_name)
+        sh("patch", "-p1", "--input=#{patch_path}")
+      end
+    end
+  end
+
   def build_ruby_from_source
     tarball = @download_task.file_ruby_source
     ruby_source_dir = tarball.sub(/\.tar\.gz$/, '')
@@ -439,6 +451,7 @@ class BuildTask
       "--disable-install-doc",
     ]
     cd(ruby_source_dir) do
+      apply_ruby_patches
       sh("./configure #{configure_opts.join(' ')}")
       sh("make", "install", "-j#{Etc.nprocessors}", "DESTDIR=#{STAGING_DIR}")
 
