@@ -5,11 +5,24 @@ arch: arm64
 services:
   - docker
 jobs:
-  - env: RAKE_TASK="apt:build" APT_TARGETS="debian-buster"
-  - env: RAKE_TASK="apt:build" APT_TARGETS="ubuntu-bionic"
+  - env: RAKE_TASK="apt:build" APT_TARGETS="debian-buster" ARCHIVE_BASE="debian-buster" PACKAGE_SYSTEM=apt
+  - env: RAKE_TASK="apt:build" APT_TARGETS="ubuntu-bionic" ARCHIVE_BASE="ubuntu-bionic" PACKAGE_SYSTEM=apt
   # centos-release-scl isn't available for centos-7 on aarch64
   # TODO: Use rbenv instead
-  # - env: RAKE_TASK="yum:build" YUM_TARGETS="centos-7"
-  - env: RAKE_TASK="yum:build" YUM_TARGETS="centos-8"
+  # - env: RAKE_TASK="yum:build" YUM_TARGETS="centos-7" ARCHIVE_BASE="centos-7" PACKAGE_SYSTEM=yum
+  - env: RAKE_TASK="yum:build" YUM_TARGETS="centos-8" ARCHIVE_BASE="centos-8" PACKAGE_SYSTEM=yum
 script:
   - rake $RAKE_TASK
+before_deploy:
+  - export RELEASE_DIRECTORY="td-agent/${PACKAGE_SYSTEM}/repositories/"
+  - tar cJvf package-${ARCHIVE_BASE}-arm64.tar.xz td-agent/${PACKAGE_SYSTEM}/repositories
+  - echo "deploying tarball includes the following directory:"
+  - echo "${RELEASE_DIRECTORY}"
+deploy:
+  provider: releases
+  token: "${TRAVIS_GITHUB_CREDENTIALS}"
+  file_glob: true
+  skip_cleanup: true
+  file: "package-*-arm64.tar.xz"
+  on:
+    tags: true
