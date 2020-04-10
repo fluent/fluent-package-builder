@@ -72,6 +72,7 @@ class DownloadTask
 
   attr_reader :file_ruby_source, :file_ruby_installer_x64
   attr_reader :file_fluentd_archive
+  attr_reader :files_core_gems, :files_plugin_gems
 
   def files
     [
@@ -238,18 +239,20 @@ class BuildTask
 
       desc "Install core_gems"
       task :core_gems => [:"download:core_gems", :ruby] do
-        install_gems('core_gems')
+        install_gems(@download_task.files_core_gems)
       end
 
       desc "Install plugin_gems"
       task :plugin_gems => [:"download:plugin_gems", :fluentd] do
-        install_gems('plugin_gems')
+        install_gems(@download_task.files_plugin_gems)
       end
 
       desc "Install fluentd"
       task :fluentd => [:"download:fluentd", :core_gems] do
         cd(DOWNLOADS_DIR) do
-          sh("tar", "xvf", @download_task.file_fluentd_archive)
+          archive_path = @download_task.file_fluentd_archive
+          fluentd_dir = archive_path.sub(/\.tar\.gz$/, '')
+          sh("tar", "xvf", archive_path) unless File.exists?(fluentd_dir)
           cd("fluentd-#{FLUENTD_REVISION}") do
             sh("rake", "build")
             gem_install("pkg/fluentd-*.gem")
@@ -558,9 +561,8 @@ class BuildTask
     ENV["MAKEFLAGS"] = makeflags
   end
 
-  def install_gems(category)
-    pattern = File.join(DOWNLOADS_DIR, category, '*.gem')
-    Dir.glob(File.expand_path(pattern)).sort.each do |gem_path|
+  def install_gems(files)
+    files.each do |gem_path|
       gem_install(gem_path)
     end
   end
