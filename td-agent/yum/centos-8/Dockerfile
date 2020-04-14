@@ -32,7 +32,6 @@ RUN \
     rubygems \
     rubygem-rake \
     rubygem-bundler \
-    jemalloc-devel \
     git \
     libzstd-devel \
     lz4-devel \

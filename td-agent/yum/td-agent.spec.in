@@ -40,7 +40,6 @@ BuildRequires:	rubygems
 BuildRequires:	rubygem-bundler
 %endif
 BuildRequires:	gcc-c++
-BuildRequires:	jemalloc-devel
 BuildRequires:	git
 BuildRequires:	libzstd-devel
 BuildRequires:	lz4-devel

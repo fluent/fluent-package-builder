@@ -3,6 +3,9 @@ PACKAGE_VERSION = "3.7.0"
 
 FLUENTD_REVISION = "7e3022efbb972d1a46fb66d1a6e2698abb46564e" # v1.10.0
 
+# https://github.com/jemalloc/jemalloc/releases/download/
+JEMALLOC_VERSION = "4.5.0"
+
 # https://www.ruby-lang.org/en/downloads/
 BUNDLED_RUBY_VERSION = "2.4.9"
 BUNDLED_RUBY_SOURCE_SHA256SUM = "f99b6b5e3aa53d579a49eb719dd0d3834d59124159a6d4351d1e039156b1c6ae"

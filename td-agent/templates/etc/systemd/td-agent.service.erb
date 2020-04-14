@@ -8,6 +8,7 @@ Wants=network-online.target
 User=<%= Shellwords.shellescape(project_name) %>
 Group=<%= Shellwords.shellescape(project_name) %>
 LimitNOFILE=65536
+Environment=LD_PRELOAD=<%= install_path %>/lib/libjemalloc.so
 Environment=GEM_HOME=<%= gem_install_path %>/
 Environment=GEM_PATH=<%= gem_install_path %>/
 Environment=FLUENT_CONF=/etc/<%= project_name %>/<%= project_name %>.conf

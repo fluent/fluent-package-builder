@@ -32,7 +32,6 @@ RUN \
     rh-ruby24-rubygems \
     rh-ruby24-rubygem-rake \
     rh-ruby24-rubygem-bundler \
-    jemalloc-devel \
     git \
     libzstd-devel \
     lz4-devel \
