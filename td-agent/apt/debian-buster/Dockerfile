@@ -39,7 +39,6 @@ RUN \
     devscripts \
     ruby-dev \
     ruby-bundler \
-    libjemalloc-dev \
     git \
     libzstd-dev \
     liblz4-dev \

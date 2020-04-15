@@ -70,12 +70,14 @@ end
 class DownloadTask
   include Rake::DSL
 
+  attr_reader :file_jemalloc_source
   attr_reader :file_ruby_source, :file_ruby_installer_x64
   attr_reader :file_fluentd_archive
   attr_reader :files_core_gems, :files_plugin_gems
 
   def files
     [
+      @file_jemalloc_source,
       @file_ruby_source,
       @file_ruby_installer_x64,
       @file_fluentd_archive,
@@ -85,12 +87,16 @@ class DownloadTask
   end
 
   def define
+    define_jemalloc_file
     define_ruby_files
     define_fluentd_archive
     define_gem_files("core_gems")
     define_gem_files("plugin_gems")
 
     namespace :download do
+      desc "Download jemalloc source"
+      task :jemalloc => [@file_jemalloc_source]
+
       desc "Download Ruby source"
       task :ruby => [@file_ruby_source, @file_ruby_installer_x64]
 
@@ -130,6 +136,17 @@ class DownloadTask
       end
 
       mv(tmp_filename, filename)
+    end
+  end
+
+  def define_jemalloc_file
+    version = JEMALLOC_VERSION
+    filename = "jemalloc-#{version}.tar.bz2"
+    url_base = "https://github.com/jemalloc/jemalloc/releases/download/"
+    @file_jemalloc_source = File.join(DOWNLOADS_DIR, filename)
+    file @file_jemalloc_source do
+      url = "#{url_base}/#{version}/#{filename}"
+      download_file(url, filename)
     end
   end
 
@@ -227,8 +244,13 @@ class BuildTask
 
   def define
     namespace :build do
+      desc "Install jemalloc"
+      task :jemalloc => [:"download:jemalloc"] do
+        build_jemalloc unless windows?
+      end
+
       desc "Install Ruby"
-      task :ruby => [:"download:ruby"] do
+      task :ruby => [:jemalloc, :"download:ruby"] do
         if windows?
           extract_ruby_installer
           setup_windows_build_env
@@ -441,6 +463,21 @@ class BuildTask
     end
   end
 
+  def build_jemalloc
+    tarball = @download_task.file_jemalloc_source
+    source_dir = tarball.sub(/\.tar\.bz2$/, '')
+
+    sh("tar", "xvf", tarball, "-C", DOWNLOADS_DIR)
+
+    configure_opts = [
+      "--prefix=#{install_prefix}",
+    ]
+    cd(source_dir) do
+      sh("./configure", *configure_opts)
+      sh("make", "install", "-j#{Etc.nprocessors}", "DESTDIR=#{STAGING_DIR}")
+    end
+  end
+
   def build_ruby_from_source
     tarball = @download_task.file_ruby_source
     ruby_source_dir = tarball.sub(/\.tar\.gz$/, '')
@@ -449,13 +486,12 @@ class BuildTask
 
     configure_opts = [
       "--prefix=#{install_prefix}",
-      "--with-jemalloc",
       "--enable-shared",
       "--disable-install-doc",
     ]
     cd(ruby_source_dir) do
       apply_ruby_patches
-      sh("./configure #{configure_opts.join(' ')}")
+      sh("./configure", *configure_opts)
       sh("make", "install", "-j#{Etc.nprocessors}", "DESTDIR=#{STAGING_DIR}")
 
       # For building gems. The built ruby & gem command cannot use without install.

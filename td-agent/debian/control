@@ -12,7 +12,6 @@ Build-Depends:
   ruby-dev,
   ruby-bundler,
   rake,
-  libjemalloc-dev,
   libzstd-dev,
   libssl-dev
 Standards-Version: 4.3.0
