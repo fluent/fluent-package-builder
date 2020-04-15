@@ -46,6 +46,8 @@ BuildRequires:	lz4-devel
 BuildRequires:	pkgconfig
 BuildRequires:	zlib-devel
 BuildRequires:	openssl-devel
+BuildRequires:	cyrus-sasl-devel
+BuildRequires:	nss-softokn-freebl-devel
 %if %{use_systemd}
 %{?systemd_requires}
 BuildRequires: systemd

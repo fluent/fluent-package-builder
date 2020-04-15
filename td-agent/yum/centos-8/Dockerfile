@@ -33,6 +33,8 @@ RUN \
     rubygem-rake \
     rubygem-bundler \
     git \
+    cyrus-sasl-devel \
+    nss-softokn-freebl-devel \
     libzstd-devel \
     lz4-devel \
     pkg-config \
