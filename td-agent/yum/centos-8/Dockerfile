@@ -24,7 +24,6 @@ ARG DEBUG
 
 RUN \
   quiet=$([ "${DEBUG}" = "yes" ] || echo "--quiet") && \
-  dnf install -y ${quiet} epel-release && \
   dnf install --enablerepo=PowerTools -y ${quiet} \
     make \
     gcc-c++ \
@@ -35,8 +34,6 @@ RUN \
     git \
     cyrus-sasl-devel \
     nss-softokn-freebl-devel \
-    libzstd-devel \
-    lz4-devel \
     pkg-config \
     rpm-build \
     rpmdevtools \
