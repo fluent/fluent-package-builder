@@ -41,8 +41,6 @@ BuildRequires:	rubygem-bundler
 %endif
 BuildRequires:	gcc-c++
 BuildRequires:	git
-BuildRequires:	libzstd-devel
-BuildRequires:	lz4-devel
 BuildRequires:	pkgconfig
 BuildRequires:	zlib-devel
 BuildRequires:	openssl-devel

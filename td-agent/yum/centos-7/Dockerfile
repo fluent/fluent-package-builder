@@ -25,7 +25,7 @@ ARG DEBUG
 RUN \
   quiet=$([ "${DEBUG}" = "yes" ] || echo "--quiet") && \
   yum update -y ${quiet} && \
-  yum install -y ${quiet} epel-release centos-release-scl && \
+  yum install -y ${quiet} centos-release-scl && \
   yum groupinstall -y ${quiet} "Development Tools" && \
   yum install -y ${quiet} \
     rh-ruby24-ruby-devel  \
@@ -35,8 +35,6 @@ RUN \
     git \
     cyrus-sasl-devel \
     nss-softokn-freebl-devel \
-    libzstd-devel \
-    lz4-devel \
     pkg-config \
     rpm-build \
     rpmdevtools \
