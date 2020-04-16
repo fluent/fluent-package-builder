@@ -46,6 +46,9 @@ BuildRequires:	zlib-devel
 BuildRequires:	openssl-devel
 BuildRequires:	cyrus-sasl-devel
 BuildRequires:	nss-softokn-freebl-devel
+BuildRequires:	libedit-devel
+BuildRequires:	ncurses-devel
+BuildRequires:	libyaml-devel
 %if %{use_systemd}
 %{?systemd_requires}
 BuildRequires: systemd

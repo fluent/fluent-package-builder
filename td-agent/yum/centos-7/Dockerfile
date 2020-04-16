@@ -32,6 +32,9 @@ RUN \
     rh-ruby24-rubygems \
     rh-ruby24-rubygem-rake \
     rh-ruby24-rubygem-bundler \
+    libedit-devel \
+    ncurses-devel \
+    libyaml-devel \
     git \
     cyrus-sasl-devel \
     nss-softokn-freebl-devel \
