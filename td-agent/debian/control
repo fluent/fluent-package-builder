@@ -7,12 +7,10 @@ Build-Depends:
   debhelper (>= 10),
   cdbs,
   pkg-config,
-  liblz4-dev,
   zlib1g-dev,
   ruby-dev,
   ruby-bundler,
   rake,
-  libzstd-dev,
   libssl-dev
 Standards-Version: 4.3.0
 Homepage: http://www.fluentd.org/
