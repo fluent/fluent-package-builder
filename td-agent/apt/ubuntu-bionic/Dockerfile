@@ -39,8 +39,6 @@ RUN \
     ruby-dev \
     ruby-bundler \
     git \
-    libzstd-dev \
-    liblz4-dev \
     pkg-config \
     libssl-dev \
     libpq-dev \
