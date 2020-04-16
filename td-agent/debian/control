@@ -11,6 +11,9 @@ Build-Depends:
   ruby-dev,
   ruby-bundler,
   rake,
+  libedit2,
+  libncurses5-dev,
+  libyaml-dev,
   libssl-dev
 Standards-Version: 4.3.0
 Homepage: http://www.fluentd.org/

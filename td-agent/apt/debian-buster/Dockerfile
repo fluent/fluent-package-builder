@@ -39,6 +39,9 @@ RUN \
     devscripts \
     ruby-dev \
     ruby-bundler \
+    libedit2 \
+    libncurses5-dev \
+    libyaml-dev \
     git \
     pkg-config \
     libssl-dev \
