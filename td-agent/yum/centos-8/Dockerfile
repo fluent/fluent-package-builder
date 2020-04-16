@@ -31,6 +31,9 @@ RUN \
     rubygems \
     rubygem-rake \
     rubygem-bundler \
+    libedit-devel \
+    ncurses-devel \
+    libyaml-devel \
     git \
     cyrus-sasl-devel \
     nss-softokn-freebl-devel \
