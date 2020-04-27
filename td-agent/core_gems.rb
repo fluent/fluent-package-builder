@@ -8,6 +8,8 @@ else
   download "cool.io", "1.6.0"
   download 'serverengine', '2.2.1'
   download "oj", "3.8.1"
+  download "async", "1.24.2"
+  download "async-pool", "0.2.0"
   download "async-http", "0.50.7"
 end
 download "http_parser.rb", "0.6.0"
