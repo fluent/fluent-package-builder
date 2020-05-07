@@ -75,7 +75,7 @@ run mkdir -p ~/.lintian/profiles/td-agent/
 run cp "debian/lintian/td-agent/${distribution}.profile" ~/.lintian/profiles/td-agent/${distribution}.profile
 # export DEB_BUILD_OPTIONS=noopt
 DISTRIBUTION=`lsb_release -c | cut -f2`
-sed -i'' -e "s/unstable/$DISTRIBUTION/" debian/changelog
+sed -i'' -E "s/^($PACKAGE \(\S+\)) unstable;/\1 $DISTRIBUTION;/g" debian/changelog
 if [ "${DEBUG:-no}" = "yes" ]; then
   run debuild -us -uc --lintian-opts --profile td-agent/${distribution}
 else
