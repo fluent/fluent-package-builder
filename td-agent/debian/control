@@ -16,7 +16,7 @@ Build-Depends:
   libyaml-dev,
   libssl-dev
 Standards-Version: 4.3.0
-Homepage: http://www.fluentd.org/
+Homepage: https://www.fluentd.org/
 
 Package: td-agent
 Architecture: any
