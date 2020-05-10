@@ -488,6 +488,7 @@ class BuildTask
       "--prefix=#{install_prefix}",
       "--enable-shared",
       "--disable-install-doc",
+      "--with-compress-debug-sections=no", # https://bugs.ruby-lang.org/issues/12934
     ]
     cd(ruby_source_dir) do
       apply_ruby_patches

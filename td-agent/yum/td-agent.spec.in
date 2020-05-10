@@ -20,6 +20,9 @@
 %define _centos_ver %{?centos_ver:%{centos_ver}}%{!?centos_ver:8}
 %define use_scl_ruby (%{_centos_ver} <= 7)
 %define use_systemd (%{_centos_ver} >= 7)
+# Omit check-rpath and brp-mangle-shebangs since we use our own Ruby
+%define __arch_install_post %{nil}
+%undefine __brp_mangle_shebangs
 
 Name:		@PACKAGE@
 Version:	@VERSION@
@@ -65,6 +68,8 @@ The stable distribution of Fluentd, called td-agent.
 %setup -q -n @PACKAGE@-%{version}
 
 %build
+
+%install
 %if %{use_scl_ruby}
 . /opt/rh/rh-ruby24/enable
 %endif
