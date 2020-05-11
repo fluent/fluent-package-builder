@@ -287,6 +287,7 @@ class BuildTask
 
       desc "Collect licenses of bundled softwares"
       task :licenses => [:gems] do
+        install_jemalloc_license
         install_ruby_license
         install_td_agent_license
         collect_gem_licenses
@@ -601,6 +602,18 @@ class BuildTask
   def install_gems(files)
     files.each do |gem_path|
       gem_install(gem_path)
+    end
+  end
+
+  def install_jemalloc_license
+    return if windows?
+    ensure_directory(licenses_staging_dir) do
+      tarball = @download_task.file_jemalloc_source
+      source_dir = File.basename(tarball.sub(/\.tar\.bz2$/, ''))
+      license_file = File.join(source_dir, "COPYING")
+      sh("tar", "xf", tarball, license_file)
+      mv(license_file, "LICENSE-jemalloc.txt")
+      rm_rf(source_dir)
     end
   end
 
