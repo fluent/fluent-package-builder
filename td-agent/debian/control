@@ -5,7 +5,6 @@ Maintainer: Fluentd developers <fluentd@googlegroups.com>
 Uploaders: HATAKE Hiroshi <hatake@clear-code.com>
 Build-Depends:
   debhelper (>= 10),
-  cdbs,
   pkg-config,
   zlib1g-dev,
   ruby-dev,

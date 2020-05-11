@@ -34,7 +34,6 @@ RUN \
   apt install -y -V ${quiet} \
     build-essential \
     debhelper \
-    cdbs \
     devscripts \
     ruby-dev \
     ruby-bundler \
