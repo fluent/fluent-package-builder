@@ -293,7 +293,9 @@ class BuildTask
       end
 
       desc "Install all components"
-      task :all => [:licenses]
+      task :all => [:licenses] do
+        remove_needless_files
+      end
 
       debian_pkg_scripts = ["preinst", "postinst", "prerm", "postrm"]
       debian_pkg_scripts.each do |script|
@@ -638,6 +640,17 @@ class BuildTask
       File.open("LICENSES-gems.txt", 'w', 0644) do |f|
         f.write(gems_descriptions)
       end
+    end
+  end
+
+  def remove_needless_files
+    rm_rf(Dir.glob("#{td_agent_staging_dir}/share/doc")) # Contains only jemalloc.html
+    rm_f(Dir.glob("#{gem_staging_dir}/cache/*.gem"))
+    Dir.glob("#{gem_staging_dir}/gems/*").each do |gem_dir|
+      if File.exist?("#{gem_dir}/ext")
+        rm_f(Dir.glob("#{gem_dir}/ext/**/*.o"))
+      end
+      rm_rf(["#{gem_dir}/test", "{gem_dir}/spec"])
     end
   end
 end
