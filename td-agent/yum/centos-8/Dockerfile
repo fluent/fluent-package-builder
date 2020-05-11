@@ -40,6 +40,7 @@ RUN \
     pkg-config \
     rpm-build \
     rpmdevtools \
+    redhat-rpm-config \
     openssl-devel \
     tar \
     zlib-devel && \
