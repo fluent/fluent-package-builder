@@ -11,6 +11,7 @@ jobs:
         os:
           - debian-buster
           - ubuntu-bionic
+          - ubuntu-focal
           - centos-6
           - centos-7
           - centos-8
@@ -22,7 +23,7 @@ jobs:
           sudo apt update
           sudo apt -V install ruby
       - name: Build deb with Docker
-        if: matrix.os == 'debian-buster' || matrix.os == 'ubuntu-bionic'
+        if: matrix.os == 'debian-buster' || matrix.os == 'ubuntu-bionic' || matrix.os == 'ubuntu-focal'
         run: |
           rake apt:build APT_TARGETS=${{ matrix.os }}
       - name: Build rpm with Docker
@@ -30,7 +31,7 @@ jobs:
         run: |
           rake yum:build YUM_TARGETS=${{ matrix.os }}
       - uses: actions/upload-artifact@master
-        if: matrix.os == 'debian-buster' || matrix.os == 'ubuntu-bionic'
+        if: matrix.os == 'debian-buster' || matrix.os == 'ubuntu-bionic' || matrix.os == 'ubuntu-focal'
         with:
           name: packages-${{ matrix.os }}
           path: td-agent/apt/repositories

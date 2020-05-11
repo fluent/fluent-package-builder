@@ -714,6 +714,7 @@ class LinuxPackageTask < PackageTask
     [
       "debian-buster",
       "ubuntu-bionic",
+      "ubuntu-focal",
     ]
   end
 
