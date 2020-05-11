@@ -6,6 +6,9 @@ export DH_RUBY = --gem-install
 %:
 	dh $@
 
+override_dh_makeshlibs:
+	:
+
 override_dh_auto_install:
 	rake build:deb_config TD_AGENT_STAGING_PATH="$(CURDIR)/debian/tmp"
 	rake build:all        TD_AGENT_STAGING_PATH="$(CURDIR)/debian/tmp"
