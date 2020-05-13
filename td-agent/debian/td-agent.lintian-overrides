@@ -14,3 +14,4 @@ td-agent: duplicate-font-file
 td-agent: jar-not-in-usr-share
 td-agent: incorrect-libdir-in-la-file
 td-agent: possibly-insecure-handling-of-tmp-files-in-maintainer-script
+td-agent: maintainer-script-should-not-use-recursive-chown-or-chmod
