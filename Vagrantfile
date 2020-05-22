@@ -35,22 +35,21 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   vm_id_prefix = ENV["BOX_ID_PREFIX"]
   n_cpus = ENV["BOX_N_CPUS"]&.to_i || 2
   memory = ENV["BOX_MEMORY"]&.to_i || 2048
-  synced_folder = ENV["BOX_SYNCED_FOLDER"]
-  synced_folder = synced_folder.split(":") if synced_folder
-  vms.each do |vm|
+  vms.each_with_index do |vm, idx|
     id = vm[:id]
     box = vm[:box] || id
     id = "#{vm_id_prefix}#{id}" if vm_id_prefix
     config.vm.define(id) do |node|
       node.vm.box = box
       node.vm.box_url = vm[:box_url]
-      node.vm.synced_folder(*synced_folder) if synced_folder
+      node.vm.network "private_network", ip: "192.168.35.#{100 + idx}"
+      node.vm.synced_folder ".", "/vagrant", type: "nfs",
+                            linux__nfs_options: ['rw','no_subtree_check','all_squash','async']
+
       node.vm.provider("virtualbox") do |virtual_box|
         virtual_box.cpus = n_cpus if n_cpus
         virtual_box.memory = memory if memory
       end
     end
   end
-
-  config.vm.network "public_network"
 end
