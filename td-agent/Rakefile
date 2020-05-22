@@ -26,6 +26,7 @@ require 'pathname'
 require 'open-uri'
 require 'digest'
 require 'etc'
+require "yaml"
 
 DOWNLOADS_DIR  = File.expand_path(ENV["TD_AGENT_DOWNLOADS_PATH"] || "downloads")
 STAGING_DIR    = File.expand_path(ENV["TD_AGENT_STAGING_PATH"]   || "staging")
@@ -685,8 +686,56 @@ class LinuxPackageTask < PackageTask
       File.join("..", path)
     end
 
-    file @archive_name => [*repo_files, *@download_task.files]  do
+    debian_copyright_file = File.join("td-agent", "debian", "copyright")
+    file debian_copyright_file do
+      build_copyright_file
+    end
+
+    file @archive_name => [*repo_files, *@download_task.files, debian_copyright_file]  do
       build_archive
+    end
+  end
+
+  def build_copyright_file
+    # Note: maintain debian/copyright manually is inappropriate way because
+    # many gem is bundled with td-agent package.
+    # We use gem specification GEMFILE to solve this issue.
+    src = File.join("templates", "package-scripts", "td-agent", "deb", "copyright")
+    dest = File.join("debian", "copyright")
+    licenses = []
+    template = File.open(src) do |infile|
+      infile.read
+    end
+    @download_task.files_core_gems.concat(@download_task.files_plugin_gems).each do |gem_file|
+      spec = YAML.load(`gem specification #{gem_file}`)
+      relative_path = gem_file.sub(/#{Dir.pwd}\//, "")
+      unless spec.licenses.empty?
+        license = <<-EOS
+Files: #{relative_path}
+Copyright: #{spec.authors.join(",")}
+License: #{spec.licenses.first.sub(/Apache 2.0/, "Apache-2.0")}
+EOS
+        licenses << license
+      else
+        # Note: remove this conditions when gem.licenses in gemspec was fixed in upstream
+        case spec.name
+        when "cool.io", "async-pool"
+          license = "MIT"
+
+        when "td", "webhdfs"
+          license = "Apache-2.0"
+        end
+        licenses <<= <<-EOS
+Files: #{relative_path}
+Copyright: #{spec.authors.join(",")}
+License: #{license}
+EOS
+      end
+    end
+    puts "Generate #{dest}"
+    File.open(dest, 'w+', 0644) do |f|
+      template.sub!(/BUNDLED_GEM_LICENSES/, licenses.join("\n"))
+      f.write(template)
     end
   end
 
@@ -705,6 +754,7 @@ class LinuxPackageTask < PackageTask
         ensure_directory(dest_dir)
         cp_r(path, dest_dir)
       end
+      cp_r("td-agent/debian/copyright", "#{@archive_base_name}/td-agent/debian/copyright")
       sh("tar", "cvfz", @full_archive_name, @archive_base_name)
       rm_rf(@archive_base_name)
     end
