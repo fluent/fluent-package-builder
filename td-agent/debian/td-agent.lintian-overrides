@@ -1,6 +1,5 @@
 td-agent: package-contains-vcs-control-file
 td-agent: windows-devel-file-in-package
-td-agent: dir-or-file-in-build-tree
 td-agent: ruby-script-but-no-ruby-dep
 td-agent: script-not-executable
 td-agent: python-script-but-no-python-dep
