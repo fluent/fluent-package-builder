@@ -12,7 +12,6 @@ td-agent: library-not-linked-against-libc
 td-agent: wrong-path-for-interpreter
 td-agent: duplicate-font-file
 td-agent: jar-not-in-usr-share
-td-agent: incorrect-libdir-in-la-file
 td-agent: possibly-insecure-handling-of-tmp-files-in-maintainer-script
 td-agent: maintainer-script-should-not-use-recursive-chown-or-chmod
 td-agent: unusual-interpreter opt/td-agent/lib/ruby/gems/*/gems/bundler-*/lib/bundler/templates/Executable #!<%=
