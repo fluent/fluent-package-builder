@@ -667,6 +667,7 @@ class BuildTask
         rm_f(Dir.glob("#{gem_dir}/ext/**/*.la"))
       end
       rm_rf(["#{gem_dir}/test", "{gem_dir}/spec"])
+      rm_rf(Dir.glob("#{gem_staging_dir}/**/\.git*"))
     end
   end
 end
