@@ -72,6 +72,10 @@ class PackageTask
     ENV["DEBUG"] != "no"
   end
 
+  def skip_lintian?
+    ENV["LINTIAN"] == "no"
+  end
+
   def git_directory?(directory)
     candidate_paths = [".git", "HEAD"]
     candidate_paths.any? do |candidate_path|
@@ -125,6 +129,9 @@ class PackageTask
     if debug_build?
       build_command_line.concat(["--build-arg", "DEBUG=yes"])
       run_command_line.concat(["--env", "DEBUG=yes"])
+    end
+    if skip_lintian?
+      run_command_line.concat(["--env", "LINTIAN=no"])
     end
     if File.exist?(File.join(id, "Dockerfile"))
       docker_context = id
