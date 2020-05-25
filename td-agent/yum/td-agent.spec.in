@@ -29,7 +29,7 @@ Version:	@VERSION@
 Release:	@RELEASE@%{?dist}
 Summary:	The stable distribution of Fluentd, called @PACKAGE@.
 
-License:	Apache-2.0
+License:	ASL 2.0
 URL:		https://www.treasuredata.com/
 Source0:	@PACKAGE@-@VERSION@.tar.gz
 
