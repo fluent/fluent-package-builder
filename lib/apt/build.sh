@@ -77,9 +77,17 @@ run cp "debian/lintian/td-agent/${distribution}.profile" ~/.lintian/profiles/td-
 DISTRIBUTION=`lsb_release -c | cut -f2`
 sed -i'' -E "s/^($PACKAGE \(\S+\)) unstable;/\1 $DISTRIBUTION;/g" debian/changelog
 if [ "${DEBUG:-no}" = "yes" ]; then
-  run debuild -us -uc --lintian-opts --profile td-agent/${distribution}
+  if [ "${LINTIAN:-yes}" = "yes" ]; then
+    run debuild -us -uc --lintian-opts --profile td-agent/${distribution}
+  else
+    run debuild --no-lintian -us -uc
+  fi
 else
-  run debuild -us -uc --lintian-opts --profile td-agent/${distribution} > /dev/null
+  if [ "${LINTIAN:-yes}" = "yes" ]; then
+    run debuild -us -uc --lintian-opts --profile td-agent/${distribution} > /dev/null
+  else
+    run debuild --no-lintian -us -uc > /dev/null
+  fi
 fi
 run cd -
 
