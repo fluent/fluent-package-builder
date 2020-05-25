@@ -16,3 +16,5 @@ td-agent: unusual-interpreter opt/td-agent/lib/ruby/gems/*/gems/bundler-*/lib/bu
 td-agent: unusual-interpreter opt/td-agent/lib/ruby/gems/*/gems/bundler-*/lib/bundler/templates/Executable.bundler #!<%=
 td-agent: unusual-interpreter opt/td-agent/lib/ruby/gems/*/gems/bundler-*/lib/bundler/templates/Executable.standalone #!<%=
 td-agent: incorrect-path-for-interpreter opt/td-agent/bin/jeprof (#!/usr/bin/env perl != /usr/bin/perl)
+td-agent: uses-dpkg-database-directly postinst (line 37)
+td-agent: uses-dpkg-database-directly postinst (line 40)
