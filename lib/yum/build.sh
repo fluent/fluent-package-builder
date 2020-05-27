@@ -33,11 +33,11 @@ rpmbuild_options=
 
 . /host/env.sh
 
-distribution=$(cut -d " " -f 1 /etc/redhat-release | tr "A-Z" "a-z")
-if grep -q Linux /etc/redhat-release; then
-  distribution_version=$(cut -d " " -f 4 /etc/redhat-release)
+distribution=$(cut -d " " -f 1 /etc/system-release | tr "A-Z" "a-z")
+if grep -q Linux /etc/system-release; then
+  distribution_version=$(cut -d " " -f 4 /etc/system-release)
 else
-  distribution_version=$(cut -d " " -f 3 /etc/redhat-release)
+  distribution_version=$(cut -d " " -f 3 /etc/system-release)
 fi
 distribution_version=$(echo ${distribution_version} | sed -e 's/\..*$//g')
 
