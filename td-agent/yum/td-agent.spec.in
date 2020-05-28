@@ -18,7 +18,8 @@
 # under the License.
 
 %define _centos_ver %{?centos_ver:%{centos_ver}}%{!?centos_ver:8}
-%define use_scl_ruby (%{_centos_ver} <= 7)
+%define _amazon_ver %{?amzn:%{amzn}}%{!?amzn:0}
+%define use_scl_ruby (%{_centos_ver} <= 7 && %{_amazon_ver} == 0)
 %define use_systemd (%{_centos_ver} >= 7)
 # Omit check-rpath and brp-mangle-shebangs since we use our own Ruby
 %define __arch_install_post %{nil}
@@ -38,9 +39,15 @@ BuildRequires:	rh-ruby24-ruby-devel
 BuildRequires:	rh-ruby24-rubygems
 BuildRequires:	rh-ruby24-rubygem-bundler
 %else
+%if %{_amazon_ver} > 0
+BuildRequires:	ruby
+BuildRequires:	rubygems
+BuildRequires:	rubygem-rake
+%else
 BuildRequires:	ruby-devel
 BuildRequires:	rubygems
 BuildRequires:	rubygem-bundler
+%endif
 %endif
 BuildRequires:	gcc-c++
 BuildRequires:	git
