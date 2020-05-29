@@ -665,8 +665,10 @@ class BuildTask
       if File.exist?("#{gem_dir}/ext")
         rm_f(Dir.glob("#{gem_dir}/ext/**/*.o"))
         rm_f(Dir.glob("#{gem_dir}/ext/**/*.la"))
+        rm_f(Dir.glob("#{gem_dir}/ext/**/.dirstamp"))
+        rm_f(Dir.glob("#{gem_dir}/ext/**/.sitearchdir*.time"))
       end
-      rm_rf(["#{gem_dir}/test", "#{gem_dir}/spec"])
+      rm_rf(["#{gem_dir}/test", "#{gem_dir}/spec", "#{gem_dir}/**/gem.build_complete"])
       rm_rf(Dir.glob("#{gem_staging_dir}/**/\.git*"))
     end
   end
