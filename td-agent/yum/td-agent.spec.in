@@ -69,7 +69,14 @@ Requires(pre): /usr/bin/getent, /usr/sbin/adduser
 
 
 %description
-The stable distribution of Fluentd, called td-agent.
+The stable distribution of Fluentd
+
+%package devel
+Summary:  Development files for td-agent
+Requires: %{name} = %{version}-%{release}
+
+%description devel
+The stable distribution of Fluentd development package
 
 %prep
 %setup -q -n @PACKAGE@-%{version}
@@ -101,7 +108,13 @@ fi
 
 %files
 %defattr(-,root,root,-)
-/opt/*
+/opt/td-agent/LICENSES/*
+/opt/td-agent/bin/*
+/opt/td-agent/lib/ruby/*
+/opt/td-agent/share/*
+/opt/td-agent/lib/libruby.so*
+/opt/td-agent/lib/libjemalloc.so*
+/usr/lib/*
 %{_sysconfdir}/logrotate.d/@PACKAGE@.logrotate
 %{_sysconfdir}/@PACKAGE@/@PACKAGE@.conf.tmpl
 %if %{use_systemd}
@@ -116,6 +129,15 @@ fi
 %attr(0755,td-agent,td-agent) %dir %{_localstatedir}/run/@PACKAGE@
 %attr(0755,td-agent,td-agent) %dir %{_localstatedir}/log/@PACKAGE@
 %attr(0755,td-agent,td-agent) %dir %{_sysconfdir}/@PACKAGE@
+
+%files devel
+%defattr(-,root,root,-)
+/opt/td-agent/bin/jemalloc-config
+/opt/td-agent/include/*
+/opt/td-agent/lib/libruby.so
+/opt/td-agent/lib/libjemalloc.so
+/opt/td-agent/lib/pkgconfig/*
+
 %changelog
 * Wed May 06 2020 Takuro Ashie <ashie@clear-code.com> - 3.7.1-1
 - New upstream release.
