@@ -25,6 +25,14 @@
 %define __arch_install_post %{nil}
 %undefine __brp_mangle_shebangs
 
+%if %{use_systemd}
+%define control_service() (systemctl %1 %2)
+%define disable_service() (systemctl %1 %2)
+%else
+%define control_service() (/sbin/service %2 %1)
+%define disable_service() (/sbin/chkconfig --del %2)
+%endif
+
 Name:		@PACKAGE@
 Version:	@VERSION@
 Release:	@RELEASE@%{?dist}
@@ -105,6 +113,12 @@ if ! getent group @PACKAGE@ >/dev/null; then
 fi
 if ! getent passwd @PACKAGE@ >/dev/null; then
     /usr/sbin/adduser -r -g @PACKAGE@ -d %{_localstatedir}/lib/@PACKAGE@ -s /sbin/nologin -c '@PACKAGE@' @PACKAGE@
+fi
+
+%preun
+if [ $1 -eq 0 ]; then
+  %{control_service stop @PACKAGE@}
+  %{disable_service disable @PACKAGE@}
 fi
 
 %files
