@@ -667,6 +667,7 @@ class BuildTask
         rm_f(Dir.glob("#{gem_dir}/ext/**/*.o"))
         rm_f(Dir.glob("#{gem_dir}/ext/**/*.la"))
         rm_f(Dir.glob("#{gem_dir}/ext/**/*.a"))
+        rm_f(Dir.glob("#{gem_dir}/ext/**/a.out"))
         rm_f(Dir.glob("#{gem_dir}/ext/**/.dirstamp"))
         rm_f(Dir.glob("#{gem_dir}/ext/**/.sitearchdir*.time"))
         rm_rf(Dir.glob("#{gem_dir}/ext/**/.libs"))
