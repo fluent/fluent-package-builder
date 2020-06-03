@@ -99,6 +99,17 @@ if ! getent passwd @PACKAGE@ >/dev/null; then
     /usr/sbin/adduser -r -g @PACKAGE@ -d %{_localstatedir}/lib/@PACKAGE@ -s /sbin/nologin -c '@PACKAGE@' @PACKAGE@
 fi
 
+%post
+%if %{use_systemd}
+if $1 = 2 ; then
+  /sbin/service @PACKAGE@ condrestart >/dev/null 2>&1 || :
+fi
+%else
+if $1 = 2 ; then
+  systemctl condrestart @PACKAGE@
+fi
+%endif
+
 %files
 %defattr(-,root,root,-)
 /opt/*
