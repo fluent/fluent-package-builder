@@ -218,7 +218,8 @@ class DownloadTask
       file path do
         ensure_directory(target_dir) do
           if version.include?("-")
-            version_option = ["--version", "#{version.sub(/\-.*/, '')}"]
+            number, platform = version.split("-", 2)
+            version_option = ["--version", number, "--platform", platform]
           else
             version_option = ["--version", "#{version}", "--platform", "ruby"]
           end
