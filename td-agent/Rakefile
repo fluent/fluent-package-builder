@@ -659,26 +659,30 @@ class BuildTask
     end
   end
 
+  def remove_files(pattern, recursive=false)
+    files = Dir.glob(pattern)
+    return if files.empty?
+    if recursive
+      rm_rf(files)
+    else
+      rm_f(files)
+    end
+  end
+
   def remove_needless_files
-    rm_rf(Dir.glob("#{td_agent_staging_dir}/share/doc")) # Contains only jemalloc.html
-    rm_f(Dir.glob("#{gem_staging_dir}/cache/*.gem"))
+    remove_files("#{td_agent_staging_dir}/share/doc", true) # Contains only jemalloc.html
+    cd("#{gem_staging_dir}/cache") do
+      remove_files("*.gem")
+    end
     Dir.glob("#{gem_staging_dir}/gems/*").each do |gem_dir|
-      if File.exist?("#{gem_dir}/ext")
-        rm_f(Dir.glob("#{gem_dir}/ext/**/*.o"))
-        rm_f(Dir.glob("#{gem_dir}/ext/**/*.la"))
-        rm_f(Dir.glob("#{gem_dir}/ext/**/*.a"))
-        rm_f(Dir.glob("#{gem_dir}/ext/**/a.out"))
-        rm_f(Dir.glob("#{gem_dir}/ext/**/.dirstamp"))
-        rm_f(Dir.glob("#{gem_dir}/ext/**/.sitearchdir*.time"))
-        rm_rf(Dir.glob("#{gem_dir}/ext/**/.libs"))
-        rm_rf(Dir.glob("#{gem_dir}/ext/**/.deps"))
+      cd(gem_dir) do
+        rm_rf(["test", "spec"])
+        remove_files("**/\.*", true)
+        remove_files("**/gem.build_complete")
+        remove_files("ext/**/a.out")
+        remove_files("ext/**/*.{o,la,a}")
+        remove_files("ext/**/*.{c,h}")
       end
-      rm_rf(["#{gem_dir}/test", "#{gem_dir}/spec"])
-      rm_rf(Dir.glob("#{gem_dir}/**/\.*"))
-      rm_f(Dir.glob("#{gem_dir}/**/gem.build_complete"))
-      rm_f(Dir.glob("#{gem_dir}/**/\.*.yml"))
-      rm_f(Dir.glob("#{gem_dir}/**/*.h"))
-      rm_f(Dir.glob("#{gem_dir}/**/*.c"))
     end
   end
 end
