@@ -677,11 +677,9 @@ class BuildTask
     Dir.glob("#{gem_staging_dir}/gems/*").each do |gem_dir|
       cd(gem_dir) do
         rm_rf(["test", "spec"])
-        remove_files("**/\.*", true)
         remove_files("**/gem.build_complete")
         remove_files("ext/**/a.out")
         remove_files("ext/**/*.{o,la,a}")
-        remove_files("ext/**/*.{c,h}")
       end
     end
   end
