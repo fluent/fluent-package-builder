@@ -121,6 +121,11 @@ if [ $1 -eq 0 ]; then
   %{disable_service disable @PACKAGE@}
 fi
 
+%post
+if [ $1 -eq 2 ]; then
+  %{control_service condrestart @PACKAGE@}
+fi
+
 %files
 %defattr(-,root,root,-)
 /opt/*
