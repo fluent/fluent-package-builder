@@ -134,6 +134,7 @@ fi
 %{_sysconfdir}/@PACKAGE@/@PACKAGE@.conf.tmpl
 %if %{use_systemd}
 %{_unitdir}/@PACKAGE@.service
+%{_usr}/lib/tmpfiles.d/@PACKAGE@.conf
 %else
 %{_sysconfdir}/init.d/@PACKAGE@
 %endif
