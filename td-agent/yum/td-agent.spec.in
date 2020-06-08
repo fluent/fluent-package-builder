@@ -108,6 +108,7 @@ mkdir -p %{buildroot}%{_localstatedir}/run/@PACKAGE@
 mkdir -p %{buildroot}%{_localstatedir}/log/@PACKAGE@
 mkdir -p %{buildroot}%{_localstatedir}/log/@PACKAGE@/buffer
 mkdir -p %{buildroot}%{_sysconfdir}/@PACKAGE@/plugin
+mkdir -p %{buildroot}/tmp/@PACKAGE@
 
 %pre
 if ! getent group @PACKAGE@ >/dev/null; then
@@ -149,6 +150,7 @@ fi
 %attr(0755,td-agent,td-agent) %dir %{_localstatedir}/log/@PACKAGE@/buffer
 %attr(0755,td-agent,td-agent) %dir %{_sysconfdir}/@PACKAGE@
 %attr(0755,td-agent,td-agent) %dir %{_sysconfdir}/@PACKAGE@/plugin
+%attr(0755,td-agent,td-agent) %dir /tmp/@PACKAGE@
 %changelog
 * Wed May 06 2020 Takuro Ashie <ashie@clear-code.com> - 3.7.1-1
 - New upstream release.
