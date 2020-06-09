@@ -128,6 +128,10 @@ else
   fi
 fi
 
+# Until https://github.com/clear-code/td-agent-builder/issues/64 will be fixed,
+# path through rpmlint exit error.
+cp /host/rpmlint.config /etc/rpmlint/config
+rpmlint -i rpmbuild/RPMS/*/*.rpm
 run mv rpmbuild/RPMS/*/* "${rpm_dir}/"
 run mv rpmbuild/SRPMS/* "${srpm_dir}/"
 

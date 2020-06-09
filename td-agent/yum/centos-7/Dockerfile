@@ -44,5 +44,6 @@ RUN \
     redhat-rpm-config \
     openssl-devel \
     tar \
-    zlib-devel && \
+    zlib-devel \
+    rpmlint && \
   yum clean ${quiet} all
