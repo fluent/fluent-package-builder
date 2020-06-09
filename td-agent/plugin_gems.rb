@@ -38,6 +38,13 @@ unless windows?
   download "fluent-plugin-systemd", "1.0.2"
 end
 
+# temporal solution for ruby 2.7
+if windows?
+  download "nokogiri", "1.11.0.rc2-x64-mingw32"
+else
+  download "nokogiri", "1.11.0.rc2"
+end
+
 if windows?
   download 'win32-eventlog', '0.6.7'
   download 'winevt_c', '0.7.4'
