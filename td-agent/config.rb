@@ -1,7 +1,7 @@
 PACKAGE_NAME = "td-agent"
 PACKAGE_VERSION = "4.0.0.rc1"
 
-FLUENTD_REVISION = "d8a0ff30afd4f0ce25da4d99f8e7a7161473aae8" # v1.10.3
+FLUENTD_REVISION = "f5cc77783b7483dd72dc039c96a3ad970daa7835" # v1.11.0
 
 # https://github.com/jemalloc/jemalloc/releases/download/
 JEMALLOC_VERSION = "5.2.1"
