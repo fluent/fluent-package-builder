@@ -150,6 +150,7 @@ fi
 %attr(0755,td-agent,td-agent) %dir %{_localstatedir}/log/@PACKAGE@/buffer
 %attr(0755,td-agent,td-agent) %dir %{_sysconfdir}/@PACKAGE@
 %attr(0755,td-agent,td-agent) %dir %{_sysconfdir}/@PACKAGE@/plugin
+# NOTE: %{_tmpfilesdir} is available since CentOS 7
 %attr(0755,td-agent,td-agent) %dir /tmp/@PACKAGE@
 %changelog
 * Wed May 06 2020 Takuro Ashie <ashie@clear-code.com> - 3.7.1-1
