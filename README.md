@@ -74,7 +74,7 @@ By default, apt repositories for following platforms will be built under td-agen
 You can choose target platforms by `APT_TARGETS` environment variable like this:
 
 ```console
-% rake yum:build APT_TARGETS="debian-buster,ubuntu-bionic"
+% rake apt:build APT_TARGETS="debian-buster,ubuntu-bionic"
 ```
 
 You can find other supported platforms under td-agent/apt directory.
@@ -84,7 +84,7 @@ You can find other supported platforms under td-agent/apt directory.
 You can also built packages for AArch64 platforms like this:
 
 ```console
-% rake yum:build APT_TARGETS="ubuntu-bionic-arm64"
+% rake apt:build APT_TARGETS="ubuntu-bionic-arm64"
 ```
 
 But if you use older GNU/Linux platforms (e.g. Ubuntu 18.04 or before) as your host OS, you need to copy qemnu-aarch64-static into td-agent/yum/${TARGET}:
