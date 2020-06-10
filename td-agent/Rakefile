@@ -695,6 +695,7 @@ class BuildTask
         remove_files("ext/**/*.{o,la,a}")
       end
     end
+    remove_files("#{td_agent_staging_dir}/lib/lib*.a")
   end
 end
 
