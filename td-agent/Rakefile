@@ -405,7 +405,7 @@ class BuildTask
       task :rpm_old_config => [:td_agent_config, :bin_scripts, :rpm_sysvinit]
 
       desc "Create configuration files for Debian like systems"
-      task :deb_config => [:td_agent_config, :bin_scripts, :deb_systemd, :deb_scripts]
+      task :deb_config => [:td_agent_config, :systemd_tmpfiles_config, :bin_scripts, :deb_systemd, :deb_scripts]
 
       desc "Create configuration files for Windows"
       task :msi_config => [:td_agent_config, :wix_config, :win_batch_files]
