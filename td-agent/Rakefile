@@ -334,6 +334,18 @@ class BuildTask
         end
       end
 
+      desc "Create systemd-tmpfiles configuration files from template"
+      task :systemd_tmpfiles_config do
+        configs = [
+          "usr/lib/tmpfiles.d/td-agent.conf",
+        ]
+        configs.each do |config|
+          src = template_path(config)
+          dest = File.join(STAGING_DIR, config)
+          render_template(dest, src, template_params)
+        end
+      end
+
       desc "Create bin script files from template"
       task :bin_scripts do
         scripts = [
@@ -386,7 +398,7 @@ class BuildTask
       end
 
       desc "Create configuration files for Red Hat like systems with systemd"
-      task :rpm_config => [:td_agent_config, :bin_scripts, :rpm_systemd]
+      task :rpm_config => [:td_agent_config, :systemd_tmpfiles_config, :bin_scripts, :rpm_systemd]
 
       desc "Create configuration files for Red Hat like systems without systemd"
       task :rpm_old_config => [:td_agent_config, :bin_scripts, :rpm_sysvinit]

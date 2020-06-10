@@ -108,6 +108,7 @@ mkdir -p %{buildroot}%{_localstatedir}/run/@PACKAGE@
 mkdir -p %{buildroot}%{_localstatedir}/log/@PACKAGE@
 mkdir -p %{buildroot}%{_localstatedir}/log/@PACKAGE@/buffer
 mkdir -p %{buildroot}%{_sysconfdir}/@PACKAGE@/plugin
+mkdir -p %{buildroot}/tmp/@PACKAGE@
 
 %pre
 if ! getent group @PACKAGE@ >/dev/null; then
@@ -121,12 +122,27 @@ fi
 if [ $1 -eq 0 ]; then
   %{control_service stop @PACKAGE@}
   %{disable_service disable @PACKAGE@}
+  %if ! %{?use_systemd}
+    if [ -p /tmp/@PACKAGE@/.keep ]; then
+        rm -f /tmp/@PACKAGE@/.keep
+    fi
+  %endif
 fi
 
 %post
 if [ $1 -eq 2 ]; then
   %{control_service condrestart @PACKAGE@}
 fi
+%if ! %{?use_systemd}
+  if [ $1 -eq 1 -o $1 -eq 2 ]; then
+    # On CentOS 6, tmpwatch cleanups under /tmp in 10d without
+    # create, access, modify operations. (See /etc/cron.daily/tmpwatch)
+    # To keep it, create special file under /tmp/td-agent.
+    if [ ! -p /tmp/@PACKAGE@/.keep ]; then
+        mkfifo /tmp/@PACKAGE@/.keep
+    fi
+  fi
+%endif
 
 %files
 %defattr(-,root,root,-)
@@ -134,6 +150,7 @@ fi
 %{_sysconfdir}/@PACKAGE@/@PACKAGE@.conf.tmpl
 %if %{use_systemd}
 %{_unitdir}/@PACKAGE@.service
+%{_tmpfilesdir}/@PACKAGE@.conf
 %else
 %{_sysconfdir}/init.d/@PACKAGE@
 %endif
@@ -148,6 +165,8 @@ fi
 %attr(0755,td-agent,td-agent) %dir %{_localstatedir}/log/@PACKAGE@/buffer
 %attr(0755,td-agent,td-agent) %dir %{_sysconfdir}/@PACKAGE@
 %attr(0755,td-agent,td-agent) %dir %{_sysconfdir}/@PACKAGE@/plugin
+# NOTE: %{_tmpfilesdir} is available since CentOS 7
+%attr(0755,td-agent,td-agent) %dir /tmp/@PACKAGE@
 %changelog
 * Wed May 06 2020 Takuro Ashie <ashie@clear-code.com> - 3.7.1-1
 - New upstream release.
