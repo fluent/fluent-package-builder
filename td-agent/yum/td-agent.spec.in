@@ -141,8 +141,27 @@ fi
     if [ ! -p /tmp/@PACKAGE@/.keep ]; then
         mkfifo /tmp/@PACKAGE@/.keep
     fi
-  fi
+fi
 %endif
+if [ -d "%{_sysconfdir}/prelink.conf.d/" ]; then
+  echo "prelink detected. Installing /etc/prelink.conf.d/td-agent-ruby.conf ..."
+  if [ ! -f %{_sysconfdir}/prelink.conf.d/td-agent-ruby.conf ]; then
+      %{__cp} -f /opt/td-agent/share/td-agent-ruby.conf %{_sysconfdir}/prelink.conf.d/td-agent-ruby.conf
+  else
+    if [ $(grep '\-b /opt/td-agent/embedded/bin/ruby' -c %{_sysconfdir}/prelink.conf.d/td-agent-ruby.conf) -eq 1 ]; then
+      echo "old-prelink detected, Update /etc/prelink.conf ..."
+      %{__sed} -i"" %{_sysconfdir}/prelink.conf.d/td-agent-ruby.conf -e "s,/embedded/,/,"
+    fi
+  fi
+elif [ -f "%{_sysconfdir}/prelink.conf" ]; then
+  if [ $(grep '\-b /opt/td-agent/embedded/bin/ruby' -c %{_sysconfdir}/prelink.conf) -eq 1 ]; then
+    echo "old-prelink detected, but /etc/prelink.conf.d/ does't exist. Update /etc/prelink.conf ..."
+    %{__sed} -i"" %{_sysconfdir}/prelink.conf -e "s,/embedded/,/,"
+  elif [ $(grep '\-b /opt/td-agent/bin/ruby' -c %{_sysconfdir}/prelink.conf) -eq 0 ]; then
+    echo "prelink detected, but /etc/prelink.conf.d/ does't exist. Adding /etc/prelink.conf ..."
+    echo "-b /opt/td-agent/bin/ruby" >> /etc/prelink.conf
+  fi
+fi
 
 %files
 %defattr(-,root,root,-)

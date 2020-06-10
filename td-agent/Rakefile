@@ -326,6 +326,7 @@ class BuildTask
           "etc/td-agent/td-agent.conf",
           "etc/td-agent/td-agent.conf.tmpl",
           "etc/logrotate.d/td-agent",
+          "opt/td-agent/share/td-agent-ruby.conf"
         ]
         configs.each do |config|
           src = template_path(config)
