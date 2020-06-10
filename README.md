@@ -50,14 +50,14 @@ You can also build packages for AArch64 platforms like this:
 % rake yum:build YUM_TARGETS="centos-8-aarch64"
 ```
 
-But if you use older GNU/Linux platforms (e.g. Ubuntu 18.04 or before) as your host OS, you need to copy qemnu-aarch64-static into td-agent/yum/${TARGET}:
+But if you use older GNU/Linux platforms (e.g. Ubuntu 18.04 or before) as your host OS, you need to copy qemnu-aarch64-static into the base directory of the target:
 
 ```console
-% export TARGET="centos-8-aarch64"
+% export TARGET_BASE="centos-8"
 % sudo apt install qemu-user-static
 % cd /path/to/td-agent-builder
-% cp /usr/bin/qemu-aarch64-static td-agent/yum/${TARGET}
-% rake yum:build YUM_TARGETS=${TARGET}
+% cp /usr/bin/qemu-aarch64-static td-agent/yum/${TARGET_BASE}
+% rake yum:build YUM_TARGETS="${TARGET_BASE}-aarch64"
 ```
 
 ## How to build .deb package
@@ -87,14 +87,14 @@ You can also built packages for AArch64 platforms like this:
 % rake apt:build APT_TARGETS="ubuntu-bionic-arm64"
 ```
 
-But if you use older GNU/Linux platforms (e.g. Ubuntu 18.04 or before) as your host OS, you need to copy qemnu-aarch64-static into td-agent/yum/${TARGET}:
+But if you use older GNU/Linux platforms (e.g. Ubuntu 18.04 or before) as your host OS, you need to copy qemnu-aarch64-static into the base directory of the target:
 
 ```console
-% export TARGET="ubuntu-bionic-arm64"
+% export TARGET_BASE="ubuntu-bionic"
 % sudo apt install qemu-user-static
 % cd /path/to/td-agent-builder
-% cp /usr/bin/qemu-aarch64-static td-agent/apt/${TARGET}
-% rake apt:build APT_TARGETS=${TARGET}
+% cp /usr/bin/qemu-aarch64-static td-agent/apt/${TARGET_BASE}
+% rake apt:build APT_TARGETS="${TARGET_BASE}-arm64"
 ```
 
 ## How to build .msi package
