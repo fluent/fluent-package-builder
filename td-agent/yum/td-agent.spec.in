@@ -96,10 +96,7 @@ rake build:rpm_old_config TD_AGENT_STAGING_PATH=%{buildroot}
 rake build:all TD_AGENT_STAGING_PATH=%{buildroot}
 mkdir -p %{buildroot}%{_mandir}/man1
 cp @PACKAGE@/debian/*.1 %{buildroot}%{_mandir}/man1/
-for man in `find %{buildroot} -type f -name '*.1'`; do
-    gzip ${man}
-done
-for man in `find %{buildroot} -type f -name '*.3'`; do
+for man in `find %{buildroot} -type f -wholename '*/man/man[1-9]/*.[1-9]'`; do
     gzip ${man}
 done
 
