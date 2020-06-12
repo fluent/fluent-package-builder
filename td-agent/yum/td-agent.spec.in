@@ -162,7 +162,11 @@ fi
 
 %files
 %doc README.md
+%if %{?use_systemd}
 %license LICENSE
+%else
+%doc LICENSE
+%endif
 %defattr(-,root,root,-)
 /opt/*
 /opt/@PACKAGE@/share/@PACKAGE@.conf.tmpl
