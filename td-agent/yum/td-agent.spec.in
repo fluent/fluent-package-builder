@@ -163,7 +163,7 @@ fi
 %files
 %defattr(-,root,root,-)
 /opt/*
-%{_sysconfdir}/@PACKAGE@/@PACKAGE@.conf.tmpl
+/opt/@PACKAGE@/share/@PACKAGE@.conf.tmpl
 %if %{use_systemd}
 %{_unitdir}/@PACKAGE@.service
 %{_tmpfilesdir}/@PACKAGE@.conf
