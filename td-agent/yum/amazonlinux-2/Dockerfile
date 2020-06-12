@@ -39,7 +39,8 @@ RUN \
     redhat-rpm-config \
     openssl-devel \
     tar \
-    zlib-devel && \
+    zlib-devel \
+    rpmlint && \
   amazon-linux-extras install ruby2.6 && \
   gem install bundler && \
   yum clean ${quiet} all
