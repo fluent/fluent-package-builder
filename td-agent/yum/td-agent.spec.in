@@ -162,6 +162,7 @@ fi
 
 %files
 %doc README.md
+%license LICENSE
 %defattr(-,root,root,-)
 /opt/*
 /opt/@PACKAGE@/share/@PACKAGE@.conf.tmpl
