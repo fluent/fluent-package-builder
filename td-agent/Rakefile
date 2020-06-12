@@ -693,6 +693,7 @@ class BuildTask
         remove_files("**/gem.build_complete")
         remove_files("ext/**/a.out")
         remove_files("ext/**/*.{o,la,a}")
+        remove_files("ext/**/.libs", true)
       end
     end
     remove_files("#{td_agent_staging_dir}/lib/lib*.a")
