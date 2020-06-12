@@ -161,6 +161,7 @@ elif [ -f "%{_sysconfdir}/prelink.conf" ]; then
 fi
 
 %files
+%doc README.md
 %defattr(-,root,root,-)
 /opt/*
 /opt/@PACKAGE@/share/@PACKAGE@.conf.tmpl
