@@ -536,6 +536,8 @@ class BuildTask
     begin
       require 'ruby_installer/runtime'
 
+      # These dlls are required to put in staging_bindir to run C++ based extension
+      # included gem such as winevt_c. We didn't find how to link them statically yet.
       dlls = [
         "libstdc++-6",
       ]
