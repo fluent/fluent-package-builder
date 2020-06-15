@@ -120,9 +120,11 @@ if [ $1 -eq 0 ]; then
   %{control_service stop @PACKAGE@}
   %{disable_service disable @PACKAGE@}
   %if ! %{?use_systemd}
-    if [ -p /tmp/@PACKAGE@/.keep ]; then
-        rm -f /tmp/@PACKAGE@/.keep
-    fi
+    for keep in /tmp/@PACKAGE@/.keep /var/run/@PACKAGE@/.keep; do
+      if [ -p $keep ]; then
+          rm -f $keep
+      fi
+    done
   %endif
 fi
 
@@ -135,9 +137,11 @@ fi
     # On CentOS 6, tmpwatch cleanups under /tmp in 10d without
     # create, access, modify operations. (See /etc/cron.daily/tmpwatch)
     # To keep it, create special file under /tmp/td-agent.
-    if [ ! -p /tmp/@PACKAGE@/.keep ]; then
-        mkfifo /tmp/@PACKAGE@/.keep
-    fi
+    for keep in /tmp/@PACKAGE@/.keep /var/run/@PACKAGE@/.keep; do
+      if [ ! -p $keep ]; then
+        mkfifo $keep
+      fi
+    done
 fi
 %endif
 if [ -d "%{_sysconfdir}/prelink.conf.d/" ]; then
@@ -176,7 +180,6 @@ fi
 %{_mandir}/man1/td*
 %config(noreplace) %{_sysconfdir}/@PACKAGE@/@PACKAGE@.conf
 %config(noreplace) %{_sysconfdir}/logrotate.d/@PACKAGE@
-%attr(0755,td-agent,td-agent) %dir %{_localstatedir}/run/@PACKAGE@
 %attr(0755,td-agent,td-agent) %dir %{_localstatedir}/log/@PACKAGE@
 %attr(0755,td-agent,td-agent) %dir %{_localstatedir}/log/@PACKAGE@/buffer
 %attr(0755,td-agent,td-agent) %dir %{_sysconfdir}/@PACKAGE@
