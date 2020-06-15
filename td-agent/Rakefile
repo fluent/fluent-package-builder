@@ -256,6 +256,7 @@ class BuildTask
         if windows?
           extract_ruby_installer
           setup_windows_build_env
+          find_and_put_dynamiclibs
         else
           build_ruby_from_source
         end
@@ -528,6 +529,29 @@ class BuildTask
          path)
       cp_r(Dir.glob(File.join(src_dir, "*")), ".")
       rm_rf(src_dir)
+    end
+  end
+
+  def find_and_put_dynamiclibs
+    begin
+      require 'ruby_installer/runtime'
+
+      # These dlls are required to put in staging_bindir to run C++ based extension
+      # included gem such as winevt_c. We didn't find how to link them statically yet.
+      dlls = [
+        "libstdc++-6",
+      ]
+      dlls.each do |dll|
+        mingw_bin_path = RubyInstaller::Runtime.msys2_installation.mingw_bin_path
+        windows_path = "#{mingw_bin_path}/#{dll}.dll"
+        if File.exist?(windows_path)
+          copy windows_path, staging_bindir
+        else
+          raise "Cannot find required DLL needed for dynamic linking: #{windows_path}"
+        end
+      end
+    rescue LoadError
+      raise "Cannot load RubyInstaller::Runtime class"
     end
   end
 
