@@ -28,9 +28,11 @@
 %if %{use_systemd}
 %define control_service() (systemctl %1 %2)
 %define disable_service() (systemctl %1 %2)
+%define enable_service() (systemctl %1 %2)
 %else
 %define control_service() (/sbin/service %2 %1)
 %define disable_service() (/sbin/chkconfig --del %2)
+%define enable_service() (/sbin/chkconfig --add %2)
 %endif
 
 Name:		@PACKAGE@
@@ -127,6 +129,9 @@ if [ $1 -eq 0 ]; then
 fi
 
 %post
+if [ $1 -eq 1 ]; then
+  %{enable_service enable @PACKAGE@}
+fi
 if [ $1 -eq 2 ]; then
   %{control_service condrestart @PACKAGE@}
 fi
