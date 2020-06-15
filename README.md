@@ -11,7 +11,7 @@ td-agent-builder is a new build system for [td-agent](http://docs.treasuredata.c
   * Any host OS that is supported by Docker
     * Debian buster or Ubuntu 18.04 are recommended
   * [Docker](https://docs.docker.com/install/)
-  * Ruby 2.2 or later
+  * Ruby 2.4 or later
   * Git
 
 ### For building Windows package (.msi)
@@ -19,7 +19,7 @@ td-agent-builder is a new build system for [td-agent](http://docs.treasuredata.c
   * Windows OS (10 or 2019 are verified)
   * [Docker Desktop for Windows](https://hub.docker.com/editions/community/docker-ce-desktop-windows)
     * You need to switch to "Windows containers" before using it.
-  * [RubyInstaller](https://rubyinstaller.org/) 2.2 or later.
+  * [RubyInstaller](https://rubyinstaller.org/) 2.4 or later.
   * [Git for Windows](https://gitforwindows.org/)
 
 ## How to build .rpm package
