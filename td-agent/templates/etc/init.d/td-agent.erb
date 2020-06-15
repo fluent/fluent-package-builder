@@ -10,6 +10,7 @@
 ### END INIT INFO
 <% require "shellwords" %>
 # pidfile:           <%= Shellwords.shellescape(File.join("/var", "run", project_name, "#{project_name}.pid")) %>
+# chkconfig: 2345 90 10
 
 export PATH="/sbin:/usr/sbin:/bin:/usr/bin"
 
