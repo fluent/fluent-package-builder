@@ -21,6 +21,7 @@
 %define _amazon_ver %{?amzn:%{amzn}}%{!?amzn:0}
 %define use_scl_ruby (%{_centos_ver} <= 7 && %{_amazon_ver} == 0)
 %define use_systemd (%{_centos_ver} >= 7)
+%define use_license (%{_centos_ver} >= 7)
 # Omit check-rpath and brp-mangle-shebangs since we use our own Ruby
 %define __arch_install_post %{nil}
 %undefine __brp_mangle_shebangs
@@ -161,6 +162,12 @@ elif [ -f "%{_sysconfdir}/prelink.conf" ]; then
 fi
 
 %files
+%doc README.md
+%if %{?use_license}
+%license LICENSE
+%else
+%doc LICENSE
+%endif
 %defattr(-,root,root,-)
 /opt/*
 /opt/@PACKAGE@/share/@PACKAGE@.conf.tmpl
