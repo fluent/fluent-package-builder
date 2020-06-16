@@ -18,4 +18,7 @@ td-agent: unusual-interpreter opt/td-agent/lib/ruby/gems/*/gems/bundler-*/lib/bu
 td-agent: incorrect-path-for-interpreter opt/td-agent/bin/jeprof (#!/usr/bin/env perl != /usr/bin/perl)
 td-agent: uses-dpkg-database-directly postinst (line 37)
 td-agent: uses-dpkg-database-directly postinst (line 40)
+td-agent: unusual-interpreter opt/td-agent/lib/ruby/*/bundler/templates/Executable #!<%=
+td-agent: unusual-interpreter opt/td-agent/lib/ruby/*/bundler/templates/Executable.bundler #!<%=
+td-agent: unusual-interpreter opt/td-agent/lib/ruby/*/bundler/templates/Executable.standalone #!<%=
 td-agent: package-contains-vcs-control-file
