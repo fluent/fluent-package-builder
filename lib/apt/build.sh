@@ -55,10 +55,6 @@ case "${VERSION}" in
     run mv ${PACKAGE}-$(echo $VERSION | sed -e 's/~dev/-dev/') \
         ${PACKAGE}-${VERSION}
     ;;
-  *~rc*)
-    run mv ${PACKAGE}-$(echo $VERSION | sed -r -e 's/~rc[0-9]+//') \
-        ${PACKAGE}-${VERSION}
-    ;;
 esac
 run cd ${PACKAGE}-${VERSION}/
 platform="${distribution}-${code_name}"
