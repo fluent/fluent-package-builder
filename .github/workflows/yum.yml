@@ -24,7 +24,6 @@ jobs:
         run: |
           rake yum:build YUM_TARGETS=${{ matrix.os }}
       - uses: actions/upload-artifact@master
-        if: matrix.os == 'centos-6' || matrix.os == 'centos-7' || matrix.os == 'centos-8'
         with:
           name: packages-${{ matrix.os }}
           path: td-agent/yum/repositories
