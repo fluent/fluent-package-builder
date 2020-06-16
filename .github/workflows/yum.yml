@@ -12,6 +12,7 @@ jobs:
           - centos-6
           - centos-7
           - centos-8
+          - amazonlinux-2
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
