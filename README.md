@@ -16,11 +16,20 @@ td-agent-builder is a new build system for [td-agent](http://docs.treasuredata.c
 
 ### For building Windows package (.msi)
 
-  * Windows OS (10 or 2019 are verified)
+  * Windows OS (10 Pro or 2019 are verified)
   * [Docker Desktop for Windows](https://hub.docker.com/editions/community/docker-ce-desktop-windows)
     * You need to switch to "Windows containers" before using it.
   * [RubyInstaller](https://rubyinstaller.org/) 2.4 or later.
   * [Git for Windows](https://gitforwindows.org/)
+
+After installed above software, you need to enable additional features from powershell (as admin).
+
+```
+dism.exe /online /enable-feature /featurename:Microsoft-Hyper-V /all /norestart
+dism.exe /online /enable-feature /featurename:Containers /all/ norestart
+```
+
+Then restart Windows.
 
 ## How to build .rpm package
 
