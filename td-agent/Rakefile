@@ -244,6 +244,14 @@ class BuildTask
     @download_task = download_task
   end
 
+  def make_wix_version_number(version)
+    return version unless version.include?("~")
+    "%s.%s" % [
+      version.split("~", 2)[0].delete(".").to_i.pred.to_s.chars.join("."),
+      Time.now.strftime("%m%d")
+    ]
+  end
+
   def define
     namespace :build do
       desc "Install jemalloc"
@@ -396,7 +404,8 @@ class BuildTask
       task :wix_config do
         src  = File.join('msi', 'parameters.wxi.erb')
         dest = File.join('msi', 'parameters.wxi')
-        render_template(dest, src, template_params)
+        params = {wix_package_version: make_wix_version_number(PACKAGE_VERSION)}
+        render_template(dest, src, template_params(params))
       end
 
       desc "Create configuration files for Red Hat like systems with systemd"
