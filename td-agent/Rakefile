@@ -257,6 +257,9 @@ class BuildTask
     else
       fail "Failed to download #{gem}!" unless $?.success?
     end
+    if revision > 65534
+      fail "revision must be an integer, from 0 to 65534: <#{revision}>"
+    end
     "%s.%s" % [
       version.split("~", 2)[0].delete(".").to_i.pred.to_s.chars.join("."),
       revision
