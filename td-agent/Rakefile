@@ -246,9 +246,20 @@ class BuildTask
 
   def make_wix_version_number(version)
     return version unless version.include?("~")
+    revision = ""
+    case version
+    when /~rc(\d+)/
+      revision = $1.to_i * 10000 + Time.now.hour
+    when /~beta(\d+)/
+      revision = $1.to_i * 1000 + Time.now.hour
+    when /~alpha(\d+)/
+      revision = $1.to_i * 100 + Time.now.hour
+    else
+      fail "Failed to download #{gem}!" unless $?.success?
+    end
     "%s.%s" % [
       version.split("~", 2)[0].delete(".").to_i.pred.to_s.chars.join("."),
-      Time.now.strftime("%m%d")
+      revision
     ]
   end
 
