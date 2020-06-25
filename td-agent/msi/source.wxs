@@ -24,9 +24,9 @@
     <MajorUpgrade DowngradeErrorMessage="!(loc.DowngradeErrorMessage)" />
 
     <Directory Id="TARGETDIR" Name="SourceDir">
-      <Directory Id="WINDOWSVOLUME">
-        <Directory Id="OPTLOCATION" Name="opt">
-          <Directory Id="PROJECTLOCATION" Name="td-agent">
+      <Directory Id="ProgramFiles64Folder">
+        <Directory Id="TDLOCATION" Name="Treasure Data">
+          <Directory Id="PROJECTLOCATION" Name="TD-Agent4">
           </Directory>
         </Directory>
       </Directory>
@@ -50,8 +50,6 @@
       </Directory>
     </DirectoryRef>
 
-    <SetDirectory Id="WINDOWSVOLUME" Value="[WindowsVolume]" />
-
     <!-- Shortcut on Start Menu -->
     <DirectoryRef Id="ApplicationProgramFolder">
       <Component Id="ApplicationShortcut" Guid="*">
@@ -62,7 +60,7 @@
     </DirectoryRef>
 
     <!-- Set the components defined in our fragment files that will be used for our feature  -->
-    <Feature Id="ProjectFeature" Title="!(loc.FeatureMainName)" Absent="disallow" AllowAdvertise="no" Level="1" ConfigurableDirectory="OPTLOCATION">
+    <Feature Id="ProjectFeature" Title="!(loc.FeatureMainName)" Absent="disallow" AllowAdvertise="no" Level="1" ConfigurableDirectory="TDLOCATION">
       <ComponentGroupRef Id="ProjectDir" />
       <ComponentRef Id="ApplicationShortcut" />
       <ComponentRef Id="TDAgentConf" />
@@ -72,7 +70,7 @@
     <Icon Id="project.ico" SourceFile="assets\icon.ico"/>
     <Property Id="ARPPRODUCTICON" Value="project.ico" />
     <Property Id="ARPHELPLINK" Value="http://www.fluentd.org/" />
-    <Property Id="WIXUI_INSTALLDIR" Value="OPTLOCATION" />
+    <Property Id="WIXUI_INSTALLDIR" Value="ProgramFiles64Folder" />
 
     <UIRef Id="ProjectUI_InstallDir"/>
     <UI Id="ProjectUI_InstallDir">
