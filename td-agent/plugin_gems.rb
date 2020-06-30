@@ -2,33 +2,33 @@ dir 'plugin_gems'
 
 download "httpclient", "2.8.2.4"
 download "td-client", "1.0.7"
-download "td", "0.16.8"
+download "td", "0.16.9"
 download "fluent-plugin-td", "1.1.0"
 
 download "jmespath", "1.4.0"
-download "aws-partitions", "1.288.0"
-download "aws-sigv4", "1.1.1"
-download "aws-sdk-core", "3.92.0"
-download "aws-sdk-kms", "1.30.0"
-download "aws-sdk-sqs", "1.24.0"
-download "aws-sdk-s3", "1.61.1"
-download "fluent-plugin-s3", "1.3.0"
+download "aws-partitions", "1.337.0"
+download "aws-sigv4", "1.2.1"
+download "aws-sdk-core", "3.102.1"
+download "aws-sdk-kms", "1.35.0"
+download "aws-sdk-sqs", "1.29.0"
+download "aws-sdk-s3", "1.72.0"
+download "fluent-plugin-s3", "1.3.3"
 
 download "webhdfs", "0.9.0"
-download "fluent-plugin-webhdfs", "1.2.4"
+download "fluent-plugin-webhdfs", "1.2.5"
 
 download "fluent-plugin-rewrite-tag-filter", "2.3.0"
 
-download "ruby-kafka", "1.0.0"
+download "ruby-kafka", "1.1.0"
 unless windows?
-  download "rdkafka", "0.7.0"
+  download "rdkafka", "0.8.0"
 end
 download "fluent-plugin-kafka", "0.13.0"
 
-download "elasticsearch", "7.6.0"
-download "fluent-plugin-elasticsearch", "4.0.7"
+download "elasticsearch", "7.8.0"
+download "fluent-plugin-elasticsearch", "4.0.9"
 download "prometheus-client", "0.9.0"
-download "fluent-plugin-prometheus", "1.7.3"
+download "fluent-plugin-prometheus", "1.8.0"
 download "fluent-plugin-prometheus_pushgateway", "0.0.2"
 
 download "fluent-plugin-record-modifier", "2.1.0"
