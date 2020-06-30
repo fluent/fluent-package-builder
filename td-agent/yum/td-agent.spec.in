@@ -199,6 +199,9 @@ fi
 # NOTE: %{_tmpfilesdir} is available since CentOS 7
 %attr(0755,td-agent,td-agent) %dir /tmp/@PACKAGE@
 %changelog
+* Tue Jun 30 2020 Masahiro Nakagawa <repeatedly@gmail.com> - 4.0.0-1
+- New upstream release.
+
 * Fri May 22 2020 Masahiro Nakagawa <repeatedly@gmail.com> - 4.0.0~rc1-1
 - New upstream release.
 
