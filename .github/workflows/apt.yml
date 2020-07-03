@@ -10,6 +10,7 @@ jobs:
       matrix:
         os:
           - debian-buster
+          - ubuntu-xenial
           - ubuntu-bionic
           - ubuntu-focal
     runs-on: ubuntu-latest
