@@ -11,6 +11,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       :box => "debian/buster64",
     },
     {
+      :id => "ubuntu-16.04-x86_64",
+      :box => "ubuntu/xenial64",
+    },
+    {
       :id => "ubuntu-18.04-x86_64",
       :box => "ubuntu/bionic64",
     },
