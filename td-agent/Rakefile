@@ -842,6 +842,7 @@ EOS
   def apt_targets_default
     [
       "debian-buster",
+      "ubuntu-xenial",
       "ubuntu-bionic",
       "ubuntu-focal",
     ]
