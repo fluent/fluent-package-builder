@@ -92,5 +92,9 @@ package_initial=$(echo "${PACKAGE}" | sed -e 's/\(.\).*/\1/')
 pool_dir="${repositories}/${distribution}/pool/${code_name}/${component}/${package_initial}/${PACKAGE}"
 run mkdir -p "${pool_dir}/"
 run cp *.tar.* *.dsc *.deb "${pool_dir}/"
+# Ubuntu bionic and focal rename dbgsym package extension to ddeb.
+if [ -f *.ddeb ]; then
+  run cp *.ddeb "${pool_dir}/"
+fi
 
 run chown -R "$(stat --format "%u:%g" "${repositories}")" "${repositories}"
