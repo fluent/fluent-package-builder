@@ -20,6 +20,11 @@
 %define _centos_ver %{?centos_ver:%{centos_ver}}%{!?centos_ver:8}
 %define _amazon_ver %{?amzn:%{amzn}}%{!?amzn:0}
 %define use_scl_ruby (%{_centos_ver} <= 7 && %{_amazon_ver} == 0)
+%if %{_centos_ver} <= 6
+%define scl_ruby_ver 24
+%else
+%define scl_ruby_ver 26
+%endif
 %define use_systemd (%{_centos_ver} >= 7)
 %define use_license (%{_centos_ver} >= 7)
 # Omit check-rpath and brp-mangle-shebangs since we use our own Ruby
@@ -46,9 +51,9 @@ URL:		https://www.treasuredata.com/
 Source0:	@PACKAGE@-@VERSION@.tar.gz
 
 %if %{use_scl_ruby}
-BuildRequires:	rh-ruby24-ruby-devel
-BuildRequires:	rh-ruby24-rubygems
-BuildRequires:	rh-ruby24-rubygem-bundler
+BuildRequires:	rh-ruby%{scl_ruby_ver}-ruby-devel
+BuildRequires:	rh-ruby%{scl_ruby_ver}-rubygems
+BuildRequires:	rh-ruby%{scl_ruby_ver}-rubygem-bundler
 %else
 %if %{_amazon_ver} > 0
 BuildRequires:	ruby
@@ -89,7 +94,7 @@ The stable distribution of Fluentd, called td-agent.
 
 %install
 %if %{use_scl_ruby}
-. /opt/rh/rh-ruby24/enable
+. /opt/rh/rh-ruby%{scl_ruby_ver}/enable
 %endif
 %if %{use_systemd}
 rake build:rpm_config TD_AGENT_STAGING_PATH=%{buildroot}
@@ -199,6 +204,9 @@ fi
 # NOTE: %{_tmpfilesdir} is available since CentOS 7
 %attr(0755,td-agent,td-agent) %dir /tmp/@PACKAGE@
 %changelog
+* Tue Jun 30 2020 Masahiro Nakagawa <repeatedly@gmail.com> - 4.0.0-1
+- New upstream release.
+
 * Fri May 22 2020 Masahiro Nakagawa <repeatedly@gmail.com> - 4.0.0~rc1-1
 - New upstream release.
 

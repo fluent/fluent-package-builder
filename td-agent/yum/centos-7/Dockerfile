@@ -28,10 +28,10 @@ RUN \
   yum install -y ${quiet} centos-release-scl && \
   yum groupinstall -y ${quiet} "Development Tools" && \
   yum install -y ${quiet} \
-    rh-ruby24-ruby-devel  \
-    rh-ruby24-rubygems \
-    rh-ruby24-rubygem-rake \
-    rh-ruby24-rubygem-bundler \
+    rh-ruby26-ruby-devel  \
+    rh-ruby26-rubygems \
+    rh-ruby26-rubygem-rake \
+    rh-ruby26-rubygem-bundler \
     libedit-devel \
     ncurses-devel \
     libyaml-devel \

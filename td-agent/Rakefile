@@ -649,18 +649,15 @@ class BuildTask
     ensure_directory(staging_bindir)
     ensure_directory(gem_staging_dir)
 
-    makeflags = ENV["MAKEFLAGS"]
-    gem_home  = ENV["GEM_HOME"]
-    ENV["MAKEFLAGS"] = "-j#{Etc.nprocessors}"
-    ENV["GEM_HOME"]  = gem_staging_dir
+    gem_home = ENV["GEM_HOME"]
+    ENV["GEM_HOME"] = gem_staging_dir
 
     sh(gem_command, "install",
        "--no-document",
        "--bindir", staging_bindir,
        gem_path)
 
-    ENV["GEM_HOME"]  = gem_home
-    ENV["MAKEFLAGS"] = makeflags
+    ENV["GEM_HOME"] = gem_home
   end
 
   def install_gems(files)
