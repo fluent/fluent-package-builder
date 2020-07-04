@@ -10,7 +10,6 @@ jobs:
   # FIXME: Ubuntu focal's lintian will be stuck on arm64.
   # see: https://github.com/fluent-plugins-nursery/td-agent-builder/issues/65
   - env: RAKE_TASK="apt:build" APT_TARGETS="ubuntu-focal" ARCHIVE_BASE="ubuntu-focal" PACKAGE_SYSTEM=apt LINTIAN=no
-  # centos-release-scl isn't available for centos-7 on aarch64
   - env: RAKE_TASK="yum:build" YUM_TARGETS="centos-7" ARCHIVE_BASE="centos-7" PACKAGE_SYSTEM=yum
   - env: RAKE_TASK="yum:build" YUM_TARGETS="centos-8" ARCHIVE_BASE="centos-8" PACKAGE_SYSTEM=yum
   - env: RAKE_TASK="yum:build" YUM_TARGETS="amazonlinux-2" ARCHIVE_BASE="amazonlinux-2" PACKAGE_SYSTEM=yum
