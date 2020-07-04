@@ -48,6 +48,19 @@
           </Component>
         </Directory>
       </Directory>
+      <Directory Id="TDAgentBinDir"
+                 Name="bin"
+                 ComponentGuidGenerationSeed="3ad15499-f8a4-471b-bc7f-16aa4abfd894">
+        <Component Id="TDAgentBat">
+          <File Name="td-agent.bat"
+                KeyPath="yes"
+                Source="$(var.ProjectSourceDir)\bin\td-agent.bat" />
+          <ServiceControl Id="ServiceControlFluentdWinSvc"
+                          Name="fluentdwinsvc"
+                          Stop="uninstall"
+                          Remove="uninstall" />
+        </Component>
+      </Directory>
     </DirectoryRef>
 
     <SetDirectory Id="WINDOWSVOLUME" Value="[WindowsVolume]" />
@@ -66,6 +79,7 @@
       <ComponentGroupRef Id="ProjectDir" />
       <ComponentRef Id="ApplicationShortcut" />
       <ComponentRef Id="TDAgentConf" />
+      <ComponentRef Id="TDAgentBat" />
     </Feature>
 
     <!-- UI Stuff -->
@@ -98,8 +112,15 @@
                   Execute="deferred"
                   Return="check"
                   Impersonate="no" />
+    <CustomAction Id="InstallFluentdWinSvc"
+                  ExeCommand="[PROJECTLOCATION]bin\td-agent.bat --reg-winsvc i --reg-winsvc-fluentdopt &quot;-c [PROJECTLOCATION]\etc\td-agent\td-agent.conf -o [PROJECTLOCATION]\td-agent.log&quot;"
+                  Directory="PROJECTLOCATION"
+                  Execute="deferred"
+                  Return="check"
+                  Impersonate="no" />
     <InstallExecuteSequence>
       <Custom Action="PostInstall" After="InstallFiles">NOT Installed</Custom>
+      <Custom Action="InstallFluentdWinSvc" After="InstallFiles">NOT Installed</Custom>
     </InstallExecuteSequence>
 
   </Product>
