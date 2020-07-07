@@ -36,7 +36,7 @@ After installed above software, you need to enable additional features from powe
 
 ```
 dism.exe /online /enable-feature /featurename:Microsoft-Hyper-V /all /norestart
-dism.exe /online /enable-feature /featurename:Containers /all/ norestart
+dism.exe /online /enable-feature /featurename:Containers /all /norestart
 ```
 
 Then restart Windows.
@@ -137,7 +137,7 @@ A td-agent-${version}-x64.msi package will be built under td-agent/msi directory
 ```
 * Build packages
 ```
-% rake deb:build
+% rake apt:build
 % rake yum:build
 % rake msi:build
 ```
