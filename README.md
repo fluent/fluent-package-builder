@@ -4,6 +4,16 @@
 
 td-agent-builder is a new build system for [td-agent](http://docs.treasuredata.com/articles/td-agent) which aims to replace the traditional build system [omnibus-td-agent](https://github.com/treasure-data/omnibus-td-agent) since it has several problems due to [Omnibus](https://github.com/chef/omnibus)'s limitations.
 
+### Changes from Treasure Agent 3
+
+* Use system libraries: e.g. openssl
+* Remove libraries for 3rd party gems: e.g. postgresql
+* Remove `embedded` directory by omnibus
+  * Use `/opt/td-agent/bin/fluent-cat` instead of `/opt/td-agent/embedded/bin/fluent-cat`
+* Update core components: ruby, jemalloc and more
+
+See also [this issue](https://github.com/treasure-data/omnibus-td-agent/issues/219) for omnibus problems.
+
 ## Prerequisites
 
 ### For building .rpm & .deb packages
