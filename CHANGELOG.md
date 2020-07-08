@@ -5,7 +5,9 @@
 ### News
 
 * Support Arm64 architecture
+  * Ubuntu xenial and Windows are excluded
 * Support Ubuntu focal
+* Drop CentOS 6 support
 
 ### Core component
 
@@ -13,7 +15,21 @@
 * jemalloc v5.2.1
 * fluentd v1.11.1
 
-### Bundle plugins
+### Core gems
+
+* bundler v2.1.4
+* msgpack v1.3.3
+* cool.io v1.6.0
+* serverengine v2.2.1
+* oj v3.10.6
+* async-http v0.52.4
+* http_parser.rb v0.6.0
+* yajl-ruby v1.4.1
+* sigdump v0.2.4
+* tzinfo v2.0.2
+* tzinfo-data v1.2020.1
+
+### Bundled plugins and gems
 
 * td-client v1.0.7
 * fluent-plugin-td v1.1.0
