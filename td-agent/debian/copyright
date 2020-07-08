@@ -157,7 +157,7 @@ Files: downloads/plugin_gems/25-fluent-plugin-systemd-1.0.2.gem
 Copyright: Ed Robinson
 License: Apache-2.0
 
-Files: downloads/plugin_gems/26-nokogiri-1.11.0.rc2.gem
+Files: downloads/plugin_gems/26-nokogiri-1.10.10.gem
 Copyright: Aaron Patterson,Mike Dalessio,Yoko Harada,Tim Elliott,Akinori MUSHA,John Shahid,Lars Kanis
 License: MIT
 
