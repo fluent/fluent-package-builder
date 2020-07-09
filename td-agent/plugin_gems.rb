@@ -40,14 +40,14 @@ end
 
 # temporal solution for ruby 2.7
 if windows?
-  download "nokogiri", "1.11.0.rc2-x64-mingw32"
+  download "nokogiri", "1.10.10-x64-mingw32"
 else
-  download "nokogiri", "1.11.0.rc2"
+  download "nokogiri", "1.10.10"
 end
 
 if windows?
   download 'win32-eventlog', '0.6.7'
   download 'winevt_c', '0.8.1'
-  download 'fluent-plugin-parser-winevt_xml', '0.2.3.rc1'
-  download 'fluent-plugin-windows-eventlog', '0.7.1.rc1'
+  download 'fluent-plugin-parser-winevt_xml', '0.2.2'
+  download 'fluent-plugin-windows-eventlog', '0.7.0'
 end
