@@ -119,8 +119,8 @@ class DownloadTask
 
     ensure_directory(DOWNLOADS_DIR) do
       puts "Downloading #{filename}..."
-      open(url) do |in_file|
-        open(tmp_filename, "wb") do |out_file|
+      URI.open(url) do |in_file|
+        File.open(tmp_filename, "wb") do |out_file|
           out_file.write(in_file.read)
         end
       end
