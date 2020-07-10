@@ -137,7 +137,7 @@ Files: downloads/plugin_gems/20-prometheus-client-0.9.0.gem
 Copyright: Tobias Schmidt
 License: Apache-2.0
 
-Files: downloads/plugin_gems/21-fluent-plugin-prometheus-1.8.0.gem
+Files: downloads/plugin_gems/21-fluent-plugin-prometheus-1.8.1.gem
 Copyright: Masahiro Sano
 License: Apache-2.0
 

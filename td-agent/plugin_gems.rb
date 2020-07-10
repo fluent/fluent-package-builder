@@ -28,7 +28,7 @@ download "fluent-plugin-kafka", "0.13.0"
 download "elasticsearch", "7.8.0"
 download "fluent-plugin-elasticsearch", "4.0.9"
 download "prometheus-client", "0.9.0"
-download "fluent-plugin-prometheus", "1.8.0"
+download "fluent-plugin-prometheus", "1.8.1"
 download "fluent-plugin-prometheus_pushgateway", "0.0.2"
 
 download "fluent-plugin-record-modifier", "2.1.0"
