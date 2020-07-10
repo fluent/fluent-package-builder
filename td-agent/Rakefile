@@ -740,7 +740,11 @@ class BuildTask
         remove_files("ext/**/.libs", true)
       end
     end
-    remove_files("#{td_agent_staging_dir}/lib/lib*.a")
+    Dir.glob("#{td_agent_staging_dir}/lib/lib*.a").each do |static_library|
+      unless static_library.end_with?(".dll.a")
+        rm_f(static_library)
+      end
+    end
   end
 end
 
