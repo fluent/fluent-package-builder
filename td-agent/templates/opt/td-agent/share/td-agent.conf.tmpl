@@ -16,12 +16,20 @@
   auto_create_table
   <buffer>
     @type file
+<% if windows? %>
+    path "#{ENV['TD_AGENT_TOPDIR']}/var/log/<%= project_name %>/buffer/td"
+<% else %>
     path /var/log/<%= project_name %>/buffer/td
+<% end %>
   </buffer>
 
   <secondary>
     @type file
+<% if windows? %>
+    path "#{ENV['TD_AGENT_TOPDIR']}/var/log/<%= project_name %>/failed_records"
+<% else %>
     path /var/log/<%= project_name %>/failed_records
+<% end %>
   </secondary>
 </match>
 
