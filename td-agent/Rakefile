@@ -795,9 +795,6 @@ class LinuxPackageTask < PackageTask
     src = File.join("templates", "package-scripts", "td-agent", "deb", "copyright")
     dest = File.join("debian", "copyright")
     licenses = []
-    template = File.open(src) do |infile|
-      infile.read
-    end
     @download_task.files_core_gems.concat(@download_task.files_plugin_gems).each do |gem_file|
       spec = YAML.load(`gem specification #{gem_file}`)
       relative_path = gem_file.sub(/#{Dir.pwd}\//, "")
@@ -826,11 +823,11 @@ License: #{license}
 EOS
       end
     end
-    puts "Generate #{dest}"
-    File.open(dest, 'w+', 0644) do |f|
-      template.sub!(/BUNDLED_GEM_LICENSES/, licenses.join("\n"))
-      f.write(template)
-    end
+    params = {
+      bundled_gem_licenses: licenses.join("\n"),
+      bundled_ruby_version: BUNDLED_RUBY_VERSION
+    }
+    render_template(dest, src, template_params(params))
   end
 
   def build_archive
