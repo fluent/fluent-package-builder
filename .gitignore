@@ -1,6 +1,7 @@
 /.bundle/
 /vendor/
 /td-agent/staging/
+/td-agent/debian/post*
 /td-agent/debian/copyright
 /td-agent/downloads/
 /td-agent/yum/build.sh
