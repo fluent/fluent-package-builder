@@ -323,7 +323,7 @@ class BuildTask
         remove_needless_files
       end
 
-      debian_pkg_scripts = ["preinst", "postinst", "prerm", "postrm"]
+      debian_pkg_scripts = ["preinst", "postinst", "postrm"]
       debian_pkg_scripts.each do |script|
         CLEAN.include(File.join("..", "debian", script))
       end
