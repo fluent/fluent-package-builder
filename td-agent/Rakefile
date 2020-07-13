@@ -68,6 +68,69 @@ def ensure_directory(dirname)
   end
 end
 
+def install_prefix
+  "/opt/#{PACKAGE_NAME}"
+end
+
+def gem_dir_suffix
+  "lib/ruby/gems/#{gem_dir_version}"
+end
+
+def gem_dir_version
+  if windows?
+    ruby_version = BUNDLED_RUBY_INSTALLER_X64_VERSION
+  else
+    ruby_version = BUNDLED_RUBY_VERSION
+  end
+  rb_major, rb_minor, rb_teeny = ruby_version.split("-", 2).first.split(".", 3)
+  "#{rb_major}.#{rb_minor}.0" # gem path's teeny version is always 0
+end
+
+def template_params(params = nil)
+  config = {
+    project_name: PACKAGE_NAME,
+    version: PACKAGE_VERSION,
+    install_message: nil,
+    pkg_type: nil,
+  }
+
+  unless windows?
+    path_params = {
+      install_path: install_prefix,
+      gem_install_path: File.join(install_prefix, gem_dir_suffix),
+    }
+    config.merge!(path_params)
+  end
+
+  if params
+    config.merge(params)
+  else
+    config
+  end
+end
+
+def template_path(*path_parts)
+  File.join('templates', *path_parts)
+end
+
+def render_template(dest, src, config, opts={})
+  erb_binding = binding
+  config.each do |key, value|
+    erb_binding.local_variable_set(key, value)
+  end
+
+  destination = dest.gsub('td-agent', config[:project_name])
+  directory = File.dirname(destination)
+  mode = opts.fetch(:mode, 0644)
+
+  puts "Generate #{destination}"
+  ensure_directory(directory)
+  File.open(destination, 'w', mode) do |f|
+    template = ERB.new(File.read(src), nil, '<>')
+    f.write(template.result(erb_binding))
+  end
+end
+
 class DownloadTask
   include Rake::DSL
 
@@ -438,51 +501,6 @@ class BuildTask
 
   private
 
-  def template_params(params = nil)
-    config = {
-      project_name: PACKAGE_NAME,
-      version: PACKAGE_VERSION,
-      install_message: nil,
-      pkg_type: nil,
-    }
-
-    unless windows?
-      path_params = {
-        install_path: install_prefix,
-        gem_install_path: File.join(install_prefix, gem_dir_suffix),
-      }
-      config.merge!(path_params)
-    end
-
-    if params
-      config.merge(params)
-    else
-      config
-    end
-  end
-
-  def template_path(*path_parts)
-    File.join('templates', *path_parts)
-  end
-
-  def render_template(dest, src, config, opts={})
-    erb_binding = binding
-    config.each do |key, value|
-      erb_binding.local_variable_set(key, value)
-    end
-
-    destination = dest.gsub('td-agent', config[:project_name])
-    directory = File.dirname(destination)
-    mode = opts.fetch(:mode, 0644)
-
-    puts "Generate #{destination}"
-    ensure_directory(directory)
-    File.open(destination, 'w', mode) do |f|
-      template = ERB.new(File.read(src), nil, '<>')
-      f.write(template.result(erb_binding))
-    end
-  end
-
   def render_systemd_unit_file(dest_path, config)
     template_file_path = template_path('etc', 'systemd', 'td-agent.service.erb')
     render_template(dest_path, template_file_path, config)
@@ -619,10 +637,6 @@ class BuildTask
     end
     rb_major, rb_minor, rb_teeny = ruby_version.split("-", 2).first.split(".", 3)
     "#{rb_major}.#{rb_minor}.0" # gem path's teeny version is always 0
-  end
-
-  def gem_dir_suffix
-    "lib/ruby/gems/#{gem_dir_version}"
   end
 
   def licenses_staging_dir
