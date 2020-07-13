@@ -31,10 +31,6 @@ License: Apache-2.0
  /opt/td-agent/embedded not to affect already installed packages.
  See /opt/td-agent/LICENSE/* for embedded software.
 
-Files: td-agent/downloads/ruby-2.4.10.tar.gz
-Copyright: Yukihiro Matsumoto <matz@netlab.jp> and others
-License: BSD-2-clause or Ruby
-
 License: BSD-2-clause
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions
