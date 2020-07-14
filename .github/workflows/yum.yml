@@ -17,19 +17,19 @@ jobs:
           - label: CentOS 6 x86_64
             rake-job: centos-6
             test-docker-image: centos:6
-            test-script: td-agent/yum/test.sh
+            test-script: td-agent/yum/install-test.sh
           - label: CentOS 7 x86_64
             rake-job: centos-7
             test-docker-image: centos:7
-            test-script: td-agent/yum/test.sh
+            test-script: td-agent/yum/install-test.sh
           - label: CentOS 8 x86_64
             rake-job: centos-8
             test-docker-image: centos:8
-            test-script: td-agent/yum/test.sh
+            test-script: td-agent/yum/install-test.sh
           - label: Amazon Linux 2 x86_64
             rake-job: amazonlinux-2
             test-docker-image: amazonlinux:2
-            test-script: td-agent/yum/test.sh
+            test-script: td-agent/yum/install-test.sh
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
