@@ -22,3 +22,12 @@ td-agent: unusual-interpreter opt/td-agent/lib/ruby/*/bundler/templates/Executab
 td-agent: unusual-interpreter opt/td-agent/lib/ruby/*/bundler/templates/Executable.bundler #!<%=
 td-agent: unusual-interpreter opt/td-agent/lib/ruby/*/bundler/templates/Executable.standalone #!<%=
 td-agent: package-contains-vcs-control-file
+td-agent: binary-or-shlib-defines-rpath opt/td-agent/lib/ruby/gems/*/extensions/x86_64-linux/*/nokogiri-*/nokogiri/nokogiri.so /build/td-agent-*/debian/tmp/opt/td-agent/lib/ruby/gems/*/gems/nokogiri-*/ports/x86_64-pc-linux-gnu/libxml2/*/lib
+td-agent: binary-or-shlib-defines-rpath opt/td-agent/lib/ruby/gems/*/extensions/x86_64-linux/*/nokogiri-*/nokogiri/nokogiri.so /build/td-agent-*/debian/tmp/opt/td-agent/lib/ruby/gems/*/gems/nokogiri-*/ports/x86_64-pc-linux-gnu/libxslt/*/lib
+td-agent: binary-or-shlib-defines-rpath opt/td-agent/lib/ruby/gems/*/gems/nokogiri-*/lib/nokogiri/nokogiri.so /build/td-agent-*/debian/tmp/opt/td-agent/lib/ruby/gems/*/gems/nokogiri-*/ports/x86_64-pc-linux-gnu/libxslt/*/lib
+td-agent: binary-or-shlib-defines-rpath opt/td-agent/lib/ruby/gems/*/gems/nokogiri-*/ext/nokogiri/nokogiri.so /build/td-agent-*/debian/tmp/opt/td-agent/lib/ruby/gems/*/gems/nokogiri-*/ports/x86_64-pc-linux-gnu/libxslt/*/lib
+td-agent: binary-or-shlib-defines-rpath opt/td-agent/lib/ruby/gems/*/gems/nokogiri-*/ext/nokogiri/nokogiri.so /build/td-agent-*/debian/tmp/opt/td-agent/lib/ruby/gems/*/gems/nokogiri-*/ports/x86_64-pc-linux-gnu/libxml2/*/lib
+td-agent: binary-or-shlib-defines-rpath opt/td-agent/lib/ruby/gems/*/gems/nokogiri-*/lib/nokogiri/nokogiri.so /build/td-agent-*/debian/tmp/opt/td-agent/lib/ruby/gems/*/gems/nokogiri-*/ports/x86_64-pc-linux-gnu/libxml2/*/lib
+td-agent: embedded-library opt/td-agent/lib/ruby/gems/*/extensions/x86_64-linux/*/nokogiri-*/nokogiri/nokogiri.so: libxml2
+td-agent: embedded-library opt/td-agent/lib/ruby/gems/*/gems/nokogiri-*/ext/nokogiri/nokogiri.so: libxml2
+td-agent: embedded-library opt/td-agent/lib/ruby/gems/*/gems/nokogiri-*/lib/nokogiri/nokogiri.so: libxml2
