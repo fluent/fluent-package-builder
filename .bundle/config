@@ -1,0 +1,5 @@
+---
+BUNDLE_PATH: "td-agent/downloads"
+BUNDLE_CACHE_PATH: "td-agent/downloads"
+BUNDLE_NO_INSTALL: "true"
+BUNDLE_PATH_RELATIVE_TO_CWD: "true"

@@ -137,7 +137,7 @@ class DownloadTask
   attr_reader :file_jemalloc_source
   attr_reader :file_ruby_source, :file_ruby_installer_x64
   attr_reader :file_fluentd_archive
-  attr_reader :files_core_gems, :files_plugin_gems
+  attr_reader :files_ruby_gems
 
   def files
     [
@@ -145,8 +145,7 @@ class DownloadTask
       @file_ruby_source,
       @file_ruby_installer_x64,
       @file_fluentd_archive,
-      *@files_core_gems,
-      *@files_plugin_gems,
+      *@files_ruby_gems
     ]
   end
 
@@ -154,8 +153,7 @@ class DownloadTask
     define_jemalloc_file
     define_ruby_files
     define_fluentd_archive
-    define_gem_files("core_gems")
-    define_gem_files("plugin_gems")
+    define_gem_files
 
     namespace :download do
       desc "Download jemalloc source"
@@ -167,11 +165,9 @@ class DownloadTask
       desc "Clone fluentd repository and create a tarball"
       task :fluentd => @file_fluentd_archive
 
-      desc "Download core_gems"
-      task :core_gems => @files_core_gems
+      desc "Download ruby gems"
+      task :ruby_gems => @files_ruby_gems
 
-      desc "Download plugin_gems"
-      task :plugin_gems => @files_plugin_gems
     end
   end
 
@@ -265,38 +261,15 @@ class DownloadTask
     end
   end
 
-  def define_gem_files(category)
+  def define_gem_files
     paths = []
-    gems_parser = GemsParser.parse(File.read("#{category}.rb"))
-    digits = (gems_parser.target_files.length - 1).to_s.length
-    target_dir = File.join(DOWNLOADS_DIR, gems_parser.target_dir)
-
-    gems_parser.target_files.each_with_index do |target, index|
-      name, version = target
-      gem = "#{name}-#{version}.gem"
-      numbered_gem = sprintf("%0#{digits}d-%s", index, gem)
-      path = File.join(target_dir, numbered_gem)
+    `bundle package --no-install --cache-path=#{DOWNLOADS_DIR}`
+    paths = []
+    Dir.glob("#{DOWNLOADS_DIR}/*.gem") do |path|
       paths << path
-
-      file path do
-        ensure_directory(target_dir) do
-          if version.include?("-")
-            number, platform = version.split("-", 2)
-            version_option = ["--version", number, "--platform", platform]
-          else
-            version_option = ["--version", "#{version}", "--platform", "ruby"]
-          end
-          gem = "#{name}-#{version}.gem"
-          numbered_gem = sprintf("%0#{digits}d-%s", index, gem)
-          sh("gem", "fetch", name, *version_option)
-          `gem install --explain #{gem} --no-document`
-          fail "Failed to download #{gem}!" unless $?.success?
-          mv(gem, numbered_gem)
-        end
-      end
     end
 
-    instance_variable_set("@files_#{category}", paths)
+    instance_variable_set("@files_ruby_gems", paths)
   end
 end
 
@@ -347,18 +320,13 @@ class BuildTask
         end
       end
 
-      desc "Install core_gems"
-      task :core_gems => [:"download:core_gems", :ruby] do
-        install_gems(@download_task.files_core_gems)
-      end
-
-      desc "Install plugin_gems"
-      task :plugin_gems => [:"download:plugin_gems", :fluentd] do
-        install_gems(@download_task.files_plugin_gems)
+      desc "Install ruby gems"
+      task :ruby_gems => [:"download:ruby_gems", :fluentd] do
+        install_gems(@download_task.files_ruby_gems)
       end
 
       desc "Install fluentd"
-      task :fluentd => [:"download:fluentd", :core_gems] do
+      task :fluentd => [:"download:fluentd", :ruby] do
         cd(DOWNLOADS_DIR) do
           archive_path = @download_task.file_fluentd_archive
           fluentd_dir = archive_path.sub(/\.tar\.gz$/, '')
@@ -371,7 +339,7 @@ class BuildTask
       end
 
       desc "Install all gems"
-      task :gems => [:plugin_gems]
+      task :gems => [:ruby_gems]
 
       desc "Collect licenses of bundled softwares"
       task :licenses => [:gems] do
@@ -783,7 +751,12 @@ class LinuxPackageTask < PackageTask
       build_copyright_file
     end
 
-    file @archive_name => [*repo_files, *@download_task.files, debian_copyright_file]  do
+    debian_include_binaries_file = File.join("td-agent", "debian", "source", "include-binaries")
+    file debian_include_binaries_file do
+      build_include_binaries_file
+    end
+
+    file @archive_name => [*repo_files, *@download_task.files, debian_copyright_file, debian_include_binaries_file] do
       build_archive
     end
   end
@@ -795,7 +768,7 @@ class LinuxPackageTask < PackageTask
     src = File.join("templates", "package-scripts", "td-agent", "deb", "copyright")
     dest = File.join("debian", "copyright")
     licenses = []
-    @download_task.files_core_gems.concat(@download_task.files_plugin_gems).each do |gem_file|
+    @download_task.files_ruby_gems.each do |gem_file|
       spec = YAML.load(`gem specification #{gem_file}`)
       relative_path = gem_file.sub(/#{Dir.pwd}\//, "")
       unless spec.licenses.empty?
@@ -828,6 +801,22 @@ EOS
       bundled_ruby_version: BUNDLED_RUBY_VERSION
     }
     render_template(dest, src, template_params(params))
+  end
+
+  def build_include_binaries_file
+    # Note: maintain debian/source/include-binaries manually is inappropriate way
+    # because many gem files are bundled with td-agent package.
+    # We use gem specification GEMFILE to solve this issue.
+    paths = []
+    `bundle package --no-install --cache-path=#{DOWNLOADS_DIR}`
+    Dir.glob("#{DOWNLOADS_DIR}/*.gem") do |path|
+      paths << path.sub(Dir.pwd, "td-agent")
+    end
+    ensure_directory("debian/source") do
+      File.open("include-binaries", "w+") do |file|
+        file.puts(paths.sort.uniq.join("\n"))
+      end
+    end
   end
 
   def build_archive

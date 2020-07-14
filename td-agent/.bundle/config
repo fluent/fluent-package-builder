@@ -1,0 +1,5 @@
+---
+BUNDLE_PATH: "downloads"
+BUNDLE_CACHE_PATH: "downloads"
+BUNDLE_NO_INSTALL: "true"
+BUNDLE_PATH_RELATIVE_TO_CWD: "true"
