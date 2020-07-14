@@ -5,11 +5,11 @@ Files: *
 Copyright: 2019-2020 Treasure Data, Inc.
 License: Apache-2.0
 
-Files: td-agent/downloads/ruby-2.4.10.tar.gz
+Files: td-agent/downloads/ruby-<%= bundled_ruby_version %>.tar.gz
 Copyright: Yukihiro Matsumoto <matz@netlab.jp> and others
 License: BSD-2-clause or Ruby
 
-BUNDLED_GEM_LICENSES
+<%= bundled_gem_licenses %>
 
 License: Apache-2.0
  Licensed under the Apache License, Version 2.0 (the "License");
