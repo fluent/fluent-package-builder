@@ -8,11 +8,28 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os:
-          - centos-6
-          - centos-7
-          - centos-8
-          - amazonlinux-2
+        label:
+          - CentOS 6 x86_64
+          - CentOS 7 x86_64
+          - CentOS 8 x86_64
+          - Amazon Linux 2 x86_64
+        include:
+          - label: CentOS 6 x86_64
+            rake-job: centos-6
+            test-docker-image: centos:6
+            test-script: td-agent/yum/install-test.sh
+          - label: CentOS 7 x86_64
+            rake-job: centos-7
+            test-docker-image: centos:7
+            test-script: td-agent/yum/install-test.sh
+          - label: CentOS 8 x86_64
+            rake-job: centos-8
+            test-docker-image: centos:8
+            test-script: td-agent/yum/install-test.sh
+          - label: Amazon Linux 2 x86_64
+            rake-job: amazonlinux-2
+            test-docker-image: amazonlinux:2
+            test-script: td-agent/yum/install-test.sh
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
@@ -22,8 +39,16 @@ jobs:
           sudo apt -V install ruby
       - name: Build rpm with Docker
         run: |
-          rake yum:build YUM_TARGETS=${{ matrix.os }}
+          rake yum:build YUM_TARGETS=${{ matrix.rake-job }}
       - uses: actions/upload-artifact@master
         with:
           name: packages-${{ matrix.os }}
           path: td-agent/yum/repositories
+      - name: Installation Test
+        run: |
+          docker run \
+          --rm \
+          --tty \
+          --volume ${PWD}:/fluentd:ro \
+          ${{ matrix.test-docker-image }} \
+          /fluentd/${{ matrix.test-script }}

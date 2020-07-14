@@ -8,11 +8,28 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os:
-          - debian-buster
-          - ubuntu-xenial
-          - ubuntu-bionic
-          - ubuntu-focal
+        label:
+          - Debian GNU/Linux Buster amd64
+          - Ubuntu Xenial amd64
+          - Ubuntu Bionic amd64
+          - Ubuntu Focal amd64
+        include:
+          - label: Debian GNU/Linux Buster amd64
+            rake-job: debian-buster
+            test-docker-image: debian:buster
+            test-script: td-agent/apt/install-test.sh
+          - label: Ubuntu Xenial amd64
+            rake-job: ubuntu-xenial
+            test-docker-image: ubuntu:xenial
+            test-script: td-agent/apt/install-test.sh
+          - label: Ubuntu Bionic amd64
+            rake-job: ubuntu-bionic
+            test-docker-image: ubuntu:bionic
+            test-script: td-agent/apt/install-test.sh
+          - label: Ubuntu Focal amd64
+            rake-job: ubuntu-focal
+            test-docker-image: ubuntu:focal
+            test-script: td-agent/apt/install-test.sh
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
@@ -22,8 +39,16 @@ jobs:
           sudo apt -V install ruby
       - name: Build deb with Docker
         run: |
-          rake apt:build APT_TARGETS=${{ matrix.os }}
+          rake apt:build APT_TARGETS=${{ matrix.rake-job }}
       - uses: actions/upload-artifact@master
         with:
           name: packages-${{ matrix.os }}
           path: td-agent/apt/repositories
+      - name: Installation Test
+        run: |
+          docker run \
+          --rm \
+          --tty \
+          --volume ${PWD}:/fluentd:ro \
+          ${{ matrix.test-docker-image }} \
+          /fluentd/${{ matrix.test-script }}
