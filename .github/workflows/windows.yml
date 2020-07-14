@@ -17,3 +17,12 @@ jobs:
         with:
           name: packages-windows-x86_64
           path: td-agent/msi/repositories
+      - name: Installation Test
+        shell: pwsh
+        run: |
+          docker run `
+          --rm `
+          --tty `
+          --volume ${PWD}:C:\fluentd:ro `
+          mcr.microsoft.com/dotnet/framework/runtime:3.5 `
+          powershell -ExecutionPolicy Bypass -Command "C:\fluentd\td-agent\msi\install-test.ps1"
