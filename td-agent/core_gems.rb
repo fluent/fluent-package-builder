@@ -18,7 +18,7 @@ if windows?
   download 'win32-ipc', '0.7.0'
   download 'win32-event', '0.6.3'
   download 'win32-service', '2.1.5'
-  download 'win32-api', '1.8.0-universal-mingw32'
+  download 'win32-api', '1.9.1-universal-mingw32'
   download 'windows-pr', '1.2.6'
   download 'windows-api', '0.4.4'
 end
