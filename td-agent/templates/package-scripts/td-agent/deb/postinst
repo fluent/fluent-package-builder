@@ -69,7 +69,7 @@ case "$1" in
         add_system_user
         add_directories
         fixperms
-        update_conffile /etc/<%= project_name %>/<%= project_name %>.conf /etc/<%= project_name %>/<%= project_name %>.conf.tmpl
+        update_conffile /etc/<%= project_name %>/<%= project_name %>.conf /opt/<%= project_name %>/share/<%= project_name %>.conf.tmpl
         ;;
     abort-upgrade|abort-deconfigure|abort-remove)
         :
