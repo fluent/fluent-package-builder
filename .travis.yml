@@ -14,7 +14,7 @@ jobs:
   - env: RAKE_TASK="yum:build" YUM_TARGETS="centos-8" ARCHIVE_BASE="centos-8" PACKAGE_SYSTEM=yum
   - env: RAKE_TASK="yum:build" YUM_TARGETS="amazonlinux-2" ARCHIVE_BASE="amazonlinux-2" PACKAGE_SYSTEM=yum
 script:
-  - travis_retry rake $RAKE_TASK
+  - rake $RAKE_TASK
 before_deploy:
   - export RELEASE_DIRECTORY="td-agent/${PACKAGE_SYSTEM}/repositories/"
   - tar cJvf package-${ARCHIVE_BASE}-arm64.tar.xz td-agent/${PACKAGE_SYSTEM}/repositories
