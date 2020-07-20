@@ -20,7 +20,7 @@
 
 LANG=C
 
-set -u
+set -ux
 
 run()
 {

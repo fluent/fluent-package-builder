@@ -16,4 +16,6 @@ override_dh_auto_install:
 
 override_dh_auto_clean:
 	rake clean
+	find . | grep debian 
+	find . | grep downloads
 	dh_auto_clean
