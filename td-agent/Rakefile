@@ -264,7 +264,7 @@ class DownloadTask
   def define_gem_files
     paths = []
     # Note: Avoid "could not find compatible versions" error
-    `gem install bundler --no-document`
+    #`gem install bundler --no-document`
     `bundle package --no-install --cache-path=#{DOWNLOADS_DIR}`
     rm_rf(".bundle") if File.exists?(".bundle/config")
     rm_rf("Gemfile.lock") if File.exists?("Gemfile.lock")
