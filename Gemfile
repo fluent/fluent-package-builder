@@ -63,5 +63,6 @@ else
 end
 
 if ENV["TRAVIS"]
+  gem "gh", "0.18.0"
   gem "travis", "1.9.1"
 end
