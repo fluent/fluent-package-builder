@@ -633,10 +633,14 @@ class BuildTask
     gem_home = ENV["GEM_HOME"]
     ENV["GEM_HOME"] = gem_staging_dir
 
-    sh(gem_command, "install",
-       "--no-document",
-       "--bindir", staging_bindir,
-       gem_path)
+    gem_installation_command = [
+      gem_command, "install",
+      "--no-document",
+      "--bindir", staging_bindir,
+      gem_path
+    ]
+    gem_installation_command.push("--force") if windows?
+    sh(*gem_installation_command)
 
     ENV["GEM_HOME"] = gem_home
   end
