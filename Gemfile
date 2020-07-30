@@ -63,6 +63,8 @@ else
 end
 
 if ENV["TRAVIS"]
+  # Travis CI fails because activesupport requires tzinfo ~> 1.1.
+  # We need to wait until activesupport 6.1.
   gem "gh", "0.18.0"
   gem "travis", "1.9.1"
 end
