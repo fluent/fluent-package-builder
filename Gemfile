@@ -31,7 +31,6 @@ gem "msgpack", "1.3.3"
 gem "oj", "3.10.6"
 gem "prometheus-client", "0.9.0"
 gem "rake"
-gem "rdkafka", "0.8.0"
 gem "ruby-kafka", "1.1.0"
 gem "serverengine", '2.2.1'
 gem "sigdump", "0.2.4"
@@ -60,6 +59,7 @@ if /mswin|mingw/ =~ RUBY_PLATFORM
 else
   # temporal solution for ruby 2.7
   gem "nokogiri", "1.10.10"
+  gem "rdkafka", "0.8.0"
 end
 
 if ENV["TRAVIS"]
