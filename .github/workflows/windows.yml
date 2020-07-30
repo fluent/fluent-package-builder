@@ -12,6 +12,7 @@ jobs:
       - uses: actions/checkout@master
       - name: Build
         run: |
+          rm Gemfile.lock
           rake msi:build
       - uses: actions/upload-artifact@master
         with:
