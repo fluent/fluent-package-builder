@@ -21,7 +21,6 @@ gem "fluent-plugin-prometheus_pushgateway", "0.0.2"
 gem "fluent-plugin-record-modifier", "2.1.0"
 gem "fluent-plugin-rewrite-tag-filter", "2.3.0"
 gem "fluent-plugin-s3", "1.3.3"
-gem "fluent-plugin-systemd", "1.0.2"
 gem "fluent-plugin-td", "1.1.0"
 gem "fluent-plugin-webhdfs", "1.2.5"
 gem "http_parser.rb", "0.6.0"
@@ -34,7 +33,6 @@ gem "rake"
 gem "ruby-kafka", "1.1.0"
 gem "serverengine", '2.2.1'
 gem "sigdump", "0.2.4"
-gem "systemd-journal", "1.3.3"
 gem "td", "0.16.9"
 gem "td-client", "1.0.7"
 gem "tzinfo", "2.0.2"
@@ -60,6 +58,8 @@ else
   # temporal solution for ruby 2.7
   gem "nokogiri", "1.10.10"
   gem "rdkafka", "0.8.0"
+  gem "systemd-journal", "1.3.3"
+  gem "fluent-plugin-systemd", "1.0.2"
 end
 
 if ENV["TRAVIS"]
