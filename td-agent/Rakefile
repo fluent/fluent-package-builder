@@ -639,7 +639,11 @@ class BuildTask
       "--bindir", staging_bindir,
       gem_path
     ]
-    gem_installation_command.push("--force") if windows?
+    # digest-crc gem causes rake executable conflict due to rake runtime dependency
+    # and bundled rake gem on Ruby Installer.
+    if windows? && gem_path.include?("rake")
+      gem_installation_command.push("--force")
+    end
     sh(*gem_installation_command)
 
     ENV["GEM_HOME"] = gem_home
