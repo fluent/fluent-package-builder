@@ -815,7 +815,8 @@ EOS
     # because many gem files are bundled with td-agent package.
     # We use gem specification GEMFILE to solve this issue.
     paths = []
-    `bundle package --no-install --cache-path=#{DOWNLOADS_DIR}`
+    `bundle config set --local cache_path #{DOWNLOADS_DIR}`
+    `bundle package --no-install`
     Dir.glob("#{DOWNLOADS_DIR}/*.gem") do |path|
       paths << path.sub(Dir.pwd, "td-agent")
     end
