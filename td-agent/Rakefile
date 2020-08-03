@@ -263,7 +263,10 @@ class DownloadTask
 
   def define_gem_files
     paths = []
-    `bundle package --no-install --cache-path=#{DOWNLOADS_DIR}`
+    gemfile_dir = windows? ? "../gemfiles/windows" : "../gemfiles/linux"
+    Dir.chdir(gemfile_dir) do
+      `bundle package --no-install --cache-path=#{DOWNLOADS_DIR}`
+    end
     Dir.glob("#{DOWNLOADS_DIR}/*.gem") do |path|
       paths << path
     end
