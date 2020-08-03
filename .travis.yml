@@ -13,6 +13,8 @@ jobs:
   - env: RAKE_TASK="yum:build" YUM_TARGETS="centos-7" ARCHIVE_BASE="centos-7" PACKAGE_SYSTEM=yum
   - env: RAKE_TASK="yum:build" YUM_TARGETS="centos-8" ARCHIVE_BASE="centos-8" PACKAGE_SYSTEM=yum
   - env: RAKE_TASK="yum:build" YUM_TARGETS="amazonlinux-2" ARCHIVE_BASE="amazonlinux-2" PACKAGE_SYSTEM=yum
+before_install:
+  - rm -f Gemfile.lock
 script:
   - travis_retry rake $RAKE_TASK
 before_deploy:

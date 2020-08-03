@@ -36,7 +36,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt update
-          sudo apt -V install ruby
+          sudo apt -V install ruby ruby-bundler
       - name: Build deb with Docker
         run: |
           rake apt:build APT_TARGETS=${{ matrix.rake-job }}
