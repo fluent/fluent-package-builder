@@ -28,4 +28,14 @@
         match="wix:Component[wix:File/@Source = '$(var.ProjectSourceDir)\bin\td-agent.bat']"
         use="@Id" />
     <xsl:template match="*[self::wix:Component or self::wix:ComponentRef][key('service-bat-search', @Id)]" />
+    <xsl:key
+        name="conf-tmpl"
+        match="wix:Component[wix:File/@Source = '$(var.ProjectSourceDir)\opt\td-agent\share\td-agent.conf.tmpl']"
+        use="@Id" />
+    <xsl:template match="*[self::wix:Component or self::wix:ComponentRef][key('conf-tmpl', @Id)]" />
+    <xsl:key
+        name="ruby-conf"
+        match="wix:Component[wix:File/@Source = '$(var.ProjectSourceDir)\opt\td-agent\share\td-agent-ruby.conf']"
+        use="@Id" />
+    <xsl:template match="*[self::wix:Component or self::wix:ComponentRef][key('ruby-conf', @Id)]" />
 </xsl:stylesheet>
