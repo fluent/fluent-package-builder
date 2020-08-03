@@ -380,10 +380,12 @@ class BuildTask
       task :td_agent_config do
         configs = [
           "etc/td-agent/td-agent.conf",
-          "opt/td-agent/share/td-agent.conf.tmpl",
           "etc/logrotate.d/td-agent",
-          "opt/td-agent/share/td-agent-ruby.conf"
         ]
+        configs.concat([
+          "opt/td-agent/share/td-agent.conf.tmpl",
+          "opt/td-agent/share/td-agent-ruby.conf"
+        ]) unless windows?
         configs.each do |config|
           src = template_path(config)
           dest = File.join(STAGING_DIR, config)
