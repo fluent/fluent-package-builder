@@ -127,7 +127,7 @@ A td-agent-${version}-x64.msi package will be built under td-agent/msi directory
 ## How to bump up the package version
 
 * Edit td-agent/config.rb to choose Ruby & Fluentd versions
-* Edit td-agent/core_gems.rb & td-agent/plugin_gems.rb to choose bundled gems
+* Edit gemfiles/linux/Gemfile and update .lock files
 * Bump up the versions of rpm & deb packages by the following command:
 ```
 % cd td-agent
