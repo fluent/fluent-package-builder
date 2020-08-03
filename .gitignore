@@ -1,4 +1,4 @@
-/.bundle/
+.bundle/
 /vendor/
 /td-agent/staging/
 /td-agent/debian/post*
