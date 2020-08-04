@@ -86,6 +86,10 @@ def gem_dir_version
   "#{rb_major}.#{rb_minor}.0" # gem path's teeny version is always 0
 end
 
+def gemfile_dir
+  windows? ? "../gemfiles/windows" : "../gemfiles/linux"
+end
+
 def template_params(params = nil)
   config = {
     project_name: PACKAGE_NAME,
@@ -263,7 +267,6 @@ class DownloadTask
 
   def define_gem_files
     paths = []
-    gemfile_dir = windows? ? "../gemfiles/windows" : "../gemfiles/linux"
     Dir.chdir(gemfile_dir) do
       `bundle package --no-install --cache-path=#{DOWNLOADS_DIR}`
     end
@@ -272,6 +275,21 @@ class DownloadTask
     end
 
     instance_variable_set("@files_ruby_gems", paths)
+  end
+end
+
+class UpdateLockfileTask
+  include Rake::DSL
+
+  def define
+    namespace :lockfile do
+      desc "Update lockfile"
+      task :update do
+        cd gemfile_dir do
+          `bundle package --no-install --cache-path=#{DOWNLOADS_DIR}`
+        end
+      end
+    end
   end
 end
 
@@ -1043,3 +1061,6 @@ linux_package_task.define
 
 windows_package_task = WindowsPackageTask.new
 windows_package_task.define
+
+update_lockfile_task = UpdateLockfileTask.new
+update_lockfile_task.define
