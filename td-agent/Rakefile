@@ -379,15 +379,18 @@ class BuildTask
       desc "Create td-agent configuration files from template"
       task :td_agent_config do
         configs = [
-          "etc/td-agent/td-agent.conf",
-          "etc/logrotate.d/td-agent",
+          "etc/td-agent/td-agent.conf"
         ]
         configs.concat([
-          "opt/td-agent/share/td-agent.conf.tmpl",
-          "opt/td-agent/share/td-agent-ruby.conf"
+          "etc/logrotate.d/td-agent",
+          "opt/td-agent/share/td-agent-ruby.conf",
+          "opt/td-agent/share/td-agent.conf.tmpl"
         ]) unless windows?
         configs.each do |config|
           src = template_path(config)
+          if config == "etc/td-agent/td-agent.conf"
+            src = template_path("opt/td-agent/share/td-agent.conf.tmpl")
+          end
           dest = File.join(STAGING_DIR, config)
           render_template(dest, src, template_params)
         end
