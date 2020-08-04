@@ -66,7 +66,7 @@ GEM
       fluentd (>= 0.10.58, < 2)
       ltsv
       ruby-kafka (>= 0.7.8, < 2)
-    fluent-plugin-prometheus (1.8.0)
+    fluent-plugin-prometheus (1.8.1)
       fluentd (>= 1.9.1, < 2)
       prometheus-client (< 0.10)
     fluent-plugin-prometheus_pushgateway (0.0.2)
@@ -183,7 +183,7 @@ DEPENDENCIES
   elasticsearch (= 7.8.0)
   fluent-plugin-elasticsearch (= 4.0.9)
   fluent-plugin-kafka (= 0.13.0)
-  fluent-plugin-prometheus (= 1.8.0)
+  fluent-plugin-prometheus (= 1.8.1)
   fluent-plugin-prometheus_pushgateway (= 0.0.2)
   fluent-plugin-record-modifier (= 2.1.0)
   fluent-plugin-rewrite-tag-filter (= 2.3.0)
