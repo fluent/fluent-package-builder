@@ -88,7 +88,9 @@ But if you use older GNU/Linux platforms (e.g. Ubuntu 18.04 or before) as your h
 By default, apt repositories for following platforms will be built under td-agent/apt/repositories/ directory:
 
   * Debian 10 "Buster" (x86_64)
+  * Ubuntu 20.04 LTS "Focal Fossa" (x86_64)
   * Ubuntu 18.04 LTS "Bionic Beaver" (x86_64)
+  * Ubuntu 16.04 LTS "Xenial Xerus" (x86_64)
 
 You can choose target platforms by `APT_TARGETS` environment variable like this:
 
