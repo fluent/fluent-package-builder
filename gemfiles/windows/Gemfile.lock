@@ -61,7 +61,7 @@ GEM
       fluentd (> 1.0.0, < 2)
     fluent-logger (0.8.2)
       msgpack (>= 1.0.0, < 2)
-    fluent-plugin-elasticsearch (4.0.9)
+    fluent-plugin-elasticsearch (4.1.1)
       elasticsearch
       excon
       fluentd (>= 0.14.22)
@@ -204,7 +204,7 @@ DEPENDENCIES
   elasticsearch (= 7.8.0)
   ffi (= 1.13.1)
   ffi-win32-extensions (= 1.0.3)
-  fluent-plugin-elasticsearch (= 4.0.9)
+  fluent-plugin-elasticsearch (= 4.1.1)
   fluent-plugin-kafka (= 0.13.0)
   fluent-plugin-parser-winevt_xml (= 0.2.2)
   fluent-plugin-prometheus (= 1.8.1)
