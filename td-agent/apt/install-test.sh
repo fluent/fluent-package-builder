@@ -45,6 +45,11 @@ debootstrap ${code_name} $CHROOT ${mirror}
 cp $TD_AGENT_KEYRING $CHROOT/etc/apt/trusted.gpg.d/
 chmod 644 $CHROOT/etc/apt/trusted.gpg.d/td-agent-archive-keyring.gpg
 chroot $CHROOT apt install -V -y libyaml-0-2
+if [ "${code_name}" = "bionic" ]; then
+   echo "deb http://archive.ubuntu.com/ubuntu bionic-updates main" > $CHROOT/etc/apt/sources.list
+   chroot $CHROOT apt update
+   chroot $CHROOT apt install -V -y libssl1.1
+fi
 package=${repositories_dir}/${distribution}/pool/${code_name}/${channel}/*/*/*_${architecture}.deb
 cp ${package} /tmp
 piuparts --distribution=${code_name} \
