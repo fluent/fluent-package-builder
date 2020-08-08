@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require File.expand_path('../../../td-agent/config.rb', __FILE__)
+
 source "https://rubygems.org"
 
 git_source(:github) {|repo_name| "https://github.com/#{repo_name}" }
@@ -18,7 +20,7 @@ gem "oj", "3.10.6"
 gem "tzinfo", "2.0.2"
 gem "tzinfo-data", "1.2020.1"
 gem "async-http", "0.52.4"
-gem "fluentd", github: "fluent/fluentd", ref: "2f80f6cf0a4aa44b9795cd6a66894a6b8fa70d06" # v1.11.2 with windows gem patch
+gem "fluentd", github: "fluent/fluentd", ref: FLUENTD_REVISION
 
 
 # plugin gems
