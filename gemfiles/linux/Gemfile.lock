@@ -1,3 +1,19 @@
+GIT
+  remote: https://github.com/fluent/fluentd
+  revision: 2f80f6cf0a4aa44b9795cd6a66894a6b8fa70d06
+  ref: 2f80f6cf0a4aa44b9795cd6a66894a6b8fa70d06
+  specs:
+    fluentd (1.11.2)
+      cool.io (>= 1.4.5, < 2.0.0)
+      http_parser.rb (>= 0.5.1, < 0.7.0)
+      msgpack (>= 1.3.1, < 2.0.0)
+      serverengine (>= 2.0.4, < 3.0.0)
+      sigdump (~> 0.2.2)
+      strptime (>= 0.2.2, < 1.0.0)
+      tzinfo (>= 1.0, < 3.0)
+      tzinfo-data (~> 1.0)
+      yajl-ruby (~> 1.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -89,16 +105,6 @@ GEM
     fluent-plugin-webhdfs (1.2.5)
       fluentd (>= 0.14.22)
       webhdfs (>= 0.6.0)
-    fluentd (1.11.2)
-      cool.io (>= 1.4.5, < 2.0.0)
-      http_parser.rb (>= 0.5.1, < 0.7.0)
-      msgpack (>= 1.3.1, < 2.0.0)
-      serverengine (>= 2.0.4, < 3.0.0)
-      sigdump (~> 0.2.2)
-      strptime (>= 0.2.2, < 1.0.0)
-      tzinfo (>= 1.0, < 3.0)
-      tzinfo-data (~> 1.0)
-      yajl-ruby (~> 1.0)
     hirb (0.7.3)
     http_parser.rb (0.6.0)
     httpclient (2.8.2.4)
@@ -191,6 +197,7 @@ DEPENDENCIES
   fluent-plugin-systemd (= 1.0.2)
   fluent-plugin-td (= 1.1.0)
   fluent-plugin-webhdfs (= 1.2.5)
+  fluentd!
   http_parser.rb (= 0.6.0)
   httpclient (= 2.8.2.4)
   jmespath (= 1.4.0)
