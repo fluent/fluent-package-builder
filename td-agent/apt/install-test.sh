@@ -52,6 +52,7 @@ if [ "${code_name}" = "bionic" ]; then
 fi
 package=${repositories_dir}/${distribution}/pool/${code_name}/${channel}/*/*/*_${architecture}.deb
 cp ${package} /tmp
+rm -rf $CHROOT/opt
 piuparts --distribution=${code_name} \
 	 --existing-chroot=${CHROOT} \
 	 --keyring=$TD_AGENT_KEYRING \
