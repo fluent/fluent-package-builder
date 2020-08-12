@@ -71,7 +71,7 @@ gpgkey=https://packages.treasuredata.com/GPG-KEY-td-agent
 EOF
 	    ;;
     esac
-    ${DNF} check-update
+    ${DNF} update -y
     ${DNF} install -y td-agent
     ${DNF} install -y \
 	   ${repositories_dir}/${distribution}/${version}/x86_64/Packages/*.rpm
