@@ -78,7 +78,7 @@ GEM
       elasticsearch
       excon
       fluentd (>= 0.14.22)
-    fluent-plugin-kafka (0.14.0)
+    fluent-plugin-kafka (0.14.1)
       fluentd (>= 0.10.58, < 2)
       ltsv
       ruby-kafka (>= 1.2.0, < 2)
@@ -188,7 +188,7 @@ DEPENDENCIES
   cool.io (= 1.6.0)
   elasticsearch (= 7.8.1)
   fluent-plugin-elasticsearch (= 4.1.1)
-  fluent-plugin-kafka (= 0.14.0)
+  fluent-plugin-kafka (= 0.14.1)
   fluent-plugin-prometheus (= 1.8.2)
   fluent-plugin-prometheus_pushgateway (= 0.0.2)
   fluent-plugin-record-modifier (= 2.1.0)

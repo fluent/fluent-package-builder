@@ -86,7 +86,7 @@ GEM
       elasticsearch
       excon
       fluentd (>= 0.14.22)
-    fluent-plugin-kafka (0.14.0)
+    fluent-plugin-kafka (0.14.1)
       fluentd (>= 0.10.58, < 2)
       ltsv
       ruby-kafka (>= 1.2.0, < 2)
@@ -212,7 +212,7 @@ DEPENDENCIES
   ffi (= 1.13.1)
   ffi-win32-extensions (= 1.0.3)
   fluent-plugin-elasticsearch (= 4.1.1)
-  fluent-plugin-kafka (= 0.14.0)
+  fluent-plugin-kafka (= 0.14.1)
   fluent-plugin-parser-winevt_xml (= 0.2.2)
   fluent-plugin-prometheus (= 1.8.2)
   fluent-plugin-prometheus_pushgateway (= 0.0.2)

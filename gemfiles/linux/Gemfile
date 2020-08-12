@@ -28,7 +28,7 @@ gem "fluentd", github: "fluent/fluentd", ref: FLUENTD_REVISION
 gem "elasticsearch", "7.8.1"
 gem "fluent-plugin-elasticsearch", "4.1.1"
 gem "ruby-kafka", "1.2.0"
-gem "fluent-plugin-kafka", "0.14.0"
+gem "fluent-plugin-kafka", "0.14.1"
 gem "prometheus-client", "0.9.0"
 gem "fluent-plugin-prometheus", "1.8.2"
 gem "fluent-plugin-prometheus_pushgateway", "0.0.2"
