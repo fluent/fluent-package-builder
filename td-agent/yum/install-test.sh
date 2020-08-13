@@ -20,7 +20,6 @@ case ${distribution} in
     case ${version} in
       2)
         DNF=yum
-        ENABLE_UPGRADE_TEST=0
         ;;
     esac
     ;;
@@ -55,7 +54,7 @@ if [ $ENABLE_UPGRADE_TEST -eq 1 ]; then
             cat >/etc/yum.repos.d/td.repo <<'EOF';
 [treasuredata]
 name=TreasureData
-baseurl=https://packages.treasuredata.com/3/amazon/2/\$basearch
+baseurl=https://packages.treasuredata.com/3/amazon/2/\$releasever/\$basearch
 gpgcheck=1
 gpgkey=https://packages.treasuredata.com/GPG-KEY-td-agent
 EOF
