@@ -5,10 +5,10 @@ set -e
 . /usr/share/debconf/confmodule
 
 if [ "$1" = "purge" ]; then
-        rm -f /etc/default/<%= project_name %>
+	rm -f /etc/default/<%= project_name %>
 	dpkg-statoverride --list /etc/<%= project_name %> > /dev/null && \
 		dpkg-statoverride --remove /etc/<%= project_name %>
-        rm -f /etc/<%= project_name %>/<%= project_name %>.conf
+	rm -f /etc/<%= project_name %>/<%= project_name %>.conf
 	rm -rf /etc/<%= project_name %>
 	dpkg-statoverride --list /var/run/<%= project_name %> > /dev/null && \
 		dpkg-statoverride --remove /var/run/<%= project_name %>
@@ -20,7 +20,7 @@ if [ "$1" = "purge" ]; then
 	rm -rf /var/log/<%= project_name %>/*
 	rm -rf /var/log/<%= project_name %>
 
-    getent passwd <%= project_name %> && userdel -r <%= project_name %>
+	getent passwd <%= project_name %> && userdel -r <%= project_name %>
 fi
 
 #DEBHELPER#
