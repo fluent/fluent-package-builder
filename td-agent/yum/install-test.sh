@@ -20,7 +20,7 @@ case ${distribution} in
     case ${version} in
       2)
         DNF=yum
-	ENABLE_UPGRADE_TEST=0
+        ENABLE_UPGRADE_TEST=0
         ;;
     esac
     ;;
@@ -31,7 +31,7 @@ case ${distribution} in
         ;;
       *)
         DNF="dnf --enablerepo=PowerTools"
-	ENABLE_UPGRADE_TEST=0
+        ENABLE_UPGRADE_TEST=0
         ;;
     esac
     ;;
@@ -51,8 +51,8 @@ if [ $ENABLE_UPGRADE_TEST -eq 1 ]; then
     echo "UPGRADE TEST from v3"
     rpm --import https://packages.treasuredata.com/GPG-KEY-td-agent
     case ${distribution} in
-	amazon)
-	    cat >/etc/yum.repos.d/td.repo <<'EOF';
+        amazon)
+            cat >/etc/yum.repos.d/td.repo <<'EOF';
 [treasuredata]
 name=TreasureData
 baseurl=https://packages.treasuredata.com/3/amazon/2/\$basearch
@@ -60,19 +60,19 @@ gpgcheck=1
 gpgkey=https://packages.treasuredata.com/GPG-KEY-td-agent
 EOF
 
-	    ;;
-	*)
-	    cat >/etc/yum.repos.d/td.repo <<'EOF';
+            ;;
+        *)
+            cat >/etc/yum.repos.d/td.repo <<'EOF';
 [treasuredata]
 name=TreasureData
 baseurl=https://packages.treasuredata.com/3/redhat/\$releasever/\$basearch
 gpgcheck=1
 gpgkey=https://packages.treasuredata.com/GPG-KEY-td-agent
 EOF
-	    ;;
+            ;;
     esac
     ${DNF} update -y
     ${DNF} install -y td-agent
     ${DNF} install -y \
-	   ${repositories_dir}/${distribution}/${version}/x86_64/Packages/*.rpm
+           ${repositories_dir}/${distribution}/${version}/x86_64/Packages/*.rpm
 fi
