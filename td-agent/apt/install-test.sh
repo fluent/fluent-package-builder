@@ -31,12 +31,8 @@ case ${code_name} in
 	apt install -V -y piuparts mount gnupg curl eatmydata
 	gpg_command=gpg
 	;;
-    focal)
-	DEBIAN_FRONTEND=noninteractive apt install -V -y piuparts mount gnupg1 curl eatmydata
-	gpg_command=gpg1
-	;;
     *)
-	apt install -V -y piuparts mount gnupg1 curl eatmydata
+	DEBIAN_FRONTEND=noninteractive apt install -V -y piuparts mount gnupg1 curl eatmydata
 	gpg_command=gpg1
 	;;
 esac
