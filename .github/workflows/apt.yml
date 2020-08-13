@@ -47,6 +47,7 @@ jobs:
       - name: Installation Test
         run: |
           docker run \
+          --privileged \
           --rm \
           --tty \
           --volume ${PWD}:/fluentd:ro \
