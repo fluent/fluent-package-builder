@@ -15,11 +15,13 @@ distribution=$(cat /etc/system-release-cpe | awk '{print substr($0, index($1, "o
 version=$(cat /etc/system-release-cpe | awk '{print substr($0, index($1, "o"))}' | cut -d: -f4)
 
 ENABLE_UPGRADE_TEST=1
+ENABLE_SERVERSPEC_TEST=1
 case ${distribution} in
   amazon)
     case ${version} in
       2)
         DNF=yum
+        ENABLE_SERVERSPEC_TEST=0
         ;;
     esac
     ;;
@@ -74,4 +76,33 @@ EOF
     ${DNF} install -y td-agent
     ${DNF} install -y \
            ${repositories_dir}/${distribution}/${version}/x86_64/Packages/*.rpm
+fi
+
+if [ $ENABLE_SERVERSPEC_TEST -eq 1 ]; then
+    yum install curl which
+    rpm --import https://packages.confluent.io/rpm/5.5/archive.key
+
+    cat >/etc/yum.repos.d/confluent.repo <<EOF;
+[Confluent.dist]
+name=Confluent repository (dist)
+baseurl=https://packages.confluent.io/rpm/5.5/${version}
+gpgcheck=1
+gpgkey=https://packages.confluent.io/rpm/5.5/archive.key
+enabled=1
+
+[Confluent]
+name=Confluent repository
+baseurl=https://packages.confluent.io/rpm/5.5
+gpgcheck=1
+gpgkey=https://packages.confluent.io/rpm/5.5/archive.key
+enabled=1
+EOF
+    yum update && yum install confluent-community-2.12
+
+    /usr/sbin/td-agent-gem install serverspec
+    /usr/bin/zookeeper-server-start /etc/kafka/zookeeper.properties  &
+    sleep 10 && /usr/bin/kafka-server-start /etc/kafka/server.properties &
+    /usr/bin/kafka-topics --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic test
+    /usr/sbin/td-agent -c /fluentd/serverspec/test.conf &
+    rake serverspec:linux
 fi

@@ -28,7 +28,7 @@ td-agent --version
 find ${repositories_dir}
 case ${code_name} in
     xenial)
-	apt install -V -y piuparts mount gnupg curl eatmydata
+	apt install -V -y piuparts mount gnupg curl eatmydata apt-transport-https
 	gpg_command=gpg
 	;;
     *)
@@ -59,3 +59,14 @@ piuparts --distribution=${code_name} \
 	 --mirror="http://packages.treasuredata.com/4/${distribution}/${code_name}/ ${code_name} contrib" \
 	 --skip-logrotatefiles-test \
 	 /tmp/*_${architecture}.deb
+
+/usr/sbin/td-agent-gem install serverspec
+wget -qO - https://packages.confluent.io/deb/5.5/archive.key | apt-key add -
+echo "deb [arch=${architecture}] https://packages.confluent.io/deb/5.5 stable main" > /etc/apt/sources.list.d/confluent.list
+apt update && apt install confluent-community-2.12
+
+/usr/bin/zookeeper-server-start /etc/kafka/zookeeper.properties  &
+sleep 10 && /usr/bin/kafka-server-start /etc/kafka/server.properties &
+/usr/bin/kafka-topics --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic test
+/usr/sbin/td-agent -c /fluentd/serverspec/test.conf &
+rake serverspec:linux
