@@ -525,6 +525,14 @@ class BuildTask
     configure_opts = [
       "--prefix=#{install_prefix}",
     ]
+    if ENV["TD_AGENT_STAGING_PATH"] and
+      (ENV["TD_AGENT_STAGING_PATH"].end_with?("el8.aarch64") or
+       ENV["TD_AGENT_STAGING_PATH"].end_with?("el7.aarch64"))
+      # NOTE: There is a case that PAGE_SIZE detection on
+      # CentOS 7 CentOS 8 with aarch64 AWS ARM instance.
+      # So, explicitly set PAGE_SIZE by with-lg-page 16 (2^16 = 65536)
+      configure_opts.concat(["--with-lg-page=16"])
+    end
     cd(source_dir) do
       sh("./configure", *configure_opts)
       sh("make", "install", "-j#{Etc.nprocessors}", "DESTDIR=#{STAGING_DIR}")
