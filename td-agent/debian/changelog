@@ -1,3 +1,9 @@
+td-agent (4.0.1-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Masahiro Nakagawa <repeatedly@gmail.com>  Fri, 07 Aug 2020 09:03:45 -0000
+
 td-agent (4.0.0-1) unstable; urgency=low
 
   * New upstream release.
