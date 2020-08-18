@@ -1,6 +1,7 @@
 require_relative "../spec_helper"
 require "rdkafka"
 require "json"
+require "bundler"
 
 describe package("td-agent") do
   it { should be_installed }
@@ -13,6 +14,17 @@ end
 
 describe group("td-agent") do
   it { should exist }
+end
+
+describe "gem files" do
+  lock_path = File.join(File.dirname(File.dirname(File.dirname(__FILE__))),
+                        "gemfiles/linux/Gemfile.lock")
+  parser = Bundler::LockfileParser.new(Bundler.read_file(lock_path))
+  parser.specs.each do |spec|
+    describe package("#{spec.name}") do
+      it { should be_installed.by('gem') }
+    end
+  end
 end
 
 describe "rdkafka" do
