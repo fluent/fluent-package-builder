@@ -12,6 +12,7 @@ jobs:
       - uses: actions/checkout@master
       - name: Build
         run: |
+          gem install serverspec
           rake msi:build
       - uses: actions/upload-artifact@master
         with:
