@@ -1,5 +1,58 @@
 # Treasure Agent 4 changelog
 
+## Release v4.0.1 - 2020/08/18
+
+### News
+
+* Fix jemalloc page size issue for Redhat 7/8 aarch64
+
+### Core component
+
+* ruby v2.7.1
+* jemalloc v5.2.1
+* fluentd v1.11.2 (update)
+
+### Core gems
+
+* bundler v2.1.4
+* msgpack v1.3.3
+* cool.io v1.6.0
+* serverengine v2.2.1
+* oj v3.10.6
+* async-http v0.52.4
+* http_parser.rb v0.6.0
+* yajl-ruby v1.4.1
+* sigdump v0.2.4
+* tzinfo v2.0.2
+* tzinfo-data v1.2020.1
+
+### Bundled plugins and gems
+
+* td-client v1.0.7
+* fluent-plugin-td v1.1.0
+* aws-sdk-core v3.104.3 (update)
+* aws-sdk-s3 v1.75.0 (update)
+* fluent-plugin-s3 v1.4.0 (update)
+* webhdfs v0.9.0
+* fluent-plugin-webhdfs v1.2.5
+* ruby-kafka v1.2.0 (update)
+* rdkafka v0.8.0
+* fluent-plugin-kafka v0.14.1 (update)
+* elasticsearch v7.8.1 (update)
+* fluent-plugin-elasticsearch v4.1.1 (update)
+* prometheus-client v0.9.0
+* fluent-plugin-prometheus v1.8.2 (update)
+* systemd-journal v1.3.3
+* fluent-plugin-systemd v1.0.2
+* fluent-plugin-record-modifier v2.1.0
+* fluent-plugin-rewrite-tag-filter v2.3.0
+
+On Windows
+
+* winevt_c v0.8.1
+* fluent-plugin-parser-winevt_xml v0.2.2
+* fluent-plugin-windows-eventlog v0.7.0
+
 ## Release v4.0.0 - 2020/07/02
 
 ### News
