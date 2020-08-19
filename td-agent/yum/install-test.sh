@@ -97,7 +97,7 @@ gpgcheck=1
 gpgkey=https://packages.confluent.io/rpm/5.5/archive.key
 enabled=1
 EOF
-    yum update && yum install confluent-community-2.12
+    yum update && yum install -y confluent-community-2.12
 
     /usr/sbin/td-agent-gem install serverspec
     /usr/bin/zookeeper-server-start /etc/kafka/zookeeper.properties  &

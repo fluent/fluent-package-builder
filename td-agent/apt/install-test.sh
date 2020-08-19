@@ -63,7 +63,7 @@ piuparts --distribution=${code_name} \
 /usr/sbin/td-agent-gem install serverspec
 wget -qO - https://packages.confluent.io/deb/5.5/archive.key | apt-key add -
 echo "deb [arch=${architecture}] https://packages.confluent.io/deb/5.5 stable main" > /etc/apt/sources.list.d/confluent.list
-apt update && apt install confluent-community-2.12
+apt update && apt install -y confluent-community-2.12
 
 /usr/bin/zookeeper-server-start /etc/kafka/zookeeper.properties  &
 sleep 10 && /usr/bin/kafka-server-start /etc/kafka/server.properties &
