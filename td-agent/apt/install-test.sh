@@ -8,8 +8,15 @@ apt install -V -y lsb-release
 code_name=$(lsb_release --codename --short)
 architecture=$(dpkg --print-architecture)
 repositories_dir=/fluentd/td-agent/apt/repositories
+java_jdk=openjdk-11-jre
 case ${code_name} in
-  xenial|bionic|focal)
+  xenial)
+    distribution=ubuntu
+    channel=universe
+    mirror=http://archive.ubuntu.com/ubuntu/
+    java_jdk=openjdk-8-jre
+    ;;
+  bionic|focal)
     distribution=ubuntu
     channel=universe
     mirror=http://archive.ubuntu.com/ubuntu/
@@ -63,7 +70,7 @@ piuparts --distribution=${code_name} \
 /usr/sbin/td-agent-gem install serverspec
 wget -qO - https://packages.confluent.io/deb/5.5/archive.key | apt-key add -
 echo "deb [arch=${architecture}] https://packages.confluent.io/deb/5.5 stable main" > /etc/apt/sources.list.d/confluent.list
-apt update && apt install -y confluent-community-2.12
+apt update && apt install -y confluent-community-2.12 ${java_jdk}
 
 /usr/bin/zookeeper-server-start /etc/kafka/zookeeper.properties  &
 sleep 10 && /usr/bin/kafka-server-start /etc/kafka/server.properties &

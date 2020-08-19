@@ -16,6 +16,7 @@ version=$(cat /etc/system-release-cpe | awk '{print substr($0, index($1, "o"))}'
 
 ENABLE_UPGRADE_TEST=1
 ENABLE_SERVERSPEC_TEST=1
+JAVA_JRE=java-11-openjdk
 case ${distribution} in
   amazon)
     case ${version} in
@@ -27,7 +28,11 @@ case ${distribution} in
     ;;
   centos)
     case ${version} in
-      6|7)
+      6)
+        DNF=yum
+        JAVA_JRE=java-1.8.0-openjdk
+        ;;
+      7)
         DNF=yum
         ;;
       *)
@@ -97,7 +102,7 @@ gpgcheck=1
 gpgkey=https://packages.confluent.io/rpm/5.5/archive.key
 enabled=1
 EOF
-    yum update && yum install -y confluent-community-2.12
+    yum update && yum install -y confluent-community-2.12 ${JAVA_JRE}
 
     /usr/sbin/td-agent-gem install serverspec
     /usr/bin/zookeeper-server-start /etc/kafka/zookeeper.properties  &
