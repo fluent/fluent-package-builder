@@ -27,7 +27,7 @@ describe "gem files" do
   end
 end
 
-describe "rdkafka" do
+describe "rdkafka", :if => !centos8?(os) do
   it "can receive message via Rdkafka client" do
     config = {
       "bootstrap.servers": "localhost:9092",
@@ -45,7 +45,7 @@ describe "rdkafka" do
   end
 end
 
-describe "fluent-plugin-kafka" do
+describe "fluent-plugin-kafka", :if => !centos8?(os) do
   it "can receive message via fluent-plugin-kafka" do
     `echo "Hello, fluent-plugin-kafka" | /usr/bin/kafka-console-producer --broker-list localhost:9092 --topic test`
     Dir.glob("/tmp/log/td-agent/*.log") do |path|

@@ -16,6 +16,7 @@ version=$(cat /etc/system-release-cpe | awk '{print substr($0, index($1, "o"))}'
 
 ENABLE_UPGRADE_TEST=1
 ENABLE_SERVERSPEC_TEST=1
+ENABLE_KAFKA_TEST=1
 JAVA_JRE=java-11-openjdk
 case ${distribution} in
   amazon)
@@ -38,7 +39,7 @@ case ${distribution} in
       *)
         DNF="dnf --enablerepo=PowerTools"
         ENABLE_UPGRADE_TEST=0
-        ENABLE_SERVERSPEC_TEST=0
+        ENABLE_KAFKA_TEST=0
         ;;
     esac
     ;;
@@ -106,25 +107,27 @@ EOF
     yum update && yum install -y confluent-community-2.12 ${JAVA_JRE} nc
 
     /usr/sbin/td-agent-gem install serverspec
-    export KAFKA_OPTS=-Dzookeeper.4lw.commands.whitelist=ruok
-    /usr/bin/zookeeper-server-start /etc/kafka/zookeeper.properties  &
-    while true ; do
-	sleep 1
-	status=$(echo ruok | nc localhost 2181)
-	if [ "$status" = "imok" ]; then
-	    break
-	fi
-    done
-    /usr/bin/kafka-server-start /etc/kafka/server.properties &
-    while true ; do
-	sleep 1
-	status=$(/usr/bin/zookeeper-shell localhost:2181 ls /brokers/ids | sed -n 6p)
-	if [ "$status" = "[0]" ]; then
-	    break
-	fi
-    done
-    /usr/bin/kafka-topics --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic test
-    /usr/sbin/td-agent -c /fluentd/serverspec/test.conf &
+    if [ $ENABLE_KAFKA_TEST -eq 1 ]; then
+	export KAFKA_OPTS=-Dzookeeper.4lw.commands.whitelist=ruok
+	/usr/bin/zookeeper-server-start /etc/kafka/zookeeper.properties  &
+	while true ; do
+	    sleep 1
+	    status=$(echo ruok | nc localhost 2181)
+	    if [ "$status" = "imok" ]; then
+		break
+	    fi
+	done
+	/usr/bin/kafka-server-start /etc/kafka/server.properties &
+	while true ; do
+	    sleep 1
+	    status=$(/usr/bin/zookeeper-shell localhost:2181 ls /brokers/ids | sed -n 6p)
+	    if [ "$status" = "[0]" ]; then
+		break
+	    fi
+	done
+	/usr/bin/kafka-topics --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic test
+	/usr/sbin/td-agent -c /fluentd/serverspec/test.conf &
+    fi
     export PATH=/opt/td-agent/bin:$PATH
     export INSTALLATION_TEST=true
     cd /fluentd && rake serverspec:linux
