@@ -126,6 +126,29 @@ But if you use older GNU/Linux platforms (e.g. Ubuntu 18.04 or before) as your h
 
 A td-agent-${version}-x64.msi package will be built under td-agent/msi directory.
 
+### Note for Windows package
+
+You can use with [MSYS2](https://www.msys2.org/) for C extension gem building.
+
+MSI included Ruby can detect MSYS2 environment.
+So, you can install C extension included gem with MSYS2.
+
+e.g.)
+
+Prepare C extension gem building environment:
+
+```console
+cmd> ridk install 2
+...
+cmd> ridk install 3
+```
+
+Install gem via `ridk exec td-agent-gem install`:
+
+```console
+cmd> ridk exec td-agent-gem install winevt_c
+```
+
 ## How to bump up the package version
 
 * Edit td-agent/config.rb to choose Ruby & Fluentd versions
