@@ -86,10 +86,13 @@ EOF
 fi
 
 if [ $ENABLE_SERVERSPEC_TEST -eq 1 ]; then
-    ${DNF} install -y curl which td-agent
-    rpm --import https://packages.confluent.io/rpm/5.5/archive.key
+    ${DNF} install -y curl which ${repositories_dir}/${distribution}/${version}/x86_64/Packages/*.rpm
 
-    cat >/etc/yum.repos.d/confluent.repo <<EOF;
+    /usr/sbin/td-agent-gem install serverspec
+    if [ $ENABLE_KAFKA_TEST -eq 1 ]; then
+        rpm --import https://packages.confluent.io/rpm/5.5/archive.key
+
+        cat >/etc/yum.repos.d/confluent.repo <<EOF;
 [Confluent.dist]
 name=Confluent repository (dist)
 baseurl=https://packages.confluent.io/rpm/5.5/${version}
@@ -104,10 +107,7 @@ gpgcheck=1
 gpgkey=https://packages.confluent.io/rpm/5.5/archive.key
 enabled=1
 EOF
-    yum update && yum install -y confluent-community-2.12 ${JAVA_JRE} nc
-
-    /usr/sbin/td-agent-gem install serverspec
-    if [ $ENABLE_KAFKA_TEST -eq 1 ]; then
+        yum update && yum install -y confluent-community-2.12 ${JAVA_JRE} nc
 	export KAFKA_OPTS=-Dzookeeper.4lw.commands.whitelist=ruok
 	/usr/bin/zookeeper-server-start /etc/kafka/zookeeper.properties  &
 	while true ; do
