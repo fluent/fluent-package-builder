@@ -86,7 +86,7 @@ EOF
 fi
 
 if [ $ENABLE_SERVERSPEC_TEST -eq 1 ]; then
-    yum install -y curl which
+    ${DNF} install -y curl which td-agent
     rpm --import https://packages.confluent.io/rpm/5.5/archive.key
 
     cat >/etc/yum.repos.d/confluent.repo <<EOF;
