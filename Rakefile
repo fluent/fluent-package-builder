@@ -59,3 +59,13 @@ namespace :travis do
     sh("travis", "encrypt", "--com", ENV["GITHUB_TOKEN"])
   end
 end
+
+if ENV["INSTALLATION_TEST"]
+  require "rspec/core/rake_task"
+  namespace :serverspec do
+    desc "Run serverspec on linux"
+    RSpec::Core::RakeTask.new(:linux)  do |t|
+      t.pattern = "serverspec/linux/*.rb"
+    end
+  end
+end

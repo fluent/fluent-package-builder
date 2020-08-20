@@ -36,7 +36,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt update
-          sudo apt -V install ruby ruby-bundler
+          sudo apt -V install ruby ruby-bundler ruby-serverspec
       - name: Build deb with Docker
         run: |
           rake apt:build APT_TARGETS=${{ matrix.rake-job }}
@@ -46,6 +46,7 @@ jobs:
           path: td-agent/apt/repositories
       - name: Installation Test
         run: |
+          mkdir -p .bundle
           docker run \
           --privileged \
           --rm \
