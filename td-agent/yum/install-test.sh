@@ -38,6 +38,7 @@ case ${distribution} in
       *)
         DNF="dnf --enablerepo=PowerTools"
         ENABLE_UPGRADE_TEST=0
+        ENABLE_SERVERSPEC_TEST=0
         ;;
     esac
     ;;
