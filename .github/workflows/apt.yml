@@ -46,6 +46,7 @@ jobs:
           path: td-agent/apt/repositories
       - name: Installation Test
         run: |
+          mkdir -p .bundle
           docker run \
           --privileged \
           --rm \

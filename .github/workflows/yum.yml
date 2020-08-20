@@ -46,6 +46,7 @@ jobs:
           path: td-agent/yum/repositories
       - name: Installation Test
         run: |
+          mkdir -p .bundle
           docker run \
           --rm \
           --tty \
