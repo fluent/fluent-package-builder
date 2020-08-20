@@ -60,7 +60,7 @@ namespace :travis do
   end
 end
 
-if ENV["GITHUB_WORKFLOW"]
+if ENV["INSTALLATION_TEST"]
   require "rspec/core/rake_task"
   namespace :serverspec do
     desc "Run serverspec on linux"
