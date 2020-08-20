@@ -124,5 +124,6 @@ EOF
     done
     /usr/bin/kafka-topics --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic test
     /usr/sbin/td-agent -c /fluentd/serverspec/test.conf &
-    cd /fluentd/td-agent && /opt/td-agent/bin/rake serverspec:linux
+    export PATH=/opt/td-agent/bin:$PATH
+    cd /fluentd && rake serverspec:linux
 fi
