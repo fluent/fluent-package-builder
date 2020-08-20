@@ -70,10 +70,25 @@ piuparts --distribution=${code_name} \
 /usr/sbin/td-agent-gem install serverspec
 wget -qO - https://packages.confluent.io/deb/5.5/archive.key | apt-key add -
 echo "deb [arch=${architecture}] https://packages.confluent.io/deb/5.5 stable main" > /etc/apt/sources.list.d/confluent.list
-apt update && apt install -y confluent-community-2.12 ${java_jdk}
+apt update && apt install -y confluent-community-2.12 ${java_jdk} nc
 
+export KAFKA_OPTS=-Dzookeeper.4lw.commands.whitelist=ruok
 /usr/bin/zookeeper-server-start /etc/kafka/zookeeper.properties  &
-sleep 10 && /usr/bin/kafka-server-start /etc/kafka/server.properties &
+while true ; do
+    sleep 1
+    status=$(echo ruok | nc localhost 2181)
+    if [ "$status" = "imok" ]; then
+	break
+    fi
+done
+/usr/bin/kafka-server-start /etc/kafka/server.properties &
+while true ; do
+    sleep 1
+    status=$(/usr/bin/zookeeper-shell localhost:2181 ls /brokers/ids | sed -n 6p)
+    if [ "$status" = "[0]" ]; then
+	break
+    fi
+done
 /usr/bin/kafka-topics --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic test
 /usr/sbin/td-agent -c /fluentd/serverspec/test.conf &
 rake serverspec:linux

@@ -102,11 +102,26 @@ gpgcheck=1
 gpgkey=https://packages.confluent.io/rpm/5.5/archive.key
 enabled=1
 EOF
-    yum update && yum install -y confluent-community-2.12 ${JAVA_JRE}
+    yum update && yum install -y confluent-community-2.12 ${JAVA_JRE} nc
 
     /usr/sbin/td-agent-gem install serverspec
+    export KAFKA_OPTS=-Dzookeeper.4lw.commands.whitelist=ruok
     /usr/bin/zookeeper-server-start /etc/kafka/zookeeper.properties  &
-    sleep 10 && /usr/bin/kafka-server-start /etc/kafka/server.properties &
+    while true ; do
+	sleep 1
+	status=$(echo ruok | nc localhost 2181)
+	if [ "$status" = "imok" ]; then
+	    break
+	fi
+    done
+    /usr/bin/kafka-server-start /etc/kafka/server.properties &
+    while true ; do
+	sleep 1
+	status=$(/usr/bin/zookeeper-shell localhost:2181 ls /brokers/ids | sed -n 6p)
+	if [ "$status" = "[0]" ]; then
+	    break
+	fi
+    done
     /usr/bin/kafka-topics --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic test
     /usr/sbin/td-agent -c /fluentd/serverspec/test.conf &
     rake serverspec:linux
