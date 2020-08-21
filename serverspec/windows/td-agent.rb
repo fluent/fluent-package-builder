@@ -1,4 +1,6 @@
-require_relative "../spec_helper"
+require "serverspec"
+set :backend, :cmd
+set :os, :family => 'windows'
 require "bundler"
 
 describe package("td-agent") do
