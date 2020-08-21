@@ -3,7 +3,13 @@ set :backend, :cmd
 set :os, :family => 'windows'
 require "bundler"
 
-describe package("td-agent") do
+config_path = File.join(File.dirname(File.dirname(File.dirname(__FILE__))),
+                        "td-agent/config.rb")
+File.open(config_path) do |file|
+  eval(file.read)
+end
+
+describe package("td-agent v#{PACKAGE_VERSION}") do
   it { should be_installed }
 end
 
