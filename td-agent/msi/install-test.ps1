@@ -9,6 +9,9 @@ $ENV:PATH="C:\\opt\\td-agent\\bin;" + $ENV:PATH
 
 td-agent --version
 
+$application = (Get-ChildItem -Path "c:\\opt" -Filter "find_installed_application.ps1" -Recurse -Name)
+$destination = (Get-Item (Join-Path "c:\\opt" $application)).DirectoryName
+Copy-Item "C:\\fluentd\\td-agent\\serverspec\\find_installed_gem.ps1" $destination
 td-agent-gem install serverspec
 $ENV:INSTALLATION_TEST=$TRUE
 cd C:\fluentd; rake serverspec:windows
