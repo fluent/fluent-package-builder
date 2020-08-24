@@ -15,3 +15,8 @@ $destination = (Get-Item (Join-Path "c:\\opt" $application)).DirectoryName
 Copy-Item "C:\\fluentd\\serverspec\\find_installed_gem.ps1" $destination
 $ENV:INSTALLATION_TEST=$TRUE
 cd C:\fluentd; rake serverspec:windows
+
+$exitcode = $LASTEXITCODE
+if ($exitcode -ne 0) {
+    [Environment]::Exit($exitcode)
+}
