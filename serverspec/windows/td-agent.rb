@@ -19,7 +19,7 @@ describe "gem files" do
   parser = Bundler::LockfileParser.new(Bundler.read_file(lock_path))
   parser.specs.each do |spec|
     describe package("#{spec.name}") do
-      it { should be_installed.by('gem') }
+      it { should be_installed.by("gem").with_version(spec.version) }
     end
   end
 end
