@@ -2,6 +2,7 @@ require "serverspec"
 set :backend, :cmd
 set :os, :family => 'windows'
 require "bundler"
+require "win32/service"
 
 class Specinfra::Command::Windows::Base::Package < Specinfra::Command::Windows::Base
   class << self
@@ -33,5 +34,11 @@ describe "gem files" do
     describe package("#{spec.name}") do
       it { should be_installed.by("gem").with_version(spec.version) }
     end
+  end
+end
+
+describe "win32-service" do
+  it "fluentdwinsvc" do
+    expect(Win32::Service.services.collect(&:service_name).include?('fluentdwinsvc')).to eq true
   end
 end
