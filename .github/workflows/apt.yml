@@ -44,6 +44,10 @@ jobs:
         with:
           name: packages-${{ matrix.os }}
           path: td-agent/apt/repositories
+      - uses: actions/upload-artifact@master
+        with:
+          name: packages-apt-source-${{ matrix.os }}
+          path: td-agent-apt-source/apt/repositories
       - name: Installation Test
         run: |
           mkdir -p .bundle
