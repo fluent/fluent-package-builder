@@ -62,20 +62,20 @@ if [ -d "${PACKAGEDIR}/${platform}-${architecture}" ]; then
   run cp -rp "${PACKAGEDIR}/${platform}-${architecture}" debian
 elif [ -d "${PACKAGEDIR}/debian.${platform}" ]; then
   run cp -rp "${PACKAGEDIR}/debian.${platform}" debian
-else
+elif [ -d "${PACKAGEDIR}/debian" ]; then
   run cp -rp "${PACKAGEDIR}/debian" debian
 fi
 
 # setup lintian profile
-run mkdir -p ~/.lintian/profiles/td-agent/
-run cp "debian/lintian/td-agent/${distribution}.profile" ~/.lintian/profiles/td-agent/${distribution}.profile
+run mkdir -p ~/.lintian/profiles/${PACKAGE}/
+run cp "debian/lintian/${PACKAGE}/${distribution}.profile" ~/.lintian/profiles/${PACKAGE}/${distribution}.profile
 # export DEB_BUILD_OPTIONS=noopt
 DISTRIBUTION=`lsb_release -c | cut -f2`
 sed -i'' -E "s/^($PACKAGE \(\S+\)) unstable;/\1 $DISTRIBUTION;/g" debian/changelog
 cat .bundle/config
 if [ "${DEBUG:-no}" = "yes" ]; then
   if [ "${LINTIAN:-yes}" = "yes" ]; then
-    run debuild -us -uc --source-option=--auto-commit --lintian-opts --profile td-agent/${distribution}
+    run debuild -us -uc --source-option=--auto-commit --lintian-opts --profile ${PACKAGE}/${distribution}
   else
     run debuild --no-lintian -us -uc --source-option=--auto-commit
   fi

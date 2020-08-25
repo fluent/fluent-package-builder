@@ -15,6 +15,10 @@
 /td-agent/msi/env.bat
 /td-agent/msi/parameters.wxi
 /td-agent/msi/project-files.wxs
+/td-agent-apt-source/apt/build.sh
+/td-agent-apt-source/apt/env.sh
+/td-agent-apt-source/apt/repositories/
+/td-agent-apt-source/apt/tmp/
 *.wixobj
 *.wixpdb
 *.msi
