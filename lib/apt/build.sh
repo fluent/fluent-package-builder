@@ -62,7 +62,7 @@ if [ -d "${PACKAGEDIR}/${platform}-${architecture}" ]; then
   run cp -rp "${PACKAGEDIR}/${platform}-${architecture}" debian
 elif [ -d "${PACKAGEDIR}/debian.${platform}" ]; then
   run cp -rp "${PACKAGEDIR}/debian.${platform}" debian
-else
+elif [ -d "${PACKAGEDIR}/debian" ]; then
   run cp -rp "${PACKAGEDIR}/debian" debian
 fi
 
