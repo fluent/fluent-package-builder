@@ -67,5 +67,10 @@ if ENV["INSTALLATION_TEST"]
     RSpec::Core::RakeTask.new(:linux)  do |t|
       t.pattern = "serverspec/linux/*.rb"
     end
+
+    desc "Run serverspec on windows"
+    RSpec::Core::RakeTask.new(:windows)  do |t|
+      t.pattern = "serverspec/windows/*.rb"
+    end
   end
 end
