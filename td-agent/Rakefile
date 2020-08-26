@@ -731,8 +731,10 @@ class BuildTask
   def install_gemfiles
     ensure_directory(staging_sharedir) do
       ["Gemfile", "Gemfile.lock"].each do |file|
-        if windows?
-          source_dir = File.join(__dir__, "..", "gemfiles", file == "Gemfile" ? "linux" : "windows")
+        if windows? and file == "Gemfile"
+          source_dir = File.join(__dir__, "..", "gemfiles", "linux")
+        elsif windows?
+          source_dir = File.join(__dir__, "..", "gemfiles", "windows")
         else
           source_dir = File.join(__dir__, "..", "gemfiles", "linux")
         end
