@@ -19,7 +19,15 @@ class TdAgentAptSourcePackageTask < PackageTask
     CLEAN.include(@archive_name)
   end
 
+  def git_directory?(directory)
+    candidate_paths = [".git", "HEAD"]
+    candidate_paths.any? do |candidate_path|
+      File.exist?(File.join(directory, candidate_path))
+    end
+  end
+
   def latest_commit_time(git_directory)
+    return nil unless git_directory?(git_directory)
     Dir.chdir(git_directory) do
       return Time.iso8601(`git log -n 1 --format=%aI`.chomp).utc
     end
