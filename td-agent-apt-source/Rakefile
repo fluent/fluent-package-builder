@@ -1,16 +1,33 @@
 # -*- ruby -*-
 
 require_relative "../lib/package-task"
+require 'rake/clean'
 require "time"
+
+# Debian
+CLEAN.include("apt/tmp")
+CLEAN.include("apt/build.sh")
+CLEAN.include("apt/env.sh")
+CLEAN.include("debian/tmp")
+CLOBBER.include("apt/repositories")
 
 class TdAgentAptSourcePackageTask < PackageTask
   def initialize
     super("td-agent-apt-source",
           repository_version,
           latest_commit_time(File.join(__dir__, "..")))
+    CLEAN.include(@archive_name)
+  end
+
+  def git_directory?(directory)
+    candidate_paths = [".git", "HEAD"]
+    candidate_paths.any? do |candidate_path|
+      File.exist?(File.join(directory, candidate_path))
+    end
   end
 
   def latest_commit_time(git_directory)
+    return nil unless git_directory?(git_directory)
     Dir.chdir(git_directory) do
       return Time.iso8601(`git log -n 1 --format=%aI`.chomp).utc
     end
@@ -47,7 +64,8 @@ class TdAgentAptSourcePackageTask < PackageTask
 
   private
   def define_archive_task
-    file @archive_name do
+    debian_files = Dir.glob("debian/*")
+    file @archive_name => [*debian_files] do
       rm_rf(@archive_base_name)
       mkdir(@archive_base_name)
       cp_r("debian", @archive_base_name)

@@ -42,7 +42,7 @@ jobs:
           rake yum:build YUM_TARGETS=${{ matrix.rake-job }}
       - uses: actions/upload-artifact@master
         with:
-          name: packages-${{ matrix.os }}
+          name: packages-${{ matrix.rake-job }}
           path: td-agent/yum/repositories
       - name: Installation Test
         run: |

@@ -42,8 +42,12 @@ jobs:
           rake apt:build APT_TARGETS=${{ matrix.rake-job }}
       - uses: actions/upload-artifact@master
         with:
-          name: packages-${{ matrix.os }}
+          name: packages-${{ matrix.rake-job }}
           path: td-agent/apt/repositories
+      - uses: actions/upload-artifact@master
+        with:
+          name: packages-apt-source-${{ matrix.rake-job }}
+          path: td-agent-apt-source/apt/repositories
       - name: Installation Test
         run: |
           mkdir -p .bundle
