@@ -23,6 +23,11 @@ APT_SOURCE_PACKAGES = [
   "td-agent-apt-source"
 ]
 
+ALL_PACKAGE = [
+  "td-agent",
+  "td-agent-apt-source",
+]
+
 def define_bulked_task(name, description, packages = PACKAGES)
   desc description
   task name.to_sym do
@@ -35,8 +40,8 @@ def define_bulked_task(name, description, packages = PACKAGES)
 end
 
 [
-  ["clean",            "Remove any temporary products"],
-  ["clobber",          "Remove any generated files"],
+  ["clean",            "Remove any temporary products", ALL_PACKAGE],
+  ["clobber",          "Remove any generated files", ALL_PACKAGE],
   ["build:deb_config", "Create configuration files for Debian like systems"],
   ["build:rpm_config", "Create configuration files for Red Hat like systems with systemd"],
   ["build:rpm_old_config", "Create configuration files for Red Hat like systems without systemd"],
