@@ -9,6 +9,10 @@ class GemsParser
     /mswin|mingw/ =~ RUBY_PLATFORM
   end
 
+  def self.macos?
+    /darwin/ =~ RUBY_PLATFORM
+  end
+
   def initialize
     @target_dir = nil
     @target_files = []
