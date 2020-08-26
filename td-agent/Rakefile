@@ -354,6 +354,7 @@ class BuildTask
           cd("fluentd-#{FLUENTD_REVISION}") do
             sh("rake", "build")
             gem_install("pkg/fluentd-*.gem")
+            install_gemfiles
           end
         end
       end
@@ -619,6 +620,10 @@ class BuildTask
     File.join(td_agent_staging_dir, "bin")
   end
 
+  def staging_sharedir
+    File.join(td_agent_staging_dir, "share")
+  end
+
   def gem_command
     if windows?
       File.join(staging_bindir, "gem")
@@ -721,6 +726,21 @@ class BuildTask
     src = File.join(__dir__, "..", "LICENSE")
     dest = File.join(licenses_staging_dir, "LICENSE-td-agent.txt")
     cp(src, dest)
+  end
+
+  def install_gemfiles
+    ensure_directory(staging_sharedir) do
+      ["Gemfile", "Gemfile.lock"].each do |file|
+        if windows?
+          source_dir = File.join(__dir__, "..", "gemfiles", file == "Gemfile" ? "linux" : "windows")
+        else
+          source_dir = File.join(__dir__, "..", "gemfiles", "linux")
+        end
+        gemfile = File.join(source_dir, file)
+        dest = File.join(staging_sharedir, file)
+        cp(gemfile, dest)
+      end
+    end
   end
 
   def collect_gem_licenses
