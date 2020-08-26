@@ -94,3 +94,11 @@ done
 export PATH=/opt/td-agent/bin:$PATH
 export INSTALLATION_TEST=true
 cd /fluentd && rake serverspec:linux
+
+echo "td-agent-apt-source test"
+apt_source_repositories_dir=/fluentd/td-agent-apt-source/apt/repositories
+apt purge -y td-agent
+apt_source_package=${apt_source_repositories_dir}/${distribution}/pool/${code_name}/${channel}/*/*/td-agent-apt-source*_all.deb
+apt install -V -y ${apt_source_package}
+apt update
+apt install -V -y td-agent
