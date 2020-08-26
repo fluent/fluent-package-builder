@@ -64,7 +64,8 @@ class TdAgentAptSourcePackageTask < PackageTask
 
   private
   def define_archive_task
-    file @archive_name do
+    debian_files = Dir.glob("debian/*")
+    file @archive_name => [*debian_files] do
       rm_rf(@archive_base_name)
       mkdir(@archive_base_name)
       cp_r("debian", @archive_base_name)
