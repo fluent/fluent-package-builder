@@ -1,13 +1,22 @@
 # -*- ruby -*-
 
 require_relative "../lib/package-task"
+require 'rake/clean'
 require "time"
+
+# Debian
+CLEAN.include("apt/tmp")
+CLEAN.include("apt/build.sh")
+CLEAN.include("apt/env.sh")
+CLEAN.include("debian/tmp")
+CLOBBER.include("apt/repositories")
 
 class TdAgentAptSourcePackageTask < PackageTask
   def initialize
     super("td-agent-apt-source",
           repository_version,
           latest_commit_time(File.join(__dir__, "..")))
+    CLEAN.include(@archive_name)
   end
 
   def latest_commit_time(git_directory)
