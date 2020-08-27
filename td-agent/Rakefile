@@ -59,6 +59,10 @@ def windows?
   GemsParser.windows?
 end
 
+def macos?
+  GemsParser.macos?
+end
+
 def ensure_directory(dirname)
   mkdir_p(dirname) unless File.exists?(dirname)
   if block_given?
@@ -552,6 +556,11 @@ class BuildTask
       "--disable-install-doc",
       "--with-compress-debug-sections=no", # https://bugs.ruby-lang.org/issues/12934
     ]
+    if macos?
+     configure_opts.push("-C")
+     configure_opts.push("--with-openssl-dir=#{`brew --prefix openssl@1.1`.chomp!}")
+     configure_opts.push("--with-readline-dir=#{`brew --prefix readline`.chomp!}")
+    end
     cd(ruby_source_dir) do
       apply_ruby_patches
       sh("./configure", *configure_opts)

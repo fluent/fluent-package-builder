@@ -1,0 +1,17 @@
+name: macOS
+on:
+  push:
+  pull_request:
+jobs:
+  build:
+    name: Build
+    strategy:
+      fail-fast: false
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Build
+        run: |
+          sudo mkdir /opt/td-agent
+          sudo chown $(whoami) /opt/td-agent
+          rake build:all TD_AGENT_STAGING_PATH="$(pwd)/darwin/tmp"
