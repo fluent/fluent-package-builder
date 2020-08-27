@@ -1,0 +1,15 @@
+name: macOS
+on:
+  push:
+  pull_request:
+jobs:
+  build:
+    name: Build
+    strategy:
+      fail-fast: false
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Build
+        run: |
+          rake build:all
