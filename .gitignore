@@ -3,6 +3,7 @@
 /td-agent/staging/
 /td-agent/debian/post*
 /td-agent/debian/copyright
+/td-agent/debian/source/include-binaries
 /td-agent/downloads/
 /td-agent/yum/build.sh
 /td-agent/yum/repositories/
@@ -22,3 +23,4 @@
 *.wixobj
 *.wixpdb
 *.msi
+*.gz
