@@ -747,10 +747,22 @@ class BuildTask
         else
           source_dir = File.join(__dir__, "..", "gemfiles", "linux")
         end
-        gemfile = File.join(source_dir, file)
-        dest = File.join(staging_sharedir, file)
-        cp(gemfile, dest)
+        if file == "Gemfile"
+          content = File.open(File.join(source_dir, file)).read
+          dest = File.join(staging_sharedir, file.sub(/td-agent\//, ""))
+          File.open(dest, "w+") do |config|
+            config.puts(content.sub(/\.\.\/\.\.\/\.\.\/td-agent\/config.rb/, "../config.rb"))
+          end
+        else
+          src = File.join(source_dir, file)
+          dest = File.join(staging_sharedir, file.sub(/td-agent\//, ""))
+          cp(src, dest)
+        end
       end
+      source_dir = File.join(__dir__, "..")
+      src = File.join(source_dir, "td-agent/config.rb")
+      dest = File.join(staging_sharedir, "config.rb")
+      cp(src, dest)
     end
   end
 
