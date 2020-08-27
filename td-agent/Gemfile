@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require File.expand_path('../../../td-agent/config.rb', __FILE__)
+require File.expand_path('../config.rb', __FILE__)
 
 source "https://rubygems.org"
 
@@ -9,7 +9,7 @@ git_source(:github) {|repo_name| "https://github.com/#{repo_name}" }
 # core gems
 
 gem "rake"
-gem "bundler", "2.1.4"
+gem "bundler", "2.2.0.rc1"
 gem "cool.io", "1.6.0"
 gem "sigdump", "0.2.4"
 gem "http_parser.rb", "0.6.0"

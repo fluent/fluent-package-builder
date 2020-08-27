@@ -103,7 +103,7 @@ def gem_dir_version
 end
 
 def gemfile_dir
-  windows? ? "../gemfiles/windows" : "../gemfiles/linux"
+  "."
 end
 
 def template_params(params = nil)
@@ -888,30 +888,12 @@ class BuildTask
 
   def install_gemfiles
     ensure_directory(staging_sharedir) do
-      ["Gemfile", "Gemfile.lock"].each do |file|
-        if windows? and file == "Gemfile"
-          source_dir = File.join(__dir__, "..", "gemfiles", "linux")
-        elsif windows?
-          source_dir = File.join(__dir__, "..", "gemfiles", "windows")
-        else
-          source_dir = File.join(__dir__, "..", "gemfiles", "linux")
-        end
-        if file == "Gemfile"
-          content = File.open(File.join(source_dir, file)).read
-          dest = File.join(staging_sharedir, file.sub(/td-agent\//, ""))
-          File.open(dest, "w+") do |config|
-            config.puts(content.sub(/\.\.\/\.\.\/\.\.\/td-agent\/config.rb/, "../config.rb"))
-          end
-        else
-          src = File.join(source_dir, file)
-          dest = File.join(staging_sharedir, file.sub(/td-agent\//, ""))
-          cp(src, dest)
-        end
+      ["Gemfile", "Gemfile.lock", "config.rb"].each do |file|
+        source_dir = File.join(__dir__, "..")
+        src = File.join(source_dir, "td-agent/#{file}")
+        dest = File.join(staging_sharedir, file)
+        cp(src, dest)
       end
-      source_dir = File.join(__dir__, "..")
-      src = File.join(source_dir, "td-agent/config.rb")
-      dest = File.join(staging_sharedir, "config.rb")
-      cp(src, dest)
     end
   end
 
