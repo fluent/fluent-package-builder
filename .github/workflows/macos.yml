@@ -12,4 +12,6 @@ jobs:
       - uses: actions/checkout@master
       - name: Build
         run: |
-          rake build:all
+          sudo mkdir /opt/td-agent
+          sudo chown $(whoami) /opt/td-agent
+          rake build:all TD_AGENT_STAGING_PATH="$(pwd)/darwin/tmp"
