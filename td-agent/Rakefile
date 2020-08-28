@@ -483,6 +483,14 @@ class BuildTask
         render_template(dest, src, template_params(params))
       end
 
+      desc "Create config file for macOS Installer"
+      task :pkgbuild_config do
+        src  = File.join('macos', 'Distribution.xml.erb')
+        dest = File.join('macos', 'Distribution.xml')
+        params = {pkg_version: PACKAGE_VERSION}
+        render_template(dest, src, template_params(params))
+      end
+
       desc "Create configuration files for Red Hat like systems with systemd"
       task :rpm_config => [:td_agent_config, :systemd_tmpfiles_config, :bin_scripts, :rpm_systemd]
 
@@ -941,6 +949,50 @@ EOS
   end
 end
 
+class MacOSPackageTask
+  include Rake::DSL
+
+  PKG_OUTPUT_DIR = ENV["TD_AGENT_PKG_OUTPUT_PATH"] || "."
+
+  def initialize
+    @package = PACKAGE_NAME
+    @version = PACKAGE_VERSION
+    @staging_dir = STAGING_DIR
+  end
+
+  def define
+    namespace :mac do
+      desc "Build macOS package"
+      task :selfbuild => [:"build:pkgbuild_config", :"build:all"] do
+        run_pkgbuild
+      end
+    end
+  end
+
+  def run_pkgbuild
+    output_dir = PKG_OUTPUT_DIR
+    ensure_directory(output_dir)
+
+    cd("macos") do
+      # Build flat pkg installer
+      sh("pkgbuild",
+         "--root", STAGING_DIR,
+         "--component-plist", "td-agent.plist",
+         "--identifier", "com.treasuredata.tdagent",
+         "--version", @version,
+         "--install-location", "/",
+         File.join(output_dir, "td-agent.pkg"))
+
+      # Build distributable pkg installer
+      sh("productbuild",
+         "--distribution", "Distribution.xml",
+         "--package-path", File.join(output_dir, "td-agent.pkg"),
+         "--resources", "assets",
+         File.join(output_dir, "td-agent-#{@version}.pkg"))
+    end
+  end
+end
+
 class WindowsPackageTask
   include Rake::DSL
 
@@ -1106,3 +1158,6 @@ windows_package_task.define
 
 update_lockfile_task = UpdateLockfileTask.new
 update_lockfile_task.define
+
+macos_package_task = MacOSPackageTask.new
+macos_package_task.define
