@@ -414,7 +414,7 @@ class BuildTask
           "etc/logrotate.d/td-agent",
           "opt/td-agent/share/td-agent-ruby.conf",
           "opt/td-agent/share/td-agent.conf.tmpl"
-        ]) unless windows?
+        ]) unless windows? || macos?
         configs.each do |config|
           src = template_path(config)
           if config == "etc/td-agent/td-agent.conf"
@@ -440,13 +440,17 @@ class BuildTask
       desc "Create bin script files from template"
       task :bin_scripts do
         scripts = [
-          "usr/bin/td",
-          "usr/sbin/td-agent",
-          "usr/sbin/td-agent-gem",
+          "bin/td",
+          "sbin/td-agent",
+          "sbin/td-agent-gem",
         ]
         scripts.each do |script|
-          src = template_path("#{script}.erb")
-          dest = File.join(STAGING_DIR, script)
+          src = template_path(File.join("usr", "#{script}.erb"))
+          dest = if macos?
+                   File.join(STAGING_DIR, File.join("opt", PACKAGE_NAME, script))
+                 else
+                   File.join(STAGING_DIR, File.join("usr", script))
+                 end
           render_template(dest, src, template_params, { mode: 0755 })
         end
       end
