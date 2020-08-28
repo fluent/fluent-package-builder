@@ -455,6 +455,18 @@ class BuildTask
         end
       end
 
+      desc "Create launchctl configuration files from template"
+      task :launchctl_config do
+        configs = [
+          "td-agent.plist",
+        ]
+        configs.each do |config|
+          src = template_path("#{config}.erb")
+          dest = File.join(STAGING_DIR, File.join("Library", "LaunchDaemons", config))
+          render_template(dest, src, template_params)
+        end
+      end
+
       desc "Install additional .bat files for Windows"
       task :win_batch_files do
         ensure_directory(staging_bindir)
@@ -514,7 +526,7 @@ class BuildTask
       task :msi_config => [:td_agent_config, :wix_config, :win_batch_files]
 
       desc "Create configuration files for macOS"
-      task :pkg_config => [:td_agent_config, :pkgbuild_config, :bin_scripts]
+      task :pkg_config => [:td_agent_config, :pkgbuild_config, :bin_scripts, :launchctl_config]
     end
   end
 
