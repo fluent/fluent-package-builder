@@ -508,6 +508,9 @@ class BuildTask
 
       desc "Create configuration files for Windows"
       task :msi_config => [:td_agent_config, :wix_config, :win_batch_files]
+
+      desc "Create configuration files for macOS"
+      task :pkg_config => [:td_agent_config, :pkgbuild_config, :bin_scripts]
     end
   end
 
@@ -969,7 +972,7 @@ class MacOSPackageTask
   def define
     namespace :mac do
       desc "Build macOS package"
-      task :selfbuild => [:"build:pkgbuild_config", :"build:all"] do
+      task :selfbuild => [:"build:pkg_config", :"build:all"] do
         run_pkgbuild
       end
     end
