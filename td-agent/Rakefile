@@ -152,10 +152,12 @@ class DownloadTask
   attr_reader :file_ruby_source, :file_ruby_installer_x64
   attr_reader :file_fluentd_archive
   attr_reader :files_ruby_gems
+  attr_reader :file_openssl_source
 
   def files
     [
       @file_jemalloc_source,
+      @file_openssl_source,
       @file_ruby_source,
       @file_ruby_installer_x64,
       @file_fluentd_archive,
@@ -168,6 +170,7 @@ class DownloadTask
     define_ruby_files
     define_fluentd_archive
     define_gem_files
+    define_openssl_file
 
     namespace :download do
       desc "Download jemalloc source"
@@ -182,6 +185,8 @@ class DownloadTask
       desc "Download ruby gems"
       task :ruby_gems => @files_ruby_gems
 
+      desc "Download openssl source"
+      task :openssl => @file_openssl_source
     end
   end
 
@@ -220,6 +225,17 @@ class DownloadTask
     @file_jemalloc_source = File.join(DOWNLOADS_DIR, filename)
     file @file_jemalloc_source do
       url = "#{url_base}/#{version}/#{filename}"
+      download_file(url, filename)
+    end
+  end
+
+  def define_openssl_file
+    version = OPENSSL_VERSION
+    filename = "openssl-#{version}.tar.gz"
+    url_base = "https://www.openssl.org/source/"
+    @file_openssl_source = File.join(DOWNLOADS_DIR, filename)
+    file @file_openssl_source do
+      url = "#{url_base}/#{filename}"
       download_file(url, filename)
     end
   end
@@ -339,8 +355,13 @@ class BuildTask
         build_jemalloc unless windows?
       end
 
+      desc "Install OpenSSL"
+      task :openssl => [:"download:openssl"] do
+        build_openssl if macos?
+      end
+
       desc "Install Ruby"
-      task :ruby => [:jemalloc, :"download:ruby"] do
+      task :ruby => [:jemalloc, :openssl, :"download:ruby"] do
         if windows?
           extract_ruby_installer
           setup_windows_build_env
@@ -577,6 +598,41 @@ class BuildTask
     end
   end
 
+  def build_openssl
+    tarball = @download_task.file_openssl_source
+    source_dir = tarball.sub(/\.tar\.gz$/, '')
+
+    sh("tar", "xvf", tarball, "-C", DOWNLOADS_DIR)
+
+    configure_opts = [
+      "--prefix=#{install_prefix}",
+      "--openssldir=#{File.join("etc", "openssl")}",
+      "no-unit-test",
+      "no-comp",
+      "no-idea",
+      "no-mdc2",
+      "no-rc5",
+      "no-ssl2",
+      "no-ssl3",
+      "no-ssl3-method",
+      "no-zlib",
+      "shared",
+    ]
+    arch_opts = [
+      "darwin64-x86_64-cc",
+    ]
+
+    cd(source_dir) do
+      # Currently, macOS only.
+      sh("perl", "./Configure", *(configure_opts + arch_opts))
+      sh("make", "depend")
+      sh("make")
+      # For `gem install` Ruby.
+      sh("make", "install")
+      sh("make", "install", "DESTDIR=#{STAGING_DIR}")
+    end
+  end
+
   def build_ruby_from_source
     tarball = @download_task.file_ruby_source
     ruby_source_dir = tarball.sub(/\.tar\.gz$/, '')
@@ -590,9 +646,8 @@ class BuildTask
       "--with-compress-debug-sections=no", # https://bugs.ruby-lang.org/issues/12934
     ]
     if macos?
-     configure_opts.push("-C")
-     configure_opts.push("--with-openssl-dir=#{`brew --prefix openssl@1.1`.chomp!}")
-     configure_opts.push("--with-readline-dir=#{`brew --prefix readline`.chomp!}")
+      configure_opts.push("-C")
+      configure_opts.push("--with-openssl-dir=#{File.join(STAGING_DIR, install_prefix)}")
     end
     cd(ruby_source_dir) do
       apply_ruby_patches

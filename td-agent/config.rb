@@ -6,6 +6,9 @@ FLUENTD_REVISION = "2f80f6cf0a4aa44b9795cd6a66894a6b8fa70d06" # v1.11.2 with win
 # https://github.com/jemalloc/jemalloc/releases/download/
 JEMALLOC_VERSION = "5.2.1"
 
+# https://www.openssl.org/source/
+OPENSSL_VERSION = "1.1.1g"
+
 # https://www.ruby-lang.org/en/downloads/
 #BUNDLED_RUBY_VERSION = "2.4.10"
 #BUNDLED_RUBY_SOURCE_SHA256SUM = "93d06711795bfb76dbe7e765e82cdff3ddf9d82eff2a1f24dead9bb506eaf2d0"
