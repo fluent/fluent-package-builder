@@ -55,6 +55,12 @@ CLEAN.include("msi/*.wixobj")
 CLEAN.include("msi/*.wixpdb")
 CLOBBER.include("msi/*.msi")
 
+# macOS
+CLEAN.include("macos/Distribution.xml")
+CLOBBER.include("macos/*.pkg")
+CLOBBER.include("macos/*.dmg")
+CLOBBER.include("macos/dmg")
+
 def windows?
   GemsParser.windows?
 end
@@ -989,6 +995,16 @@ class MacOSPackageTask
          "--package-path", File.join(output_dir, "td-agent.pkg"),
          "--resources", "assets",
          File.join(output_dir, "td-agent-#{@version}.pkg"))
+
+      mkdir_p("dmg")
+      cp(File.join(output_dir, "td-agent-#{@version}.pkg"), "dmg")
+      sh("hdiutil",
+         "create",
+         "-srcfolder", "dmg",
+         "-fs", "HFS+",
+         "-format", "UDZO",
+         "-volname", "Td-Agent",
+         "td-agent-#{@version}.dmg")
     end
   end
 end
