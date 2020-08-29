@@ -775,6 +775,10 @@ class BuildTask
       "--bindir", staging_bindir,
       gem_path
     ]
+    if macos? && gem_path.include?("rdkafka")
+      ENV["CPPFLAGS"] = "-I#{File.join(STAGING_DIR, install_prefix, 'include')}"
+      ENV["LDFLAGS"] = "-L#{File.join(STAGING_DIR, install_prefix, 'lib')}"
+    end
     # digest-crc gem causes rake executable conflict due to rake runtime dependency
     # and bundled rake gem on Ruby Installer.
     if windows? && gem_path.include?("rake")
