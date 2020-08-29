@@ -357,7 +357,10 @@ class BuildTask
 
       desc "Install OpenSSL"
       task :openssl => [:"download:openssl"] do
-        build_openssl if macos?
+        if macos?
+          build_openssl
+          create_certs
+        end
       end
 
       desc "Install Ruby"
@@ -598,6 +601,35 @@ class BuildTask
     end
   end
 
+  def openssldir
+    File.join(staging_etcdir, "openssl")
+  end
+
+  def create_certs
+    keychains = [
+      "/System/Library/Keychains/SystemRootCertificates.keychain"
+    ]
+
+    cert_list = `security find-certificate -a -p #{keychains.join(" ")}`
+    certs = cert_list.scan(
+      /-----BEGIN CERTIFICATE-----.*?-----END CERTIFICATE-----/m
+    )
+
+    valid_certificates = certs.select do |cert|
+      IO.popen("#{staging_bindir}/openssl x509 -inform pem -checkend 0 -noout > /dev/null", "w") do |ossl_io|
+        ossl_io.write(cert)
+        ossl_io.close_write
+      end
+
+      $?.success?
+    end
+
+    mkdir_p(openssldir)
+    File.open(File.join(openssldir, "cert.pem"), 'w', 0644) do |f|
+      f.write(valid_certificates.join("\n") << "\n")
+    end
+  end
+
   def build_openssl
     tarball = @download_task.file_openssl_source
     source_dir = tarball.sub(/\.tar\.gz$/, '')
@@ -606,7 +638,7 @@ class BuildTask
 
     configure_opts = [
       "--prefix=#{install_prefix}",
-      "--openssldir=#{File.join("etc", "openssl")}",
+      "--openssldir=#{openssldir}",
       "no-unit-test",
       "no-comp",
       "no-idea",
@@ -715,6 +747,10 @@ class BuildTask
 
   def staging_bindir
     File.join(td_agent_staging_dir, "bin")
+  end
+
+  def staging_etcdir
+    File.join(td_agent_staging_dir, "etc")
   end
 
   def staging_sharedir
