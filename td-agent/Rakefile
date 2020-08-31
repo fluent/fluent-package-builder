@@ -647,7 +647,7 @@ class BuildTask
 
     configure_opts = [
       "--prefix=#{install_prefix}",
-      "--openssldir=#{openssldir}",
+      "--openssldir=#{File.join("etc", "openssl")}",
       "no-unit-test",
       "no-comp",
       "no-idea",
