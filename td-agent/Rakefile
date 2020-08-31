@@ -465,16 +465,16 @@ class BuildTask
       desc "Create bin script files from template"
       task :bin_scripts do
         scripts = [
-          "bin/td",
-          "sbin/td-agent",
-          "sbin/td-agent-gem",
+          "usr/bin/td",
+          "usr/sbin/td-agent",
+          "usr/sbin/td-agent-gem",
         ]
         scripts.each do |script|
-          src = template_path(File.join("usr", "#{script}.erb"))
+          src = template_path("#{script}.erb")
           dest = if macos?
                    File.join(STAGING_DIR, File.join("opt", PACKAGE_NAME, script))
                  else
-                   File.join(STAGING_DIR, File.join("usr", script))
+                   File.join(STAGING_DIR, script)
                  end
           render_template(dest, src, template_params, { mode: 0755 })
         end
