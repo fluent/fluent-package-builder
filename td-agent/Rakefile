@@ -532,7 +532,7 @@ class BuildTask
 
       desc "Create config file for macOS Installer"
       task :pkgbuild_config do
-        src  = File.join('macos', 'Distribution.xml.erb')
+        src  = File.join('macos', 'pkg', 'Distribution.xml.erb')
         dest = File.join('macos', 'Distribution.xml')
         params = {pkg_version: PACKAGE_VERSION}
         render_template(dest, src, template_params(params))
@@ -540,7 +540,7 @@ class BuildTask
 
       desc "Create pkg scripts for macOS Installer"
       task :pkgbuild_scripts do
-        src  = File.join('macos', 'scripts', 'postinstall.erb')
+        src  = File.join('macos', 'pkg', 'postinstall.erb')
         dest = File.join('macos', 'scripts', 'postinstall')
         params = {pkg_version: PACKAGE_VERSION}
         render_template(dest, src, template_params, { mode: 0755 })
@@ -1107,7 +1107,7 @@ class MacOSPackageTask
       # Build flat pkg installer
       sh("pkgbuild",
          "--root", STAGING_DIR,
-         "--component-plist", "td-agent.plist",
+         "--component-plist", "pkg/td-agent.plist",
          "--identifier", "com.treasuredata.tdagent",
          "--version", @version,
          "--scripts", "scripts",
