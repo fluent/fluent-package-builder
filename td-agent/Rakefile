@@ -1122,6 +1122,8 @@ class MacOSPackageTask
          File.join(output_dir, "td-agent-#{@version}.pkg"))
 
       mkdir_p("dmg")
+      dmg_name = "td-agent-#{@version}.dmg"
+      rm_f(dmg_name)
       cp(File.join(output_dir, "td-agent-#{@version}.pkg"), "dmg")
       sh("hdiutil",
          "create",
@@ -1129,7 +1131,7 @@ class MacOSPackageTask
          "-fs", "HFS+",
          "-format", "UDZO",
          "-volname", "Td-Agent",
-         "td-agent-#{@version}.dmg")
+         dmg_name)
     end
   end
 end
