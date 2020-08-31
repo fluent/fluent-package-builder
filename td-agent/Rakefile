@@ -57,6 +57,7 @@ CLOBBER.include("msi/*.msi")
 
 # macOS
 CLEAN.include("macos/Distribution.xml")
+CLEAN.include("macos/scripts/postinstall")
 CLOBBER.include("macos/*.pkg")
 CLOBBER.include("macos/*.dmg")
 CLOBBER.include("macos/dmg")
@@ -537,6 +538,14 @@ class BuildTask
         render_template(dest, src, template_params(params))
       end
 
+      desc "Create pkg scripts for macOS Installer"
+      task :pkgbuild_scripts do
+        src  = File.join('macos', 'scripts', 'postinstall.erb')
+        dest = File.join('macos', 'scripts', 'postinstall')
+        params = {pkg_version: PACKAGE_VERSION}
+        render_template(dest, src, template_params, { mode: 0755 })
+      end
+
       desc "Create configuration files for Red Hat like systems with systemd"
       task :rpm_config => [:td_agent_config, :systemd_tmpfiles_config, :bin_scripts, :rpm_systemd]
 
@@ -550,7 +559,7 @@ class BuildTask
       task :msi_config => [:td_agent_config, :wix_config, :win_batch_files]
 
       desc "Create configuration files for macOS"
-      task :pkg_config => [:td_agent_config, :pkgbuild_config, :bin_scripts, :launchctl_config]
+      task :pkg_config => [:td_agent_config, :pkgbuild_scripts, :pkgbuild_config, :bin_scripts, :launchctl_config]
     end
   end
 
@@ -1100,6 +1109,7 @@ class MacOSPackageTask
          "--component-plist", "td-agent.plist",
          "--identifier", "com.treasuredata.tdagent",
          "--version", @version,
+         "--scripts", "scripts",
          "--install-location", "/",
          File.join(output_dir, "td-agent.pkg"))
 
