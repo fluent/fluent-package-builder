@@ -58,6 +58,7 @@ CLOBBER.include("msi/*.msi")
 # macOS
 CLEAN.include("macos/Distribution.xml")
 CLEAN.include("macos/scripts/postinstall")
+CLEAN.include("macos/resources/td-agent.osascript")
 CLOBBER.include("macos/*.pkg")
 CLOBBER.include("macos/*.dmg")
 CLOBBER.include("macos/dmg")
@@ -1079,6 +1080,107 @@ EOS
   end
 end
 
+class CompressDMG
+  include Rake::DSL
+
+  def initialize(version, window_bounds)
+    @version = version
+    @window_bounds = window_bounds
+    @dmg_temp_name = "rw.td-agent-#{@version}.dmg"
+    @dmg_name = "td-agent-#{@version}.dmg"
+    @volume_name = "Td-Agent"
+    @device = nil
+    @osascript_path = File.join("resources", "td-agent.osascript")
+  end
+
+  def clean_dmgs
+    rm_f(@dmg_name)
+    rm_f(@dmg_temp_name)
+  end
+
+  def create_rw_dmg
+    sh("hdiutil",
+       "create", "-ov",
+       "-srcfolder", "dmg",
+       "-format", "UDRW",
+       "-volname", @volume_name,
+       @dmg_temp_name)
+  end
+
+  def get_attached_rw_dmg
+    @device = `hdiutil attach -readwrite -noverify -noautoopen #{@dmg_temp_name} | egrep '^/dev/' | sed 1q | awk '{print $1}'`.strip
+    sleep 5
+  end
+
+  def create_osascript
+    apple_script = <<EOL
+set found_disk to do shell script "ls /Volumes/ | grep '#{@volume_name}*'"
+
+if found_disk is {} then
+  set errormsg to "Disk " & found_disk & " not found"
+  error errormsg
+end if
+
+tell application "Finder"
+  reopen
+  activate
+  set selection to {}
+  set target of Finder window 1 to found_disk
+  set current view of Finder window 1 to icon view
+  set toolbar visible of Finder window 1 to false
+  set statusbar visible of Finder window 1 to false
+  set the bounds of Finder window 1 to {#{@window_bounds}}
+  tell disk found_disk
+     set theViewOptions to the icon view options of container window
+     set background picture of theViewOptions to file ".background:background.png"
+     set arrangement of theViewOptions to not arranged
+     set icon size of theViewOptions to 72
+     update without registering applications
+     delay 5
+  end tell
+end tell
+EOL
+    puts "Generate #{@osascript_path}"
+    File.open(@osascript_path, 'w', 0644) do |f|
+      f.write(apple_script)
+    end
+  end
+
+  def prettify_dmg
+    bg_folder = "/Volumes/#{@volume_name}/.background"
+    mkdir_p(bg_folder)
+    cp(File.join("resources", "background.png"), bg_folder)
+
+    sh("osascript", @osascript_path)
+  end
+
+  def compress_dmg
+    sh("chmod", "-Rf", "go-w", "/Volumes/#{@volume_name}")
+    sh("sync")
+    sh("sync")
+    sh("hdiutil", "detach", @device)
+    sh("hdiutil",
+       "convert", @dmg_temp_name,
+       "-format", "UDZO",
+       "-imagekey", "zlib-level=9",
+       "-o", @dmg_name)
+  end
+
+  def remove_rw_dmg
+    rm_f(@dmg_temp_name)
+  end
+
+  def run
+    clean_dmgs
+    create_rw_dmg
+    get_attached_rw_dmg
+    create_osascript
+    prettify_dmg
+    compress_dmg
+    remove_rw_dmg
+  end
+end
+
 class MacOSPackageTask
   include Rake::DSL
 
@@ -1122,16 +1224,10 @@ class MacOSPackageTask
          File.join(output_dir, "td-agent-#{@version}.pkg"))
 
       mkdir_p("dmg")
-      dmg_name = "td-agent-#{@version}.dmg"
-      rm_f(dmg_name)
       cp(File.join(output_dir, "td-agent-#{@version}.pkg"), "dmg")
-      sh("hdiutil",
-         "create",
-         "-srcfolder", "dmg",
-         "-fs", "HFS+",
-         "-format", "UDZO",
-         "-volname", "Td-Agent",
-         dmg_name)
+      window_bounds = "100, 100, 750, 600"
+      dmg = CompressDMG.new(@version, window_bounds)
+      dmg.run
     end
   end
 end

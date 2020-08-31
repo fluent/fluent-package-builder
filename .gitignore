@@ -18,6 +18,7 @@
 /td-agent/msi/project-files.wxs
 /td-agent/macos/Distribution.xml
 /td-agent/macos/scripts/postinstall
+/td-agent/macos/resources/td-agent.osascript
 /td-agent-apt-source/apt/build.sh
 /td-agent-apt-source/apt/env.sh
 /td-agent-apt-source/apt/repositories/
