@@ -821,6 +821,7 @@ class BuildTask
       gem_path
     ]
     if macos? && gem_path.include?("rdkafka")
+      ENV["SSL_CERT_FILE"] = "#{File.join(staging_etcdir, "openssl", "cert.pem")}"
       ENV["CPPFLAGS"] = "-I#{File.join(STAGING_DIR, install_prefix, 'include')}"
       ENV["LDFLAGS"] = "-L#{File.join(STAGING_DIR, install_prefix, 'lib')}"
     end
