@@ -17,6 +17,9 @@
 /td-agent/msi/parameters.wxi
 /td-agent/msi/project-files.wxs
 /td-agent/macos/Distribution.xml
+/td-agent/macos/td-agent.icns
+/td-agent/macos/td-agent.iconset/
+/td-agent/macos/td-agent.rsrc
 /td-agent/macos/scripts/postinstall
 /td-agent/macos/resources/td-agent.osascript
 /td-agent-apt-source/apt/build.sh
