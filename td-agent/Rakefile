@@ -60,7 +60,7 @@ CLEAN.include("macos/Distribution.xml")
 CLEAN.include("macos/td-agent.icns")
 CLEAN.include("macos/td-agent.rsrc")
 CLEAN.include("macos/scripts/postinstall")
-CLEAN.include("macos/resources/td-agent.osascript")
+CLEAN.include("macos/resources/dmg/td-agent.osascript")
 CLOBBER.include("macos/*.pkg")
 CLOBBER.include("macos/*.dmg")
 CLOBBER.include("macos/td-agent.iconset")
@@ -1095,7 +1095,7 @@ class CompressDMG
     @pkg_name = "td-agent-#{@version}.pkg"
     @volume_name = "Td-Agent"
     @device = nil
-    @osascript_path = File.join("resources", "td-agent.osascript")
+    @osascript_path = File.join("resources", "dmg", "td-agent.osascript")
   end
 
   def clean_dmgs
@@ -1161,7 +1161,7 @@ EOL
   end
 
   def set_volume_icon
-    icon = File.join("resources", "icon.png")
+    icon = File.join("resources", "dmg", "icon.png")
     mkdir_p("td-agent.iconset")
 
     sh("sips", "-z", "16", "16", "#{icon}", "--out", "td-agent.iconset/icon_16x16.png")
@@ -1185,7 +1185,7 @@ EOL
   def prettify_dmg
     bg_folder = "/Volumes/#{@volume_name}/.background"
     mkdir_p(bg_folder)
-    cp(File.join("resources", "background.png"), bg_folder)
+    cp(File.join("resources", "dmg", "background.png"), bg_folder)
 
     sh("osascript", @osascript_path)
   end
@@ -1203,8 +1203,8 @@ EOL
   end
 
   def set_dmg_icon
-    sh("sips", "-i", File.join("resources", "icon.png"))
-    `DeRez -only icns "#{File.join('resources', 'icon.png')}" > td-agent.rsrc`
+    sh("sips", "-i", File.join("resources", "dmg", "icon.png"))
+    `DeRez -only icns "#{File.join('resources', 'dmg', 'icon.png')}" > td-agent.rsrc`
     sh("Rez", "-append", "td-agent.rsrc", "-o", @dmg_name)
     sh("SetFile", "-a", "C", @dmg_name)
   end
@@ -1272,7 +1272,7 @@ class MacOSPackageTask
       sh("productbuild",
          "--distribution", "Distribution.xml",
          "--package-path", File.join(output_dir, "td-agent.pkg"),
-         "--resources", "assets",
+         "--resources", File.join("resources", "pkg", "assets"),
          File.join(output_dir, "td-agent-#{@version}.pkg"))
 
       mkdir_p("dmg")

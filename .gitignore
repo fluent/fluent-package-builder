@@ -16,12 +16,13 @@
 /td-agent/msi/env.bat
 /td-agent/msi/parameters.wxi
 /td-agent/msi/project-files.wxs
+/td-agent/macos/dmg/
 /td-agent/macos/Distribution.xml
 /td-agent/macos/td-agent.icns
 /td-agent/macos/td-agent.iconset/
 /td-agent/macos/td-agent.rsrc
 /td-agent/macos/scripts/postinstall
-/td-agent/macos/resources/td-agent.osascript
+/td-agent/macos/resources/dmg/td-agent.osascript
 /td-agent-apt-source/apt/build.sh
 /td-agent-apt-source/apt/env.sh
 /td-agent-apt-source/apt/repositories/
@@ -30,3 +31,4 @@
 *.wixpdb
 *.msi
 *.gz
+*.DS_Store
