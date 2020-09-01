@@ -17,7 +17,7 @@
 /td-agent/msi/parameters.wxi
 /td-agent/msi/project-files.wxs
 /td-agent/macos/dmg/
-/td-agent/macos/Distribution.xml
+/td-agent/macos/resourcs/pkg/Distribution.xml
 /td-agent/macos/td-agent.icns
 /td-agent/macos/td-agent.iconset/
 /td-agent/macos/td-agent.rsrc

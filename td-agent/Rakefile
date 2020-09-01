@@ -56,10 +56,10 @@ CLEAN.include("msi/*.wixpdb")
 CLOBBER.include("msi/*.msi")
 
 # macOS
-CLEAN.include("macos/Distribution.xml")
 CLEAN.include("macos/td-agent.icns")
 CLEAN.include("macos/td-agent.rsrc")
-CLEAN.include("macos/scripts/postinstall")
+CLEAN.include("macos/resources/pkg/Distribution.xml")
+CLEAN.include("macos/resources/pkg/scripts/postinstall")
 CLEAN.include("macos/resources/dmg/td-agent.osascript")
 CLOBBER.include("macos/*.pkg")
 CLOBBER.include("macos/*.dmg")
@@ -536,16 +536,16 @@ class BuildTask
 
       desc "Create config file for macOS Installer"
       task :pkgbuild_config do
-        src  = File.join('macos', 'pkg', 'Distribution.xml.erb')
-        dest = File.join('macos', 'Distribution.xml')
+        src  = File.join('macos', 'resources', 'pkg', 'Distribution.xml.erb')
+        dest = File.join('macos', 'resources', 'pkg', 'Distribution.xml')
         params = {pkg_version: PACKAGE_VERSION}
         render_template(dest, src, template_params(params))
       end
 
       desc "Create pkg scripts for macOS Installer"
       task :pkgbuild_scripts do
-        src  = File.join('macos', 'pkg', 'postinstall.erb')
-        dest = File.join('macos', 'scripts', 'postinstall')
+        src  = File.join('macos', 'resources', 'pkg', 'postinstall.erb')
+        dest = File.join('macos', 'resources', 'pkg', 'scripts', 'postinstall')
         params = {pkg_version: PACKAGE_VERSION}
         render_template(dest, src, template_params, { mode: 0755 })
       end
@@ -1261,16 +1261,16 @@ class MacOSPackageTask
       # Build flat pkg installer
       sh("pkgbuild",
          "--root", STAGING_DIR,
-         "--component-plist", "pkg/td-agent.plist",
+         "--component-plist", File.join("resources", "pkg", "td-agent.plist"),
          "--identifier", "com.treasuredata.tdagent",
          "--version", @version,
-         "--scripts", "scripts",
+         "--scripts", File.join("resources", "pkg", "scripts"),
          "--install-location", "/",
          File.join(output_dir, "td-agent.pkg"))
 
       # Build distributable pkg installer
       sh("productbuild",
-         "--distribution", "Distribution.xml",
+         "--distribution", File.join("resources", "pkg", "Distribution.xml"),
          "--package-path", File.join(output_dir, "td-agent.pkg"),
          "--resources", File.join("resources", "pkg", "assets"),
          File.join(output_dir, "td-agent-#{@version}.pkg"))
