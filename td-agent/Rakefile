@@ -28,6 +28,7 @@ require 'open3'
 require 'digest'
 require 'etc'
 require "yaml"
+require 'bundler'
 
 DOWNLOADS_DIR  = File.expand_path(ENV["TD_AGENT_DOWNLOADS_PATH"] || "downloads")
 STAGING_DIR    = File.expand_path(ENV["TD_AGENT_STAGING_PATH"]   || "staging")
@@ -791,6 +792,14 @@ class BuildTask
     end
   end
 
+  def bundle_command
+    if windows?
+      File.join(staging_bindir, "bundle")
+    else
+      "#{install_prefix}/bin/bundle"
+    end
+  end
+
   def gem_dir_version
     if windows?
       ruby_version = BUNDLED_RUBY_INSTALLER_X64_VERSION
@@ -849,6 +858,20 @@ class BuildTask
   end
 
   def install_gems(files)
+    ensure_directory(staging_bindir)
+    ensure_directory(gem_staging_dir)
+
+    Dir.chdir(DOWNLOADS_DIR) do
+      sh("gem", "fetch", "bundler","--version", "2.2.0.rc.1")
+      gem_install(Dir.glob("bundler-*.gem").first)
+    end
+
+    relative_path = File.join(File.basename(File.split(DOWNLOADS_DIR)[0]), File.split(DOWNLOADS_DIR)[1])
+    puts "bundle config cache path: <#{relative_path}>"
+    sh(bundle_command, "config", "set", "--local", "cache_path", relative_path)
+    sh(bundle_command, "package", "--no-install")
+
+    files = Dir.glob("#{DOWNLOADS_DIR}/*.gem")
     files.each do |gem_path|
       gem_install(gem_path)
     end
