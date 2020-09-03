@@ -24,6 +24,7 @@ require 'erb'
 require 'shellwords'
 require 'pathname'
 require 'open-uri'
+require 'open3'
 require 'digest'
 require 'etc'
 require "yaml"
@@ -623,7 +624,11 @@ class BuildTask
       "/System/Library/Keychains/SystemRootCertificates.keychain"
     ]
 
-    cert_list = `security find-certificate -a -p #{keychains.join(" ")}`
+    cert_list, error, status = Open3.capture3("security find-certificate -a -p #{keychains.join(' ')}")
+    unless status.success?
+      puts(error: error)
+      exit 1
+    end
     certs = cert_list.scan(
       /-----BEGIN CERTIFICATE-----.*?-----END CERTIFICATE-----/m
     )
@@ -1107,7 +1112,11 @@ class CompressDMG
   end
 
   def clean_disks
-    disks = `mount | grep \"/Volumes/#{@volume_name}\" | awk '{print $1}'`
+    disks, error, status = Open3.capture3("mount | grep \"/Volumes/#{@volume_name}\" | awk '{print $1}'")
+    unless status.success?
+      puts(error: error)
+      exit 1
+    end
     disks.split("\n").each do |disk|
       disk.chomp!
 
@@ -1125,7 +1134,12 @@ class CompressDMG
   end
 
   def get_attached_rw_dmg
-    @device = `hdiutil attach -readwrite -noverify -noautoopen #{@dmg_temp_name} | egrep '^/dev/' | sed 1q | awk '{print $1}'`.strip
+    device, error, status = Open3.capture3("hdiutil attach -readwrite -noverify -noautoopen #{@dmg_temp_name} | egrep '^/dev/' | sed 1q | awk '{print $1}'")
+    @device = device.strip
+    unless status.success?
+      puts(error: error)
+      exit 1
+    end
     sleep 5
   end
 
