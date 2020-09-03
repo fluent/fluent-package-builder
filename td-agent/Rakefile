@@ -672,7 +672,7 @@ class BuildTask
       sh("perl", "./Configure", *(configure_opts + arch_opts))
       sh("make", "depend")
       sh("make")
-      # For `gem install` Ruby.
+      # For building rdkafka gem. The built openssl library for built Ruby cannot use without install.
       sh("make", "install")
       sh("make", "install", "DESTDIR=#{STAGING_DIR}")
     end
