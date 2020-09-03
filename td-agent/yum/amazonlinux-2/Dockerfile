@@ -42,5 +42,6 @@ RUN \
     zlib-devel \
     rpmlint && \
   amazon-linux-extras install ruby2.6 && \
-  gem install bundler && \
+  # enable multiplatform feature
+  gem install --prerelease --no-document bundler:2.2.0.rc.1 && \
   yum clean ${quiet} all
