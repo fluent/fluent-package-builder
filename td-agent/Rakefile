@@ -1207,7 +1207,7 @@ EOL
 
   def set_dmg_icon
     sh("sips", "-i", File.join("resources", "dmg", "icon.png"))
-    `DeRez -only icns "#{File.join('resources', 'dmg', 'icon.png')}" > td-agent.rsrc`
+    sh("DeRez -only icns #{File.join('resources', 'dmg', 'icon.png')} > td-agent.rsrc")
     sh("Rez", "-append", "td-agent.rsrc", "-o", @dmg_name)
     sh("SetFile", "-a", "C", @dmg_name)
   end
