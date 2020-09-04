@@ -161,7 +161,7 @@ cmd> ridk exec td-agent-gem install winevt_c
 % rake dmg:selfbuild
 ```
 
-A td-agent-${version}.dmg package will be built under td-agent/macos directory.
+A td-agent-${version}.dmg package will be built under td-agent/dmg directory.
 
 ### Note for macOS package
 

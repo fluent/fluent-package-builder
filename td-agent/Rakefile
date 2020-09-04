@@ -57,15 +57,15 @@ CLEAN.include("msi/*.wixpdb")
 CLOBBER.include("msi/*.msi")
 
 # macOS
-CLEAN.include("macos/td-agent.icns")
-CLEAN.include("macos/td-agent.rsrc")
-CLEAN.include("macos/resources/pkg/Distribution.xml")
-CLEAN.include("macos/resources/pkg/scripts/postinstall")
-CLEAN.include("macos/resources/dmg/td-agent.osascript")
-CLOBBER.include("macos/*.pkg")
-CLOBBER.include("macos/*.dmg")
-CLOBBER.include("macos/td-agent.iconset")
-CLOBBER.include("macos/dmg")
+CLEAN.include("dmg/td-agent.icns")
+CLEAN.include("dmg/td-agent.rsrc")
+CLEAN.include("dmg/resources/pkg/Distribution.xml")
+CLEAN.include("dmg/resources/pkg/scripts/postinstall")
+CLEAN.include("dmg/resources/dmg/td-agent.osascript")
+CLOBBER.include("dmg/*.pkg")
+CLOBBER.include("dmg/*.dmg")
+CLOBBER.include("dmg/td-agent.iconset")
+CLOBBER.include("dmg/dmg")
 
 def windows?
   GemsParser.windows?
@@ -537,16 +537,16 @@ class BuildTask
 
       desc "Create config file for macOS Installer"
       task :pkgbuild_config do
-        src  = File.join('macos', 'resources', 'pkg', 'Distribution.xml.erb')
-        dest = File.join('macos', 'resources', 'pkg', 'Distribution.xml')
+        src  = File.join('dmg', 'resources', 'pkg', 'Distribution.xml.erb')
+        dest = File.join('dmg', 'resources', 'pkg', 'Distribution.xml')
         params = {pkg_version: PACKAGE_VERSION}
         render_template(dest, src, template_params(params))
       end
 
       desc "Create pkg scripts for macOS Installer"
       task :pkgbuild_scripts do
-        src  = File.join('macos', 'resources', 'pkg', 'postinstall.erb')
-        dest = File.join('macos', 'resources', 'pkg', 'scripts', 'postinstall')
+        src  = File.join('dmg', 'resources', 'pkg', 'postinstall.erb')
+        dest = File.join('dmg', 'resources', 'pkg', 'scripts', 'postinstall')
         params = {pkg_version: PACKAGE_VERSION}
         render_template(dest, src, template_params, { mode: 0755 })
       end
@@ -1271,7 +1271,7 @@ class MacOSPackageTask
     output_dir = PKG_OUTPUT_DIR
     ensure_directory(output_dir)
 
-    cd("macos") do
+    cd("dmg") do
       # Build flat pkg installer
       sh("pkgbuild",
          "--root", STAGING_DIR,
