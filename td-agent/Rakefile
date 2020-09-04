@@ -24,6 +24,7 @@ require 'erb'
 require 'shellwords'
 require 'pathname'
 require 'open-uri'
+require 'open3'
 require 'digest'
 require 'etc'
 require "yaml"
@@ -54,6 +55,17 @@ CLEAN.include("msi/project-files.wxs")
 CLEAN.include("msi/*.wixobj")
 CLEAN.include("msi/*.wixpdb")
 CLOBBER.include("msi/*.msi")
+
+# macOS
+CLEAN.include("dmg/td-agent.icns")
+CLEAN.include("dmg/td-agent.rsrc")
+CLEAN.include("dmg/resources/pkg/Distribution.xml")
+CLEAN.include("dmg/resources/pkg/scripts/postinstall")
+CLEAN.include("dmg/resources/dmg/td-agent.osascript")
+CLOBBER.include("dmg/*.pkg")
+CLOBBER.include("dmg/*.dmg")
+CLOBBER.include("dmg/td-agent.iconset")
+CLOBBER.include("dmg/dmg")
 
 def windows?
   GemsParser.windows?
@@ -146,10 +158,12 @@ class DownloadTask
   attr_reader :file_ruby_source, :file_ruby_installer_x64
   attr_reader :file_fluentd_archive
   attr_reader :files_ruby_gems
+  attr_reader :file_openssl_source
 
   def files
     [
       @file_jemalloc_source,
+      @file_openssl_source,
       @file_ruby_source,
       @file_ruby_installer_x64,
       @file_fluentd_archive,
@@ -162,6 +176,7 @@ class DownloadTask
     define_ruby_files
     define_fluentd_archive
     define_gem_files
+    define_openssl_file
 
     namespace :download do
       desc "Download jemalloc source"
@@ -176,6 +191,8 @@ class DownloadTask
       desc "Download ruby gems"
       task :ruby_gems => @files_ruby_gems
 
+      desc "Download openssl source"
+      task :openssl => @file_openssl_source
     end
   end
 
@@ -214,6 +231,17 @@ class DownloadTask
     @file_jemalloc_source = File.join(DOWNLOADS_DIR, filename)
     file @file_jemalloc_source do
       url = "#{url_base}/#{version}/#{filename}"
+      download_file(url, filename)
+    end
+  end
+
+  def define_openssl_file
+    version = OPENSSL_VERSION
+    filename = "openssl-#{version}.tar.gz"
+    url_base = "https://www.openssl.org/source/"
+    @file_openssl_source = File.join(DOWNLOADS_DIR, filename)
+    file @file_openssl_source do
+      url = "#{url_base}/#{filename}"
       download_file(url, filename)
     end
   end
@@ -333,8 +361,16 @@ class BuildTask
         build_jemalloc unless windows?
       end
 
+      desc "Install OpenSSL"
+      task :openssl => [:"download:openssl"] do
+        if macos?
+          build_openssl
+          create_certs
+        end
+      end
+
       desc "Install Ruby"
-      task :ruby => [:jemalloc, :"download:ruby"] do
+      task :ruby => [:jemalloc, :openssl, :"download:ruby"] do
         if windows?
           extract_ruby_installer
           setup_windows_build_env
@@ -408,7 +444,7 @@ class BuildTask
           "etc/logrotate.d/td-agent",
           "opt/td-agent/share/td-agent-ruby.conf",
           "opt/td-agent/share/td-agent.conf.tmpl"
-        ]) unless windows?
+        ]) unless windows? || macos?
         configs.each do |config|
           src = template_path(config)
           if config == "etc/td-agent/td-agent.conf"
@@ -440,8 +476,24 @@ class BuildTask
         ]
         scripts.each do |script|
           src = template_path("#{script}.erb")
-          dest = File.join(STAGING_DIR, script)
+          dest = if macos?
+                   File.join(STAGING_DIR, File.join("opt", PACKAGE_NAME, script))
+                 else
+                   File.join(STAGING_DIR, script)
+                 end
           render_template(dest, src, template_params, { mode: 0755 })
+        end
+      end
+
+      desc "Create launchctl configuration files from template"
+      task :launchctl_config do
+        configs = [
+          "td-agent.plist",
+        ]
+        configs.each do |config|
+          src = template_path("#{config}.erb")
+          dest = File.join(STAGING_DIR, File.join("Library", "LaunchDaemons", config))
+          render_template(dest, src, template_params)
         end
       end
 
@@ -483,6 +535,22 @@ class BuildTask
         render_template(dest, src, template_params(params))
       end
 
+      desc "Create config file for macOS Installer"
+      task :pkgbuild_config do
+        src  = File.join('dmg', 'resources', 'pkg', 'Distribution.xml.erb')
+        dest = File.join('dmg', 'resources', 'pkg', 'Distribution.xml')
+        params = {pkg_version: PACKAGE_VERSION}
+        render_template(dest, src, template_params(params))
+      end
+
+      desc "Create pkg scripts for macOS Installer"
+      task :pkgbuild_scripts do
+        src  = File.join('dmg', 'resources', 'pkg', 'postinstall.erb')
+        dest = File.join('dmg', 'resources', 'pkg', 'scripts', 'postinstall')
+        params = {pkg_version: PACKAGE_VERSION}
+        render_template(dest, src, template_params, { mode: 0755 })
+      end
+
       desc "Create configuration files for Red Hat like systems with systemd"
       task :rpm_config => [:td_agent_config, :systemd_tmpfiles_config, :bin_scripts, :rpm_systemd]
 
@@ -494,6 +562,9 @@ class BuildTask
 
       desc "Create configuration files for Windows"
       task :msi_config => [:td_agent_config, :wix_config, :win_batch_files]
+
+      desc "Create configuration files for macOS"
+      task :dmg_config => [:td_agent_config, :pkgbuild_scripts, :pkgbuild_config, :bin_scripts, :launchctl_config]
     end
   end
 
@@ -544,6 +615,73 @@ class BuildTask
     end
   end
 
+  def openssldir
+    File.join(staging_etcdir, "openssl")
+  end
+
+  def create_certs
+    keychains = [
+      "/System/Library/Keychains/SystemRootCertificates.keychain"
+    ]
+
+    cert_list, error, status = Open3.capture3("security find-certificate -a -p #{keychains.join(' ')}")
+    unless status.success?
+      fail "Failed to retrive certificates. (error: #{error})"
+    end
+    certs = cert_list.scan(
+      /-----BEGIN CERTIFICATE-----.*?-----END CERTIFICATE-----/m
+    )
+
+    valid_certificates = certs.select do |cert|
+      IO.popen("#{staging_bindir}/openssl x509 -inform pem -checkend 0 -noout > /dev/null", "w") do |ossl_io|
+        ossl_io.write(cert)
+        ossl_io.close_write
+      end
+
+      $?.success?
+    end
+
+    mkdir_p(openssldir)
+    File.open(File.join(openssldir, "cert.pem"), 'w', 0644) do |f|
+      f.write(valid_certificates.join("\n") << "\n")
+    end
+  end
+
+  def build_openssl
+    tarball = @download_task.file_openssl_source
+    source_dir = tarball.sub(/\.tar\.gz$/, '')
+
+    sh("tar", "xvf", tarball, "-C", DOWNLOADS_DIR)
+
+    configure_opts = [
+      "--prefix=#{install_prefix}",
+      "--openssldir=#{File.join("etc", "openssl")}",
+      "no-unit-test",
+      "no-comp",
+      "no-idea",
+      "no-mdc2",
+      "no-rc5",
+      "no-ssl2",
+      "no-ssl3",
+      "no-ssl3-method",
+      "no-zlib",
+      "shared",
+    ]
+    arch_opts = [
+      "darwin64-x86_64-cc",
+    ]
+
+    cd(source_dir) do
+      # Currently, macOS only.
+      sh("perl", "./Configure", *(configure_opts + arch_opts))
+      sh("make", "depend")
+      sh("make")
+      # For building rdkafka gem. The built openssl library for built Ruby cannot use without install.
+      sh("make", "install")
+      sh("make", "install", "DESTDIR=#{STAGING_DIR}")
+    end
+  end
+
   def build_ruby_from_source
     tarball = @download_task.file_ruby_source
     ruby_source_dir = tarball.sub(/\.tar\.gz$/, '')
@@ -557,9 +695,11 @@ class BuildTask
       "--with-compress-debug-sections=no", # https://bugs.ruby-lang.org/issues/12934
     ]
     if macos?
-     configure_opts.push("-C")
-     configure_opts.push("--with-openssl-dir=#{`brew --prefix openssl@1.1`.chomp!}")
-     configure_opts.push("--with-readline-dir=#{`brew --prefix readline`.chomp!}")
+      configure_opts.push("--without-gmp")
+      configure_opts.push("--without-gdbm")
+      configure_opts.push("--without-tk")
+      configure_opts.push("-C")
+      configure_opts.push("--with-openssl-dir=#{File.join(STAGING_DIR, install_prefix)}")
     end
     cd(ruby_source_dir) do
       apply_ruby_patches
@@ -629,6 +769,10 @@ class BuildTask
     File.join(td_agent_staging_dir, "bin")
   end
 
+  def staging_etcdir
+    File.join(td_agent_staging_dir, "etc")
+  end
+
   def staging_sharedir
     File.join(td_agent_staging_dir, "share")
   end
@@ -687,6 +831,11 @@ class BuildTask
       "--bindir", staging_bindir,
       gem_path
     ]
+    if macos? && gem_path.include?("rdkafka")
+      ENV["SSL_CERT_FILE"] = "#{File.join(staging_etcdir, "openssl", "cert.pem")}"
+      ENV["CPPFLAGS"] = "-I#{File.join(STAGING_DIR, install_prefix, 'include')}"
+      ENV["LDFLAGS"] = "-L#{File.join(STAGING_DIR, install_prefix, 'lib')}"
+    end
     # digest-crc gem causes rake executable conflict due to rake runtime dependency
     # and bundled rake gem on Ruby Installer.
     if windows? && gem_path.include?("rake")
@@ -953,6 +1102,215 @@ EOS
   end
 end
 
+class CompressDMG
+  include Rake::DSL
+
+  def initialize(version, window_bounds, pkg_position)
+    @version = version
+    @window_bounds = window_bounds
+    @pkg_position = pkg_position
+    @dmg_temp_name = "rw.td-agent-#{@version}.dmg"
+    @dmg_name = "td-agent-#{@version}.dmg"
+    @pkg_name = "td-agent-#{@version}.pkg"
+    @volume_name = "Td-Agent"
+    @device = nil
+    @osascript_path = File.join("resources", "dmg", "td-agent.osascript")
+  end
+
+  def clean_dmgs
+    rm_f(@dmg_name)
+    rm_f(@dmg_temp_name)
+  end
+
+  def clean_disks
+    disks, error, status = Open3.capture3("mount | grep \"/Volumes/#{@volume_name}\" | awk '{print $1}'")
+    unless status.success?
+      fail "Failed to search mounted disks (error: #{error})"
+    end
+    disks.split("\n").each do |disk|
+      disk.chomp!
+
+      sh("hdiutil", "detach", disk)
+    end
+  end
+
+  def create_rw_dmg
+    sh("hdiutil",
+       "create", "-ov",
+       "-srcfolder", "dmg",
+       "-format", "UDRW",
+       "-volname", @volume_name,
+       @dmg_temp_name)
+  end
+
+  def get_attached_rw_dmg
+    device, error, status = Open3.capture3("hdiutil attach -readwrite -noverify -noautoopen #{@dmg_temp_name} | egrep '^/dev/' | sed 1q | awk '{print $1}'")
+    @device = device.strip
+    unless status.success?
+      fail "Failed to attach disk image. (error: #{error})"
+    end
+    sleep 5
+  end
+
+  def create_osascript
+    apple_script = <<EOL
+set found_disk to do shell script "ls /Volumes/ | grep '#{@volume_name}*'"
+
+if found_disk is {} then
+  set errormsg to "Disk " & found_disk & " not found"
+  error errormsg
+end if
+
+tell application "Finder"
+  reopen
+  activate
+  set selection to {}
+  set target of Finder window 1 to found_disk
+  set current view of Finder window 1 to icon view
+  set toolbar visible of Finder window 1 to false
+  set statusbar visible of Finder window 1 to false
+  set the bounds of Finder window 1 to {#{@window_bounds}}
+  tell disk found_disk
+     set theViewOptions to the icon view options of container window
+     set background picture of theViewOptions to file ".background:background.png"
+     set arrangement of theViewOptions to not arranged
+     set icon size of theViewOptions to 72
+     set position of item "#{@pkg_name}" of container window to {#{@pkg_position}}
+     delay 5
+  end tell
+end tell
+EOL
+    puts "Generate #{@osascript_path}"
+    File.open(@osascript_path, 'w', 0644) do |f|
+      f.write(apple_script)
+    end
+  end
+
+  def set_volume_icon
+    icon = File.join("resources", "dmg", "icon.png")
+    mkdir_p("td-agent.iconset")
+
+    sh("sips", "-z", "16", "16", "#{icon}", "--out", "td-agent.iconset/icon_16x16.png")
+    sh("sips", "-z", "32", "32", "#{icon}", "--out", "td-agent.iconset/icon_16x16@2x.png")
+    sh("sips", "-z", "32", "32", "#{icon}", "--out", "td-agent.iconset/icon_32x32.png")
+    sh("sips", "-z", "64", "64", "#{icon}", "--out", "td-agent.iconset/icon_32x32@2x.png")
+    sh("sips", "-z", "128", "128", "#{icon}", "--out", "td-agent.iconset/icon_128x128.png")
+    sh("sips", "-z", "256", "256", "#{icon}", "--out", "td-agent.iconset/icon_128x128@2x.png")
+    sh("sips", "-z", "256", "256", "#{icon}", "--out", "td-agent.iconset/icon_256x256.png")
+    sh("sips", "-z", "512", "512", "#{icon}", "--out", "td-agent.iconset/icon_256x256@2x.png")
+    sh("sips", "-z", "512", "512", "#{icon}", "--out", "td-agent.iconset/icon_512x512.png")
+    sh("sips", "-z", "1024", "1024", "#{icon}", "--out", "td-agent.iconset/icon_512x512@2x.png")
+    sh("iconutil", "-c", "icns", "td-agent.iconset")
+
+    cp("td-agent.icns", "/Volumes/#{@volume_name}/.VolumeIcon.icns")
+
+    sh("SetFile", "-c", "icnC", "/Volumes/#{@volume_name}/.VolumeIcon.icns")
+    sh("SetFile", "-a", "C", "/Volumes/#{@volume_name}")
+  end
+
+  def prettify_dmg
+    bg_folder = "/Volumes/#{@volume_name}/.background"
+    mkdir_p(bg_folder)
+    cp(File.join("resources", "dmg", "background.png"), bg_folder)
+
+    sh("osascript", @osascript_path)
+  end
+
+  def compress_dmg
+    sh("chmod", "-Rf", "go-w", "/Volumes/#{@volume_name}")
+    sh("sync")
+    sh("sync")
+    sh("hdiutil", "detach", @device)
+    sh("hdiutil",
+       "convert", @dmg_temp_name,
+       "-format", "UDZO",
+       "-imagekey", "zlib-level=9",
+       "-o", @dmg_name)
+  end
+
+  def set_dmg_icon
+    sh("sips", "-i", File.join("resources", "dmg", "icon.png"))
+    sh("DeRez -only icns #{File.join('resources', 'dmg', 'icon.png')} > td-agent.rsrc")
+    sh("Rez", "-append", "td-agent.rsrc", "-o", @dmg_name)
+    sh("SetFile", "-a", "C", @dmg_name)
+  end
+
+  def verify_dmg
+    sh("hdiutil", "verify", @dmg_name)
+  end
+
+  def remove_rw_dmg
+    rm_f(@dmg_temp_name)
+  end
+
+  def run
+    clean_disks
+    clean_dmgs
+    create_rw_dmg
+    get_attached_rw_dmg
+    sleep 5
+    set_volume_icon
+    create_osascript
+    prettify_dmg
+    compress_dmg
+    set_dmg_icon
+    verify_dmg
+    remove_rw_dmg
+  end
+end
+
+class MacOSPackageTask
+  include Rake::DSL
+
+  PKG_OUTPUT_DIR = ENV["TD_AGENT_PKG_OUTPUT_PATH"] || "."
+
+  def initialize
+    @package = PACKAGE_NAME
+    @version = PACKAGE_VERSION
+    @staging_dir = STAGING_DIR
+  end
+
+  def define
+    namespace :dmg do
+      desc "Build macOS package"
+      task :selfbuild => [:"build:dmg_config", :"build:all"] do
+        run_pkgbuild
+      end
+    end
+  end
+
+  def run_pkgbuild
+    output_dir = PKG_OUTPUT_DIR
+    ensure_directory(output_dir)
+
+    cd("dmg") do
+      # Build flat pkg installer
+      sh("pkgbuild",
+         "--root", STAGING_DIR,
+         "--component-plist", File.join("resources", "pkg", "td-agent.plist"),
+         "--identifier", "com.treasuredata.tdagent",
+         "--version", @version,
+         "--scripts", File.join("resources", "pkg", "scripts"),
+         "--install-location", "/",
+         File.join(output_dir, "td-agent.pkg"))
+
+      # Build distributable pkg installer
+      sh("productbuild",
+         "--distribution", File.join("resources", "pkg", "Distribution.xml"),
+         "--package-path", File.join(output_dir, "td-agent.pkg"),
+         "--resources", File.join("resources", "pkg", "assets"),
+         File.join(output_dir, "td-agent-#{@version}.pkg"))
+
+      mkdir_p("dmg")
+      cp(File.join(output_dir, "td-agent-#{@version}.pkg"), "dmg")
+      window_bounds = "100, 100, 750, 600"
+      pkg_position = "535, 50"
+      dmg = CompressDMG.new(@version, window_bounds, pkg_position)
+      dmg.run
+    end
+  end
+end
+
 class WindowsPackageTask
   include Rake::DSL
 
@@ -1118,3 +1476,6 @@ windows_package_task.define
 
 update_lockfile_task = UpdateLockfileTask.new
 update_lockfile_task.define
+
+macos_package_task = MacOSPackageTask.new
+macos_package_task.define

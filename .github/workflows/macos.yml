@@ -14,4 +14,9 @@ jobs:
         run: |
           sudo mkdir /opt/td-agent
           sudo chown $(whoami) /opt/td-agent
-          rake build:all TD_AGENT_STAGING_PATH="$(pwd)/darwin/tmp"
+          rm -rf td-agent/staging
+          rake dmg:selfbuild
+      - uses: actions/upload-artifact@master
+        with:
+          name: packages-macos
+          path: td-agent/dmg/*.dmg

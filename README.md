@@ -41,6 +41,12 @@ dism.exe /online /enable-feature /featurename:Containers /all /norestart
 
 Then restart Windows.
 
+### For building macOS package (.dmg)
+
+  * macOS 10.15 (Catalina)
+  * Ruby 2.4 or later
+  * Git
+
 ## How to build .rpm package
 
 ```console
@@ -148,6 +154,23 @@ Install gem via `ridk exec td-agent-gem install`:
 ```console
 cmd> ridk exec td-agent-gem install winevt_c
 ```
+
+## How to build .dmg package
+
+```console
+% rake dmg:selfbuild
+```
+
+A td-agent-${version}.dmg package will be built under td-agent/dmg directory.
+
+### Note for macOS package
+
+GitHub Actions' built package is ready to run on macOS 10.15 (Catalina).
+
+Be sure to permit to be authrized for for assistive access.
+In System Preferences > Security & Privacy > Privacy > Accessibility, you should permit Terminal.app there.
+
+**NOTE:** Since authorization is at the application level on Terminal.app, it allows any script run from Terminal.app to perform GUI scripting.
 
 ## How to bump up the package version
 

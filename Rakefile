@@ -51,6 +51,7 @@ end
   ["msi:build",        "Build MSI package (alias for msi:dockerbuild)"],
   ["msi:selfbuild",    "Build MSI package without using Docker"],
   ["msi:dockerbuild",  "Build MSI package by Docker"],
+  ["dmg:selfbuild",    "Build macOS package without using Docker"],
 ].each do |params|
   define_bulked_task(*params)
 end

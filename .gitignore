@@ -16,6 +16,13 @@
 /td-agent/msi/env.bat
 /td-agent/msi/parameters.wxi
 /td-agent/msi/project-files.wxs
+/td-agent/dmg/dmg/
+/td-agent/dmg/resources/pkg/Distribution.xml
+/td-agent/dmg/td-agent.icns
+/td-agent/dmg/td-agent.iconset/
+/td-agent/dmg/td-agent.rsrc
+/td-agent/dmg/resources/pkg/scripts/postinstall
+/td-agent/dmg/resources/dmg/td-agent.osascript
 /td-agent-apt-source/apt/build.sh
 /td-agent-apt-source/apt/env.sh
 /td-agent-apt-source/apt/repositories/
@@ -24,3 +31,4 @@
 *.wixpdb
 *.msi
 *.gz
+*.DS_Store
