@@ -626,8 +626,7 @@ class BuildTask
 
     cert_list, error, status = Open3.capture3("security find-certificate -a -p #{keychains.join(' ')}")
     unless status.success?
-      puts(error: error)
-      exit 1
+      fail "Failed to retrive certificates. (error: #{error})"
     end
     certs = cert_list.scan(
       /-----BEGIN CERTIFICATE-----.*?-----END CERTIFICATE-----/m
@@ -1114,8 +1113,7 @@ class CompressDMG
   def clean_disks
     disks, error, status = Open3.capture3("mount | grep \"/Volumes/#{@volume_name}\" | awk '{print $1}'")
     unless status.success?
-      puts(error: error)
-      exit 1
+      fail "Failed to search mounted disks (error: #{error})"
     end
     disks.split("\n").each do |disk|
       disk.chomp!
@@ -1137,8 +1135,7 @@ class CompressDMG
     device, error, status = Open3.capture3("hdiutil attach -readwrite -noverify -noautoopen #{@dmg_temp_name} | egrep '^/dev/' | sed 1q | awk '{print $1}'")
     @device = device.strip
     unless status.success?
-      puts(error: error)
-      exit 1
+      fail "Failed to attach disk image. (error: #{error})"
     end
     sleep 5
   end
