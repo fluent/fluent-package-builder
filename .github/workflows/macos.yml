@@ -15,7 +15,7 @@ jobs:
           sudo mkdir /opt/td-agent
           sudo chown $(whoami) /opt/td-agent
           rm -rf td-agent/staging
-          rake mac:selfbuild
+          rake dmg:selfbuild
       - uses: actions/upload-artifact@master
         with:
           name: packages-macos

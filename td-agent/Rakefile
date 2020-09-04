@@ -1262,7 +1262,7 @@ class MacOSPackageTask
   end
 
   def define
-    namespace :mac do
+    namespace :dmg do
       desc "Build macOS package"
       task :selfbuild => [:"build:dmg_config", :"build:all"] do
         run_pkgbuild
