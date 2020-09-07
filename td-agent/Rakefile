@@ -642,8 +642,11 @@ class BuildTask
     end
 
     mkdir_p(openssldir)
-    File.open(File.join(openssldir, "cert.pem"), 'w', 0644) do |f|
-      f.write(valid_certificates.join("\n") << "\n")
+    # Install cert.pem into install_prefix/etc/openssl and staging/opt/td-agent/etc/openssl/cert.pem.
+    [File.join(openssldir, "cert.pem"), File.join(install_prefix, "etc", "openssl", "cert.pem")].each do |path|
+      File.open(path, 'w', 0644) do |f|
+        f.write(valid_certificates.join("\n") << "\n")
+      end
     end
   end
 
@@ -832,7 +835,6 @@ class BuildTask
       gem_path
     ]
     if macos? && gem_path.include?("rdkafka")
-      ENV["SSL_CERT_FILE"] = "#{File.join(staging_etcdir, "openssl", "cert.pem")}"
       ENV["CPPFLAGS"] = "-I#{File.join(STAGING_DIR, install_prefix, 'include')}"
       ENV["LDFLAGS"] = "-L#{File.join(STAGING_DIR, install_prefix, 'lib')}"
     end
