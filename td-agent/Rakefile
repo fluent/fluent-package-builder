@@ -27,7 +27,7 @@ require 'open-uri'
 require 'open3'
 require 'digest'
 require 'etc'
-require "yaml"
+require 'yaml'
 require 'bundler'
 
 DOWNLOADS_DIR  = File.expand_path(ENV["TD_AGENT_DOWNLOADS_PATH"] || "downloads")
