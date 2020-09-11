@@ -871,7 +871,11 @@ class BuildTask
     sh(bundle_command, "config", "set", "--local", "cache_path", relative_path)
     sh(bundle_command, "package", "--no-install")
 
-    files = Dir.glob("#{DOWNLOADS_DIR}/*.gem")
+    # install protocol-http2 in advance not to install protocol-http2 0.14.1
+    gem_install(Dir.glob("#{DOWNLOADS_DIR}/protocol-http2-*.gem").first)
+    files = Dir.glob("#{DOWNLOADS_DIR}/*.gem").reject do |gem_path|
+      gem_path.start_with?("#{DOWNLOADS_DIR}/protocol-http2-")
+    end
     files.each do |gem_path|
       gem_install(gem_path)
     end
