@@ -27,7 +27,8 @@ require 'open-uri'
 require 'open3'
 require 'digest'
 require 'etc'
-require "yaml"
+require 'yaml'
+require 'bundler'
 
 DOWNLOADS_DIR  = File.expand_path(ENV["TD_AGENT_DOWNLOADS_PATH"] || "downloads")
 STAGING_DIR    = File.expand_path(ENV["TD_AGENT_STAGING_PATH"]   || "staging")
@@ -103,7 +104,7 @@ def gem_dir_version
 end
 
 def gemfile_dir
-  windows? ? "../gemfiles/windows" : "../gemfiles/linux"
+  "."
 end
 
 def template_params(params = nil)
@@ -642,8 +643,11 @@ class BuildTask
     end
 
     mkdir_p(openssldir)
-    File.open(File.join(openssldir, "cert.pem"), 'w', 0644) do |f|
-      f.write(valid_certificates.join("\n") << "\n")
+    # Install cert.pem into install_prefix/etc/openssl and staging/opt/td-agent/etc/openssl/cert.pem.
+    [File.join(openssldir, "cert.pem"), File.join(install_prefix, "etc", "openssl", "cert.pem")].each do |path|
+      File.open(path, 'w', 0644) do |f|
+        f.write(valid_certificates.join("\n") << "\n")
+      end
     end
   end
 
@@ -788,6 +792,14 @@ class BuildTask
     end
   end
 
+  def bundle_command
+    if windows?
+      File.join(staging_bindir, "bundle")
+    else
+      "#{install_prefix}/bin/bundle"
+    end
+  end
+
   def gem_dir_version
     if windows?
       ruby_version = BUNDLED_RUBY_INSTALLER_X64_VERSION
@@ -832,7 +844,6 @@ class BuildTask
       gem_path
     ]
     if macos? && gem_path.include?("rdkafka")
-      ENV["SSL_CERT_FILE"] = "#{File.join(staging_etcdir, "openssl", "cert.pem")}"
       ENV["CPPFLAGS"] = "-I#{File.join(STAGING_DIR, install_prefix, 'include')}"
       ENV["LDFLAGS"] = "-L#{File.join(STAGING_DIR, install_prefix, 'lib')}"
     end
@@ -847,6 +858,24 @@ class BuildTask
   end
 
   def install_gems(files)
+    ensure_directory(staging_bindir)
+    ensure_directory(gem_staging_dir)
+
+    Dir.chdir(DOWNLOADS_DIR) do
+      sh("gem", "fetch", "bundler","--version", "2.2.0.rc.1")
+      gem_install(Dir.glob("bundler-*.gem").first)
+    end
+
+    relative_path = File.join(File.basename(File.split(DOWNLOADS_DIR)[0]), File.split(DOWNLOADS_DIR)[1])
+    puts "bundle config cache path: <#{relative_path}>"
+    sh(bundle_command, "config", "set", "--local", "cache_path", relative_path)
+    sh(bundle_command, "package", "--no-install")
+
+    # install protocol-http2 in advance not to install protocol-http2 0.14.1
+    gem_install(Dir.glob("#{DOWNLOADS_DIR}/protocol-http2-*.gem").first)
+    files = Dir.glob("#{DOWNLOADS_DIR}/*.gem").reject do |gem_path|
+      gem_path.start_with?("#{DOWNLOADS_DIR}/protocol-http2-")
+    end
     files.each do |gem_path|
       gem_install(gem_path)
     end
@@ -888,30 +917,12 @@ class BuildTask
 
   def install_gemfiles
     ensure_directory(staging_sharedir) do
-      ["Gemfile", "Gemfile.lock"].each do |file|
-        if windows? and file == "Gemfile"
-          source_dir = File.join(__dir__, "..", "gemfiles", "linux")
-        elsif windows?
-          source_dir = File.join(__dir__, "..", "gemfiles", "windows")
-        else
-          source_dir = File.join(__dir__, "..", "gemfiles", "linux")
-        end
-        if file == "Gemfile"
-          content = File.open(File.join(source_dir, file)).read
-          dest = File.join(staging_sharedir, file.sub(/td-agent\//, ""))
-          File.open(dest, "w+") do |config|
-            config.puts(content.sub(/\.\.\/\.\.\/\.\.\/td-agent\/config.rb/, "../config.rb"))
-          end
-        else
-          src = File.join(source_dir, file)
-          dest = File.join(staging_sharedir, file.sub(/td-agent\//, ""))
-          cp(src, dest)
-        end
+      ["Gemfile", "Gemfile.lock", "config.rb"].each do |file|
+        source_dir = File.join(__dir__, "..")
+        src = File.join(source_dir, "td-agent/#{file}")
+        dest = File.join(staging_sharedir, file)
+        cp(src, dest)
       end
-      source_dir = File.join(__dir__, "..")
-      src = File.join(source_dir, "td-agent/config.rb")
-      dest = File.join(staging_sharedir, "config.rb")
-      cp(src, dest)
     end
   end
 

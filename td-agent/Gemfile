@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require File.expand_path('../../../td-agent/config.rb', __FILE__)
+require File.expand_path('../config.rb', __FILE__)
 
 source "https://rubygems.org"
 
@@ -9,7 +9,7 @@ git_source(:github) {|repo_name| "https://github.com/#{repo_name}" }
 # core gems
 
 gem "rake"
-gem "bundler", "2.1.4"
+gem "bundler", "2.2.0.rc1"
 gem "cool.io", "1.6.0"
 gem "sigdump", "0.2.4"
 gem "http_parser.rb", "0.6.0"
@@ -22,6 +22,9 @@ gem "tzinfo-data", "1.2020.1"
 gem "async-http", "0.52.4"
 gem "fluentd", github: "fluent/fluentd", ref: FLUENTD_REVISION
 
+# https://github.com/socketry/protocol-http2/issues/6
+# protocol-http2 0.14.1 causes install error
+gem "protocol-http2", "0.14.0"
 
 # plugin gems
 
@@ -50,24 +53,24 @@ gem "fluent-plugin-record-modifier", "2.1.0"
 gem "fluent-plugin-rewrite-tag-filter", "2.3.0"
 gem "nokogiri", "1.10.10"
 
-if /mswin|mingw/ =~ RUBY_PLATFORM
-  gem "ffi", "1.13.1"
-  gem "ffi-win32-extensions", "1.0.3"
-  gem "win32-api", "1.9.1"
-  gem "win32-event", "0.6.3"
-  gem "win32-ipc", "0.7.0"
-  gem "win32-service", "2.1.5"
-  gem "windows-api", "0.4.4"
-  gem "windows-pr", "1.2.6"
-  gem "winevt_c", "0.8.1"
-  gem "win32-eventlog", "0.6.7"
-  gem "fluent-plugin-parser-winevt_xml", "0.2.2"
-  gem "fluent-plugin-windows-eventlog", "0.7.0"
-else
-  gem "rdkafka", "0.8.0"
-  gem "systemd-journal", "1.3.3"
-  gem "fluent-plugin-systemd", "1.0.2"
-end
+windows_platforms = [:mingw, :x64_mingw] # :mswin
+gem "ffi", "1.13.1", platforms: windows_platforms
+gem "ffi-win32-extensions", "1.0.3", platforms: windows_platforms
+gem "win32-api", "1.9.1", platforms: windows_platforms
+gem "win32-event", "0.6.3", platforms: windows_platforms
+gem "win32-ipc", "0.7.0", platforms: windows_platforms
+gem "win32-service", "2.1.5", platforms: windows_platforms
+gem "windows-api", "0.4.4", platforms: windows_platforms
+gem "windows-pr", "1.2.6", platforms: windows_platforms
+gem "winevt_c", "0.8.1", platforms: windows_platforms
+gem "win32-eventlog", "0.6.7", platforms: windows_platforms
+gem "fluent-plugin-parser-winevt_xml", "0.2.2", platforms: windows_platforms
+gem "fluent-plugin-windows-eventlog", "0.7.0", platforms: windows_platforms
+
+not_windows_platforms = [:ruby]
+gem "rdkafka", "0.8.0", platforms: not_windows_platforms
+gem "systemd-journal", "1.3.3", platforms: not_windows_platforms
+gem "fluent-plugin-systemd", "1.0.2", platforms: not_windows_platforms
 
 if ENV["TRAVIS"]
   # Travis CI fails because activesupport requires tzinfo ~> 1.1.

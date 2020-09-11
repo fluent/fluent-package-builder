@@ -4,7 +4,6 @@ GIT
   ref: 2f80f6cf0a4aa44b9795cd6a66894a6b8fa70d06
   specs:
     fluentd (1.11.2)
-      certstore_c (~> 0.1.7)
       cool.io (>= 1.4.5, < 2.0.0)
       http_parser.rb (>= 0.5.1, < 0.7.0)
       msgpack (>= 1.3.1, < 2.0.0)
@@ -13,10 +12,6 @@ GIT
       strptime (>= 0.2.2, < 1.0.0)
       tzinfo (>= 1.0, < 3.0)
       tzinfo-data (~> 1.0)
-      win32-event (~> 0.6.3)
-      win32-ipc (~> 0.7.0)
-      win32-service (~> 2.1.5)
-      windows-pr (~> 1.2.6)
       yajl-ruby (~> 1.0)
 
 GEM
@@ -58,10 +53,11 @@ GEM
       aws-sigv4 (~> 1.1)
     aws-sigv4 (1.2.1)
       aws-eventstream (~> 1, >= 1.0.2)
-    certstore_c (0.1.7)
-    concurrent-ruby (1.1.6)
+    concurrent-ruby (1.1.7)
     console (1.9.0)
+    cool.io (1.6.0)
     cool.io (1.6.0-x64-mingw32)
+    cool.io (1.6.0-x86-mingw32)
     digest-crc (0.6.1)
       rake (~> 13.0)
     elasticsearch (7.8.1)
@@ -75,7 +71,9 @@ GEM
     excon (0.76.0)
     faraday (1.0.1)
       multipart-post (>= 1.2, < 3)
+    ffi (1.13.1)
     ffi (1.13.1-x64-mingw32)
+    ffi (1.13.1-x86-mingw32)
     ffi-win32-extensions (1.0.3)
       ffi
     fluent-config-regexp-type (1.0.0)
@@ -107,6 +105,9 @@ GEM
       aws-sdk-s3 (~> 1.60)
       aws-sdk-sqs (~> 1.23)
       fluentd (>= 0.14.22, < 2)
+    fluent-plugin-systemd (1.0.2)
+      fluentd (>= 0.14.11, < 2)
+      systemd-journal (~> 1.3.2)
     fluent-plugin-td (1.1.0)
       fluentd (>= 0.14.13, < 2)
       td-client (~> 1.0)
@@ -123,11 +124,17 @@ GEM
     jmespath (1.4.0)
     ltsv (0.1.2)
     mini_portile2 (2.4.0)
+    msgpack (1.3.3)
     msgpack (1.3.3-x64-mingw32)
+    msgpack (1.3.3-x86-mingw32)
     multi_json (1.15.0)
     multipart-post (2.1.1)
     nio4r (2.5.2)
+    nokogiri (1.10.10)
+      mini_portile2 (~> 2.4.0)
     nokogiri (1.10.10-x64-mingw32)
+      mini_portile2 (~> 2.4.0)
+    nokogiri (1.10.10-x86-mingw32)
       mini_portile2 (~> 2.4.0)
     oj (3.10.6)
     parallel (1.19.2)
@@ -143,6 +150,10 @@ GEM
     public_suffix (4.0.5)
     quantile (0.2.1)
     rake (13.0.1)
+    rdkafka (0.8.0)
+      ffi (~> 1.9)
+      mini_portile2 (~> 2.1)
+      rake (>= 12.3)
     ruby-kafka (1.2.0)
       digest-crc
     ruby-progressbar (1.10.1)
@@ -151,6 +162,8 @@ GEM
       sigdump (~> 0.2.2)
     sigdump (0.2.4)
     strptime (0.2.4)
+    systemd-journal (1.3.3)
+      ffi (~> 1.9)
     td (0.16.9)
       hirb (>= 0.4.5)
       msgpack
@@ -196,7 +209,11 @@ GEM
       rubyzip (>= 1.0.0)
 
 PLATFORMS
+  ruby
+  universal-mingw32
   x64-mingw32
+  x86-mingw32
+  x86_64-linux
 
 DEPENDENCIES
   async-http (= 0.52.4)
@@ -206,7 +223,7 @@ DEPENDENCIES
   aws-sdk-s3 (= 1.75.0)
   aws-sdk-sqs (= 1.30.0)
   aws-sigv4 (= 1.2.1)
-  bundler (= 2.1.4)
+  bundler (= 2.2.0.rc1)
   cool.io (= 1.6.0)
   elasticsearch (= 7.8.1)
   ffi (= 1.13.1)
@@ -219,6 +236,7 @@ DEPENDENCIES
   fluent-plugin-record-modifier (= 2.1.0)
   fluent-plugin-rewrite-tag-filter (= 2.3.0)
   fluent-plugin-s3 (= 1.4.0)
+  fluent-plugin-systemd (= 1.0.2)
   fluent-plugin-td (= 1.1.0)
   fluent-plugin-webhdfs (= 1.2.5)
   fluent-plugin-windows-eventlog (= 0.7.0)
@@ -230,10 +248,13 @@ DEPENDENCIES
   nokogiri (= 1.10.10)
   oj (= 3.10.6)
   prometheus-client (= 0.9.0)
+  protocol-http2 (= 0.14.0)
   rake
+  rdkafka (= 0.8.0)
   ruby-kafka (= 1.2.0)
   serverengine (= 2.2.1)
   sigdump (= 0.2.4)
+  systemd-journal (= 1.3.3)
   td (= 0.16.9)
   td-client (= 1.0.7)
   tzinfo (= 2.0.2)
@@ -250,4 +271,4 @@ DEPENDENCIES
   yajl-ruby (= 1.4.1)
 
 BUNDLED WITH
-   2.1.4
+   2.2.0.rc.1

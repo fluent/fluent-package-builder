@@ -1,1 +1,0 @@
-eval(Pathname(File.expand_path("../../linux/Gemfile", __FILE__)).read)

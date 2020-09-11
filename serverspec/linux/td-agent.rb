@@ -18,11 +18,14 @@ end
 
 describe "gem files" do
   lock_path = File.join(File.dirname(File.dirname(File.dirname(__FILE__))),
-                        "gemfiles/linux/Gemfile.lock")
-  parser = Bundler::LockfileParser.new(Bundler.read_file(lock_path))
-  parser.specs.each do |spec|
-    describe package("#{spec.name}") do
-      it { should be_installed.by('gem') }
+                        "td-agent/Gemfile.lock")
+  gem_path = File.join(File.dirname(lock_path),
+                       File.basename(lock_path, ".lock"))
+  Bundler::Definition.build(gem_path, lock_path, false).dependencies.each do |spec|
+    if spec.should_include?
+      describe package("#{spec.name}") do
+        it { should be_installed.by('gem') }
+      end
     end
   end
 end

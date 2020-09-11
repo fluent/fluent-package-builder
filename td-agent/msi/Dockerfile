@@ -29,4 +29,5 @@ RUN \
   choco install -y msys2 --params /NoUpdate --version=20200816.0.0 && \
   choco install -y ruby && \
   refreshenv && \
-  ridk install 3
+  ridk install 3 && \
+  gem install --prerelease --no-document bundler:2.2.0.rc.1

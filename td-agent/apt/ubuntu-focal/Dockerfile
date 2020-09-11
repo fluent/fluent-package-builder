@@ -49,4 +49,6 @@ RUN \
     zlib1g-dev && \
   apt build-dep -y ruby && \
   apt clean && \
+  # enable multiplatform feature
+  gem install --prerelease --no-document --install-dir /usr/share/rubygems-integration/all bundler:2.2.0.rc.1 && \
   rm -rf /var/lib/apt/lists/*
