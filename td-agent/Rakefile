@@ -301,7 +301,11 @@ class DownloadTask
   def define_gem_files
     paths = []
     Dir.chdir(gemfile_dir) do
-      `bundle package --no-install --cache-path=#{DOWNLOADS_DIR}`
+      command = "bundle package --no-install --cache-path=#{DOWNLOADS_DIR}"
+      output, error, status = Open3.capture3(command)
+      unless status.success?
+        fail "Failed to download gem files: <#{command}> (error: #{error})"
+      end
     end
     Dir.glob("#{DOWNLOADS_DIR}/*.gem") do |path|
       paths << path
@@ -319,7 +323,11 @@ class UpdateLockfileTask
       desc "Update lockfile"
       task :update do
         cd gemfile_dir do
-          `bundle package --no-install --cache-path=#{DOWNLOADS_DIR}`
+          command = "bundle package --no-install --cache-path=#{DOWNLOADS_DIR}"
+          output, error, status = Open3.capture3(command)
+          unless status.success?
+            fail "Failed to update Gemfile.lock: <#{command}> (error: #{error})"
+          end
         end
       end
     end
@@ -931,7 +939,12 @@ class BuildTask
 
     env_restore = ENV["GEM_PATH"]
     ENV["GEM_PATH"] = gem_staging_dir
-    gems_descriptions = `#{gem_command} list -d`
+    command = "#{gem_command} list -d"
+    output, error, status = Open3.capture3(command)
+    unless status.success?
+      fail "Failed to get gem list: <#{command}> (error: #{error})"
+    end
+    gems_descriptions = output
     gems_descriptions.gsub!(STAGING_DIR, "") unless windows?
     ENV["GEM_PATH"] = env_restore
 
@@ -1013,7 +1026,12 @@ class LinuxPackageTask < PackageTask
     dest = File.join("debian", "copyright")
     licenses = []
     @download_task.files_ruby_gems.each do |gem_file|
-      spec = YAML.load(`gem specification #{gem_file}`)
+      command = "gem specification #{gem_file}"
+      output, error, status = Open3.capture3(command)
+      unless status.success?
+        fail "Failed to get gem specification: <#{gem_file}> (error: #{error})"
+      end
+      spec = YAML.load(output)
       relative_path = gem_file.sub(/#{Dir.pwd}\//, "")
       unless spec.licenses.empty?
         spdx_compatible_license = spec.licenses.first.sub(/Apache 2\.0/, "Apache-2.0")
@@ -1052,8 +1070,18 @@ EOS
     # because many gem files are bundled with td-agent package.
     # We use gem specification GEMFILE to solve this issue.
     paths = []
-    `bundle config set --local cache_path #{DOWNLOADS_DIR}`
-    `bundle package --no-install`
+    command = "bundle config set --local cache_path #{DOWNLOADS_DIR}"
+    output, error, status = Open3.capture3(command)
+    unless status.success?
+      fail "Failed to set cache_path: <#{command}> (error: #{error})"
+    end
+    Dir.chdir(gemfile_dir) do
+      command = "bundle package --no-install"
+      output, error, status = Open3.capture3(command)
+      unless status.success?
+        fail "Failed to download gem files: <#{command}> (error: #{error})"
+      end
+    end
     Dir.glob("#{DOWNLOADS_DIR}/*.gem") do |path|
       paths << path.sub(Dir.pwd, "td-agent")
     end
