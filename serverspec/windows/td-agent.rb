@@ -33,6 +33,7 @@ describe "gem files" do
   Bundler::Definition.build(gem_path, lock_path, false).dependencies.each do |spec|
     if spec.should_include?
       gem = parser.specs.collect do |lock_spec| lock_spec if lock_spec.name == spec.name end.compact.first
+      next unless gem
       describe package("#{gem.name}") do
         it { should be_installed.by("gem").with_version(gem.version) }
       end
