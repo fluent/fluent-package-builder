@@ -300,13 +300,6 @@ class DownloadTask
 
   def define_gem_files
     paths = []
-    Dir.chdir(gemfile_dir) do
-      command = "bundle package --no-install --cache-path=#{DOWNLOADS_DIR}"
-      output, error, status = Open3.capture3(command)
-      unless status.success?
-        fail "Failed to download gem files: <#{command}> (error: #{error})"
-      end
-    end
     Dir.glob("#{DOWNLOADS_DIR}/*.gem") do |path|
       paths << path
     end
