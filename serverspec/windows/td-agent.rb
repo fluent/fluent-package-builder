@@ -29,10 +29,12 @@ describe "gem files" do
                         "td-agent/Gemfile.lock")
   gem_path = File.join(File.dirname(lock_path),
                        File.basename(lock_path, ".lock"))
+  parser = Bundler::LockfileParser.new(Bundler.read_file(lock_path))
   Bundler::Definition.build(gem_path, lock_path, false).dependencies.each do |spec|
     if spec.should_include?
-      describe package("#{spec.name}") do
-        it { should be_installed.by("gem").with_version(spec.version) }
+      gem = parser.specs.collect do |lock_spec| lock_spec if lock_spec.name == spec.name end.compact.first
+      describe package("#{gem.name}") do
+        it { should be_installed.by("gem").with_version(gem.version) }
       end
     end
   end
