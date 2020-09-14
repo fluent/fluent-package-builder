@@ -870,8 +870,8 @@ class BuildTask
 
     relative_path = File.join(File.basename(File.split(DOWNLOADS_DIR)[0]), File.split(DOWNLOADS_DIR)[1])
     puts "bundle config cache path: <#{relative_path}>"
-    sh(bundle_command, "config", "set", "--local", "cache_path", relative_path)
-    sh(bundle_command, "package", "--no-install")
+    sh(bundle_command, "_2.2.0.rc.1_", "config", "set", "--local", "cache_path", relative_path)
+    sh(bundle_command, "_2.2.0.rc.1_", "package", "--no-install")
 
     # install protocol-http2 in advance not to install protocol-http2 0.14.1
     gem_install(Dir.glob("#{DOWNLOADS_DIR}/protocol-http2-*.gem").first)
