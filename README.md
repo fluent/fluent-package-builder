@@ -21,7 +21,8 @@ See also [this issue](https://github.com/treasure-data/omnibus-td-agent/issues/2
   * Any host OS that is supported by Docker
     * Debian buster or Ubuntu 18.04 are recommended
   * [Docker](https://docs.docker.com/install/)
-  * Ruby 2.4 or later
+  * Ruby 2.5 or later
+  * Bundler 2.2.0.rc1 (Install by `gem install bundler -v 2.2.0.rc.1`)
   * Git
 
 ### For building Windows package (.msi)
@@ -29,7 +30,8 @@ See also [this issue](https://github.com/treasure-data/omnibus-td-agent/issues/2
   * Windows OS (10 Pro or 2019 are verified)
   * [Docker Desktop for Windows](https://hub.docker.com/editions/community/docker-ce-desktop-windows)
     * You need to switch to "Windows containers" before using it.
-  * [RubyInstaller](https://rubyinstaller.org/) 2.4 or later.
+  * [RubyInstaller](https://rubyinstaller.org/) 2.5 or later.
+  * Bundler 2.2.0.rc1 (Install by `gem install bundler -v 2.2.0.rc.1`)
   * [Git for Windows](https://gitforwindows.org/)
 
 After installed above software, you need to enable additional features from powershell (as admin).
@@ -44,7 +46,8 @@ Then restart Windows.
 ### For building macOS package (.dmg)
 
   * macOS 10.15 (Catalina)
-  * Ruby 2.4 or later
+  * Ruby 2.5 or later
+  * Bundler 2.2.0.rc1 (Install by `gem install bundler -v 2.2.0.rc.1`)
   * Git
 
 ## How to build .rpm package
