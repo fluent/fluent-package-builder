@@ -853,6 +853,7 @@ class BuildTask
     if windows? && gem_path.include?("rake")
       gem_installation_command.push("--force")
     end
+    puts "install: <#{gem_path}>"
     sh(*gem_installation_command)
 
     ENV["GEM_HOME"] = gem_home
