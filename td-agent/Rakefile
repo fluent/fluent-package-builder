@@ -794,11 +794,7 @@ class BuildTask
   end
 
   def bundle_command
-    if windows?
-      File.join(staging_bindir, "bundle")
-    else
-      "#{install_prefix}/bin/bundle"
-    end
+    File.join(staging_bindir, "bundle")
   end
 
   def gem_dir_version
