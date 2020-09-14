@@ -876,7 +876,11 @@ class BuildTask
       puts "fetched gem path: <#{gem_path}>"
     end
     # install protocol-http2 in advance not to install protocol-http2 0.14.1
-    gem_install(Dir.glob("#{DOWNLOADS_DIR}/protocol-http2-*.gem").first)
+    gem_path = Dir.glob("#{DOWNLOADS_DIR}/protocol-http2-*.gem").first
+    unless gem_path
+      fail "Failed to install protocol-http2"
+    end
+    gem_install(gem_path)
     files = Dir.glob("#{DOWNLOADS_DIR}/*.gem").reject do |gem_path|
       gem_path.start_with?("#{DOWNLOADS_DIR}/protocol-http2-")
     end
