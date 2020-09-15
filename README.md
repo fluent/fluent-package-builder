@@ -11,6 +11,9 @@ td-agent-builder is a new build system for [td-agent](http://docs.treasuredata.c
 * Remove `embedded` directory by omnibus
   * Use `/opt/td-agent/bin/fluent-cat` instead of `/opt/td-agent/embedded/bin/fluent-cat`
 * Update core components: ruby, jemalloc and more
+* Add td-agent-apt-source deb package for maintaining apt-line and keyring
+  * Download it and install by `apt install`, then you can install td-agent via `apt install td-agent`.
+  * td-agent-apt-source deb package is created to install td-agent easily. Currently it points to td-agent 4 apt-line.
 
 See also [this issue](https://github.com/treasure-data/omnibus-td-agent/issues/219) for omnibus problems.
 
@@ -193,3 +196,8 @@ In System Preferences > Security & Privacy > Privacy > Accessibility, you should
 % rake yum:build
 % rake msi:build
 ```
+
+### Note for bump up the package version
+
+It assumes that Gemfile is used with Bundler's multiplatform feature,
+so bundler must be 2.2.0.rc1 or later.
