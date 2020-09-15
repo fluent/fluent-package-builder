@@ -199,5 +199,5 @@ In System Preferences > Security & Privacy > Privacy > Accessibility, you should
 
 ### Note for bump up the package version
 
-It assumes that Gemfile is used with Bundler's multiplatform feature,
+It assumes that Gemfile works with Bundler's multiplatform feature,
 so bundler must be 2.2.0.rc1 or later.
