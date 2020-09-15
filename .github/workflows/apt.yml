@@ -18,18 +18,26 @@ jobs:
             rake-job: debian-buster
             test-docker-image: debian:buster
             test-script: td-agent/apt/install-test.sh
+            test-piuparts: td-agent/apt/piuparts-test.sh
+            test-serverspec: td-agent/apt/serverspec-test.sh
           - label: Ubuntu Xenial amd64
             rake-job: ubuntu-xenial
             test-docker-image: ubuntu:xenial
             test-script: td-agent/apt/install-test.sh
+            test-piuparts: td-agent/apt/piuparts-test.sh
+            test-serverspec: td-agent/apt/serverspec-test.sh
           - label: Ubuntu Bionic amd64
             rake-job: ubuntu-bionic
             test-docker-image: ubuntu:bionic
             test-script: td-agent/apt/install-test.sh
+            test-piuparts: td-agent/apt/piuparts-test.sh
+            test-serverspec: td-agent/apt/serverspec-test.sh
           - label: Ubuntu Focal amd64
             rake-job: ubuntu-focal
             test-docker-image: ubuntu:focal
             test-script: td-agent/apt/install-test.sh
+            test-piuparts: td-agent/apt/piuparts-test.sh
+            test-serverspec: td-agent/apt/serverspec-test.sh
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
@@ -58,3 +66,23 @@ jobs:
           --volume ${PWD}:/fluentd:ro \
           ${{ matrix.test-docker-image }} \
           /fluentd/${{ matrix.test-script }}
+      - name: Piuparts (Install/Remove/Upgrade) Test
+        run: |
+          mkdir -p .bundle
+          docker run \
+          --privileged \
+          --rm \
+          --tty \
+          --volume ${PWD}:/fluentd:ro \
+          ${{ matrix.test-docker-image }} \
+          /fluentd/${{ matrix.test-piuparts }}
+      - name: Serverspec Test
+        run: |
+          mkdir -p .bundle
+          docker run \
+          --privileged \
+          --rm \
+          --tty \
+          --volume ${PWD}:/fluentd:ro \
+          ${{ matrix.test-docker-image }} \
+          /fluentd/${{ matrix.test-serverspec }}
