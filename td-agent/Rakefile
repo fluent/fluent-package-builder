@@ -1323,10 +1323,11 @@ class MacOSPackageTask
 
   PKG_OUTPUT_DIR = ENV["TD_AGENT_PKG_OUTPUT_PATH"] || "."
 
-  def initialize
+  def initialize(options={})
     @package = PACKAGE_NAME
     @version = PACKAGE_VERSION
     @staging_dir = STAGING_DIR
+    @logger = options[:logger] || Logger.new(STDOUT, level: Logger::Severity::INFO)
   end
 
   def define
@@ -1364,7 +1365,7 @@ class MacOSPackageTask
       cp(File.join(output_dir, "td-agent-#{@version}.pkg"), "dmg")
       window_bounds = "100, 100, 750, 600"
       pkg_position = "535, 50"
-      dmg = CompressDMG.new(@version, window_bounds, pkg_position)
+      dmg = CompressDMG.new(@version, window_bounds, pkg_position, @logger)
       dmg.run
     end
   end
@@ -1536,5 +1537,5 @@ windows_package_task.define
 update_lockfile_task = UpdateLockfileTask.new
 update_lockfile_task.define
 
-macos_package_task = MacOSPackageTask.new
+macos_package_task = MacOSPackageTask.new({logger: @logger})
 macos_package_task.define
