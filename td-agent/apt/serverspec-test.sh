@@ -34,7 +34,7 @@ td-agent --version
 
 case ${code_name} in
     xenial)
-	apt install -V -y gnupg wget
+	apt install -V -y gnupg wget apt-transport-https
 	;;
     *)
 	DEBIAN_FRONTEND=noninteractive apt install -V -y gnupg1 wget
