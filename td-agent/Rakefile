@@ -169,8 +169,8 @@ class DownloadTask
   attr_reader :files_ruby_gems
   attr_reader :file_openssl_source
 
-  def initialize(options={})
-    @logger = options[:logger] || Logger.new(STDOUT, level: Logger::Severity::INFO)
+  def initialize(logger:)
+    @logger = logger || Logger.new(STDOUT, level: Logger::Severity::INFO)
   end
 
   def files
@@ -342,9 +342,10 @@ end
 class BuildTask
   include Rake::DSL
 
-  def initialize(options={})
-    @download_task = options[:task]
-    @logger = options[:logger] || Logger.new(STDOUT, level: Logger::Severity::INFO)
+
+  def initialize(task:, logger:)
+    @download_task = task
+    @logger = logger || Logger.new(STDOUT, level: Logger::Severity::INFO)
   end
 
   def make_wix_version_number(version)
@@ -1163,7 +1164,7 @@ end
 class CompressDMG
   include Rake::DSL
 
-  def initialize(version, window_bounds, pkg_position, logger)
+  def initialize(version:, window_bounds:, pkg_position:, logger:)
     @version = version
     @window_bounds = window_bounds
     @pkg_position = pkg_position
@@ -1323,11 +1324,11 @@ class MacOSPackageTask
 
   PKG_OUTPUT_DIR = ENV["TD_AGENT_PKG_OUTPUT_PATH"] || "."
 
-  def initialize(options={})
+  def initialize(logger:)
     @package = PACKAGE_NAME
     @version = PACKAGE_VERSION
     @staging_dir = STAGING_DIR
-    @logger = options[:logger] || Logger.new(STDOUT, level: Logger::Severity::INFO)
+    @logger = logger || Logger.new(STDOUT, level: Logger::Severity::INFO)
   end
 
   def define
@@ -1365,7 +1366,7 @@ class MacOSPackageTask
       cp(File.join(output_dir, "td-agent-#{@version}.pkg"), "dmg")
       window_bounds = "100, 100, 750, 600"
       pkg_position = "535, 50"
-      dmg = CompressDMG.new(@version, window_bounds, pkg_position, @logger)
+      dmg = CompressDMG.new(version: @version, window_bounds: window_bounds, pkg_position: pkg_position, logger: @logger)
       dmg.run
     end
   end
@@ -1522,10 +1523,10 @@ SET ARCH=#{arch}
   end
 end
 
-download_task = DownloadTask.new({logger: @logger})
+download_task = DownloadTask.new(logger: @logger)
 download_task.define
 
-build_task = BuildTask.new({task: download_task, logger: @logger})
+build_task = BuildTask.new(task: download_task, logger: @logger)
 build_task.define
 
 linux_package_task = LinuxPackageTask.new(download_task)
@@ -1537,5 +1538,5 @@ windows_package_task.define
 update_lockfile_task = UpdateLockfileTask.new
 update_lockfile_task.define
 
-macos_package_task = MacOSPackageTask.new({logger: @logger})
+macos_package_task = MacOSPackageTask.new(logger: @logger)
 macos_package_task.define
