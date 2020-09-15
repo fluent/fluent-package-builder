@@ -300,9 +300,6 @@ class DownloadTask
 
   def define_gem_files
     paths = []
-    Dir.chdir(gemfile_dir) do
-      `bundle package --no-install --cache-path=#{DOWNLOADS_DIR}`
-    end
     Dir.glob("#{DOWNLOADS_DIR}/*.gem") do |path|
       paths << path
     end
@@ -319,7 +316,11 @@ class UpdateLockfileTask
       desc "Update lockfile"
       task :update do
         cd gemfile_dir do
-          `bundle package --no-install --cache-path=#{DOWNLOADS_DIR}`
+          command = "bundle package --no-install --cache-path=#{DOWNLOADS_DIR}"
+          output, error, status = Open3.capture3(command)
+          unless status.success?
+            fail "Failed to update Gemfile.lock: <#{command}> (error: #{error})"
+          end
         end
       end
     end
@@ -793,11 +794,7 @@ class BuildTask
   end
 
   def bundle_command
-    if windows?
-      File.join(staging_bindir, "bundle")
-    else
-      "#{install_prefix}/bin/bundle"
-    end
+    File.join(staging_bindir, "bundle")
   end
 
   def gem_dir_version
@@ -852,6 +849,7 @@ class BuildTask
     if windows? && gem_path.include?("rake")
       gem_installation_command.push("--force")
     end
+    puts "install: <#{gem_path}>"
     sh(*gem_installation_command)
 
     ENV["GEM_HOME"] = gem_home
@@ -868,13 +866,23 @@ class BuildTask
 
     relative_path = File.join(File.basename(File.split(DOWNLOADS_DIR)[0]), File.split(DOWNLOADS_DIR)[1])
     puts "bundle config cache path: <#{relative_path}>"
-    sh(bundle_command, "config", "set", "--local", "cache_path", relative_path)
-    sh(bundle_command, "package", "--no-install")
+    gem_home = ENV["GEM_HOME"]
+    ENV["GEM_HOME"] = gem_staging_dir
+    sh(bundle_command, "_2.2.0.rc.1_", "config", "set", "--local", "cache_path", relative_path)
+    sh(bundle_command, "_2.2.0.rc.1_", "package", "--no-install")
+    ENV["GEM_HOME"] = gem_home
 
+    Dir.glob("**/*.gem").sort.each do |gem_path|
+      puts "fetched gem path: <#{gem_path}>"
+    end
     # install protocol-http2 in advance not to install protocol-http2 0.14.1
-    gem_install(Dir.glob("#{DOWNLOADS_DIR}/protocol-http2-*.gem").first)
-    files = Dir.glob("#{DOWNLOADS_DIR}/*.gem").reject do |gem_path|
-      gem_path.start_with?("#{DOWNLOADS_DIR}/protocol-http2-")
+    gem_path = Dir.glob("#{relative_path}/protocol-http2-*.gem").first
+    unless gem_path
+      fail "Failed to install protocol-http2"
+    end
+    gem_install(gem_path)
+    files = Dir.glob("#{relative_path}/*.gem").reject do |gem_path|
+      gem_path.start_with?("#{relative_path}/protocol-http2-")
     end
     files.each do |gem_path|
       gem_install(gem_path)
@@ -931,7 +939,12 @@ class BuildTask
 
     env_restore = ENV["GEM_PATH"]
     ENV["GEM_PATH"] = gem_staging_dir
-    gems_descriptions = `#{gem_command} list -d`
+    command = "#{gem_command} list -d"
+    output, error, status = Open3.capture3(command)
+    unless status.success?
+      fail "Failed to get gem list: <#{command}> (error: #{error})"
+    end
+    gems_descriptions = output
     gems_descriptions.gsub!(STAGING_DIR, "") unless windows?
     ENV["GEM_PATH"] = env_restore
 
@@ -1013,7 +1026,12 @@ class LinuxPackageTask < PackageTask
     dest = File.join("debian", "copyright")
     licenses = []
     @download_task.files_ruby_gems.each do |gem_file|
-      spec = YAML.load(`gem specification #{gem_file}`)
+      command = "gem specification #{gem_file}"
+      output, error, status = Open3.capture3(command)
+      unless status.success?
+        fail "Failed to get gem specification: <#{gem_file}> (error: #{error})"
+      end
+      spec = YAML.load(output)
       relative_path = gem_file.sub(/#{Dir.pwd}\//, "")
       unless spec.licenses.empty?
         spdx_compatible_license = spec.licenses.first.sub(/Apache 2\.0/, "Apache-2.0")
@@ -1052,8 +1070,18 @@ EOS
     # because many gem files are bundled with td-agent package.
     # We use gem specification GEMFILE to solve this issue.
     paths = []
-    `bundle config set --local cache_path #{DOWNLOADS_DIR}`
-    `bundle package --no-install`
+    command = "bundle config set --local cache_path #{DOWNLOADS_DIR}"
+    output, error, status = Open3.capture3(command)
+    unless status.success?
+      fail "Failed to set cache_path: <#{command}> (error: #{error})"
+    end
+    Dir.chdir(gemfile_dir) do
+      command = "bundle package --no-install"
+      output, error, status = Open3.capture3(command)
+      unless status.success?
+        fail "Failed to download gem files: <#{command}> (error: #{error})"
+      end
+    end
     Dir.glob("#{DOWNLOADS_DIR}/*.gem") do |path|
       paths << path.sub(Dir.pwd, "td-agent")
     end
