@@ -35,6 +35,7 @@ STAGING_DIR    = File.expand_path(ENV["TD_AGENT_STAGING_PATH"]   || "staging")
 
 CLEAN.include(STAGING_DIR)
 CLOBBER.include(DOWNLOADS_DIR)
+CLOBBER.include("vendor")
 
 # Debian
 CLEAN.include("apt/tmp")
@@ -1074,6 +1075,12 @@ EOS
     output, error, status = Open3.capture3(command)
     unless status.success?
       fail "Failed to set cache_path: <#{command}> (error: #{error})"
+    end
+    # Note: bundle package try to require sudo when path is not set
+    command = "bundle config set --local path vendor"
+    output, error, status = Open3.capture3(command)
+    unless status.success?
+      fail "Failed to set dummy path: <#{command}> (error: #{error})"
     end
     Dir.chdir(gemfile_dir) do
       command = "bundle package --no-install"
