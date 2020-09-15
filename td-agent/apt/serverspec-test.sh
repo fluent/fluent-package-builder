@@ -32,7 +32,14 @@ apt install -V -y \
 
 td-agent --version
 
-/usr/sbin/td-agent-gem install serverspec
+case ${code_name} in
+    xenial)
+	apt install -V -y gnupg wget
+	;;
+    *)
+	DEBIAN_FRONTEND=noninteractive apt install -V -y gnupg1 wget
+	;;
+esac
 wget -qO - https://packages.confluent.io/deb/5.5/archive.key | apt-key add -
 echo "deb [arch=${architecture}] https://packages.confluent.io/deb/5.5 stable main" > /etc/apt/sources.list.d/confluent.list
 apt update && apt install -y confluent-community-2.12 ${java_jdk} netcat-openbsd
