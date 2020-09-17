@@ -53,9 +53,10 @@ td-agent --version
 
 if [ $ENABLE_SERVERSPEC_TEST -eq 1 ]; then
     echo "${DNF} install -y curl which ${repositories_dir}/${distribution}/${version}/x86_64/Packages/*.rpm"
-    ${DNF} install -y curl which ${repositories_dir}/${distribution}/${version}/x86_64/Packages/*.rpm
+    #${DNF} install -y curl which ${repositories_dir}/${distribution}/${version}/x86_64/Packages/*.rpm
     echo "/usr/sbin/td-agent-gem install --no-document serverspec"
-    /usr/sbin/td-agent-gem install --no-document serverspec
+    #/usr/sbin/td-agent-gem install --no-document serverspec
+    exit 0
     if [ $ENABLE_KAFKA_TEST -eq 1 ]; then
         rpm --import https://packages.confluent.io/rpm/5.5/archive.key
 
