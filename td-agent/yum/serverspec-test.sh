@@ -15,7 +15,7 @@ distribution=$(cat /etc/system-release-cpe | awk '{print substr($0, index($1, "o
 version=$(cat /etc/system-release-cpe | awk '{print substr($0, index($1, "o"))}' | cut -d: -f4)
 
 ENABLE_SERVERSPEC_TEST=1
-ENABLE_KAFKA_TEST=1
+ENABLE_KAFKA_TEST=0
 JAVA_JRE=java-11-openjdk
 N_POLLING=30
 case ${distribution} in
