@@ -41,48 +41,48 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-      - name: Install dependencies
-        run: |
-          sudo apt update
-          sudo apt -V install ruby ruby-bundler ruby-serverspec
-      - name: Build deb with Docker
-        run: |
-          rake apt:build APT_TARGETS=${{ matrix.rake-job }}
-      - uses: actions/upload-artifact@master
-        with:
-          name: packages-${{ matrix.rake-job }}
-          path: td-agent/apt/repositories
-      - uses: actions/upload-artifact@master
-        with:
-          name: packages-apt-source-${{ matrix.rake-job }}
-          path: td-agent-apt-source/apt/repositories
-      - name: Installation Test
-        run: |
-          mkdir -p .bundle
-          docker run \
-          --privileged \
-          --rm \
-          --tty \
-          --volume ${PWD}:/fluentd:ro \
-          ${{ matrix.test-docker-image }} \
-          /fluentd/${{ matrix.test-script }}
-      - name: Piuparts (Install/Remove/Upgrade) Test
-        run: |
-          mkdir -p .bundle
-          docker run \
-          --privileged \
-          --rm \
-          --tty \
-          --volume ${PWD}:/fluentd:ro \
-          ${{ matrix.test-docker-image }} \
-          /fluentd/${{ matrix.test-piuparts }}
-      - name: Serverspec Test
-        run: |
-          mkdir -p .bundle
-          docker run \
-          --privileged \
-          --rm \
-          --tty \
-          --volume ${PWD}:/fluentd:ro \
-          ${{ matrix.test-docker-image }} \
-          /fluentd/${{ matrix.test-serverspec }}
+      # - name: Install dependencies
+      #   run: |
+      #     sudo apt update
+      #     sudo apt -V install ruby ruby-bundler ruby-serverspec
+      # - name: Build deb with Docker
+      #   run: |
+      #     rake apt:build APT_TARGETS=${{ matrix.rake-job }}
+      # - uses: actions/upload-artifact@master
+      #   with:
+      #     name: packages-${{ matrix.rake-job }}
+      #     path: td-agent/apt/repositories
+      # - uses: actions/upload-artifact@master
+      #   with:
+      #     name: packages-apt-source-${{ matrix.rake-job }}
+      #     path: td-agent-apt-source/apt/repositories
+      # - name: Installation Test
+      #   run: |
+      #     mkdir -p .bundle
+      #     docker run \
+      #     --privileged \
+      #     --rm \
+      #     --tty \
+      #     --volume ${PWD}:/fluentd:ro \
+      #     ${{ matrix.test-docker-image }} \
+      #     /fluentd/${{ matrix.test-script }}
+      # - name: Piuparts (Install/Remove/Upgrade) Test
+      #   run: |
+      #     mkdir -p .bundle
+      #     docker run \
+      #     --privileged \
+      #     --rm \
+      #     --tty \
+      #     --volume ${PWD}:/fluentd:ro \
+      #     ${{ matrix.test-docker-image }} \
+      #     /fluentd/${{ matrix.test-piuparts }}
+      # - name: Serverspec Test
+      #   run: |
+      #     mkdir -p .bundle
+      #     docker run \
+      #     --privileged \
+      #     --rm \
+      #     --tty \
+      #     --volume ${PWD}:/fluentd:ro \
+      #     ${{ matrix.test-docker-image }} \
+      #     /fluentd/${{ matrix.test-serverspec }}

@@ -10,13 +10,13 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@master
-      - name: Build
-        run: |
-          sudo mkdir /opt/td-agent
-          sudo chown $(whoami) /opt/td-agent
-          rm -rf td-agent/staging
-          rake dmg:selfbuild
-      - uses: actions/upload-artifact@master
-        with:
-          name: packages-macos
-          path: td-agent/dmg/*.dmg
+      # - name: Build
+      #   run: |
+      #     sudo mkdir /opt/td-agent
+      #     sudo chown $(whoami) /opt/td-agent
+      #     rm -rf td-agent/staging
+      #     rake dmg:selfbuild
+      # - uses: actions/upload-artifact@master
+      #   with:
+      #     name: packages-macos
+      #     path: td-agent/dmg/*.dmg

@@ -10,21 +10,21 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@master
-      - name: Build
-        run: |
-          gem install serverspec
-          rake msi:build
-      - uses: actions/upload-artifact@master
-        with:
-          name: packages-windows-x86_64
-          path: td-agent/msi/repositories
-      - name: Installation Test
-        shell: pwsh
-        run: |
-          mkdir -p .bundle
-          docker run `
-          --rm `
-          --tty `
-          --volume ${PWD}:C:\fluentd:ro `
-          mcr.microsoft.com/dotnet/framework/runtime:3.5 `
-          powershell -ExecutionPolicy Bypass -Command "C:\fluentd\td-agent\msi\install-test.ps1"
+      # - name: Build
+      #   run: |
+      #     gem install serverspec
+      #     rake msi:build
+      # - uses: actions/upload-artifact@master
+      #   with:
+      #     name: packages-windows-x86_64
+      #     path: td-agent/msi/repositories
+      # - name: Installation Test
+      #   shell: pwsh
+      #   run: |
+      #     mkdir -p .bundle
+      #     docker run `
+      #     --rm `
+      #     --tty `
+      #     --volume ${PWD}:C:\fluentd:ro `
+      #     mcr.microsoft.com/dotnet/framework/runtime:3.5 `
+      #     powershell -ExecutionPolicy Bypass -Command "C:\fluentd\td-agent\msi\install-test.ps1"
