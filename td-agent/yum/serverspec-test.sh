@@ -15,7 +15,7 @@ distribution=$(cat /etc/system-release-cpe | awk '{print substr($0, index($1, "o
 version=$(cat /etc/system-release-cpe | awk '{print substr($0, index($1, "o"))}' | cut -d: -f4)
 
 ENABLE_SERVERSPEC_TEST=1
-ENABLE_KAFKA_TEST=0
+ENABLE_KAFKA_TEST=1
 JAVA_JRE=java-11-openjdk
 N_POLLING=30
 case ${distribution} in
@@ -56,7 +56,6 @@ if [ $ENABLE_SERVERSPEC_TEST -eq 1 ]; then
     ${DNF} install -y curl which ${repositories_dir}/${distribution}/${version}/x86_64/Packages/*.rpm
     echo "/usr/sbin/td-agent-gem install --no-document serverspec"
     /usr/sbin/td-agent-gem install --no-document serverspec
-    exit 0
     if [ $ENABLE_KAFKA_TEST -eq 1 ]; then
         rpm --import https://packages.confluent.io/rpm/5.5/archive.key
 
@@ -77,6 +76,7 @@ enabled=1
 EOF
         yum update && yum install -y confluent-community-2.12 ${JAVA_JRE} nc
 	export KAFKA_OPTS=-Dzookeeper.4lw.commands.whitelist=ruok
+	exit 0
 	/usr/bin/zookeeper-server-start /etc/kafka/zookeeper.properties  &
 	n=1
         while true ; do
