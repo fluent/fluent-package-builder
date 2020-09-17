@@ -5,26 +5,7 @@ set -exu
 apt update
 apt install -V -y lsb-release
 
-code_name=$(lsb_release --codename --short)
-architecture=$(dpkg --print-architecture)
-repositories_dir=/fluentd/td-agent/apt/repositories
-case ${code_name} in
-  xenial)
-    distribution=ubuntu
-    channel=universe
-    mirror=http://archive.ubuntu.com/ubuntu/
-    ;;
-  bionic|focal)
-    distribution=ubuntu
-    channel=universe
-    mirror=http://archive.ubuntu.com/ubuntu/
-    ;;
-  buster)
-    distribution=debian
-    channel=main
-    mirror=http://deb.debian.org/debian
-    ;;
-esac
+. $(dirname $0)/commonvar.sh
 
 find ${repositories_dir}
 case ${code_name} in
