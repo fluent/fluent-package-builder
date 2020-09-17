@@ -2,6 +2,8 @@
 
 set -exu
 
+export DEBIAN_FRONTEND=noninteractive
+
 apt update
 apt install -V -y lsb-release
 
@@ -37,7 +39,7 @@ case ${code_name} in
 	apt install -V -y gnupg wget apt-transport-https
 	;;
     *)
-	DEBIAN_FRONTEND=noninteractive apt install -V -y gnupg1 wget
+	apt install -V -y gnupg1 wget
 	;;
 esac
 
