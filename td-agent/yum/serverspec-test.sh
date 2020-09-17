@@ -14,7 +14,7 @@ set -exu
 distribution=$(cat /etc/system-release-cpe | awk '{print substr($0, index($1, "o"))}' | cut -d: -f2)
 version=$(cat /etc/system-release-cpe | awk '{print substr($0, index($1, "o"))}' | cut -d: -f4)
 
-ENABLE_SERVERSPEC_TEST=0
+ENABLE_SERVERSPEC_TEST=1
 ENABLE_KAFKA_TEST=0
 JAVA_JRE=java-11-openjdk
 N_POLLING=30
@@ -52,8 +52,9 @@ ${DNF} install -y \
 td-agent --version
 
 if [ $ENABLE_SERVERSPEC_TEST -eq 1 ]; then
+    echo "${DNF} install -y curl which ${repositories_dir}/${distribution}/${version}/x86_64/Packages/*.rpm"
     ${DNF} install -y curl which ${repositories_dir}/${distribution}/${version}/x86_64/Packages/*.rpm
-
+    echo "/usr/sbin/td-agent-gem install --no-document serverspec"
     /usr/sbin/td-agent-gem install --no-document serverspec
     if [ $ENABLE_KAFKA_TEST -eq 1 ]; then
         rpm --import https://packages.confluent.io/rpm/5.5/archive.key
