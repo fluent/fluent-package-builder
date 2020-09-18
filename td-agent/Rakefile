@@ -16,7 +16,6 @@
 #
 
 require_relative '../lib/package-task'
-require_relative '../lib/gems_parser'
 require_relative 'config.rb'
 require 'rake/testtask'
 require 'rake/clean'
@@ -76,11 +75,11 @@ CLOBBER.include("dmg/td-agent.iconset")
 CLOBBER.include("dmg/dmg")
 
 def windows?
-  GemsParser.windows?
+  /mswin|mingw/ =~ RUBY_PLATFORM
 end
 
 def macos?
-  GemsParser.macos?
+  /darwin/ =~ RUBY_PLATFORM
 end
 
 def ensure_directory(dirname)
