@@ -14,6 +14,7 @@ jobs:
   - env: RAKE_TASK="yum:build" YUM_TARGETS="centos-8" ARCHIVE_BASE="centos-8" PACKAGE_SYSTEM=yum
   - env: RAKE_TASK="yum:build" YUM_TARGETS="amazonlinux-2" ARCHIVE_BASE="amazonlinux-2" PACKAGE_SYSTEM=yum
 before_install:
+  - gem install bundler --no-document -v 2.2.0.rc.1
   - bundle install --gemfile=td-agent/Gemfile
 script:
   - travis_retry rake $RAKE_TASK
