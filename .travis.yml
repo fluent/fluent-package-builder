@@ -13,21 +13,27 @@ jobs:
   - env: RAKE_TASK="yum:build" YUM_TARGETS="centos-7" ARCHIVE_BASE="centos-7" PACKAGE_SYSTEM=yum
   - env: RAKE_TASK="yum:build" YUM_TARGETS="centos-8" ARCHIVE_BASE="centos-8" PACKAGE_SYSTEM=yum
   - env: RAKE_TASK="yum:build" YUM_TARGETS="amazonlinux-2" ARCHIVE_BASE="amazonlinux-2" PACKAGE_SYSTEM=yum
+
+# FIXME: Enable bundle and uncomment blocks when activesupport 6.1 has been released
+# because dependency to tzinfo can't be resolved (2.x and 1.x conflicts)
+
 before_install:
-  - bundle install --gemfile=gemfiles/linux/Gemfile
+  - gem install bundler --no-document -v 2.2.0.rc.1
+# - bundle install --gemfile=td-agent/Gemfile
 script:
-  - travis_retry rake $RAKE_TASK
-before_deploy:
-  - export RELEASE_DIRECTORY="td-agent/${PACKAGE_SYSTEM}/repositories/"
-  - tar cJvf package-${ARCHIVE_BASE}-arm64.tar.xz td-agent/${PACKAGE_SYSTEM}/repositories
-  - echo "deploying tarball includes the following directory:"
-  - echo "${RELEASE_DIRECTORY}"
-deploy:
-  provider: releases
-  token:
-    secure: "JEr3rNHw9gNllQE1vkbO6rp4SH24UwDPs+wi1fMEgbOw/wbHlZg/E/xBGKZnb6/u8wUNweG6OJOeMlAFf+lqQWRmv03e0xu+GZqBdAxzJ+go9+J5WKcEbNz1VmWd0aqO+42kL5vJldZYSvlpEEqQxe1Ew6AbZ4tAhRP8rOV5yCcoprVIfU4szLxzHHGchMJ5ektwpU4oXCuRg/IBv9Uh6Zy5zEbeNWq4Mlvo8b1QWFgRH5LCDUF+GzhKOZOSH8C7OfGmh8lF2oeifBBWbaDTRBv5ysm2OfL/2A4O5t7bmRljsJody76i/8gA3bEkBay6RsFXVqbCeApxSiDWtLOeloXXbcUYGcg+139Ke2iwPKhCKEkYr37lhMfrZMJ29+1HbLo/4exQV81nTgEvTApHbe3TlJFatat442+JQv/E3q4Ses5nO2PqXSU5bgJ2VtSQG9yRMautcZ8/ns9VVS7hm03CK1nluJ5ltCbqriE7Sf+b0ieMN1inx1g8o4WtwUXB+ZS5S3nZWDRtsfrclvE2FVfphG/saR7KFcPUHe3P2UUEbYKiZhBei3oKYXuYT81KhrtvwIkSdySpuE2Tm33lnPwUWlPlOqK+Sd3ucofwTpO8lRq9AW6PBvU2MFANA238Jtl9K/deZOF6v8dIuUO/QJqlXokrvMbMmhyBi6eEKQ8="
-  file_glob: true
-  skip_cleanup: true
-  file: "package-*-arm64.tar.xz"
-  on:
-    tags: true
+  - rake -T
+# - travis_retry rake $RAKE_TASK
+# before_deploy:
+#   - export RELEASE_DIRECTORY="td-agent/${PACKAGE_SYSTEM}/repositories/"
+#   - tar cJvf package-${ARCHIVE_BASE}-arm64.tar.xz td-agent/${PACKAGE_SYSTEM}/repositories
+#   - echo "deploying tarball includes the following directory:"
+#   - echo "${RELEASE_DIRECTORY}"
+# deploy:
+#   provider: releases
+#   token:
+#     secure: "JEr3rNHw9gNllQE1vkbO6rp4SH24UwDPs+wi1fMEgbOw/wbHlZg/E/xBGKZnb6/u8wUNweG6OJOeMlAFf+lqQWRmv03e0xu+GZqBdAxzJ+go9+J5WKcEbNz1VmWd0aqO+42kL5vJldZYSvlpEEqQxe1Ew6AbZ4tAhRP8rOV5yCcoprVIfU4szLxzHHGchMJ5ektwpU4oXCuRg/IBv9Uh6Zy5zEbeNWq4Mlvo8b1QWFgRH5LCDUF+GzhKOZOSH8C7OfGmh8lF2oeifBBWbaDTRBv5ysm2OfL/2A4O5t7bmRljsJody76i/8gA3bEkBay6RsFXVqbCeApxSiDWtLOeloXXbcUYGcg+139Ke2iwPKhCKEkYr37lhMfrZMJ29+1HbLo/4exQV81nTgEvTApHbe3TlJFatat442+JQv/E3q4Ses5nO2PqXSU5bgJ2VtSQG9yRMautcZ8/ns9VVS7hm03CK1nluJ5ltCbqriE7Sf+b0ieMN1inx1g8o4WtwUXB+ZS5S3nZWDRtsfrclvE2FVfphG/saR7KFcPUHe3P2UUEbYKiZhBei3oKYXuYT81KhrtvwIkSdySpuE2Tm33lnPwUWlPlOqK+Sd3ucofwTpO8lRq9AW6PBvU2MFANA238Jtl9K/deZOF6v8dIuUO/QJqlXokrvMbMmhyBi6eEKQ8="
+#   file_glob: true
+#   skip_cleanup: true
+#   file: "package-*-arm64.tar.xz"
+#   on:
+#     tags: true
