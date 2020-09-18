@@ -74,8 +74,8 @@ gpgcheck=1
 gpgkey=https://packages.confluent.io/rpm/5.5/archive.key
 enabled=1
 EOF
-	exit 0
         yum update
+	exit 0
 	yum install -y ${JAVA_JRE} nc
 	exit 0
         yum update && yum install -y confluent-community-2.12
