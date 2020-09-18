@@ -73,7 +73,7 @@ gpgcheck=1
 gpgkey=https://packages.confluent.io/rpm/5.5/archive.key
 enabled=1
 EOF
-        yum update && yum install -y confluent-community-2.12 ${JAVA_JRE} nc
+        yum update -y && yum install -y confluent-community-2.12 ${JAVA_JRE} nc
 	export KAFKA_OPTS=-Dzookeeper.4lw.commands.whitelist=ruok
 	/usr/bin/zookeeper-server-start /etc/kafka/zookeeper.properties  &
 	n=1
