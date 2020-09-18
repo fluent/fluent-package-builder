@@ -60,7 +60,6 @@ jobs:
         run: |
           mkdir -p .bundle
           docker run \
-          --privileged \
           --rm \
           --tty \
           --volume ${PWD}:/fluentd:ro \
@@ -80,7 +79,6 @@ jobs:
         run: |
           mkdir -p .bundle
           docker run \
-          --privileged \
           --rm \
           --tty \
           --volume ${PWD}:/fluentd:ro \
