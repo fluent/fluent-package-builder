@@ -1,16 +1,25 @@
 # Td Agent Builder news
 
-## Release v4.0.1 - 2020/08/18
+## Release v4.0.X - 
 
 ### General
 
 * Unified into `Gemfile` instead of `core_gems.rb` and `plugin_gems.rb`. [GitHub#142]
   - It simplify a management of bundled gem files. Note that
     this change requires newer bundler - bundler 2.2.0.rc1 or later.
-* Added `lockfile:update` rake task to update lock file. [GitHub#161]
-  - Execute `cd td-agent && rake lockfile:update` for updating bundled Gems.
 * Added Serverspec test cases [GitHub#174, #180]
   - It was expected to reduce degraded bugs.
+
+### macOS
+
+* macos: Added to support building macOS installer [GitHub#192]
+
+## Release v4.0.1 - 2020/08/18
+
+### General
+
+* Added `lockfile:update` rake task to update lock file. [GitHub#161]
+  - Execute `cd td-agent && rake lockfile:update` for updating bundled Gems.
 
 ### Deb Packages
 
@@ -24,10 +33,6 @@
 * msi: Fixed to use TD_AGENT_TOPDIR in td-agent.conf. [GitHub#131]
   - It fixes the problem that c:/var is always created automatically.
     It was changed to respect installed directory (c:/opt/td-agent/var...)
-
-### macOS
-
-* macos: Added to support building macOS installer [GitHub#192]
 
 ## Release v4.0.0 - 2020/07/02
 
