@@ -21,7 +21,7 @@ Write-Host "Succeeded to uninstall ${name}"
 
 # td-agent.conf should not be removed
 $conf = (Get-ChildItem -Path "c:\\opt" -Filter "td-agent.conf" -Recurse -Name)
-if ($conf -ne "td-agent\\etc\\td-agent\\td-agent.conf") {
+if ($conf -ne "td-agent\etc\td-agent\td-agent.conf") {
   Write-Host "Failed to find td-agent.conf: <${conf}>"
   [Environment]::Exit(1)
 }
@@ -29,7 +29,7 @@ Write-Host "Succeeded to find td-agent.conf"
 
 # td-agent.log should not be removed
 $conf = (Get-ChildItem -Path "c:\\opt" -Filter "td-agent.log" -Recurse -Name)
-if ($conf -ne "td-agent\\td-agent.log") {
+if ($conf -ne "td-agent\td-agent.log") {
   Write-Host "Failed to find td-agent.log: <${conf}>"
   [Environment]::Exit(1)
 }
