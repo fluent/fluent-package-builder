@@ -75,15 +75,15 @@ sed -i'' -E "s/^($PACKAGE \(\S+\)) unstable;/\1 $DISTRIBUTION;/g" debian/changel
 cat .bundle/config
 if [ "${DEBUG:-no}" = "yes" ]; then
   if [ "${LINTIAN:-yes}" = "yes" ]; then
-    run debuild -us -uc --source-option=--auto-commit --lintian-opts --profile ${PACKAGE}/${distribution}
+    run debuild -us -uc --lintian-opts --profile ${PACKAGE}/${distribution}
   else
     run debuild --no-lintian -us -uc --source-option=--auto-commit
   fi
 else
   if [ "${LINTIAN:-yes}" = "yes" ]; then
-    run debuild -us -uc --auto-commit --lintian-opts --profile td-agent/${distribution} > /dev/null
+    run debuild -us -uc --lintian-opts --profile td-agent/${distribution} > /dev/null
   else
-    run debuild --no-lintian -us -uc --auto-commit > /dev/null
+    run debuild --no-lintian -us -uc > /dev/null
   fi
 fi
 run cd -
