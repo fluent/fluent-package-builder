@@ -31,7 +31,6 @@ jobs:
       - name: Serverspec Test
         shell: pwsh
         run: |
-          mkdir -p .bundle
           docker run `
           --rm `
           --tty `
