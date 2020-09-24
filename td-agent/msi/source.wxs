@@ -117,7 +117,6 @@
     <CustomAction Id="PostInstall"
                   BinaryKey="WixCA"
                   DllEntry="WixQuietExec64"
-                  Directory="PROJECTLOCATION"
                   Execute="deferred"
                   Return="check"
                   Impersonate="no" />
@@ -125,7 +124,6 @@
     <CustomAction Id="InstallFluentdWinSvc"
                   BinaryKey="WixCA"
                   DllEntry="WixQuietExec64"
-                  Directory="PROJECTLOCATION"
                   Execute="deferred"
                   Return="check"
                   Impersonate="no" />
