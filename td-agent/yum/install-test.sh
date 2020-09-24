@@ -49,6 +49,12 @@ td-agent --version
 echo "UNINSTALL TEST"
 ${DNF} remove -y td-agent
 
+conf_path=/etc/td-agent/td-agent.conf
+if [ -e $conf_path ]; then
+    echo "td-agent.conf must be removed: <${conf_path}>"
+    exit 1
+fi
+
 if [ $ENABLE_UPGRADE_TEST -eq 1 ]; then
     echo "UPGRADE TEST from v3"
     rpm --import https://packages.treasuredata.com/GPG-KEY-td-agent
