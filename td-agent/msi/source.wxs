@@ -116,7 +116,7 @@
     <Property Id="PostInstall" Value=" "/>
     <CustomAction Id="SetPostInstallCommand"
                   Property="PostInstall"
-                  Value="[PROJECTLOCATION]bin\td-agent-post-install.bat"/>
+                  Value="&quot;[PROJECTLOCATION]bin\td-agent-post-install.bat&quot;"/>
     <CustomAction Id="PostInstall"
                   BinaryKey="WixCA"
                   DllEntry="WixQuietExec64"
@@ -126,7 +126,7 @@
     <Property Id="InstallFluentdWinSvc" Value=" "/>
     <CustomAction Id="SetInstallFluentdWinSvcCommand"
                   Property="InstallFluentdWinSvc"
-                  Value="[PROJECTLOCATION]bin\td-agent.bat --reg-winsvc i --reg-winsvc-delay-start --reg-winsvc-auto-start --reg-winsvc-fluentdopt &quot;-c [PROJECTLOCATION]etc\td-agent\td-agent.conf -o [PROJECTLOCATION]td-agent.log&quot;"/>
+                  Value="&quot;[PROJECTLOCATION]bin\td-agent.bat&quot; --reg-winsvc i --reg-winsvc-delay-start --reg-winsvc-auto-start --reg-winsvc-fluentdopt &quot;-c [PROJECTLOCATION]etc\td-agent\td-agent.conf -o [PROJECTLOCATION]td-agent.log&quot;"/>
     <CustomAction Id="InstallFluentdWinSvc"
                   BinaryKey="WixCA"
                   DllEntry="WixQuietExec64"
