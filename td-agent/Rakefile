@@ -1433,6 +1433,7 @@ class WindowsPackageTask
       sh(light_path,
          "-nologo",                        # Skip light logo
          "-ext", "WixUIExtension",         # Extension assembly
+         "-ext", "WixUtilExtension",       # Enable QuietExec
          "-cultures:en-us",                # Localization
          "-loc", "localization-en-us.wxl", # Localization file
          "project-files.wixobj",
