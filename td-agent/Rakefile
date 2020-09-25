@@ -997,6 +997,9 @@ class BuildTask
         rm_f(static_library)
       end
     end
+    Dir.glob("#{td_agent_staging_dir}/**/.git").each do |git_dir|
+      remove_files(git_dir, true)
+    end
   end
 end
 
