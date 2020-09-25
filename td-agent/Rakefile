@@ -1052,6 +1052,7 @@ class LinuxPackageTask < PackageTask
       unless spec.licenses.empty?
         spdx_compatible_license = spec.licenses.first.sub(/Apache 2\.0/, "Apache-2.0")
                                     .sub(/Apache License Version 2\.0/, "Apache-2.0")
+                                    .sub(/BSD 2-Clause/, "BSD-2-Clause")
         license = <<-EOS
 Files: #{relative_path}
 Copyright: #{spec.authors.join(",")}
@@ -1061,10 +1062,10 @@ EOS
       else
         # Note: remove this conditions when gem.licenses in gemspec was fixed in upstream
         case spec.name
-        when "cool.io", "async-pool"
+        when "cool.io", "async-pool", "ltsv"
           license = "MIT"
 
-        when "td", "webhdfs"
+        when "td", "webhdfs", "td-logger", "fluent-config-regexp-type"
           license = "Apache-2.0"
         end
         licenses <<= <<-EOS
