@@ -7,7 +7,7 @@ License: Apache-2.0
 
 Files: td-agent/downloads/ruby-<%= bundled_ruby_version %>.tar.gz
 Copyright: Yukihiro Matsumoto <matz@netlab.jp> and others
-License: BSD-2-clause or Ruby
+License: BSD-2-Clause or Ruby
 
 <%= bundled_gem_licenses %>
 
@@ -31,7 +31,7 @@ License: Apache-2.0
  /opt/td-agent/embedded not to affect already installed packages.
  See /opt/td-agent/LICENSE/* for embedded software.
 
-License: BSD-2-clause
+License: BSD-2-Clause
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions
  are met:
