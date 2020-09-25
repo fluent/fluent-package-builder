@@ -1061,10 +1061,10 @@ EOS
       else
         # Note: remove this conditions when gem.licenses in gemspec was fixed in upstream
         case spec.name
-        when "cool.io", "async-pool"
+        when "cool.io", "async-pool", "ltsv"
           license = "MIT"
 
-        when "td", "webhdfs"
+        when "td", "webhdfs", "td-logger", "fluent-config-regexp-type"
           license = "Apache-2.0"
         end
         licenses <<= <<-EOS
