@@ -624,6 +624,13 @@ class BuildTask
       # So, explicitly set PAGE_SIZE by with-lg-page 16 (2^16 = 65536)
       configure_opts.concat(["--with-lg-page=16"])
     end
+    if ENV["TD_AGENT_STAGING_PATH"] and
+      ENV["TD_AGENT_STAGING_PATH"].end_with?("el8.ppc64le")
+      # NOTE: There is a case that PAGE_SIZE detection on
+      # CentOS 8 with ppc64le.
+      # So, explicitly set PAGE_SIZE by with-lg-page 16 (2^16 = 65536)
+      configure_opts.concat(["--with-lg-page=16"])
+    end
     cd(source_dir) do
       sh("./configure", *configure_opts)
       sh("make", "install", "-j#{Etc.nprocessors}", "DESTDIR=#{STAGING_DIR}")
