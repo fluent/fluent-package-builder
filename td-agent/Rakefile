@@ -519,6 +519,7 @@ class BuildTask
         cp("msi/assets/td-agent-post-install.bat", staging_bindir)
         cp("msi/assets/td-agent.bat", staging_bindir)
         cp("msi/assets/td-agent-gem.bat", staging_bindir)
+        cp("msi/assets/td-agent-version.rb", staging_bindir)
       end
 
       desc "Create systemd unit file for Red Hat like systems"
