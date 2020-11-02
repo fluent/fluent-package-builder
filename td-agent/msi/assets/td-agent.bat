@@ -7,7 +7,9 @@ set TD_AGENT_VERSION=%TD_AGENT_TOPDIR%\bin\td-agent-version.rb
 for %%p in (%*) do (
     if "%%p"=="--version" (
         ruby "%TD_AGENT_VERSION%"
-        exit 0
+        gogo last
     )
 )
 "%TD_AGENT_TOPDIR%\bin\fluentd" %*
+
+:last
