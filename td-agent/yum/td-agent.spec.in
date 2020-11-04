@@ -97,9 +97,9 @@ The stable distribution of Fluentd, called td-agent.
 . /opt/rh/rh-ruby%{scl_ruby_ver}/enable
 %endif
 %if %{use_systemd}
-rake build:rpm_config TD_AGENT_STAGING_PATH=%{buildroot}
+rake build:rpm_config TD_AGENT_STAGING_PATH=%{buildroot} NO_VAR_RUN=1
 %else
-rake build:rpm_old_config TD_AGENT_STAGING_PATH=%{buildroot}
+rake build:rpm_old_config TD_AGENT_STAGING_PATH=%{buildroot} NO_VAR_RUN=0
 %endif
 rake build:all TD_AGENT_STAGING_PATH=%{buildroot}
 mkdir -p %{buildroot}%{_mandir}/man1
