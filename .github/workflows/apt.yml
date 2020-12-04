@@ -38,9 +38,9 @@ jobs:
           rake apt:build APT_TARGETS=${{ matrix.rake-job }}
       - name: Upload td-agent deb
         uses: actions/upload-artifact@master
-          with:
-            name: packages-${{ matrix.rake-job }}
-            path: td-agent/apt/repositories
+        with:
+          name: packages-${{ matrix.rake-job }}
+          path: td-agent/apt/repositories
       - name: Upload td-agent-apt-source deb
         uses: actions/upload-artifact@master
         with:
