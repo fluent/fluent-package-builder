@@ -17,23 +17,15 @@ jobs:
           - label: CentOS 6 x86_64
             rake-job: centos-6
             test-docker-image: centos:6
-            test-script: td-agent/yum/install-test.sh
-            test-serverspec: td-agent/yum/serverspec-test.sh
           - label: CentOS 7 x86_64
             rake-job: centos-7
             test-docker-image: centos:7
-            test-script: td-agent/yum/install-test.sh
-            test-serverspec: td-agent/yum/serverspec-test.sh
           - label: CentOS 8 x86_64
             rake-job: centos-8
             test-docker-image: centos:8
-            test-script: td-agent/yum/install-test.sh
-            test-serverspec: td-agent/yum/serverspec-test.sh
           - label: Amazon Linux 2 x86_64
             rake-job: amazonlinux-2
             test-docker-image: amazonlinux:2
-            test-script: td-agent/yum/install-test.sh
-            test-serverspec: td-agent/yum/serverspec-test.sh
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
@@ -57,7 +49,7 @@ jobs:
           --tty \
           --volume ${PWD}:/fluentd:ro \
           ${{ matrix.test-docker-image }} \
-          /fluentd/${{ matrix.test-script }}
+          /fluentd/td-agent/yum/install-test.sh
       - name: Serverspec Test
         run: |
           mkdir -p .bundle
@@ -66,4 +58,4 @@ jobs:
           --tty \
           --volume ${PWD}:/fluentd:ro \
           ${{ matrix.test-docker-image }} \
-          /fluentd/${{ matrix.test-serverspec }}
+          /fluentd/td-agent/yum/serverspec-test.sh
