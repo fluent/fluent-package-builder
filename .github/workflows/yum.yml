@@ -9,14 +9,10 @@ jobs:
       fail-fast: false
       matrix:
         label:
-          - CentOS 6 x86_64
           - CentOS 7 x86_64
           - CentOS 8 x86_64
           - Amazon Linux 2 x86_64
         include:
-          - label: CentOS 6 x86_64
-            rake-job: centos-6
-            test-docker-image: centos:6
           - label: CentOS 7 x86_64
             rake-job: centos-7
             test-docker-image: centos:7
