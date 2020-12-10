@@ -1,0 +1,41 @@
+name: Yum based Linux (AArch64)
+on:
+  push:
+  pull_request:
+jobs:
+  build:
+    name: Build
+    strategy:
+      fail-fast: false
+      matrix:
+        label:
+          - CentOS 7 aarch64
+          - CentOS 8 aarch64
+          - Amazon Linux 2 aarch64
+        include:
+          - label: CentOS 7 aarch64
+            rake-job: centos-7
+            test-docker-image: centos:7
+          - label: CentOS 8 aarch64
+            rake-job: centos-8
+            test-docker-image: centos:8
+          - label: Amazon Linux 2 aarch64
+            rake-job: amazonlinux-2
+            test-docker-image: amazonlinux:2
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt -V install ruby ruby-bundler ruby-serverspec
+          sudo apt -V install qemu-user-static
+      - name: Build rpm with Docker
+        run: |
+          cp /usr/bin/qemu-aarch64-static td-agent/yum/${{ matrix.rake-job }}/
+          rake yum:build YUM_TARGETS=${{ matrix.rake-job }}-aarch64
+      - name: Upload td-agent rpm
+        uses: actions/upload-artifact@master
+        with:
+          name: packages-${{ matrix.rake-job }}-aarch64
+          path: td-agent/yum/repositories
