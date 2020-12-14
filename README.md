@@ -25,7 +25,7 @@ See also [this issue](https://github.com/treasure-data/omnibus-td-agent/issues/2
     * Debian buster or Ubuntu 18.04 are recommended
   * [Docker](https://docs.docker.com/install/)
   * Ruby 2.5 or later
-  * Bundler 2.2.0.rc1 or later (e.g. Install by `gem install bundler -v 2.2.0.rc.1`)
+  * Bundler 2.2.0 or later
   * Git
 
 ### For building Windows package (.msi)
@@ -34,7 +34,7 @@ See also [this issue](https://github.com/treasure-data/omnibus-td-agent/issues/2
   * [Docker Desktop for Windows](https://hub.docker.com/editions/community/docker-ce-desktop-windows)
     * You need to switch to "Windows containers" before using it.
   * [RubyInstaller](https://rubyinstaller.org/) 2.5 or later.
-  * Bundler 2.2.0.rc1 or later (e.g. Install by `gem install bundler -v 2.2.0.rc.1`)
+  * Bundler 2.2.0 or later
   * [Git for Windows](https://gitforwindows.org/)
 
 After installed above software, you need to enable additional features from powershell (as admin).
@@ -50,7 +50,7 @@ Then restart Windows.
 
   * macOS 10.15 (Catalina)
   * Ruby 2.5 or later
-  * Bundler 2.2.0.rc1 or later (e.g. Install by `gem install bundler -v 2.2.0.rc.1`)
+  * Bundler 2.2.0 or later
   * Git
 
 ## How to build .rpm package
@@ -218,4 +218,4 @@ In System Preferences > Security & Privacy > Privacy > Accessibility, you should
 ### Note for bump up the package version
 
 It assumes that Gemfile works with Bundler's multiplatform feature,
-so bundler must be 2.2.0.rc1 or later.
+so bundler must be 2.2.0 or later.
