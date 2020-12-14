@@ -37,7 +37,7 @@ case ${distribution} in
         DNF=yum
         ;;
       *)
-        DNF="dnf --enablerepo=PowerTools"
+        DNF="dnf --enablerepo=powertools"
         ENABLE_KAFKA_TEST=0
         ;;
     esac
