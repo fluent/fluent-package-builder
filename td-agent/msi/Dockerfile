@@ -30,4 +30,4 @@ RUN \
   choco install -y ruby && \
   refreshenv && \
   ridk install 3 && \
-  gem install --prerelease --no-document bundler:2.2.0.rc.1
+  gem install --no-document bundler:2.2.0
