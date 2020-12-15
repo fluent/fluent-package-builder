@@ -41,7 +41,6 @@ case ${distribution} in
         ;;
       *)
         DNF="dnf --enablerepo=powertools"
-        ENABLE_KAFKA_TEST=0
         if [ x"${CENTOS_STREAM}" == x"true" ]; then
             echo "MIGRATE TO CENTOS STREAM"
             ${DNF} install centos-release-stream -y && \
