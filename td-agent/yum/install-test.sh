@@ -20,6 +20,7 @@ case ${distribution} in
     case ${version} in
       2)
         DNF=yum
+        DISTRIBUTION_VERSION=${version}
         ;;
     esac
     ;;
@@ -27,13 +28,24 @@ case ${distribution} in
     case ${version} in
       6)
         DNF=yum
+        DISTRIBUTION_VERSION=${version}
         ;;
       7)
         DNF=yum
+        DISTRIBUTION_VERSION=${version}
         ;;
       *)
         DNF="dnf --enablerepo=powertools"
         ENABLE_UPGRADE_TEST=0
+        if [ x"${CENTOS_STREAM}" == x"true" ]; then
+            echo "MIGRATE TO CENTOS STREAM"
+            ${DNF} install centos-release-stream -y && \
+                ${DNF} swap centos-{linux,stream}-repos -y && \
+                ${DNF} distro-sync -y
+            DISTRIBUTION_VERSION=${version}-stream
+        else
+            DISTRIBUTION_VERSION=${version}
+        fi
         ;;
     esac
     ;;
@@ -42,7 +54,7 @@ esac
 echo "INSTALL TEST"
 repositories_dir=/fluentd/td-agent/yum/repositories
 ${DNF} install -y \
-  ${repositories_dir}/${distribution}/${version}/x86_64/Packages/*.rpm
+  ${repositories_dir}/${distribution}/${DISTRIBUTION_VERSION}/x86_64/Packages/*.rpm
 
 td-agent --version
 
@@ -82,5 +94,5 @@ EOF
     ${DNF} update -y
     ${DNF} install -y td-agent
     ${DNF} install -y \
-           ${repositories_dir}/${distribution}/${version}/x86_64/Packages/*.rpm
+           ${repositories_dir}/${distribution}/${DISTRIBUTION_VERSION}/x86_64/Packages/*.rpm
 fi

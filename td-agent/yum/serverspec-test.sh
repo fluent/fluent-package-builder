@@ -24,6 +24,7 @@ case ${distribution} in
       2)
         DNF=yum
         ENABLE_SERVERSPEC_TEST=0
+        DISTRIBUTION_VERSION=${version}
         ;;
     esac
     ;;
@@ -32,13 +33,24 @@ case ${distribution} in
       6)
         DNF=yum
         JAVA_JRE=java-1.8.0-openjdk
+        DISTRIBUTION_VERSION=${version}
         ;;
       7)
         DNF=yum
+        DISTRIBUTION_VERSION=${version}
         ;;
       *)
         DNF="dnf --enablerepo=powertools"
         ENABLE_KAFKA_TEST=0
+        if [ x"${CENTOS_STREAM}" == x"true" ]; then
+            echo "MIGRATE TO CENTOS STREAM"
+            ${DNF} install centos-release-stream -y && \
+                ${DNF} swap centos-{linux,stream}-repos -y && \
+                ${DNF} distro-sync -y
+            DISTRIBUTION_VERSION=${version}-stream
+        else
+            DISTRIBUTION_VERSION=${version}
+        fi
         ;;
     esac
     ;;
@@ -47,12 +59,12 @@ esac
 echo "INSTALL TEST"
 repositories_dir=/fluentd/td-agent/yum/repositories
 ${DNF} install -y \
-  ${repositories_dir}/${distribution}/${version}/x86_64/Packages/*.rpm
+  ${repositories_dir}/${distribution}/${DISTRIBUTION_VERSION}/x86_64/Packages/*.rpm
 
 td-agent --version
 
 if [ $ENABLE_SERVERSPEC_TEST -eq 1 ]; then
-    ${DNF} install -y curl which ${repositories_dir}/${distribution}/${version}/x86_64/Packages/*.rpm
+    ${DNF} install -y curl which ${repositories_dir}/${distribution}/${DISTRIBUTION_VERSION}/x86_64/Packages/*.rpm
 
     /usr/sbin/td-agent-gem install --no-document serverspec
     if [ $ENABLE_KAFKA_TEST -eq 1 ]; then
