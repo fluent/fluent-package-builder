@@ -13,6 +13,7 @@ jobs:
       - name: Build
         run: |
           gem install serverspec
+          gem install bundler --no-document -v 2.2.0
           rake msi:build
       - name: Upload td-agent msi
         uses: actions/upload-artifact@master
