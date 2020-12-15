@@ -26,10 +26,6 @@ case ${distribution} in
     ;;
   centos)
     case ${version} in
-      6)
-        DNF=yum
-        DISTRIBUTION_VERSION=${version}
-        ;;
       7)
         DNF=yum
         DISTRIBUTION_VERSION=${version}
