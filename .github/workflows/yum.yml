@@ -19,6 +19,9 @@ jobs:
           - label: CentOS 8 x86_64
             rake-job: centos-8
             test-docker-image: centos:8
+          - label: CentOS Stream 8 x86_64
+            rake-job: centos-stream-8
+            test-docker-image: td-agent-centos-stream-8
           - label: Amazon Linux 2 x86_64
             rake-job: amazonlinux-2
             test-docker-image: amazonlinux:2
