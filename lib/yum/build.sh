@@ -36,6 +36,9 @@ rpmbuild_options=
 distribution=$(cut -d " " -f 1 /etc/system-release | tr "A-Z" "a-z")
 if grep -q Linux /etc/system-release; then
   distribution_version=$(cut -d " " -f 4 /etc/system-release)
+elif grep -q Stream /etc/system-release; then
+  # ${version}-stream
+  distribution_version=$(cut -d " " -f 4 /etc/system-release)-$(cut -d " " -f 2 /etc/system-release | tr "[:upper:]" "[:lower:]")
 else
   distribution_version=$(cut -d " " -f 3 /etc/system-release)
 fi

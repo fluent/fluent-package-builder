@@ -24,9 +24,9 @@ case ${code_name} in
 esac
 
 /usr/sbin/td-agent-gem install --no-document serverspec
-wget -qO - https://packages.confluent.io/deb/5.5/archive.key | apt-key add -
-echo "deb [arch=${architecture}] https://packages.confluent.io/deb/5.5 stable main" > /etc/apt/sources.list.d/confluent.list
-apt update && apt install -y confluent-community-2.12 ${java_jdk} netcat-openbsd
+wget -qO - https://packages.confluent.io/deb/6.0/archive.key | apt-key add -
+echo "deb [arch=${architecture}] https://packages.confluent.io/deb/6.0 stable main" > /etc/apt/sources.list.d/confluent.list
+apt update && apt install -y confluent-community-2.13 ${java_jdk} netcat-openbsd
 
 export KAFKA_OPTS=-Dzookeeper.4lw.commands.whitelist=ruok
 /usr/bin/zookeeper-server-start /etc/kafka/zookeeper.properties  &
