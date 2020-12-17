@@ -19,6 +19,7 @@ jobs:
             rake-job: ubuntu-bionic
           - label: Ubuntu Focal arm64
             rake-job: ubuntu-focal
+            rake-options: LINTIAN=no
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
@@ -30,7 +31,7 @@ jobs:
       - name: Build deb with Docker
         run: |
           cp /usr/bin/qemu-aarch64-static td-agent/apt/${{ matrix.rake-job }}/
-          rake apt:build APT_TARGETS=${{ matrix.rake-job }}-arm64
+          rake apt:build APT_TARGETS=${{ matrix.rake-job }}-arm64 ${{ matrix.rake-options }}
       - name: Upload td-agent deb
         uses: actions/upload-artifact@master
         with:
