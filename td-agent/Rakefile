@@ -330,7 +330,7 @@ class UpdateLockfileTask
           command = "bundle package --no-install --cache-path=#{DOWNLOADS_DIR}"
           output, error, status = Open3.capture3(command)
           unless status.success?
-            fail "Failed to update Gemfile.lock: <#{command}> (error: #{error})"
+            fail "Failed to update Gemfile.lock: <#{command}> (stdout: #{output}, stderr: #{error})"
           end
         end
       end
@@ -358,7 +358,7 @@ class BuildTask
     when /~alpha(\d+)/
       revision = $1.to_i * 100 + Time.now.hour
     else
-      fail "Failed to download #{gem}!" unless $?.success?
+      fail "Invalid version: #{version}"
     end
     if revision > 65534
       fail "revision must be an integer, from 0 to 65534: <#{revision}>"
@@ -649,7 +649,7 @@ class BuildTask
 
     cert_list, error, status = Open3.capture3("security find-certificate -a -p #{keychains.join(' ')}")
     unless status.success?
-      fail "Failed to retrive certificates. (error: #{error})"
+      fail "Failed to retrive certificates. (stdout: #{cert_list}, stderr: #{error})"
     end
     certs = cert_list.scan(
       /-----BEGIN CERTIFICATE-----.*?-----END CERTIFICATE-----/m
@@ -963,7 +963,7 @@ class BuildTask
     command = "#{gem_command} list -d"
     output, error, status = Open3.capture3(command)
     unless status.success?
-      fail "Failed to get gem list: <#{command}> (error: #{error})"
+      fail "Failed to get gem list: <#{command}> (stdout: #{output}, stderr: #{error})"
     end
     gems_descriptions = output
     gems_descriptions.gsub!(STAGING_DIR, "") unless windows?
@@ -1053,7 +1053,7 @@ class LinuxPackageTask < PackageTask
       command = "gem specification #{gem_file}"
       output, error, status = Open3.capture3(command)
       unless status.success?
-        fail "Failed to get gem specification: <#{gem_file}> (error: #{error})"
+        fail "Failed to get gem specification: <#{gem_file}> (stdout: #{output}, stderr: #{error})"
       end
       spec = YAML.load(output)
       relative_path = gem_file.sub(/#{Dir.pwd}\//, "")
@@ -1098,19 +1098,19 @@ EOS
     command = "bundle config set --local cache_path #{DOWNLOADS_DIR}"
     output, error, status = Open3.capture3(command)
     unless status.success?
-      fail "Failed to set cache_path: <#{command}> (error: #{error})"
+      fail "Failed to set cache_path: <#{command}> (stdout: #{output}, stderr: #{error})"
     end
     # Note: bundle package try to require sudo when path is not set
     command = "bundle config set --local path vendor"
     output, error, status = Open3.capture3(command)
     unless status.success?
-      fail "Failed to set dummy path: <#{command}> (error: #{error})"
+      fail "Failed to set dummy path: <#{command}> (stdout: #{output}, stderr: #{error})"
     end
     Dir.chdir(gemfile_dir) do
       command = "bundle package --no-install"
       output, error, status = Open3.capture3(command)
       unless status.success?
-        fail "Failed to download gem files: <#{command}> (error: #{error})"
+        fail "Failed to download gem files: <#{command}> (stdout: #{output}, stderr: #{error})"
       end
     end
     Dir.glob("#{DOWNLOADS_DIR}/*.gem") do |path|
@@ -1195,7 +1195,7 @@ class CompressDMG
   def clean_disks
     disks, error, status = Open3.capture3("mount | grep \"/Volumes/#{@volume_name}\" | awk '{print $1}'")
     unless status.success?
-      fail "Failed to search mounted disks (error: #{error})"
+      fail "Failed to search mounted disks (stdout: #{disks}, stderr: #{error})"
     end
     disks.split("\n").each do |disk|
       disk.chomp!
@@ -1217,7 +1217,7 @@ class CompressDMG
     device, error, status = Open3.capture3("hdiutil attach -readwrite -noverify -noautoopen #{@dmg_temp_name} | egrep '^/dev/' | sed 1q | awk '{print $1}'")
     @device = device.strip
     unless status.success?
-      fail "Failed to attach disk image. (error: #{error})"
+      fail "Failed to attach disk image. (stdout: #{device}, stderr: #{error})"
     end
     sleep 5
   end

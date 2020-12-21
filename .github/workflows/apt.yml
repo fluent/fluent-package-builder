@@ -33,6 +33,7 @@ jobs:
         run: |
           sudo apt update
           sudo apt -V install ruby ruby-bundler ruby-serverspec
+          sudo gem install bundler --no-document -v 2.2.0
       - name: Build deb with Docker
         run: |
           rake apt:build APT_TARGETS=${{ matrix.rake-job }}
