@@ -358,7 +358,7 @@ class BuildTask
     when /~alpha(\d+)/
       revision = $1.to_i * 100 + Time.now.hour
     else
-      fail "Failed to download #{gem}!" unless $?.success?
+      fail "Invalid version: #{version}"
     end
     if revision > 65534
       fail "revision must be an integer, from 0 to 65534: <#{revision}>"
