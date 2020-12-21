@@ -4,18 +4,6 @@ set :os, :family => 'windows'
 require "bundler"
 require "win32/service"
 
-class Specinfra::Command::Windows::Base::Package < Specinfra::Command::Windows::Base
-  class << self
-    def check_is_installed_by_gem(name, version=nil, gem_binary="gem")
-      version_selection = version.nil? ? "" : "-gemVersion '#{version}'"
-      Backend::PowerShell::Command.new do
-        using "find_installed_gem.ps1"
-        exec "(FindInstalledGem -gemName '#{name}' #{version_selection}) -eq $true"
-      end
-    end
-  end
-end
-
 config_path = File.join(File.dirname(File.dirname(File.dirname(__FILE__))),
                         "td-agent/config.rb")
 require config_path
