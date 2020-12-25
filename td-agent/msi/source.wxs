@@ -27,6 +27,18 @@
       <Directory Id="WINDOWSVOLUME">
         <Directory Id="OPTLOCATION" Name="opt">
           <Directory Id="PROJECTLOCATION" Name="td-agent">
+            <Component Id="TDAgentAcl" Guid="b0504030-258a-0139-ba33-7085c2f4281d">
+              <CreateFolder>
+                <!--
+                  Read/Execute: Builtin Users
+                  All:: Builtin Administrators, Service, System account(by default)
+                -->
+                <Permission User="Users" GenericExecute="yes" GenericRead="yes" Traverse="yes"/>
+                <Permission User="Administrators" GenericAll="yes" Traverse="yes"/>
+                <Permission User="NT SERVICE\TrustedInstaller" GenericAll="yes" Traverse="yes"/>
+                <Permission User="CREATOR OWNER" GenericAll="yes" Traverse="yes"/>
+              </CreateFolder>
+            </Component>
           </Directory>
         </Directory>
       </Directory>
@@ -87,6 +99,7 @@
       <ComponentRef Id="ApplicationShortcut" />
       <ComponentRef Id="TDAgentConf" />
       <ComponentRef Id="TDAgentBat" />
+      <ComponentRef Id="TDAgentAcl" />
     </Feature>
 
     <!-- UI Stuff -->
