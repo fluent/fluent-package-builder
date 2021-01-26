@@ -30,7 +30,7 @@ require 'yaml'
 require 'bundler'
 require 'logger'
 
-DOWNLOADS_DIR  = File.expand_path(ENV["TD_AGENT_DOWNLOADS_PATH"] || "downloads")
+DOWNLOADS_DIR  = File.expand_path("downloads")
 STAGING_DIR    = File.expand_path(ENV["TD_AGENT_STAGING_PATH"]   || "staging")
 
 @logger = Logger.new(STDOUT, Logger::Severity::INFO)
@@ -885,7 +885,7 @@ class BuildTask
       gem_install(Dir.glob("bundler-*.gem").first)
     end
 
-    relative_path = File.join(File.basename(File.split(DOWNLOADS_DIR)[0]), File.split(DOWNLOADS_DIR)[1])
+    relative_path = File.basename(DOWNLOADS_DIR)
     @logger.debug("bundle config cache path: <#{relative_path}>")
     gem_home = ENV["GEM_HOME"]
     ENV["GEM_HOME"] = gem_staging_dir
