@@ -22,10 +22,6 @@ gem "tzinfo-data", "1.2020.4"
 gem "async-http", "0.52.4"
 gem "fluentd", github: "fluent/fluentd", ref: FLUENTD_REVISION
 
-# https://github.com/socketry/protocol-http2/issues/6
-# protocol-http2 0.14.1 causes install error
-gem "protocol-http2", "0.14.0"
-
 # plugin gems
 
 gem "elasticsearch", "7.10.0"
