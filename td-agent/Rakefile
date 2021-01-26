@@ -30,7 +30,7 @@ require 'yaml'
 require 'bundler'
 require 'logger'
 
-DOWNLOADS_DIR  = File.expand_path(ENV["TD_AGENT_DOWNLOADS_PATH"] || "downloads")
+DOWNLOADS_DIR  = File.expand_path("downloads")
 STAGING_DIR    = File.expand_path(ENV["TD_AGENT_STAGING_PATH"]   || "staging")
 
 @logger = Logger.new(STDOUT, Logger::Severity::INFO)
