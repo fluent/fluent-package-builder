@@ -229,7 +229,6 @@ DEPENDENCIES
   nokogiri (= 1.10.10)
   oj (= 3.10.18)
   prometheus-client (= 0.9.0)
-  protocol-http2 (= 0.14.0)
   rake
   rdkafka (= 0.8.1)
   ruby-kafka (= 1.3.0)
