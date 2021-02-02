@@ -15,7 +15,7 @@ gem "sigdump", "0.2.4"
 gem "http_parser.rb", "0.6.0"
 gem "yajl-ruby", "1.4.1"
 gem "serverengine", '2.2.2'
-gem "msgpack", "1.4.0"
+gem "msgpack", "1.4.2"
 gem "oj", "3.10.18"
 gem "tzinfo", "2.0.4"
 gem "tzinfo-data", "1.2020.6"
