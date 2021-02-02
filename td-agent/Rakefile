@@ -984,6 +984,7 @@ class BuildTask
     remove_files("#{td_agent_staging_dir}/share/doc", true) # Contains only jemalloc.html
     cd("#{gem_staging_dir}/cache") do
       remove_files("*.gem")
+      remove_files("bundler", true)
     end
     Dir.glob("#{gem_staging_dir}/gems/*").each do |gem_dir|
       cd(gem_dir) do
