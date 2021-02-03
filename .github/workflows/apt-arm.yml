@@ -38,3 +38,6 @@ jobs:
         with:
           name: packages-${{ matrix.rake-job }}-arm64
           path: td-agent/apt/repositories
+      - name: Check Package Size
+        run: |
+          td-agent/apt/pkgsize-test.sh ${{ matrix.rake-job }} arm64
