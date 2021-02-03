@@ -40,3 +40,6 @@ jobs:
         with:
           name: packages-${{ matrix.rake-job }}-aarch64
           path: td-agent/yum/repositories
+      - name: Check Package Size
+        run: |
+          td-agent/yum/pkgsize-test.sh ${{ matrix.rake-job }} aarch64
