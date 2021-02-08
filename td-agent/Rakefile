@@ -1036,6 +1036,7 @@ class LinuxPackageTask < PackageTask
       build_include_binaries_file
     end
 
+    # TODO: Probably debian related files should be built in the build container
     file @archive_name => [*repo_files, *@download_task.files, debian_copyright_file, debian_include_binaries_file] do
       build_archive
     end
@@ -1135,7 +1136,12 @@ EOS
         dest_downloads_dir = "#{@archive_base_name}/td-agent/downloads"
         dest_dir = "#{dest_downloads_dir}/#{File.dirname(relative_path)}"
         ensure_directory(dest_dir)
-        cp_r(path, dest_dir)
+        # TODO: When a tarball is create on a host OS that is different from a target,
+        # mismatched fat gems are included unexpectedly. To avoid it, remove gems from
+        # the archive and let the build container to download them.
+        # Although we should remove dependency to gems, they are still required to
+        # build debian/copyright. Probably it should be built in the build container.
+        cp_r(path, dest_dir) unless path.end_with?(".gem")
       end
       cp_r("td-agent/debian/copyright", "#{@archive_base_name}/td-agent/debian/copyright")
       sh("tar", "cvfz", @full_archive_name, @archive_base_name)
