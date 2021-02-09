@@ -46,6 +46,9 @@ jobs:
         with:
           name: packages-${{ matrix.rake-job }}
           path: td-agent/yum/repositories
+      - name: Check Package Size
+        run: |
+          td-agent/yum/pkgsize-test.sh ${{ matrix.rake-job }} x86_64
       - name: Installation Test
         run: |
           mkdir -p .bundle

@@ -47,6 +47,9 @@ jobs:
         with:
           name: packages-apt-source-${{ matrix.rake-job }}
           path: td-agent-apt-source/apt/repositories
+      - name: Check Package Size
+        run: |
+          td-agent/apt/pkgsize-test.sh ${{ matrix.rake-job }} amd64
       - name: Installation Test
         run: |
           mkdir -p .bundle

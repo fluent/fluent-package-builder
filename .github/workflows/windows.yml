@@ -20,6 +20,10 @@ jobs:
         with:
           name: packages-windows-x86_64
           path: td-agent/msi/repositories
+      - name: Check Package Size
+        shell: pwsh
+        run: |
+          powershell -ExecutionPolicy Bypass -Command ".\td-agent\msi\pkgsize-test.ps1"
       - name: Installation Test
         shell: pwsh
         run: |
