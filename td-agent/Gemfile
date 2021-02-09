@@ -9,7 +9,7 @@ git_source(:github) {|repo_name| "https://github.com/#{repo_name}" }
 # core gems
 
 gem "rake"
-gem "bundler", "2.2.0"
+gem "bundler", BUNDLER_VERSION
 gem "cool.io", "1.7.0"
 gem "sigdump", "0.2.4"
 gem "http_parser.rb", "0.6.0"
