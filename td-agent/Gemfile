@@ -70,10 +70,3 @@ not_windows_platforms = [:ruby]
 gem "rdkafka", "0.8.1", platforms: not_windows_platforms
 gem "systemd-journal", "1.3.3", platforms: not_windows_platforms
 gem "fluent-plugin-systemd", "1.0.2", platforms: not_windows_platforms
-
-if ENV["TRAVIS"]
-  # Travis CI fails because activesupport requires tzinfo ~> 1.1.
-  # We need to wait until activesupport 6.1.
-  gem "gh", "0.18.0"
-  gem "travis", "1.9.1"
-end
