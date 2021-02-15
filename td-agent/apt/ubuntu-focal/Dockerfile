@@ -49,6 +49,8 @@ RUN \
     zlib1g-dev && \
   apt build-dep -y ruby && \
   apt clean && \
+  # raise IPv4 priority
+  sed -i'' -e 's,#precedence ::ffff:0:0/96  100,precedence ::ffff:0:0/96  100,' /etc/gai.conf && \
   # enable multiplatform feature
   gem install --no-document --install-dir /usr/share/rubygems-integration/all bundler && \
   rm -rf /var/lib/apt/lists/*
