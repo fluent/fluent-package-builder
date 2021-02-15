@@ -62,20 +62,6 @@ end
   define_bulked_task(*params)
 end
 
-namespace :travis do
-  desc "login to travis-ci.com"
-  task :login do
-    sh("travis", "login", "--com")
-  end
-
-  desc "encrypt GitHub token"
-  task :encrypt_token do
-    abort("GITHUB_TOKEN must not empty") if ENV["GITHUB_TOKEN"].empty?
-
-    sh("travis", "encrypt", "--com", ENV["GITHUB_TOKEN"])
-  end
-end
-
 if ENV["INSTALLATION_TEST"]
   require "rspec/core/rake_task"
   namespace :serverspec do
