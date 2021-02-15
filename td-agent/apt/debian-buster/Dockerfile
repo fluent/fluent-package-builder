@@ -51,5 +51,5 @@ RUN \
   apt build-dep -y ruby && \
   apt clean && \
   # enable multiplatform feature
-  gem install --no-document --install-dir /usr/share/rubygems-integration/all bundler:2.2.0 && \
+  gem install --no-document --install-dir /usr/share/rubygems-integration/all bundler && \
   rm -rf /var/lib/apt/lists/*
