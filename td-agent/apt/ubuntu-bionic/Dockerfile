@@ -50,5 +50,5 @@ RUN \
   apt build-dep -y ruby && \
   apt clean && \
   # enable multiplatform feature
-  gem install --no-document bundler:2.2.0 && \
+  gem install --no-document bundler && \
   rm -rf /var/lib/apt/lists/*

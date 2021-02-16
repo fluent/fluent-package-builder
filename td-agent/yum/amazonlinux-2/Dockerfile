@@ -43,5 +43,5 @@ RUN \
     rpmlint && \
   amazon-linux-extras install ruby2.6 && \
   # enable multiplatform feature
-  gem install --no-document bundler:2.2.0 && \
+  gem install --no-document bundler && \
   yum clean ${quiet} all

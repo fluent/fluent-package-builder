@@ -46,5 +46,5 @@ RUN \
     zlib-devel \
     rpmlint && \
     # enable multiplatform feature
-    gem install --no-document --install-dir /usr/share/gems bundler:2.2.0 && \
+    gem install --no-document --install-dir /usr/share/gems bundler && \
   yum clean ${quiet} all

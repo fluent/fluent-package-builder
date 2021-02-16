@@ -47,5 +47,5 @@ RUN \
     zlib-devel \
     rpmlint && \
     # enable multiplatform feature
-    source /opt/rh/rh-ruby24/enable && gem install --no-document --install-dir /opt/rh/rh-ruby24/root/usr/share/gems/ bundler:2.2.0 && \
+    source /opt/rh/rh-ruby24/enable && gem install --no-document --install-dir /opt/rh/rh-ruby24/root/usr/share/gems/ bundler && \
   yum clean ${quiet} all

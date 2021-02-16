@@ -238,7 +238,7 @@ DEPENDENCIES
   aws-sdk-s3 (= 1.87.0)
   aws-sdk-sqs (= 1.35.0)
   aws-sigv4 (= 1.2.2)
-  bundler (= 2.2.0)
+  bundler (= 2.2.9)
   cool.io (= 1.7.0)
   elasticsearch (= 7.10.0)
   ffi (= 1.14.2)
@@ -289,4 +289,4 @@ DEPENDENCIES
   yajl-ruby (= 1.4.1)
 
 BUNDLED WITH
-   2.2.0
+   2.2.9
