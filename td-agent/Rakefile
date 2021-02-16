@@ -1133,6 +1133,7 @@ EOS
       "ubuntu-xenial",
       "ubuntu-bionic",
       "ubuntu-focal",
+      "ubuntu-hirsute",
     ]
   end
 

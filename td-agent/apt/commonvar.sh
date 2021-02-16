@@ -9,7 +9,7 @@ case ${code_name} in
     mirror=http://archive.ubuntu.com/ubuntu/
     java_jdk=openjdk-8-jre
     ;;
-  bionic|focal)
+  bionic|focal|hirsure)
     distribution=ubuntu
     channel=universe
     mirror=http://archive.ubuntu.com/ubuntu/
