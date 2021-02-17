@@ -37,7 +37,7 @@ jobs:
         run: |
           sudo apt update
           sudo apt -V install ruby ruby-bundler ruby-serverspec
-          sudo gem install bundler --no-document
+          sudo gem install bundler:2.2.9 --no-document
       - name: Build rpm with Docker
         run: |
           rake yum:build YUM_TARGETS=${{ matrix.rake-job }}
