@@ -7,7 +7,7 @@ FLUENTD_REVISION = 'e3effa337593618cbd7f0f4ef071766df1ec69a0' # v1.12.1
 JEMALLOC_VERSION = "5.2.1"
 
 # https://www.openssl.org/source/
-OPENSSL_VERSION = "1.1.1i"
+OPENSSL_VERSION = "1.1.1j"
 
 BUNDLER_VERSION= "2.2.9"
 
