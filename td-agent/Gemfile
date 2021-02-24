@@ -20,7 +20,7 @@ gem "oj", "3.10.18"
 gem "tzinfo", "2.0.4"
 gem "tzinfo-data", "1.2021.1"
 gem "async-http", "0.54.1"
-gem "fluentd", github: "fluent/fluentd", ref: FLUENTD_REVISION
+gem "fluentd", git: FLUENTD_REPOSITORY, ref: FLUENTD_REVISION
 gem "webrick", "1.7.0"
 
 # plugin gems

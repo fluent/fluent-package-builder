@@ -299,7 +299,7 @@ class DownloadTask
         dirname = "fluentd-#{FLUENTD_REVISION}"
         rm_rf("fluentd") if File.exists?("fluentd")
         rm_rf(dirname) if File.exists?(dirname)
-        sh("git", "clone", "https://github.com/fluent/fluentd.git")
+        sh("git", "clone", FLUENTD_REPOSITORY)
         cd("fluentd") do
           sh("git", "checkout", FLUENTD_REVISION)
         end

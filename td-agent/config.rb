@@ -1,7 +1,8 @@
 PACKAGE_NAME = "td-agent"
-PACKAGE_VERSION = "4.0.90"
+PACKAGE_VERSION = "4.0.50"
 
-FLUENTD_REVISION = 'e3effa337593618cbd7f0f4ef071766df1ec69a0' # v1.12.1
+FLUENTD_REVISION = '335a4c709e4a54059af2be3ef1b01c9f97e279b8' # v1.11.5 with disable shared port
+FLUENTD_REPOSITORY = 'https://github.com/clear-code/fluentd.git'
 
 # https://github.com/jemalloc/jemalloc/releases/download/
 JEMALLOC_VERSION = "5.2.1"
