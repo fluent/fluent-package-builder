@@ -49,7 +49,7 @@ RUN \
     zlib-devel \
     rpmlint && \
     # raise IPv4 priority
-    echo "precedence ::ffff:0:0/96" > /etc/gai.conf && \
+    echo "precedence ::ffff:0:0/96 100" > /etc/gai.conf && \
     # enable multiplatform feature
     gem install --no-document --install-dir /usr/share/gems bundler && \
   yum clean ${quiet} all

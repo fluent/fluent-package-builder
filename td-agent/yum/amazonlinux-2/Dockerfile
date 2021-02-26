@@ -43,7 +43,7 @@ RUN \
     rpmlint && \
   amazon-linux-extras install ruby2.6 && \
   # raise IPv4 priority
-  echo "precedence ::ffff:0:0/96" > /etc/gai.conf && \
+  echo "precedence ::ffff:0:0/96 100" > /etc/gai.conf && \
   # enable multiplatform feature
   gem install --no-document bundler && \
   yum clean ${quiet} all
