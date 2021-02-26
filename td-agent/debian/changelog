@@ -2,7 +2,7 @@ td-agent (4.1.0-1) unstable; urgency=low
 
   * New upstream release.
 
- -- Masahiro Nakagawa <repeatedly@gmail.com>  Thu, 07 Jan 2021 07:40:32 -0000
+ -- Masahiro Nakagawa <repeatedly@gmail.com>  Fri, 19 Feb 2021 01:18:27 -0000
 
 td-agent (4.0.1-1) unstable; urgency=low
 
