@@ -206,6 +206,9 @@ fi
 # NOTE: %{_tmpfilesdir} is available since CentOS 7
 %attr(0755,td-agent,td-agent) %dir /tmp/@PACKAGE@
 %changelog
+* Fri Feb 26 2021 Takuro Ashie <ashie@clear-code.com> - 4.0.1-2
+- Remove unnecessary provides
+
 * Fri Aug 07 2020 Masahiro Nakagawa <repeatedly@gmail.com> - 4.0.1-1
 - New upstream release.
 

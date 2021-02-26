@@ -1017,6 +1017,10 @@ class LinuxPackageTask < PackageTask
     super(PACKAGE_NAME, PACKAGE_VERSION, detect_release_time)
     @archive_tar_name = "#{@package}-#{@version}.tar"
     @archive_name = "#{@archive_tar_name}.gz"
+    if PACKAGE_RELEASE
+      @rpm_release = PACKAGE_RELEASE
+      @deb_release = PACKAGE_RELEASE
+    end
     CLEAN.include(@archive_name)
   end
 
