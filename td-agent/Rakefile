@@ -1085,10 +1085,18 @@ EOS
       fail "Failed to set dummy path: <#{command}> (stdout: #{output}, stderr: #{error})"
     end
     Dir.chdir(gemfile_dir) do
-      command = "bundle package --no-install"
-      output, error, status = Open3.capture3(command)
-      unless status.success?
-        fail "Failed to download gem files: <#{command}> (stdout: #{output}, stderr: #{error})"
+      retry_count = 3
+      retry_count.times do |n|
+        command = "bundle package --no-install"
+        output, error, status = Open3.capture3(command)
+        if status.success?
+          break
+        else
+          if n == retry_count - 1
+            fail "Failed to download gem files: <#{command}> (stdout: #{output}, stderr: #{error})"
+          end
+        end
+        sleep 10
       end
     end
     Dir.glob("#{DOWNLOADS_DIR}/*.gem") do |path|
