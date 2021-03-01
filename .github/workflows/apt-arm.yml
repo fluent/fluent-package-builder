@@ -29,7 +29,6 @@ jobs:
           sudo apt -V install ruby ruby-bundler ruby-serverspec
           sudo apt -V install qemu-user-static
           sudo gem install bundler:2.2.9 --no-document
-          sudo gem uninstall fileutils
       - name: Build deb with Docker
         run: |
           cp /usr/bin/qemu-aarch64-static td-agent/apt/${{ matrix.rake-job }}/
