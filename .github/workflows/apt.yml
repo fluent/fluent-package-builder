@@ -34,6 +34,7 @@ jobs:
           sudo apt update
           sudo apt -V install ruby ruby-bundler ruby-serverspec
           sudo gem install bundler:2.2.9 --no-document
+          sudo gem uninstall fileutils
       - name: Build deb with Docker
         run: |
           rake apt:build APT_TARGETS=${{ matrix.rake-job }}
