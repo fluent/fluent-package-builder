@@ -82,7 +82,8 @@ BuildRequires:	libyaml-devel
 %{?systemd_requires}
 BuildRequires: systemd
 %else
-Requires: redhat-lsb-core
+# It's optional, see ../templates/etc/init.d/td-agent.erb
+#Requires: redhat-lsb-core
 %endif
 Requires(pre): /usr/bin/getent, /usr/sbin/adduser
 
