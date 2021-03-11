@@ -403,6 +403,10 @@ class BuildTask
         ENV["GEM_HOME"] = gem_staging_dir
         sh(bundle_command, "_#{BUNDLER_VERSION}_", "install")
         ENV["GEM_HOME"] = gem_home
+
+        # for fat gems which depend on nonexistent libraries
+        # mainly for nokogiri 1.11 or later on CentOS 6
+        rebuild_gems
       end
 
       desc "Install fluentd"
@@ -853,7 +857,7 @@ class BuildTask
     staging_dir
   end
 
-  def gem_install(gem_path, version = nil)
+  def gem_install(gem_path, version = nil, platform: nil)
     ensure_directory(staging_bindir)
     ensure_directory(gem_staging_dir)
 
@@ -870,6 +874,10 @@ class BuildTask
       gem_installation_command << "--version"
       gem_installation_command << version
     end
+    if platform
+      gem_installation_command << "--platform"
+      gem_installation_command << platform
+    end
     if macos? && gem_path.include?("rdkafka")
       ENV["CPPFLAGS"] = "-I#{File.join(STAGING_DIR, install_prefix, 'include')}"
       ENV["LDFLAGS"] = "-L#{File.join(STAGING_DIR, install_prefix, 'lib')}"
@@ -883,6 +891,43 @@ class BuildTask
     sh(*gem_installation_command)
 
     ENV["GEM_HOME"] = gem_home
+  end
+
+  def gem_uninstall(gem, version = nil)
+    ensure_directory(staging_bindir)
+    ensure_directory(gem_staging_dir)
+
+    gem_home = ENV["GEM_HOME"]
+    ENV["GEM_HOME"] = gem_staging_dir
+
+    gem_uninstallation_command = [
+      gem_command, "uninstall",
+      "--bindir", staging_bindir,
+      "--silent",
+      gem
+    ]
+    if version
+      gem_uninstallation_command << "--version"
+      gem_uninstallation_command << version
+    else
+      gem_uninstallation_command << "--all"
+    end
+    @logger.info("uninstall: <#{gem}>")
+    sh(*gem_uninstallation_command)
+
+    ENV["GEM_HOME"] = gem_home
+  end
+
+  def rebuild_gems
+    return unless ENV["REBUILD_GEMS"]
+
+    require 'bundler'
+    ENV["REBUILD_GEMS"].split((/\s+/)).each do |gem_name|
+      d = Bundler::Definition.build('Gemfile', 'Gemfile.lock', false)
+      version = d.locked_deps[gem_name].requirement.requirements[0][1].version
+      gem_uninstall(gem_name)
+      gem_install(gem_name, version, platform: "ruby")
+    end
   end
 
   def install_jemalloc_license
