@@ -32,6 +32,9 @@
 %undefine __brp_mangle_shebangs
 
 %if %{_centos_ver} < 7
+%filter_provides_in .*\.so
+%filter_from_provides /pkgconfig.*/d
+%filter_from_provides /perl.*/d
 %filter_requires_in libjemalloc.*
 %filter_requires_in libruby.*
 %filter_from_requires /\/opt\/td-agent\/bin\/ruby/d
