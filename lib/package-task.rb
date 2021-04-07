@@ -341,7 +341,12 @@ RELEASE=#{@rpm_release}
     cd(yum_dir) do
       yum_targets.each do |target|
         next unless Dir.exist?(target)
-        distribution, version, architecture = target.split("-", 3)
+        if target.include?("centos-stream")
+          distribution, suffix, version, architecture = target.split("-", 4)
+          distribution = "#{distribution}-#{suffix}"
+        else
+          distribution, version, architecture = target.split("-", 3)
+        end
         os = "#{distribution}-#{version}"
         run_docker(os, architecture)
       end
