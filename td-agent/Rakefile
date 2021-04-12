@@ -29,6 +29,7 @@ require 'etc'
 require 'yaml'
 require 'bundler'
 require 'logger'
+require 'find'
 
 DOWNLOADS_DIR  = File.expand_path("downloads")
 STAGING_DIR    = File.expand_path(ENV["TD_AGENT_STAGING_PATH"]   || "staging")
@@ -401,6 +402,7 @@ class BuildTask
 
         gem_home = ENV["GEM_HOME"]
         ENV["GEM_HOME"] = gem_staging_dir
+        ENV["INSTALL_GEM_FROM_LOCAL_REPO"] = "yes"
         sh(bundle_command, "_#{BUNDLER_VERSION}_", "install")
         # Ensure to install binstubs under /opt/td-agent/bin
         sh(gem_command, "pristine", "--only-executables", "--all", "--bindir", staging_bindir)
@@ -419,7 +421,7 @@ class BuildTask
           sh("tar", "xvf", archive_path) unless File.exists?(fluentd_dir)
           cd("fluentd-#{FLUENTD_REVISION}") do
             sh("rake", "build")
-            gem_install("pkg/fluentd-*.gem")
+            setup_local_gem_repo
             install_gemfiles
           end
         end
@@ -974,6 +976,20 @@ class BuildTask
         dest = File.join(staging_sharedir, file)
         cp(src, dest)
       end
+    end
+  end
+
+  def setup_local_gem_repo
+    local_repo_dir = FLUENTD_LOCAL_GEM_REPO.sub("file://", "")
+    local_gems_dir = File.join(local_repo_dir, "gems")
+    FileUtils.mkdir_p(local_gems_dir)
+    Find.find("pkg") do |entry|
+      next unless entry.end_with?(".gem")
+      FileUtils.cp(entry, local_gems_dir)
+    end
+    cd(local_repo_dir) do
+      sh("gem", "install", "builder")
+      sh("gem", "generate_index")
     end
   end
 
