@@ -14,17 +14,25 @@ ARCH=$2
 REPOSITORIES_DIR=td-agent/yum/repositories
 
 git fetch --unshallow
-PREVIOUS_VERSION=`git describe --abbrev=0 --tags | sed -e 's/v//'`
-PREVIOUS_RPM=${REPOSITORIES_DIR}/${DISTRIBUTION}/${VERSION}/${ARCH}/Packages/td-agent-${PREVIOUS_VERSION}*.rpm
+git fetch --all
+PREVIOUS_VERSIONS=()
+for v in `git tag | grep "^v" | sort -r`; do
+    PREVIOUS_VERSIONS+=(`echo $v | sed -e 's/v//'`)
+done
 
 SKIP_SIZE_COMPARISON=0
 case ${DISTRIBUTION} in
     amazonlinux)
 	BASE_URI=http://packages.treasuredata.com.s3.amazonaws.com/4/amazon/2
-	BASE_NAME=td-agent-${PREVIOUS_VERSION}-1.amzn2.${ARCH}.rpm
-	PREVIOUS_RPM=${BASE_URI}/${ARCH}/${BASE_NAME}
-	wget ${PREVIOUS_RPM}
 	DISTRIBUTION=amazon
+	for v in "${PREVIOUS_VERSIONS[@]}"; do
+	    BASE_NAME=td-agent-${v}-1.amzn2.${ARCH}.rpm
+	    PREVIOUS_RPM=${BASE_URI}/${ARCH}/${BASE_NAME}
+	    wget ${PREVIOUS_RPM}
+	    if [ $? -eq 0 ]; then
+		break
+	    fi
+	done
 	;;
     centos)
 	case $VERSION in
@@ -34,9 +42,14 @@ case ${DISTRIBUTION} in
 		;;
 	    *)
 		BASE_URI=http://packages.treasuredata.com.s3.amazonaws.com/4/redhat/${VERSION}
-		BASE_NAME=td-agent-${PREVIOUS_VERSION}-1.el${VERSION}.${ARCH}.rpm
-		PREVIOUS_RPM=${BASE_URI}/${ARCH}/${BASE_NAME}
-		wget ${PREVIOUS_RPM}
+		for v in "${PREVIOUS_VERSIONS[@]}"; do
+		    BASE_NAME=td-agent-${v}-1.el${VERSION}.${ARCH}.rpm
+		    PREVIOUS_RPM=${BASE_URI}/${ARCH}/${BASE_NAME}
+		    wget ${PREVIOUS_RPM}
+		    if [ $? -eq 0 ]; then
+			break
+		    fi
+		done
 		;;
 	esac
 	;;
