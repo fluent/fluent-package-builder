@@ -53,6 +53,10 @@ case ${DISTRIBUTION} in
 		;;
 	esac
 	;;
+    *)
+	echo "${DISTRIBUTION} is not supported"
+	exit 1
+	;;
 esac
 
 if [ $SKIP_SIZE_COMPARISON -eq 1 ]; then

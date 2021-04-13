@@ -48,6 +48,10 @@ case ${DISTRIBUTION} in
 	    fi
 	done
 	;;
+    *)
+	echo "${DISTRIBUTION} is not supported"
+	exit 1
+	;;
 esac
 
 PREVIOUS_SIZE=$(stat -c %s $BASE_NAME)
