@@ -28,6 +28,7 @@ case ${DISTRIBUTION} in
 	for v in "${PREVIOUS_VERSIONS[@]}"; do
 	    BASE_NAME=td-agent-${v}-1.amzn2.${ARCH}.rpm
 	    PREVIOUS_RPM=${BASE_URI}/${ARCH}/${BASE_NAME}
+	    set +e
 	    wget ${PREVIOUS_RPM}
 	    if [ $? -eq 0 ]; then
 		break
@@ -45,6 +46,7 @@ case ${DISTRIBUTION} in
 		for v in "${PREVIOUS_VERSIONS[@]}"; do
 		    BASE_NAME=td-agent-${v}-1.el${VERSION}.${ARCH}.rpm
 		    PREVIOUS_RPM=${BASE_URI}/${ARCH}/${BASE_NAME}
+		    set +e
 		    wget ${PREVIOUS_RPM}
 		    if [ $? -eq 0 ]; then
 			break
@@ -59,6 +61,7 @@ case ${DISTRIBUTION} in
 	;;
 esac
 
+set -e
 if [ $SKIP_SIZE_COMPARISON -eq 1 ]; then
     RPM=$(find $REPOSITORIES_DIR/${DISTRIBUTION}/${VERSION}/${ARCH}/Packages/td-agent-*.rpm -not -name '*debuginfo*' -not -name '*debugsource*' | sort -n | tail -1)
     CURRENT_SIZE=$(stat -c %s $RPM)

@@ -30,6 +30,7 @@ case ${DISTRIBUTION} in
 	for v in "${PREVIOUS_VERSIONS[@]}"; do
 	    BASE_NAME=td-agent_${v}-1_${ARCH}.deb
 	    PREVIOUS_DEB=${BASE_URI}/pool/contrib/t/td-agent/${BASE_NAME}
+	    set +e
 	    wget ${PREVIOUS_DEB}
 	    if [ $? -eq 0 ]; then
 	       break
@@ -42,6 +43,7 @@ case ${DISTRIBUTION} in
 	for v in "${PREVIOUS_VERSIONS[@]}"; do
 	    BASE_NAME=td-agent_${v}-1_${ARCH}.deb
 	    PREVIOUS_DEB=${BASE_URI}/pool/contrib/t/td-agent/${BASE_NAME}
+	    set +e
 	    wget ${PREVIOUS_DEB}
 	    if [ $? -eq 0 ]; then
 		break
@@ -54,6 +56,7 @@ case ${DISTRIBUTION} in
 	;;
 esac
 
+set -e
 PREVIOUS_SIZE=$(stat -c %s $BASE_NAME)
 THRESHOLD_SIZE=`echo "$PREVIOUS_SIZE * 1.2" | bc -l | cut -d. -f1`
 find $REPOSITORIES_DIR/${DISTRIBUTION} -name td-agent_*${ARCH}.deb
