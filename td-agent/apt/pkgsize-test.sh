@@ -17,26 +17,46 @@ ARCH=$2
 REPOSITORIES_DIR=td-agent/apt/repositories
 
 git fetch --unshallow
-PREVIOUS_VERSION=`git describe --abbrev=0 --tags | sed -e 's/v//'`
-PREVIOUS_DEB=${REPOSITORIES_DIR}/${DISTRIBUTION}/${CODE_NAME}/pool/contrib/t/td-agent/td-agent_${PREVIOUS_VERSION}_${ARCH}.deb
+git fetch --all
+PREVIOUS_VERSIONS=()
+for v in `git tag | grep "^v" | sort -r`; do
+    PREVIOUS_VERSIONS+=(`echo $v | sed -e 's/v//'`)
+done
 
 case ${DISTRIBUTION} in
     debian)
 	BASE_URI=http://packages.treasuredata.com.s3.amazonaws.com/4/debian/${CODE_NAME}
-	BASE_NAME=td-agent_${PREVIOUS_VERSION}-1_${ARCH}.deb
-	PREVIOUS_DEB=${BASE_URI}/pool/contrib/t/td-agent/${BASE_NAME}
 	CHANNEL=main
-	wget ${PREVIOUS_DEB}
+	for v in "${PREVIOUS_VERSIONS[@]}"; do
+	    BASE_NAME=td-agent_${v}-1_${ARCH}.deb
+	    PREVIOUS_DEB=${BASE_URI}/pool/contrib/t/td-agent/${BASE_NAME}
+	    set +e
+	    wget ${PREVIOUS_DEB}
+	    if [ $? -eq 0 ]; then
+	       break
+	    fi
+	done
 	;;
     ubuntu)
 	BASE_URI=http://packages.treasuredata.com.s3.amazonaws.com/4/ubuntu/${CODE_NAME}
-	BASE_NAME=td-agent_${PREVIOUS_VERSION}-1_${ARCH}.deb
-	PREVIOUS_DEB=${BASE_URI}/pool/contrib/t/td-agent/${BASE_NAME}
 	CHANNEL=universe
-	wget ${PREVIOUS_DEB}
+	for v in "${PREVIOUS_VERSIONS[@]}"; do
+	    BASE_NAME=td-agent_${v}-1_${ARCH}.deb
+	    PREVIOUS_DEB=${BASE_URI}/pool/contrib/t/td-agent/${BASE_NAME}
+	    set +e
+	    wget ${PREVIOUS_DEB}
+	    if [ $? -eq 0 ]; then
+		break
+	    fi
+	done
+	;;
+    *)
+	echo "${DISTRIBUTION} is not supported"
+	exit 1
 	;;
 esac
 
+set -e
 PREVIOUS_SIZE=$(stat -c %s $BASE_NAME)
 THRESHOLD_SIZE=`echo "$PREVIOUS_SIZE * 1.2" | bc -l | cut -d. -f1`
 find $REPOSITORIES_DIR/${DISTRIBUTION} -name td-agent_*${ARCH}.deb
