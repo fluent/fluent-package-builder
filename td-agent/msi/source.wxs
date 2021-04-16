@@ -30,13 +30,46 @@
             <Component Id="TDAgentAcl" Guid="b0504030-258a-0139-ba33-7085c2f4281d">
               <CreateFolder>
                 <!--
-                  Read/Execute: Builtin Users
-                  All:: Builtin Administrators, Service, System account(by default)
+                  The following ACL will be set by Sddl=
+
+                    BUILTIN\Users:(OI)(CI)R
+                    BUILTIN\Administrators:(OI)(CI)F
+                    NT SERVICE\TrustedInstaller:(OI)(CI)F
+                    CREATOR OWNER:(OI)(CI)F
+                    NT AUTHORITY\SYSTEM:(OI)(CI)F
+
+                  ref. https://wixtoolset.org/documentation/manual/v3/xsd/wix/permissionex.html
+                       https://docs.microsoft.com/en-us/windows/win32/secauthz/access-control-lists
+                       https://docs.microsoft.com/en-us/windows/win32/secauthz/security-descriptor-string-format
+                       https://docs.microsoft.com/en-us/windows/win32/secauthz/ace-strings
+                       https://docs.microsoft.com/en-us/windows/win32/secauthz/sid-strings
+                       https://docs.microsoft.com/en-us/windows/win32/fileio/file-access-rights-constants
+
+                  NOTE:
+                  * Security Descriptor String Format
+                    O:owner_sid
+                    G:group_sid
+                    D:dacl_flags(string_ace1)(string_ace2)... (string_acen)
+                    S:sacl_flags(string_ace1)(string_ace2)... (string_acen)
+                  * ACE (Access Control Entry) String format:
+                    ace_type;ace_flags;rights;object_guid;inherit_object_guid;account_sid
+                    * (A;OICI;0x1200a9;;;BU) => Builtin Users is allowed to read/exec
+                  * ace_type:
+                    * A: SDDL_ACCESS_ALLOWED
+                  * ace_flags:
+                    * OI: SDDL_CONTAINER_INHERIT
+                    * CI: SDDL_OBJECT_INHERIT
+                  * rights:
+                    * FA: SDDL_FILE_ALL
+                    * 0x1200a9: SYNCHRONIZE(0x100000) | READ_CONTROL(0x2000) | FILE_READ_ATTRIBUTES(0x80) | FILE_EXECUTE(0x20) | FILE_READ_EA(0x8) | FILE_READ_DATA(0x1)
+                  * account_sid:
+                    * BU: SDDL_BUILTIN_USERS
+                    * BA: SDDL_BUILTIN_ADMINISTRATORS
+                    * CO: SDDL_CREATOR_OWNER
+                    * SY: SDDL_LOCAL_SYSTEM
+                    * S-1-5-80-956008885-3418522649-1831038044-1853292631-2271478464: NT SERVICE\TrustedInstaller
                 -->
-                <Permission User="Users" GenericExecute="yes" GenericRead="yes" Traverse="yes"/>
-                <Permission User="Administrators" GenericAll="yes" Traverse="yes"/>
-                <Permission User="NT SERVICE\TrustedInstaller" GenericAll="yes" Traverse="yes"/>
-                <Permission User="CREATOR OWNER" GenericAll="yes" Traverse="yes"/>
+                <PermissionEx Sddl="D:(A;OICI;0x1200a9;;;BU)(A;OICI;FA;;;BA)(A;OICI;FA;;;S-1-5-80-956008885-3418522649-1831038044-1853292631-2271478464)(A;OICI;FA;;;CO)(A;OICI;FA;;;SY)"/>
               </CreateFolder>
             </Component>
           </Directory>
