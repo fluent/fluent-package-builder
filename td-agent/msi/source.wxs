@@ -39,11 +39,18 @@
                     NT AUTHORITY\SYSTEM:(OI)(CI)F
 
                   ref. https://wixtoolset.org/documentation/manual/v3/xsd/wix/permissionex.html
+                       https://docs.microsoft.com/en-us/windows/win32/secauthz/access-control-lists
+                       https://docs.microsoft.com/en-us/windows/win32/secauthz/security-descriptor-string-format
                        https://docs.microsoft.com/en-us/windows/win32/secauthz/ace-strings
                        https://docs.microsoft.com/en-us/windows/win32/secauthz/sid-strings
                        https://docs.microsoft.com/en-us/windows/win32/fileio/file-access-rights-constants
 
                   NOTE:
+                  * Security Descriptor String Format
+                    O:owner_sid
+                    G:group_sid
+                    D:dacl_flags(string_ace1)(string_ace2)... (string_acen)
+                    S:sacl_flags(string_ace1)(string_ace2)... (string_acen)
                   * ACE (Access Control Entry) String format:
                     ace_type;ace_flags;rights;object_guid;inherit_object_guid;account_sid
                     * (A;OICI;0x1200a9;;;BU) => Builtin Users is allowed to read/exec
