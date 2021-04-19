@@ -1,7 +1,7 @@
 GIT
   remote: https://github.com/clear-code/fluentd.git
-  revision: 335a4c709e4a54059af2be3ef1b01c9f97e279b8
-  ref: 335a4c709e4a54059af2be3ef1b01c9f97e279b8
+  revision: 226d96414e9120b25bfcd4c7592b2366ebbd7283
+  ref: 226d96414e9120b25bfcd4c7592b2366ebbd7283
   specs:
     fluentd (1.11.5)
       certstore_c (~> 0.1.7)
