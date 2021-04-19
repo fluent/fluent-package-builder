@@ -1,5 +1,5 @@
 PACKAGE_NAME = "td-agent"
-PACKAGE_VERSION = "4.0.50"
+PACKAGE_VERSION = "4.0.51"
 
 FLUENTD_REVISION = '226d96414e9120b25bfcd4c7592b2366ebbd7283' # v1.11.5_for_td-agent-4.0.5x branch
 FLUENTD_REPOSITORY = 'https://github.com/clear-code/fluentd.git'
