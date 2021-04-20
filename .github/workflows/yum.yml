@@ -70,3 +70,13 @@ jobs:
           --env CENTOS_STREAM=${{ matrix.centos-stream }} \
           ${{ matrix.test-docker-image }} \
           /fluentd/td-agent/yum/serverspec-test.sh
+      - name: Binstubs Test
+        run: |
+          mkdir -p .bundle
+          docker run \
+          --rm \
+          --tty \
+          --volume ${PWD}:/fluentd:ro \
+          --env CENTOS_STREAM=${{ matrix.centos-stream }} \
+          ${{ matrix.test-docker-image }} \
+          /fluentd/td-agent/yum/binstubs-test.sh
