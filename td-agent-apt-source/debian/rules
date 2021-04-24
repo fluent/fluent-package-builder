@@ -26,7 +26,7 @@ override_dh_auto_build:
 	  echo "Types: deb"; \
 	  echo "URIs: http://packages.treasuredata.com/4/$${distribution}/$${code_name}/"; \
 	  echo "Suites: $${code_name}"; \
-	  echo "Components: contrib"; \
+	  echo "Components: $${component}"; \
 	  echo "Signed-By: /usr/share/keyrings/td-agent-archive-keyring.gpg"; \
 	) > td-agent.sources
 
