@@ -9,7 +9,7 @@ JEMALLOC_VERSION = "5.2.1"
 # https://www.openssl.org/source/
 OPENSSL_VERSION = "1.1.1k"
 
-BUNDLER_VERSION= "2.2.15"
+BUNDLER_VERSION= "2.2.16"
 
 # https://www.ruby-lang.org/en/downloads/ (tar.gz)
 #BUNDLED_RUBY_VERSION = "2.6.7"
