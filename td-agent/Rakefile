@@ -1180,7 +1180,6 @@ EOS
       "ubuntu-xenial",
       "ubuntu-bionic",
       "ubuntu-focal",
-      "ubuntu-hirsute",
     ]
   end
 
@@ -1188,6 +1187,7 @@ EOS
     [
       "centos-7",
       "centos-8",
+      "amazonlinux-2",
     ]
   end
 
