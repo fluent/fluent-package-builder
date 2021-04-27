@@ -16,16 +16,18 @@ td-agent --version
 
 case ${code_name} in
     xenial)
-	apt install -V -y gnupg wget apt-transport-https
+	apt install -V -y gnupg2 wget apt-transport-https
 	;;
     *)
-	apt install -V -y gnupg1 wget
+	apt install -V -y gnupg2 wget
 	;;
 esac
 
 /usr/sbin/td-agent-gem install --no-document serverspec
-wget -qO - https://packages.confluent.io/deb/6.0/archive.key | apt-key add -
-echo "deb [arch=${architecture}] https://packages.confluent.io/deb/6.0 stable main" > /etc/apt/sources.list.d/confluent.list
+wget https://packages.confluent.io/deb/6.0/archive.key
+gpg2 --homedir /tmp --no-default-keyring --keyring gnupg-ring:/usr/share/keyrings/confluent-archive-keyring.gpg --import archive.key
+chmod 644 /usr/share/keyrings/confluent-archive-keyring.gpg
+echo "deb [arch=${architecture} signed-by=/usr/share/keyrings/confluent-archive-keyring.gpg] https://packages.confluent.io/deb/6.0 stable main" > /etc/apt/sources.list.d/confluent.list
 apt update && apt install -y confluent-community-2.13 ${java_jdk} netcat-openbsd
 
 export KAFKA_OPTS=-Dzookeeper.4lw.commands.whitelist=ruok
