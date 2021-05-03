@@ -1,6 +1,6 @@
 # Treasure Agent 4 changelog
 
-## Release v4.1.0 - 2020/02/24
+## Release v4.1.0 - 2021/02/24
 
 ### News
 
