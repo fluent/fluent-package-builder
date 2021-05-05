@@ -44,3 +44,13 @@ jobs:
       - name: Check Package Size
         run: |
           td-agent/yum/pkgsize-test.sh ${{ matrix.rake-job }} aarch64
+      - name: Binstubs Test
+        run: |
+          mkdir -p .bundle
+          docker run \
+          --rm \
+          --tty \
+          --volume ${PWD}:/fluentd:ro \
+          --env CENTOS_STREAM=false \
+          arm64v8/${{ matrix.test-docker-image }} \
+          /fluentd/td-agent/yum/binstubs-test.sh

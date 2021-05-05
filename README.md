@@ -2,7 +2,7 @@
 
 ## About td-agent-builder
 
-td-agent-builder is a new build system for [td-agent](http://docs.treasuredata.com/articles/td-agent) which aims to replace the traditional build system [omnibus-td-agent](https://github.com/treasure-data/omnibus-td-agent) since it has several problems due to [Omnibus](https://github.com/chef/omnibus)'s limitations.
+td-agent-builder is a new build system for [td-agent](https://docs.treasuredata.com/display/public/PD/About+Treasure+Data%27s+Server-Side+Agent) which aims to replace the traditional build system [omnibus-td-agent](https://github.com/treasure-data/omnibus-td-agent) since it has several problems due to [Omnibus](https://github.com/chef/omnibus)'s limitations.
 
 ### Changes from Treasure Agent 3
 
