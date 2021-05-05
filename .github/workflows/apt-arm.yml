@@ -15,11 +15,14 @@ jobs:
         include:
           - label: Debian GNU/Linux Buster arm64
             rake-job: debian-buster
+            test-docker-image: arm64v8/debian:buster
           - label: Ubuntu Bionic arm64
             rake-job: ubuntu-bionic
+            test-docker-image: arm64v8/ubuntu:bionic
           - label: Ubuntu Focal arm64
             rake-job: ubuntu-focal
             rake-options: LINTIAN=no
+            test-docker-image: arm64v8/ubuntu:focal
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
@@ -42,3 +45,12 @@ jobs:
       - name: Check Package Size
         run: |
           td-agent/apt/pkgsize-test.sh ${{ matrix.rake-job }} arm64
+      - name: Binstubs Test
+        run: |
+          mkdir -p .bundle
+          docker run \
+          --rm \
+          --tty \
+          --volume ${PWD}:/fluentd:ro \
+          ${{ matrix.test-docker-image }} \
+          /fluentd/td-agent/apt/binstubs-test.sh
