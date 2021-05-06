@@ -4,8 +4,6 @@ require File.expand_path('../config.rb', __FILE__)
 
 source "https://rubygems.org"
 
-git_source(:github) {|repo_name| "https://github.com/#{repo_name}" }
-
 # core gems
 
 gem "rake"
@@ -20,8 +18,20 @@ gem "oj", "3.11.5"
 gem "tzinfo", "2.0.4"
 gem "tzinfo-data", "1.2021.1"
 gem "async-http", "0.54.1"
-gem "fluentd", github: "fluent/fluentd", ref: FLUENTD_REVISION
 gem "webrick", "1.7.0"
+
+if ENV["INSTALL_GEM_FROM_LOCAL_REPO"]
+  # During build process, pre-built fluentd gem will be installed
+  # from this local repository, this way is used to avoid embedding full-path
+  # into managed Gemfile.lock
+  source FLUENTD_LOCAL_GEM_REPO do
+    gem "fluentd"
+  end
+else
+  # Lock to specific revision
+  git_source(:github) {|repo_name| "https://github.com/#{repo_name}" }
+  gem "fluentd", github: "fluent/fluentd", ref: FLUENTD_REVISION
+end
 
 # plugin gems
 
