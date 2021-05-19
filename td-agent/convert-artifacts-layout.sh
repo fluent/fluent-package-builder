@@ -3,8 +3,8 @@
 # Utility script to convert repository layout for packages.treasuredata.com
 #
 # Usage:
-#   $ merge-artifacts.sh apt
-#   $ merge-artifacts.sh yum
+#   $ convert-artifacts-layout.sh apt
+#   $ convert-artifacts-layout.sh yum
 
 set -ex
 
