@@ -36,6 +36,10 @@ case $1 in
 	REPOSITORY_TYPE=yum
 	REPOSITORY_PATH=$TD_AGENT_DIR/$REPOSITORY_TYPE/repositories
 	for dist in centos amazon; do
+	    dist_dest=$dist
+	    if [ $dist = "centos" ]; then
+		dist_dest="redhat"
+	    fi
 	    for release in 2 7 8; do
 		if [ $dist = "amazon" -a $release -ne 2 ]; then
 		    echo "skip $dist:$release"
@@ -51,8 +55,8 @@ case $1 in
 			continue
 		    fi
 		    # e.g. mapping amazon/2/x86_64/Packages/ => 4/amazon/2/x86_64
-		    mkdir -p $REPOSITORY_PATH/4/$dist/$release/$arch
-		    find $REPOSITORY_PATH/$dist/$release/$arch -name '*.rpm' -not -name '*debug*' -exec cp {} $REPOSITORY_PATH/4/$dist/$release/$arch \;
+		    mkdir -p $REPOSITORY_PATH/4/$dist_dest/$release/$arch
+		    find $REPOSITORY_PATH/$dist/$release/$arch -name '*.rpm' -not -name '*debug*' -exec cp {} $REPOSITORY_PATH/4/$dist_dest/$release/$arch \;
 		done
 	    done
 	done
