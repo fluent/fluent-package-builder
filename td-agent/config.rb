@@ -23,6 +23,8 @@ BUNDLED_RUBY_SOURCE_SHA256SUM = "8925a95e31d8f2c81749025a52a544ea1d05dad18794e68
 BUNDLED_RUBY_PATCHES = [
   ["ruby-2.7/0001-Removed-the-old-executables-of-racc.patch",            ["~> 2.7.0"]],
   ["ruby-2.7/0002-Fixup-a6864f6d2f39bcd1ff04516591cc18d4027ab186.patch", ["~> 2.7.0"]],
+  ["ruby-3.0/0001-ruby-resolv-Fix-confusion-of-received-response-messa.patch",   ["= 2.7.3"]],
+  ["ruby-3.0/0001-ruby-resolv-Fix-confusion-of-received-response-messa.patch",   ["= 3.0.1"]],
 ]
 
 # https://rubyinstaller.org/downloads/ (7-ZIP ARCHIVES)
