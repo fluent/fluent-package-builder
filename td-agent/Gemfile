@@ -59,7 +59,7 @@ gem "webhdfs", "0.9.0"
 gem "fluent-plugin-webhdfs", "1.4.0"
 gem "fluent-plugin-record-modifier", "2.1.0"
 gem "fluent-plugin-rewrite-tag-filter", "2.4.0"
-gem "nokogiri", "1.11.3"
+gem "nokogiri", "1.11.7"
 gem "fluent-plugin-sd-dns", "0.1.0"
 gem "fluent-plugin-flowcounter-simple", "0.1.0"
 
