@@ -1096,7 +1096,14 @@ class LinuxPackageTask < PackageTask
       unless status.success?
         fail "Failed to get gem specification: <#{gem_file}> (stdout: #{output}, stderr: #{error})"
       end
-      spec = YAML.load(output)
+      spec = YAML.safe_load(output,
+                            permitted_classes: [
+                              Time,
+                              Symbol,
+                              Gem::Specification,
+                              Gem::Version,
+                              Gem::Dependency,
+                              Gem::Requirement])
       relative_path = gem_file.sub(/#{Dir.pwd}\//, "")
       unless spec.licenses.empty?
         spdx_compatible_license = spec.licenses.first.sub(/Apache 2\.0/, "Apache-2.0")
