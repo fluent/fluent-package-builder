@@ -34,3 +34,11 @@ BUNDLED_RUBY_INSTALLER_X64_VERSION = "2.7.3-1"
 BUNDLED_RUBY_INSTALLER_X64_SHA256SUM = "189c85c3d156043012922699751a3293fb3eda73a28a4687f07e7eed2f40988e"
 #BUNDLED_RUBY_INSTALLER_X64_VERSION = "3.0.1-1"
 #BUNDLED_RUBY_INSTALLER_X64_SHA256SUM = "69f6867f4d8f711c82948819fc0b4d6a626e2abd1ad9a917d20081085ec37d70"
+
+# Patch files are assumed to be for Ruby's source tree, then applied to
+# lib/ruby/x.y.0 in RubyInstaller. So that "-p2" options will be passed
+# to patch command.
+BUNDLED_RUBY_INSTALLER_PATCHES = [
+  ["ruby-3.0/0001-ruby-resolv-Fix-confusion-of-received-response-messa.patch", ["= 2.7.3"]],
+  ["ruby-3.0/0001-ruby-resolv-Fix-confusion-of-received-response-messa.patch", ["= 3.0.1"]],
+]
