@@ -389,6 +389,7 @@ class BuildTask
       task :ruby => [:jemalloc, :openssl, :"download:ruby"] do
         if windows?
           extract_ruby_installer
+          apply_ruby_installer_patches
           setup_windows_build_env
           find_and_put_dynamiclibs
         else
@@ -760,6 +761,25 @@ class BuildTask
          path)
       cp_r(Dir.glob(File.join(src_dir, "*")), ".")
       rm_rf(src_dir)
+    end
+  end
+
+  def apply_ruby_installer_patches
+    return if BUNDLED_RUBY_INSTALLER_PATCHES.nil?
+
+    ruby_version = BUNDLED_RUBY_INSTALLER_X64_VERSION.sub(/-\d+$/, '')
+    feature_version = ruby_version.sub(/\d+$/, '0')
+    ruby_lib_dir = File.join(td_agent_staging_dir, "lib", "ruby", feature_version)
+
+    BUNDLED_RUBY_INSTALLER_PATCHES.each do |patch|
+      patch_name, version_condition = patch
+      dependency = Gem::Dependency.new('', version_condition)
+      if dependency.match?('', ruby_version)
+        patch_path = File.join(__dir__, "patches", patch_name)
+        cd(ruby_lib_dir) do
+          sh("ridk", "exec", "patch", "-p2", "--input=#{patch_path}")
+        end
+      end
     end
   end
 
