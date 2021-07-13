@@ -631,21 +631,25 @@ class BuildTask
     configure_opts = [
       "--prefix=#{install_prefix}",
     ]
-    if ENV["TD_AGENT_STAGING_PATH"] and
-      (ENV["TD_AGENT_STAGING_PATH"].end_with?("el8.aarch64") or
-       ENV["TD_AGENT_STAGING_PATH"].end_with?("el7.aarch64"))
-      # NOTE: There is a case that PAGE_SIZE detection on
-      # CentOS 7 CentOS 8 with aarch64 AWS ARM instance.
-      # So, explicitly set PAGE_SIZE by with-lg-page 16 (2^16 = 65536)
-      configure_opts.concat(["--with-lg-page=16"])
+
+    if JEMALLOC_VERSION.split('.')[0].to_i >= 4
+      if ENV["TD_AGENT_STAGING_PATH"] and
+        (ENV["TD_AGENT_STAGING_PATH"].end_with?("el8.aarch64") or
+         ENV["TD_AGENT_STAGING_PATH"].end_with?("el7.aarch64"))
+        # NOTE: There is a case that PAGE_SIZE detection on
+        # CentOS 7 CentOS 8 with aarch64 AWS ARM instance.
+        # So, explicitly set PAGE_SIZE by with-lg-page 16 (2^16 = 65536)
+        configure_opts.concat(["--with-lg-page=16"])
+      end
+      if ENV["TD_AGENT_STAGING_PATH"] and
+        ENV["TD_AGENT_STAGING_PATH"].end_with?("el8.ppc64le")
+        # NOTE: There is a case that PAGE_SIZE detection on
+        # CentOS 8 with ppc64le.
+        # So, explicitly set PAGE_SIZE by with-lg-page 16 (2^16 = 65536)
+        configure_opts.concat(["--with-lg-page=16"])
+      end
     end
-    if ENV["TD_AGENT_STAGING_PATH"] and
-      ENV["TD_AGENT_STAGING_PATH"].end_with?("el8.ppc64le")
-      # NOTE: There is a case that PAGE_SIZE detection on
-      # CentOS 8 with ppc64le.
-      # So, explicitly set PAGE_SIZE by with-lg-page 16 (2^16 = 65536)
-      configure_opts.concat(["--with-lg-page=16"])
-    end
+
     cd(source_dir) do
       sh("./configure", *configure_opts)
       sh("make", "install", "-j#{Etc.nprocessors}", "DESTDIR=#{STAGING_DIR}")
@@ -1045,7 +1049,8 @@ class BuildTask
   end
 
   def remove_needless_files
-    remove_files("#{td_agent_staging_dir}/bin/jeprof", true)
+    remove_files("#{td_agent_staging_dir}/bin/jeprof", true) # jemalloc 4 or later
+    remove_files("#{td_agent_staging_dir}/bin/pprof", true) # jemalloc 3
     remove_files("#{td_agent_staging_dir}/share/doc", true) # Contains only jemalloc.html
     remove_files("#{td_agent_staging_dir}/share/ri", true)
     cd("#{gem_staging_dir}/cache") do
