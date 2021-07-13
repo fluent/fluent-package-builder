@@ -1045,6 +1045,7 @@ class BuildTask
   end
 
   def remove_needless_files
+    remove_files("#{td_agent_staging_dir}/bin/jeprof", true)
     remove_files("#{td_agent_staging_dir}/share/doc", true) # Contains only jemalloc.html
     remove_files("#{td_agent_staging_dir}/share/ri", true)
     cd("#{gem_staging_dir}/cache") do
