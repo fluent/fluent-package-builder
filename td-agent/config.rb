@@ -5,7 +5,10 @@ FLUENTD_REVISION = 'b6e76c09d60ee866de6470f2bdd2551e7c8591d3' # v1.12.3
 FLUENTD_LOCAL_GEM_REPO = "file://" + File.expand_path(File.join(__dir__, "local_gem_repo"))
 
 # https://github.com/jemalloc/jemalloc/releases
-JEMALLOC_VERSION = "5.2.1"
+# Use jemalloc 3.x to reduce memory usage
+# See https://github.com/fluent-plugins-nursery/td-agent-builder/issues/305
+JEMALLOC_VERSION = "3.6.0"
+#JEMALLOC_VERSION = "5.2.1"
 
 # https://www.openssl.org/source/
 OPENSSL_VERSION = "1.1.1k"
