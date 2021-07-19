@@ -1,5 +1,64 @@
 # Treasure Agent 4 changelog
 
+## Release v4.2.0 - 2021/07/29
+
+### News
+
+* Downgrade jemalloc to v3.6.0 to reduce memory usage
+  https://github.com/fluent-plugins-nursery/td-agent-builder/issues/305
+* Remove needless perl dependency
+
+### Core component
+
+* ruby v2.7.4 (update)
+* jemalloc v3.6.0 (downgrade)
+* fluentd v1.13.2 (update)
+
+### Core gems
+
+* bundler v2.2.23 (update)
+* msgpack v1.4.2
+* cool.io v1.7.1
+* serverengine v2.2.4 (update)
+* oj v3.12.1 (update)
+* async-http v0.56.3 (update)
+* http_parser.rb v0.7.0 (update)
+* yajl-ruby v1.4.1
+* sigdump v0.2.4
+* tzinfo v2.0.4
+* tzinfo-data v1.2021.1
+
+### Bundled plugins and gems
+
+* td-client v1.0.8
+* fluent-plugin-td v1.1.0
+* aws-sdk-core v3.117.0 (update)
+* aws-sdk-s3 v1.96.1 (update)
+* fluent-plugin-s3 v1.6.0
+* webhdfs v0.9.0
+* fluent-plugin-webhdfs v1.4.0
+* ruby-kafka v1.3.0
+* rdkafka v0.8.1
+* fluent-plugin-kafka v0.16.3 (update)
+* elasticsearch v7.13.3 (update)
+* fluent-plugin-elasticsearch v5.0.5 (update)
+* prometheus-client v2.1.0 (update)
+* fluent-plugin-prometheus v2.0.1 (update)
+* systemd-journal v1.4.2 (update)
+* fluent-plugin-systemd v1.0.5 (update)
+* fluent-plugin-record-modifier v2.1.0
+* fluent-plugin-rewrite-tag-filter v2.4.0
+* fluent-plugin-sd-dns 0.1.0
+* fluent-plugin-flowcounter-simple 0.1.0
+* fluent-diagtool v1.0.1
+* fluent-plugin-utmpx v0.3.0
+
+On Windows
+
+* winevt_c v0.9.2
+* fluent-plugin-parser-winevt_xml v0.2.2
+* fluent-plugin-windows-eventlog v0.8.0
+
 ## Release v4.1.1 - 2021/05/05
 
 ### News
