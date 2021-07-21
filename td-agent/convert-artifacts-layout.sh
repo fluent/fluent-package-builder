@@ -51,10 +51,6 @@ case $1 in
 		    continue
 		fi
 		for arch in aarch64 x86_64; do
-		    if [ $dist = "amazon" -a $arch = "aarch64" ]; then
-			echo "skip $dist:$release:$arch"
-			continue
-		    fi
 		    # e.g. mapping amazon/2/x86_64/Packages/ => 4/amazon/2/x86_64
 		    mkdir -p $ARTIFACTS_DIR/4/$dist_dest/$release/$arch
 		    find $REPOSITORY_PATH/$dist/$release/$arch -name '*.rpm' -not -name '*debug*' -exec cp {} $ARTIFACTS_DIR/4/$dist_dest/$release/$arch \;
