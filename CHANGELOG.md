@@ -12,7 +12,7 @@
 
 * ruby v2.7.4 (update)
 * jemalloc v3.6.0 (downgrade)
-* fluentd v1.13.2 (update)
+* fluentd v1.13.3 (update)
 
 ### Core gems
 
