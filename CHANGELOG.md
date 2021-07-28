@@ -38,12 +38,13 @@
 * webhdfs v0.9.0
 * fluent-plugin-webhdfs v1.4.0
 * ruby-kafka v1.3.0
-* rdkafka v0.8.1
+* rdkafka v0.9.0 (update)
 * fluent-plugin-kafka v0.16.3 (update)
 * elasticsearch v7.13.3 (update)
 * fluent-plugin-elasticsearch v5.0.5 (update)
 * prometheus-client v2.1.0 (update)
 * fluent-plugin-prometheus v2.0.1 (update)
+* fluent-plugin-prometheus_pushgateway v0.1.0 (update)
 * systemd-journal v1.4.2 (update)
 * fluent-plugin-systemd v1.0.5 (update)
 * fluent-plugin-record-modifier v2.1.0
@@ -51,7 +52,7 @@
 * fluent-plugin-sd-dns 0.1.0
 * fluent-plugin-flowcounter-simple 0.1.0
 * fluent-diagtool v1.0.1
-* fluent-plugin-utmpx v0.3.0
+* fluent-plugin-utmpx v0.5.0
 
 On Windows
 
