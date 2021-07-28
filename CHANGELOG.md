@@ -6,7 +6,7 @@
 
 * Downgrade jemalloc to v3.6.0 to reduce memory usage
   https://github.com/fluent-plugins-nursery/td-agent-builder/issues/305
-* Remove needless perl dependency
+* Remove needless perl dependency (jeprof command was removed)
 
 ### Core component
 
