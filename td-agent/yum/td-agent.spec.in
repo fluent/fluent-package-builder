@@ -20,6 +20,7 @@
 %define _centos_ver %{?centos_ver:%{centos_ver}}%{!?centos_ver:8}
 %define _amazon_ver %{?amzn:%{amzn}}%{!?amzn:0}
 %define _suse_ver %{?suse_version:%{suse_version}}%{!?suse_version:0}
+%define use_suse (%{_suse_ver} >= 1315)
 %define use_scl_ruby (%{_centos_ver} <= 7 && %{_amazon_ver} == 0)
 %if %{_centos_ver} <= 6
 %define scl_ruby_ver 24
@@ -74,7 +75,7 @@ BuildRequires:	ruby
 BuildRequires:	rubygems
 BuildRequires:	rubygem-rake
 %else
-%if %{_suse_ver} >= 1315
+%if %{use_suse}
 BuildRequires:	ruby2.4
 BuildRequires:	ruby-devel
 BuildRequires:	ruby2.4-rubygem-bundler
@@ -88,7 +89,7 @@ BuildRequires:	rubygem-bundler
 BuildRequires:	gcc-c++
 BuildRequires:	git
 BuildRequires:	zlib-devel
-%if %{_suse_ver} >= 1315
+%if %{use_suse}
 BuildRequires:	libopenssl-devel
 BuildRequires:	pkg-config
 %else
@@ -108,7 +109,7 @@ BuildRequires: systemd
 #Requires: redhat-lsb-core
 %endif
 Requires(pre): /usr/bin/getent
-%if %{_suse_ver} >= 1315
+%if %{use_suse}
 Requires(pre): /usr/sbin/useradd
 %else
 Requires(pre): /usr/sbin/adduser
@@ -152,7 +153,7 @@ if ! getent group @PACKAGE@ >/dev/null; then
     /usr/sbin/groupadd -r @PACKAGE@
 fi
 if ! getent passwd @PACKAGE@ >/dev/null; then
-%if %{_suse_ver} >= 1315
+%if %{use_suse}
     /usr/sbin/useradd -r -g @PACKAGE@ -d %{_localstatedir}/lib/@PACKAGE@ -s /sbin/nologin -c '@PACKAGE@' @PACKAGE@
 %else
     /usr/sbin/adduser -r -g @PACKAGE@ -d %{_localstatedir}/lib/@PACKAGE@ -s /sbin/nologin -c '@PACKAGE@' @PACKAGE@
