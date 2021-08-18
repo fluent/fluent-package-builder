@@ -14,7 +14,7 @@ case ${code_name} in
     channel=universe
     mirror=http://archive.ubuntu.com/ubuntu/
     ;;
-  buster)
+  buster|bullseye)
     distribution=debian
     channel=main
     mirror=http://deb.debian.org/debian
