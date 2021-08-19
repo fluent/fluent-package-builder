@@ -15,9 +15,9 @@ case $1 in
     apt|deb)
 	REPOSITORY_TYPE=apt
 	REPOSITORY_PATH=$TD_AGENT_DIR/$REPOSITORY_TYPE/repositories
-	for d in buster xenial bionic focal; do
+	for d in buster bullseye xenial bionic focal; do
 	    case $d in
-		buster)
+		buster|bullseye)
 		    # e.g. mapping debian/pool/buster/main/t/td-agent/ => 4/debian/buster/pool/contrib/t/td-agent
 		    mkdir -p $ARTIFACTS_DIR/4/debian/$d/pool/contrib/t/td-agent
 		    find $REPOSITORY_PATH/debian/pool/$d -name '*.deb' -not -name '*dbgsym*' -exec cp {} $ARTIFACTS_DIR/4/debian/$d/pool/contrib/t/td-agent \;
