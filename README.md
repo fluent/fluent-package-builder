@@ -2,7 +2,9 @@
 
 ## About fluent-package-builder
 
-fluent-package-builder is a new build system for [td-agent](https://docs.treasuredata.com/display/public/PD/About+Treasure+Data%27s+Server-Side+Agent) which aims to replace the traditional build system [omnibus-td-agent](https://github.com/treasure-data/omnibus-td-agent) since it has several problems due to [Omnibus](https://github.com/chef/omnibus)'s limitations.
+fluent-package-builder (formerly known as td-agent-builder, it was renamed at Aug, 2021) is a new build system for [td-agent](https://docs.treasuredata.com/display/public/PD/About+Treasure+Data%27s+Server-Side+Agent) which aims to replace the traditional build system [omnibus-td-agent](https://github.com/treasure-data/omnibus-td-agent) since it has several problems due to [Omnibus](https://github.com/chef/omnibus)'s limitations.
+
+NOTE: Discussed why re-branding is required [Rebranding td-agent-builder](https://github.com/fluent-plugins-nursery/fluent-package-builder/issues/311)
 
 ### Changes from Treasure Agent 3
 
