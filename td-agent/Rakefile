@@ -1,6 +1,6 @@
 #!/usr/bin/env rake
 #
-# td-agent-builder
+# fluent-package-builder
 #
 #    Licensed under the Apache License, Version 2.0 (the "License");
 #    you may not use this file except in compliance with the License.
@@ -452,7 +452,7 @@ class BuildTask
       desc "Create debian package script files from template"
       task :deb_scripts do
         # Note: "debian" directory in this directory isn't used dilectly, it's
-        # copied to the top directory of td-agent-builder in Docker container.
+        # copied to the top directory of fluent-package-builder in Docker container.
         # Since this task is executed in the container, package scripts should
         # be generated to the "debian" directory under the top directory
         # instead of this directory's one.
@@ -1560,11 +1560,11 @@ SET ARCH=#{arch}
       "run",
       "--rm",
       "--tty",
-      "--volume", "#{top_dir}:c:/td-agent-builder:rw",
+      "--volume", "#{top_dir}:c:/fluent-package-builder:rw",
     ]
     docker_context = "msi"
     build_command_line << docker_context
-    run_command_line.concat([docker_tag, 'c:\td-agent-builder\td-agent\msi\build.bat'])
+    run_command_line.concat([docker_tag, 'c:\fluent-package-builder\td-agent\msi\build.bat'])
 
     write_env
 
