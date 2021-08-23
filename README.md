@@ -1,8 +1,8 @@
-# td-agent-builder
+# fluent-package-builder
 
-## About td-agent-builder
+## About fluent-package-builder
 
-td-agent-builder is a new build system for [td-agent](https://docs.treasuredata.com/display/public/PD/About+Treasure+Data%27s+Server-Side+Agent) which aims to replace the traditional build system [omnibus-td-agent](https://github.com/treasure-data/omnibus-td-agent) since it has several problems due to [Omnibus](https://github.com/chef/omnibus)'s limitations.
+fluent-package-builder is a new build system for [td-agent](https://docs.treasuredata.com/display/public/PD/About+Treasure+Data%27s+Server-Side+Agent) which aims to replace the traditional build system [omnibus-td-agent](https://github.com/treasure-data/omnibus-td-agent) since it has several problems due to [Omnibus](https://github.com/chef/omnibus)'s limitations.
 
 ### Changes from Treasure Agent 3
 
@@ -86,7 +86,7 @@ But if you use older GNU/Linux platforms (e.g. Ubuntu 18.04 or before) as your h
 ```console
 % export TARGET_BASE="centos-8"
 % sudo apt install qemu-user-static
-% cd /path/to/td-agent-builder
+% cd /path/to/fluent-package-builder
 % cp /usr/bin/qemu-aarch64-static td-agent/yum/${TARGET_BASE}
 % rake yum:build YUM_TARGETS="${TARGET_BASE}-aarch64"
 ```
@@ -104,7 +104,7 @@ But if you use older GNU/Linux platforms (e.g. Ubuntu 18.04 or before) as your h
 ```console
 % export TARGET_BASE="centos-8"
 % sudo apt install qemu-user-static
-% cd /path/to/td-agent-builder
+% cd /path/to/fluent-package-builder
 % cp /usr/bin/qemu-ppc64le-static td-agent/yum/${TARGET_BASE}
 % rake yum:build YUM_TARGETS="${TARGET_BASE}-ppc64le"
 ```
@@ -143,7 +143,7 @@ But if you use older GNU/Linux platforms (e.g. Ubuntu 18.04 or before) as your h
 ```console
 % export TARGET_BASE="ubuntu-bionic"
 % sudo apt install qemu-user-static
-% cd /path/to/td-agent-builder
+% cd /path/to/fluent-package-builder
 % cp /usr/bin/qemu-aarch64-static td-agent/apt/${TARGET_BASE}
 % rake apt:build APT_TARGETS="${TARGET_BASE}-arm64"
 ```

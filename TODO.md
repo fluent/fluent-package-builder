@@ -1,8 +1,8 @@
-# TODO about td-agent-builder
+# TODO about fluent-package-builder
 
 ## Enable lintian check on Ubuntu Focal (Arm64)
 
-See https://github.com/fluent-plugins-nursery/td-agent-builder/issues/65
+See https://github.com/fluent-plugins-nursery/fluent-package-builder/issues/65
 
 Because of stucking lintian process, we can't enable
 lintian check on Ubuntu Focal (Arm64) and Groovy.
