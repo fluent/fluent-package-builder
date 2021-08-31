@@ -38,6 +38,7 @@ end
 gem "elasticsearch", "7.13.3"
 gem "fluent-plugin-elasticsearch", "5.0.5"
 gem "ruby-kafka", "1.3.0"
+gem "digest-murmurhash", "1.1.1"
 gem "fluent-plugin-kafka", "0.16.3"
 gem "prometheus-client", "2.1.0"
 gem "fluent-plugin-prometheus", "2.0.1"
