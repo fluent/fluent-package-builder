@@ -60,7 +60,7 @@ gem "webhdfs", "0.9.0"
 gem "fluent-plugin-webhdfs", "1.4.0"
 gem "fluent-plugin-record-modifier", "2.1.0"
 gem "fluent-plugin-rewrite-tag-filter", "2.4.0"
-gem "nokogiri", "1.11.7"
+gem "nokogiri", "1.12.5"
 gem "fluent-plugin-sd-dns", "0.1.0"
 gem "fluent-plugin-flowcounter-simple", "0.1.0"
 
@@ -75,7 +75,7 @@ gem "windows-api", "0.4.4", platforms: windows_platforms
 gem "windows-pr", "1.2.6", platforms: windows_platforms
 gem "winevt_c", "0.9.2", platforms: windows_platforms
 gem "win32-eventlog", "0.6.7", platforms: windows_platforms
-gem "fluent-plugin-parser-winevt_xml", "0.2.2", platforms: windows_platforms
+gem "fluent-plugin-parser-winevt_xml", "0.2.3", platforms: windows_platforms
 gem "fluent-plugin-windows-eventlog", "0.8.0", platforms: windows_platforms
 
 not_windows_platforms = [:ruby]
