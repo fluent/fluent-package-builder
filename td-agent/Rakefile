@@ -457,7 +457,7 @@ class BuildTask
         # be generated to the "debian" directory under the top directory
         # instead of this directory's one.
         debian_pkg_scripts.each do |script|
-          src = template_path('package-scripts', 'td-agent', "deb", script)
+          src = template_path('package-scripts', PACKAGE_NAME, "deb", script)
           next unless File.exist?(src)
           dest = File.join("..", "debian", File.basename(script))
           render_template(dest, src, template_params, { mode: 0755 })
@@ -467,17 +467,17 @@ class BuildTask
       desc "Create td-agent configuration files from template"
       task :td_agent_config do
         configs = [
-          "etc/td-agent/td-agent.conf"
+          "etc/#{PACKAGE_NAME}/#{PACKAGE_NAME}.conf"
         ]
         configs.concat([
-          "etc/logrotate.d/td-agent",
-          "opt/td-agent/share/td-agent-ruby.conf",
-          "opt/td-agent/share/td-agent.conf.tmpl"
+          "etc/logrotate.d/#{PACKAGE_NAME}",
+          "opt/#{PACKAGE_NAME}/share/#{PACKAGE_NAME}-ruby.conf",
+          "opt/#{PACKAGE_NAME}/share/#{PACKAGE_NAME}.conf.tmpl"
         ]) unless windows? || macos?
         configs.each do |config|
           src = template_path(config)
-          if config == "etc/td-agent/td-agent.conf"
-            src = template_path("opt/td-agent/share/td-agent.conf.tmpl")
+          if config == "etc/#{PACKAGE_NAME}/#{PACKAGE_NAME}.conf"
+            src = template_path("opt/#{PACKAGE_NAME}/share/#{PACKAGE_NAME}.conf.tmpl")
           end
           dest = File.join(STAGING_DIR, config)
           render_template(dest, src, template_params)
@@ -487,7 +487,7 @@ class BuildTask
       desc "Create systemd-tmpfiles configuration files from template"
       task :systemd_tmpfiles_config do
         configs = [
-          "usr/lib/tmpfiles.d/td-agent.conf",
+          "usr/lib/tmpfiles.d/#{PACKAGE_NAME}.conf",
         ]
         configs.each do |config|
           src = template_path(config)
@@ -500,8 +500,8 @@ class BuildTask
       task :bin_scripts do
         scripts = [
           "usr/bin/td",
-          "usr/sbin/td-agent",
-          "usr/sbin/td-agent-gem",
+          "usr/sbin/#{PACKAGE_NAME}",
+          "usr/sbin/#{PACKAGE_NAME}-gem",
         ]
         scripts.each do |script|
           src = template_path("#{script}.erb")
@@ -517,7 +517,7 @@ class BuildTask
       desc "Create launchctl configuration files from template"
       task :launchctl_config do
         configs = [
-          "td-agent.plist",
+          "#{PACKAGE_NAME}.plist",
         ]
         configs.each do |config|
           src = template_path("#{config}.erb")
@@ -529,11 +529,11 @@ class BuildTask
       desc "Install additional .bat files for Windows"
       task :win_batch_files do
         ensure_directory(staging_bindir)
-        cp("msi/assets/td-agent-prompt.bat", td_agent_staging_dir)
-        cp("msi/assets/td-agent-post-install.bat", staging_bindir)
-        cp("msi/assets/td-agent.bat", staging_bindir)
-        cp("msi/assets/td-agent-gem.bat", staging_bindir)
-        cp("msi/assets/td-agent-version.rb", staging_bindir)
+        cp("msi/assets/#{PACKAGE_NAME}-prompt.bat", td_agent_staging_dir)
+        cp("msi/assets/#{PACKAGE_NAME}-post-install.bat", staging_bindir)
+        cp("msi/assets/#{PACKAGE_NAME}.bat", staging_bindir)
+        cp("msi/assets/#{PACKAGE_NAME}-gem.bat", staging_bindir)
+        cp("msi/assets/#{PACKAGE_NAME}-version.rb", staging_bindir)
       end
 
       desc "Create systemd unit file for Red Hat like systems"
@@ -601,12 +601,12 @@ class BuildTask
   private
 
   def render_systemd_unit_file(dest_path, config)
-    template_file_path = template_path('etc', 'systemd', 'td-agent.service.erb')
+    template_file_path = template_path('etc', 'systemd', "#{PACKAGE_NAME}.service.erb")
     render_template(dest_path, template_file_path, config)
   end
 
   def render_sysv_init_file(dest_path, config)
-    template_file_path = template_path('etc', 'init.d', 'td-agent.erb')
+    template_file_path = template_path('etc', 'init.d', "#{PACKAGE_NAME}.erb")
     render_template(dest_path, template_file_path, config, {mode: 0755})
   end
 
@@ -988,7 +988,7 @@ class BuildTask
   def install_td_agent_license
     ensure_directory(licenses_staging_dir)
     src = File.join(__dir__, "..", "LICENSE")
-    dest = File.join(licenses_staging_dir, "LICENSE-td-agent.txt")
+    dest = File.join(licenses_staging_dir, "LICENSE-#{PACKAGE_NAME}.txt")
     cp(src, dest)
   end
 
@@ -996,7 +996,7 @@ class BuildTask
     ensure_directory(staging_sharedir) do
       ["Gemfile", "Gemfile.lock", "config.rb"].each do |file|
         source_dir = File.join(__dir__, "..")
-        src = File.join(source_dir, "td-agent/#{file}")
+        src = File.join(source_dir, "#{PACKAGE_NAME}/#{file}")
         dest = File.join(staging_sharedir, file)
         cp(src, dest)
       end
@@ -1093,12 +1093,12 @@ class LinuxPackageTask < PackageTask
       File.join("..", path)
     end
 
-    debian_copyright_file = File.join("td-agent", "debian", "copyright")
+    debian_copyright_file = File.join("#{PACKAGE_NAME}", "debian", "copyright")
     file debian_copyright_file do
       build_copyright_file
     end
 
-    debian_include_binaries_file = File.join("td-agent", "debian", "source", "include-binaries")
+    debian_include_binaries_file = File.join("#{PACKAGE_NAME}", "debian", "source", "include-binaries")
     file debian_include_binaries_file do
       build_include_binaries_file
     end
@@ -1113,7 +1113,7 @@ class LinuxPackageTask < PackageTask
     # Note: maintain debian/copyright manually is inappropriate way because
     # many gem is bundled with td-agent package.
     # We use gem specification GEMFILE to solve this issue.
-    src = File.join("templates", "package-scripts", "td-agent", "deb", "copyright")
+    src = File.join("templates", "package-scripts", "#{PACKAGE_NAME}", "deb", "copyright")
     dest = File.join("debian", "copyright")
     licenses = []
     @download_task.files_ruby_gems.each do |gem_file|
@@ -1188,7 +1188,7 @@ EOS
       end
     end
     Dir.glob("#{DOWNLOADS_DIR}/*.gem") do |path|
-      paths << path.sub(Dir.pwd, "td-agent")
+      paths << path.sub(Dir.pwd, "#{PACKAGE_NAME}")
     end
     ensure_directory("debian/source") do
       File.open("include-binaries", "w+") do |file|
@@ -1207,7 +1207,7 @@ EOS
         src_path = Pathname(path)
         dest_path = Pathname(DOWNLOADS_DIR)
         relative_path = src_path.relative_path_from(dest_path)
-        dest_downloads_dir = "#{@archive_base_name}/td-agent/downloads"
+        dest_downloads_dir = "#{@archive_base_name}/#{PACKAGE_NAME}/downloads"
         dest_dir = "#{dest_downloads_dir}/#{File.dirname(relative_path)}"
         ensure_directory(dest_dir)
         # TODO: When a tarball is create on a host OS that is different from a target,
@@ -1217,7 +1217,7 @@ EOS
         # build debian/copyright. Probably it should be built in the build container.
         cp_r(path, dest_dir) unless path.end_with?(".gem")
       end
-      cp_r("td-agent/debian/copyright", "#{@archive_base_name}/td-agent/debian/copyright")
+      cp_r("#{PACKAGE_NAME}/debian/copyright", "#{@archive_base_name}/#{PACKAGE_NAME}/debian/copyright")
       sh("tar", "cvfz", @full_archive_name, @archive_base_name)
       rm_rf(@archive_base_name)
     end
@@ -1258,12 +1258,12 @@ class CompressDMG
     @version = version
     @window_bounds = window_bounds
     @pkg_position = pkg_position
-    @dmg_temp_name = "rw.td-agent-#{@version}.dmg"
-    @dmg_name = "td-agent-#{@version}.dmg"
-    @pkg_name = "td-agent-#{@version}.pkg"
-    @volume_name = "Td-Agent"
+    @dmg_temp_name = "rw.#{PACKAGE_NAME}-#{@version}.dmg"
+    @dmg_name = "#{PACKAGE_NAME}-#{@version}.dmg"
+    @pkg_name = "#{PACKAGE_NAME}-#{@version}.pkg"
+    @volume_name = "#{PACKAGE_NAME}"
     @device = nil
-    @osascript_path = File.join("resources", "dmg", "td-agent.osascript")
+    @osascript_path = File.join("resources", "dmg", "#{PACKAGE_NAME}.osascript")
     @logger = logger || Logger.new(STDOUT, level: Logger::Severity::INFO)
   end
 
@@ -1338,21 +1338,21 @@ EOL
 
   def set_volume_icon
     icon = File.join("resources", "dmg", "icon.png")
-    mkdir_p("td-agent.iconset")
+    mkdir_p("#{PACKAGE_NAME}.iconset")
 
-    sh("sips", "-z", "16", "16", "#{icon}", "--out", "td-agent.iconset/icon_16x16.png")
-    sh("sips", "-z", "32", "32", "#{icon}", "--out", "td-agent.iconset/icon_16x16@2x.png")
-    sh("sips", "-z", "32", "32", "#{icon}", "--out", "td-agent.iconset/icon_32x32.png")
-    sh("sips", "-z", "64", "64", "#{icon}", "--out", "td-agent.iconset/icon_32x32@2x.png")
-    sh("sips", "-z", "128", "128", "#{icon}", "--out", "td-agent.iconset/icon_128x128.png")
-    sh("sips", "-z", "256", "256", "#{icon}", "--out", "td-agent.iconset/icon_128x128@2x.png")
-    sh("sips", "-z", "256", "256", "#{icon}", "--out", "td-agent.iconset/icon_256x256.png")
-    sh("sips", "-z", "512", "512", "#{icon}", "--out", "td-agent.iconset/icon_256x256@2x.png")
-    sh("sips", "-z", "512", "512", "#{icon}", "--out", "td-agent.iconset/icon_512x512.png")
-    sh("sips", "-z", "1024", "1024", "#{icon}", "--out", "td-agent.iconset/icon_512x512@2x.png")
-    sh("iconutil", "-c", "icns", "td-agent.iconset")
+    sh("sips", "-z", "16", "16", "#{icon}", "--out", "#{PACKAGE_NAME}.iconset/icon_16x16.png")
+    sh("sips", "-z", "32", "32", "#{icon}", "--out", "#{PACKAGE_NAME}.iconset/icon_16x16@2x.png")
+    sh("sips", "-z", "32", "32", "#{icon}", "--out", "#{PACKAGE_NAME}.iconset/icon_32x32.png")
+    sh("sips", "-z", "64", "64", "#{icon}", "--out", "#{PACKAGE_NAME}.iconset/icon_32x32@2x.png")
+    sh("sips", "-z", "128", "128", "#{icon}", "--out", "#{PACKAGE_NAME}.iconset/icon_128x128.png")
+    sh("sips", "-z", "256", "256", "#{icon}", "--out", "#{PACKAGE_NAME}.iconset/icon_128x128@2x.png")
+    sh("sips", "-z", "256", "256", "#{icon}", "--out", "#{PACKAGE_NAME}.iconset/icon_256x256.png")
+    sh("sips", "-z", "512", "512", "#{icon}", "--out", "#{PACKAGE_NAME}.iconset/icon_256x256@2x.png")
+    sh("sips", "-z", "512", "512", "#{icon}", "--out", "#{PACKAGE_NAME}.iconset/icon_512x512.png")
+    sh("sips", "-z", "1024", "1024", "#{icon}", "--out", "#{PACKAGE_NAME}.iconset/icon_512x512@2x.png")
+    sh("iconutil", "-c", "icns", "#{PACKAGE_NAME}.iconset")
 
-    cp("td-agent.icns", "/Volumes/#{@volume_name}/.VolumeIcon.icns")
+    cp("#{PACKAGE_NAME}.icns", "/Volumes/#{@volume_name}/.VolumeIcon.icns")
 
     sh("SetFile", "-c", "icnC", "/Volumes/#{@volume_name}/.VolumeIcon.icns")
     sh("SetFile", "-a", "C", "/Volumes/#{@volume_name}")
@@ -1380,8 +1380,8 @@ EOL
 
   def set_dmg_icon
     sh("sips", "-i", File.join("resources", "dmg", "icon.png"))
-    sh("DeRez -only icns #{File.join('resources', 'dmg', 'icon.png')} > td-agent.rsrc")
-    sh("Rez", "-append", "td-agent.rsrc", "-o", @dmg_name)
+    sh("DeRez -only icns #{File.join('resources', 'dmg', 'icon.png')} > #{PACKAGE_NAME}.rsrc")
+    sh("Rez", "-append", "#{PACKAGE_NAME}.rsrc", "-o", @dmg_name)
     sh("SetFile", "-a", "C", @dmg_name)
   end
 
@@ -1438,22 +1438,22 @@ class MacOSPackageTask
       # Build flat pkg installer
       sh("pkgbuild",
          "--root", STAGING_DIR,
-         "--component-plist", File.join("resources", "pkg", "td-agent.plist"),
+         "--component-plist", File.join("resources", "pkg", "#{PACKAGE_NAME}.plist"),
          "--identifier", "com.treasuredata.tdagent",
          "--version", @version,
          "--scripts", File.join("resources", "pkg", "scripts"),
          "--install-location", "/",
-         File.join(output_dir, "td-agent.pkg"))
+         File.join(output_dir, "#{PACKAGE_NAME}.pkg"))
 
       # Build distributable pkg installer
       sh("productbuild",
          "--distribution", File.join("resources", "pkg", "Distribution.xml"),
-         "--package-path", File.join(output_dir, "td-agent.pkg"),
+         "--package-path", File.join(output_dir, "#{PACKAGE_NAME}.pkg"),
          "--resources", File.join("resources", "pkg", "assets"),
-         File.join(output_dir, "td-agent-#{@version}.pkg"))
+         File.join(output_dir, "#{PACKAGE_NAME}-#{@version}.pkg"))
 
       mkdir_p("dmg")
-      cp(File.join(output_dir, "td-agent-#{@version}.pkg"), "dmg")
+      cp(File.join(output_dir, "#{PACKAGE_NAME}-#{@version}.pkg"), "dmg")
       window_bounds = "100, 100, 750, 600"
       pkg_position = "535, 50"
       dmg = CompressDMG.new(version: @version, window_bounds: window_bounds, pkg_position: pkg_position, logger: @logger)
@@ -1564,7 +1564,7 @@ SET ARCH=#{arch}
     ]
     docker_context = "msi"
     build_command_line << docker_context
-    run_command_line.concat([docker_tag, 'c:\fluent-package-builder\td-agent\msi\build.bat'])
+    run_command_line.concat([docker_tag, "c:\\fluent-package-builder\\#{PACKAGE_NAME}\\msi\\build.bat"])
 
     write_env
 
