@@ -116,7 +116,7 @@ Requires(pre): /usr/sbin/adduser
 %endif
 
 %description
-The stable distribution of Fluentd, called td-agent.
+The stable distribution of Fluentd, previously known as td-agent.
 
 %prep
 %setup -q -n @PACKAGE@-%{version}
@@ -128,10 +128,10 @@ The stable distribution of Fluentd, called td-agent.
 . /opt/rh/rh-ruby%{scl_ruby_ver}/enable
 %endif
 %if %{use_systemd}
-rake build:rpm_config TD_AGENT_STAGING_PATH=%{buildroot} NO_VAR_RUN=1
+rake build:fluentd_rpm_config TD_AGENT_STAGING_PATH=%{buildroot} NO_VAR_RUN=1
 rake build:all TD_AGENT_STAGING_PATH=%{buildroot}
 %else
-rake build:rpm_old_config TD_AGENT_STAGING_PATH=%{buildroot} NO_VAR_RUN=0
+rake build:fluentd_rpm_old_config TD_AGENT_STAGING_PATH=%{buildroot} NO_VAR_RUN=0
 # Fat gem of nokogiri 1.11 requires glibc 2.17 which doesn't exist on CentOS 6
 rake build:all TD_AGENT_STAGING_PATH=%{buildroot} REBUILD_GEMS="nokogiri"
 %endif
@@ -193,8 +193,8 @@ fi
 fi
 %endif
 if [ -d "%{_sysconfdir}/prelink.conf.d/" ]; then
-  echo "prelink detected. Installing /etc/prelink.conf.d/td-agent-ruby.conf ..."
-  if [ ! -f %{_sysconfdir}/prelink.conf.d/td-agent-ruby.conf ]; then
+  echo "prelink detected. Installing /etc/prelink.conf.d/fluentd-ruby.conf ..."
+  if [ ! -f %{_sysconfdir}/prelink.conf.d/fluentd-ruby.conf ]; then
       %{__cp} -f /opt/td-agent/share/td-agent-ruby.conf %{_sysconfdir}/prelink.conf.d/td-agent-ruby.conf
   else
     if [ $(grep '\-b /opt/td-agent/embedded/bin/ruby' -c %{_sysconfdir}/prelink.conf.d/td-agent-ruby.conf) -eq 1 ]; then
@@ -229,9 +229,10 @@ fi
 %{_sysconfdir}/init.d/@PACKAGE@
 %endif
 %{_bindir}/td
-%{_sbindir}/td-agent
-%{_sbindir}/td-agent-gem
+%{_sbindir}/@PACKAGE@
+%{_sbindir}/@PACKAGE@-gem
 %{_mandir}/man1/td*
+%{_mandir}/man1/fluentd*
 %config(noreplace) %{_sysconfdir}/@PACKAGE@/@PACKAGE@.conf
 %config(noreplace) %{_sysconfdir}/logrotate.d/@PACKAGE@
 %attr(0755,td-agent,td-agent) %dir %{_localstatedir}/log/@PACKAGE@
