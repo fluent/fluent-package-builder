@@ -26,7 +26,7 @@
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="WINDOWSVOLUME">
         <Directory Id="OPTLOCATION" Name="opt">
-          <Directory Id="PROJECTLOCATION" Name="td-agent">
+          <Directory Id="PROJECTLOCATION" Name="fluentd">
             <Component Id="TDAgentAcl" Guid="b0504030-258a-0139-ba33-7085c2f4281d">
               <CreateFolder>
                 <!--
@@ -82,14 +82,14 @@
 
     <DirectoryRef Id="PROJECTLOCATION">
       <Directory Id="TDAgentEtcDir" Name="etc">
-        <Directory Id="TDAgentConfDir" Name="td-agent">
+        <Directory Id="TDAgentConfDir" Name="fluentd">
           <Component Id="TDAgentConf"
                      Guid="534F3E10-B04E-4C17-9DAA-A390068BA8EB"
                      Permanent="yes"
                      NeverOverwrite="yes">
-            <File Id="TDAgentConf"
-                  Name="td-agent.conf"
-                  Source="$(var.ProjectSourceDir)\etc\td-agent\td-agent.conf" />
+            <File Id="FluentdConf"
+                  Name="fluentd.conf"
+                  Source="$(var.ProjectSourceDir)\etc\fluentd\fluentd.conf" />
           </Component>
         </Directory>
       </Directory>
@@ -97,9 +97,9 @@
                  Name="bin"
                  ComponentGuidGenerationSeed="3ad15499-f8a4-471b-bc7f-16aa4abfd894">
         <Component Id="TDAgentBat">
-          <File Name="td-agent.bat"
+          <File Name="fluentd.bat"
                 KeyPath="yes"
-                Source="$(var.ProjectSourceDir)\bin\td-agent.bat" />
+                Source="$(var.ProjectSourceDir)\bin\fluentd.bat" />
           <ServiceControl Id="ServiceControlFluentdWinSvc"
                           Name="fluentdwinsvc"
                           Stop="uninstall"
@@ -113,7 +113,7 @@
     <!-- Shortcut on Start Menu -->
     <DirectoryRef Id="ApplicationProgramFolder">
       <Component Id="ApplicationShortcut" Guid="*">
-        <Shortcut Id="ApplicationShortcut" Name="!(loc.ProductName) Command Prompt" Description="Open !(loc.ProductName) Command Prompt" Target="[SystemFolder]cmd.exe" Arguments='/k "[PROJECTLOCATION]td-agent-prompt.bat"' WorkingDirectory="PROJECTLOCATION" />
+        <Shortcut Id="ApplicationShortcut" Name="!(loc.ProductName) Command Prompt" Description="Open !(loc.ProductName) Command Prompt" Target="[SystemFolder]cmd.exe" Arguments='/k "[PROJECTLOCATION]fluentd-prompt.bat"' WorkingDirectory="PROJECTLOCATION" />
         <RemoveFolder Id="ApplicationProgramFolder" On="uninstall" />
         <RegistryValue Root="HKCU" Key="Software\[Manufacturer]\[ProductName]" Name="installed" Type="integer" Value="1" KeyPath="yes" />
         <Environment Id="ProjectLocationDirForConf"
@@ -162,7 +162,7 @@
     <Property Id="PostInstall" Value=" "/>
     <CustomAction Id="SetPostInstallCommand"
                   Property="PostInstall"
-                  Value="&quot;[PROJECTLOCATION]bin\td-agent-post-install.bat&quot;"/>
+                  Value="&quot;[PROJECTLOCATION]bin\fluentd-post-install.bat&quot;"/>
     <CustomAction Id="PostInstall"
                   BinaryKey="WixCA"
                   DllEntry="WixQuietExec64"
@@ -172,7 +172,7 @@
     <Property Id="InstallFluentdWinSvc" Value=" "/>
     <CustomAction Id="SetInstallFluentdWinSvcCommand"
                   Property="InstallFluentdWinSvc"
-                  Value="&quot;[PROJECTLOCATION]bin\td-agent.bat&quot; --reg-winsvc i --reg-winsvc-delay-start --reg-winsvc-auto-start --reg-winsvc-fluentdopt &quot;-c [PROJECTLOCATION]etc\td-agent\td-agent.conf -o [PROJECTLOCATION]td-agent.log&quot;"/>
+                  Value="&quot;[PROJECTLOCATION]bin\fluentd.bat&quot; --reg-winsvc i --reg-winsvc-delay-start --reg-winsvc-auto-start --reg-winsvc-fluentdopt &quot;-c [PROJECTLOCATION]etc\fluentd\fluentd.conf -o [PROJECTLOCATION]fluentd.log&quot;"/>
     <CustomAction Id="InstallFluentdWinSvc"
                   BinaryKey="WixCA"
                   DllEntry="WixQuietExec64"

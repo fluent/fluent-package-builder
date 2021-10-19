@@ -1,16 +1,16 @@
 $ErrorActionPreference = 'Stop'
 
-$msi = ((Get-Item "C:\\fluentd\\td-agent\\msi\\repositories\\td-agent-*.msi") | Sort-Object -Descending { $_.LastWriteTime } | Select-Object -First 1).FullName
+$msi = ((Get-Item "C:\\fluentd\\fluentd\\msi\\repositories\\fluentd-*.msi") | Sort-Object -Descending { $_.LastWriteTime } | Select-Object -First 1).FullName
 Write-Host "Installing ${msi} ..."
 
 Start-Process msiexec -ArgumentList "/i", $msi, "/quiet" -Wait -NoNewWindow
 
-$ENV:PATH="C:\\opt\\td-agent\\bin;" + $ENV:PATH
+$ENV:PATH="C:\\opt\\fluentd\\bin;" + $ENV:PATH
 
-td-agent --version
+fluentd --version
 
-$msi -Match "td-agent-([0-9\.]+)-.+\.msi"
-$name = "Td-agent v" + $matches[1]
+$msi -Match "fluentd-([0-9\.]+)-.+\.msi"
+$name = "Fluentd v" + $matches[1]
 Write-Host "Uninstalling ...${name}"
 Get-CimInstance -Class Win32_Product -Filter "Name='${name}'" | Invoke-CimMethod -MethodName Uninstall
 $exitcode = $LASTEXITCODE
@@ -19,18 +19,18 @@ if ($exitcode -ne 0) {
 }
 Write-Host "Succeeded to uninstall ${name}"
 
-# td-agent.conf should not be removed
-$conf = (Get-ChildItem -Path "c:\\opt" -Filter "td-agent.conf" -Recurse -Name)
-if ($conf -ne "td-agent\etc\td-agent\td-agent.conf") {
-  Write-Host "Failed to find td-agent.conf: <${conf}>"
+# fluentd.conf should not be removed
+$conf = (Get-ChildItem -Path "c:\\opt" -Filter "fluentd.conf" -Recurse -Name)
+if ($conf -ne "fluentd\etc\fluentd\fluentd.conf") {
+  Write-Host "Failed to find fluentd.conf: <${conf}>"
   [Environment]::Exit(1)
 }
-Write-Host "Succeeded to find td-agent.conf"
+Write-Host "Succeeded to find fluentd.conf"
 
-# td-agent.log should not be removed
-$conf = (Get-ChildItem -Path "c:\\opt" -Filter "td-agent.log" -Recurse -Name)
-if ($conf -ne "td-agent\td-agent.log") {
-  Write-Host "Failed to find td-agent.log: <${conf}>"
+# fluentd.log should not be removed
+$conf = (Get-ChildItem -Path "c:\\opt" -Filter "fluentd.log" -Recurse -Name)
+if ($conf -ne "fluentd\fluentd.log") {
+  Write-Host "Failed to find fluentd.log: <${conf}>"
   [Environment]::Exit(1)
 }
-Write-Host "Succeeded to find td-agent.log"
+Write-Host "Succeeded to find fluentd.log"

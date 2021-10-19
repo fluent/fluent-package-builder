@@ -1477,7 +1477,7 @@ class WindowsPackageTask
     namespace :msi do
       desc "Build MSI package (alias for msi:dockerbuild)"
       task :build do
-        Rake::Task["msi:dockerbuild"].invoke
+        Rake::Task["msi:fluentd_dockerbuild"].invoke
       end
 
       desc "Build MSI package without using Docker"
