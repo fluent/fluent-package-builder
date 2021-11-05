@@ -28,48 +28,11 @@ fixperms() {
         dpkg-statoverride --update --add <%= project_name %> <%= project_name %> 0755 /var/log/<%= project_name %>
 }
 
-update_conffile() {
-    CONFFILE="$1"
-    TMPL="$2"
-
-    if [ -e "$CONFFILE" ]; then
-        md5sum="`md5sum \"$CONFFILE\" | sed -e \"s/ .*//\"`"
-        old_md5sum="`sed -n -e \"/^Conffiles:/,/^[^ ]/{\\\\' $TMPL'{s/.* //;p}}\" /var/lib/dpkg/status`"
-        if [ -z "$old_md5sum" ]; then
-           # backward compatibility
-            old_md5sum="`sed -n -e \"/^Conffiles:/,/^[^ ]/{\\\\' $CONFFILE'{s/.* //;p}}\" /var/lib/dpkg/status`"
-        fi
-
-        if [ "$md5sum" != "$old_md5sum" ]; then
-            echo "Conffile $CONFFILE has been modified. Remain untouched."
-            # do nothing
-        else
-            echo "Updating conffile $CONFFILE ..."
-            cp -f "$TMPL" "$CONFFILE"
-        fi
-    else
-        echo "Installing default conffile $CONFFILE ..."
-        cp -f "$TMPL" "$CONFFILE"
-    fi
-
-    # 2011/11/13 Kazuki Ohta <k@treasure-data.com>
-    # Before td-agent v1.1.0, fluentd has a bug of loading plugin before
-    # changing to the right user. Then, these directories were created with
-    # root permission. The following lines fix that problem.
-    if [ -d "/var/log/<%= project_name %>/buffer/" ]; then
-        chown -R <%= project_name %>:<%= project_name %> /var/log/<%= project_name %>/buffer/
-    fi
-    if [ -d "/tmp/<%= project_name %>/" ]; then
-        chown -R <%= project_name %>:<%= project_name %> /tmp/<%= project_name %>/
-    fi
-}
-
 case "$1" in
     configure)
         add_system_user
         add_directories
         fixperms
-        update_conffile /etc/<%= project_name %>/<%= project_name %>.conf /opt/<%= project_name %>/share/<%= project_name %>.conf.tmpl
         ;;
     abort-upgrade|abort-deconfigure|abort-remove)
         :
