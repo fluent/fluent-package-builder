@@ -11,7 +11,7 @@ JEMALLOC_VERSION = "3.6.0"
 #JEMALLOC_VERSION = "5.2.1"
 
 # https://www.openssl.org/source/
-OPENSSL_VERSION = "1.1.1k"
+OPENSSL_VERSION = "1.1.1l"
 
 BUNDLER_VERSION= "2.2.30"
 
