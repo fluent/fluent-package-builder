@@ -1,7 +1,7 @@
 PACKAGE_NAME = "td-agent"
 PACKAGE_VERSION = "4.2.0"
 
-FLUENTD_REVISION = '5126eba90ab4deb77e9deca691dfd68f835bd456' # v1.14.2
+FLUENTD_REVISION = 'f03bb926dfbe956c02269f1ebd750702e48a4847' # v1.14.3 pre
 FLUENTD_LOCAL_GEM_REPO = "file://" + File.expand_path(File.join(__dir__, "local_gem_repo"))
 
 # https://github.com/jemalloc/jemalloc/releases
