@@ -1,5 +1,65 @@
 # Treasure Agent 4 changelog
 
+## Release v4.3.0 - 2021/11/30
+
+### News
+
+* Support Debian 11 "bullseye"
+* deb: Remove needless post-install script
+* Windows: Add default log rotation setting
+
+### Core component
+
+* ruby v2.7.5 (update)
+* jemalloc v3.6.0
+* fluentd v1.14.3 (update)
+
+### Core gems
+
+* bundler v2.2.32 (update)
+* msgpack v1.4.2
+* cool.io v1.7.1
+* serverengine v2.2.4
+* oj v3.13.9 (update)
+* async-http v0.56.5 (update)
+* http_parser.rb v0.8.0 (update)
+* yajl-ruby v1.4.1
+* sigdump v0.2.4
+* tzinfo v2.0.4
+* tzinfo-data v1.2021.5 (update)
+
+### Bundled plugins and gems
+
+* td-client v1.0.8
+* fluent-plugin-td v1.1.0
+* aws-sdk-core v3.123.0 (update)
+* aws-sdk-s3 v1.107.0 (update)
+* fluent-plugin-s3 v1.6.1 (update)
+* webhdfs v0.10.2 (update)
+* fluent-plugin-webhdfs v1.5.0 (update)
+* ruby-kafka v1.4.0 (update)
+* rdkafka v0.11.1 (update)
+* fluent-plugin-kafka v0.17.3 (update)
+* elasticsearch v7.15.0 (update)
+* fluent-plugin-elasticsearch v5.1.4 (update)
+* prometheus-client v2.1.0
+* fluent-plugin-prometheus v2.0.2 (update)
+* fluent-plugin-prometheus_pushgateway v0.1.0
+* systemd-journal v1.4.2
+* fluent-plugin-systemd v1.0.5
+* fluent-plugin-record-modifier v2.1.0
+* fluent-plugin-rewrite-tag-filter v2.4.0
+* fluent-plugin-sd-dns 0.1.0
+* fluent-plugin-flowcounter-simple 0.1.0
+* fluent-diagtool v1.0.1
+* fluent-plugin-utmpx v0.5.0
+
+On Windows
+
+* winevt_c v0.9.3 (update)
+* fluent-plugin-parser-winevt_xml v0.2.3 (update)
+* fluent-plugin-windows-eventlog v0.8.1 (update)
+
 ## Release v4.2.0 - 2021/07/29
 
 ### News
