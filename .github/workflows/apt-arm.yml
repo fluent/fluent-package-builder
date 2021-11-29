@@ -1,6 +1,7 @@
 name: Apt based Linux (AArch64)
 on:
   push:
+    branches: [master]
   pull_request:
 jobs:
   build:
