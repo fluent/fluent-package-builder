@@ -1,9 +1,9 @@
 GIT
   remote: https://github.com/fluent/fluentd
-  revision: f03bb926dfbe956c02269f1ebd750702e48a4847
-  ref: f03bb926dfbe956c02269f1ebd750702e48a4847
+  revision: 438a82aead488a86180cd484bbc4e7e344a9032b
+  ref: 438a82aead488a86180cd484bbc4e7e344a9032b
   specs:
-    fluentd (1.14.2)
+    fluentd (1.14.3)
       bundler
       certstore_c (~> 0.1.7)
       cool.io (>= 1.4.5, < 2.0.0)
@@ -64,7 +64,7 @@ GEM
     bindata (2.4.10)
     certstore_c (0.1.7)
     concurrent-ruby (1.1.9)
-    console (1.13.1)
+    console (1.14.0)
       fiber-local
     cool.io (1.7.1)
     cool.io (1.7.1-x64-mingw32)
