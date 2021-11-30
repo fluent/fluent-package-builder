@@ -35,12 +35,11 @@ jobs:
         run: |
           sudo apt update
           sudo apt -V install ruby ruby-bundler ruby-serverspec
-          sudo apt -V install qemu-user-static
           sudo gem install bundler:2.2.9 --no-document
           sudo gem uninstall fileutils
       - name: Build deb with Docker
         run: |
-          cp /usr/bin/qemu-aarch64-static td-agent/apt/${{ matrix.rake-job }}/
+          docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
           rake apt:build APT_TARGETS=${{ matrix.rake-job }}-arm64 ${{ matrix.rake-options }}
       - name: Upload td-agent deb
         uses: actions/upload-artifact@master
