@@ -1,5 +1,5 @@
 PACKAGE_NAME = "td-agent"
-PACKAGE_VERSION = "4.2.0"
+PACKAGE_VERSION = "4.3.0"
 
 FLUENTD_REVISION = '438a82aead488a86180cd484bbc4e7e344a9032b' # v1.14.3
 FLUENTD_LOCAL_GEM_REPO = "file://" + File.expand_path(File.join(__dir__, "local_gem_repo"))
