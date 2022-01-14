@@ -47,7 +47,8 @@ RUN \
     libpq-dev \
     tar \
     lsb-release \
-    zlib1g-dev && \
+    zlib1g-dev \
+    cmake && \
   apt build-dep -y ruby && \
   apt clean && \
   # raise IPv4 priority
