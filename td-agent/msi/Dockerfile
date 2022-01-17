@@ -27,7 +27,7 @@ RUN @"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -I
 RUN \
   choco install -y git wixtoolset 7zip cmake && \
   choco install -y msys2 --params /NoUpdate --version=20211130.0.0 && \
-  choco install -y ruby && \
+  choco install ruby -y --version=3.0.3.1 && \
   refreshenv && \
   ridk install 3 && \
-  gem install --no-document bundler
+  gem install --no-document --force bundler
