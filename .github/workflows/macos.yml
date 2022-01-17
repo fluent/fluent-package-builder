@@ -11,6 +11,9 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@master
+      - name: Install cmake
+        run: |
+          brew install cmake
       - name: Build
         run: |
           sudo mkdir /opt/td-agent
