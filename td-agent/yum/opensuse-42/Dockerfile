@@ -43,7 +43,15 @@ RUN \
     libopenssl-devel \
     tar \
     zlib-devel \
-    rpmlint && \
+    rpmlint \
+    curl && \
+    zypper addrepo http://download.opensuse.org/repositories/science:dlr/openSUSE_Leap_42.3/science:dlr.repo && \
+    sed -i -e "s/https:\/\//http:\/\//" /etc/zypp/repos.d/science_dlr.repo && \
+    curl -o dlr.repo.key http://download.opensuse.org/repositories/science:/dlr/openSUSE_Leap_42.3/repodata/repomd.xml.key && \
+    rpm --import dlr.repo.key && \
+    rm dlr.repo.key && \
+    zypper ${quiet} refresh && \
+    zypper ${quiet} install -y cmake=3.14.1 && \
     # raise IPv4 priority
     echo "precedence ::ffff:0:0/96 100" > /etc/gai.conf && \
   zypper ${quiet} clean --all
