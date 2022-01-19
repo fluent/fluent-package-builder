@@ -11,15 +11,11 @@ jobs:
       matrix:
         label:
           - CentOS 7 aarch64
-          - CentOS 8 aarch64
           - Amazon Linux 2 aarch64
         include:
           - label: CentOS 7 aarch64
             rake-job: centos-7
             test-docker-image: centos:7
-          - label: CentOS 8 aarch64
-            rake-job: centos-8
-            test-docker-image: centos:8
           - label: Amazon Linux 2 aarch64
             rake-job: amazonlinux-2
             test-docker-image: amazonlinux:2
