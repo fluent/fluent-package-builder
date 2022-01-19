@@ -48,7 +48,13 @@ RUN \
     libpq-dev \
     tar \
     lsb-release \
-    zlib1g-dev && \
+    zlib1g-dev \
+    apt-transport-https \
+    wget && \
+  wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | tee /usr/share/keyrings/kitware-archive-keyring.gpg >/dev/null && \
+  echo 'deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/ubuntu/ xenial main' | tee /etc/apt/sources.list.d/kitware.list >/dev/null && \
+  apt update ${quiet} && \
+  apt install -y -V ${quiet} cmake && \
   apt build-dep -y ruby && \
   apt clean && \
   # raise IPv4 priority

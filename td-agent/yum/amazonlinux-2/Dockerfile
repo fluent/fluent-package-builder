@@ -25,6 +25,8 @@ ARG DEBUG
 RUN \
   quiet=$([ "${DEBUG}" = "yes" ] || echo "--quiet") && \
   yum update -y ${quiet} && \
+  yum install -y ${quiet} yum-utils yum-config-manager && \
+  yum-config-manager --enable epel && \
   yum groupinstall -y ${quiet} "Development Tools" && \
   yum install -y ${quiet} \
     libedit-devel \
@@ -40,7 +42,8 @@ RUN \
     openssl-devel \
     tar \
     zlib-devel \
-    rpmlint && \
+    rpmlint \
+    cmake3 && \
   amazon-linux-extras install ruby2.6 && \
   # raise IPv4 priority
   echo "precedence ::ffff:0:0/96 100" > /etc/gai.conf && \

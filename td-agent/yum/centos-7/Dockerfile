@@ -26,6 +26,7 @@ RUN \
   quiet=$([ "${DEBUG}" = "yes" ] || echo "--quiet") && \
   yum update -y ${quiet} && \
   yum install -y ${quiet} centos-release-scl && \
+  yum install -y ${quiet} epel-release && \
   yum groupinstall -y ${quiet} "Development Tools" && \
   yum install -y ${quiet} \
     rh-ruby26-ruby-devel  \
@@ -45,7 +46,8 @@ RUN \
     openssl-devel \
     tar \
     zlib-devel \
-    rpmlint && \
+    rpmlint \
+    cmake3 && \
     # raise IPv4 priority
     echo "precedence ::ffff:0:0/96 100" > /etc/gai.conf && \
     # enable multiplatform feature

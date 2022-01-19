@@ -44,7 +44,9 @@ RUN \
     openssl-devel \
     tar \
     zlib-devel \
-    rpmlint && \
+    rpmlint \
+    cmake \
+    libarchive && \
     # raise IPv4 priority
     echo "precedence ::ffff:0:0/96 100" > /etc/gai.conf && \
     # enable multiplatform feature

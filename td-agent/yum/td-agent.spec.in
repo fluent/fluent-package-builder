@@ -22,8 +22,10 @@
 %define _suse_ver %{?suse_version:%{suse_version}}%{!?suse_version:0}
 %define use_suse (%{_suse_ver} >= 1315)
 %define use_scl_ruby (%{_centos_ver} <= 7 && %{_amazon_ver} == 0)
+%define use_devtoolset (%{_centos_ver} <= 6 && %{_amazon_ver} == 0)
 %if %{_centos_ver} <= 6
 %define scl_ruby_ver 24
+%define devtoolset_ver 9
 %else
 %define scl_ruby_ver 26
 %endif
@@ -86,6 +88,10 @@ BuildRequires:	rubygem-bundler
 %endif
 %endif
 %endif
+%if %{use_devtoolset}
+BuildRequires:	devtoolset-%{devtoolset_ver}-gcc-c++
+%else
+%endif
 BuildRequires:	gcc-c++
 BuildRequires:	git
 BuildRequires:	zlib-devel
@@ -126,6 +132,9 @@ The stable distribution of Fluentd, called td-agent.
 %install
 %if %{use_scl_ruby}
 . /opt/rh/rh-ruby%{scl_ruby_ver}/enable
+%endif
+%if %{use_devtoolset}
+. /opt/rh/devtoolset-%{devtoolset_ver}/enable
 %endif
 %if %{use_systemd}
 rake build:rpm_config TD_AGENT_STAGING_PATH=%{buildroot} NO_VAR_RUN=1
