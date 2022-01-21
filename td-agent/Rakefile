@@ -1202,7 +1202,7 @@ EOS
       sh("git", "archive", "HEAD",
          "--prefix", "#{@archive_base_name}/",
          "--output", @full_archive_name)
-      sh("tar", "xvf", @full_archive_name)
+      sh("tar", "xvf", @full_archive_name, "--force-local")
       @download_task.files.each do |path|
         src_path = Pathname(path)
         dest_path = Pathname(DOWNLOADS_DIR)
@@ -1218,7 +1218,7 @@ EOS
         cp_r(path, dest_dir) unless path.end_with?(".gem")
       end
       cp_r("#{PACKAGE_NAME}/debian/copyright", "#{@archive_base_name}/#{PACKAGE_NAME}/debian/copyright")
-      sh("tar", "cvfz", @full_archive_name, @archive_base_name)
+      sh("tar", "cvfz", @full_archive_name, @archive_base_name, "--force-local")
       rm_rf(@archive_base_name)
     end
   end
