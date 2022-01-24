@@ -45,6 +45,10 @@ case ${distribution} in
         ;;
     esac
     ;;
+  rocky)
+    DNF=dnf
+    DISTRIBUTION_VERSION=$(echo ${version} | cut -d. -f1)
+    ;;
 esac
 
 repositories_dir=/fluentd/td-agent/yum/repositories

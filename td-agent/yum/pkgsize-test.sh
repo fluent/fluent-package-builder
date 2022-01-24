@@ -55,6 +55,12 @@ case ${DISTRIBUTION} in
 		;;
 	esac
 	;;
+    rockylinux)
+	# FIXME: no previous release package for rockylinux
+	SKIP_SIZE_COMPARISON=1
+	# /etc/os-release ID=rocky
+	DISTRIBUTION=rocky
+	;;
     *)
 	echo "${DISTRIBUTION} is not supported"
 	exit 1

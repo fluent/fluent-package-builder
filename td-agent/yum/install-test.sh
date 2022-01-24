@@ -45,6 +45,11 @@ case ${distribution} in
         ;;
     esac
     ;;
+  rocky)
+    ENABLE_UPGRADE_TEST=0
+    DNF=dnf
+    DISTRIBUTION_VERSION=$(echo ${version} | cut -d. -f1)
+    ;;
 esac
 
 echo "INSTALL TEST"
