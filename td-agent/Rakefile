@@ -160,6 +160,14 @@ def render_template(dest, src, config, opts={})
   end
 end
 
+def tar_command
+  if windows?
+    ["ridk", "exec", "tar"]
+  else
+    ["tar"]
+  end
+end
+
 class DownloadTask
   include Rake::DSL
 
@@ -305,7 +313,7 @@ class DownloadTask
           sh("git", "checkout", FLUENTD_REVISION)
         end
         mv("fluentd", dirname)
-        sh("tar", "cvfz", "#{dirname}.tar.gz", dirname)
+        sh(*tar_command, "cvfz", "#{dirname}.tar.gz", dirname)
       end
     end
   end
@@ -419,7 +427,9 @@ class BuildTask
         cd(DOWNLOADS_DIR) do
           archive_path = @download_task.file_fluentd_archive
           fluentd_dir = archive_path.sub(/\.tar\.gz$/, '')
-          sh("tar", "xvf", archive_path) unless File.exists?(fluentd_dir)
+          tar_options = []
+          tar_options << "--force-local" if windows?
+          sh(*tar_command, "xvf", archive_path, *tar_options) unless File.exists?(fluentd_dir)
           cd("fluentd-#{FLUENTD_REVISION}") do
             sh("rake", "build")
             setup_local_gem_repo
@@ -626,7 +636,7 @@ class BuildTask
     tarball = @download_task.file_jemalloc_source
     source_dir = tarball.sub(/\.tar\.bz2$/, '')
 
-    sh("tar", "xvf", tarball, "-C", DOWNLOADS_DIR)
+    sh(*tar_command, "xvf", tarball, "-C", DOWNLOADS_DIR)
 
     configure_opts = [
       "--prefix=#{install_prefix}",
@@ -695,7 +705,7 @@ class BuildTask
     tarball = @download_task.file_openssl_source
     source_dir = tarball.sub(/\.tar\.gz$/, '')
 
-    sh("tar", "xvf", tarball, "-C", DOWNLOADS_DIR)
+    sh(*tar_command, "xvf", tarball, "-C", DOWNLOADS_DIR)
 
     configure_opts = [
       "--prefix=#{install_prefix}",
@@ -730,7 +740,7 @@ class BuildTask
     tarball = @download_task.file_ruby_source
     ruby_source_dir = tarball.sub(/\.tar\.gz$/, '')
 
-    sh("tar", "xvf", tarball, "-C", DOWNLOADS_DIR)
+    sh(*tar_command, "xvf", tarball, "-C", DOWNLOADS_DIR)
 
     configure_opts = [
       "--prefix=#{install_prefix}",
@@ -964,7 +974,9 @@ class BuildTask
       tarball = @download_task.file_jemalloc_source
       source_dir = File.basename(tarball.sub(/\.tar\.bz2$/, ''))
       license_file = File.join(source_dir, "COPYING")
-      sh("tar", "xf", tarball, license_file)
+      tar_options = []
+      tar_options << "--force-local" if windows?
+      sh(*tar_command, "xf", tarball, license_file, *tar_options)
       mv(license_file, "LICENSE-jemalloc.txt")
       rm_rf(source_dir)
     end
@@ -979,7 +991,9 @@ class BuildTask
       tarball = @download_task.file_ruby_source
       ruby_source_dir = File.basename(tarball.sub(/\.tar\.gz$/, ''))
       license_file = File.join(ruby_source_dir, "COPYING")
-      sh("tar", "xf", tarball, license_file)
+      tar_options = []
+      tar_options << "--force-local" if windows?
+      sh(*tar_command, "xf", tarball, license_file, *tar_options)
       mv(license_file, "LICENSE-Ruby.txt")
       rm_rf(ruby_source_dir)
     end
@@ -1202,7 +1216,9 @@ EOS
       sh("git", "archive", "HEAD",
          "--prefix", "#{@archive_base_name}/",
          "--output", @full_archive_name)
-      sh("tar", "xvf", @full_archive_name)
+      tar_options = []
+      tar_options << "--force-local" if windows?
+      sh(*tar_command, "xvf", @full_archive_name, *tar_options)
       @download_task.files.each do |path|
         src_path = Pathname(path)
         dest_path = Pathname(DOWNLOADS_DIR)
@@ -1218,7 +1234,9 @@ EOS
         cp_r(path, dest_dir) unless path.end_with?(".gem")
       end
       cp_r("#{PACKAGE_NAME}/debian/copyright", "#{@archive_base_name}/#{PACKAGE_NAME}/debian/copyright")
-      sh("tar", "cvfz", @full_archive_name, @archive_base_name)
+      tar_options = []
+      tar_options << "--force-local" if windows?
+      sh(*tar_command, "cvfz", @full_archive_name, @archive_base_name, *tar_options)
       rm_rf(@archive_base_name)
     end
   end
