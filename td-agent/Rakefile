@@ -162,7 +162,7 @@ end
 
 def tar_command
   if windows?
-    ["ridk", "exec", File.join(RubyInstaller::Runtime.msys2_installation.msys_path, "usr", "bin", "tar.exe")]
+    ["ridk", "exec", "tar"]
   else
     ["tar"]
   end
