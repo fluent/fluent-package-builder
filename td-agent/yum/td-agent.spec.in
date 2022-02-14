@@ -46,6 +46,10 @@
 %else
 %global __provides_exclude_from ^/opt/%{name}/.*\\.so.*
 %global __requires_exclude libjemalloc.*|libruby.*|/opt/%{name}/.*
+# Omit build_id links (/usr/lib/.build-id/xx/yy) from td-agent package
+# They are bundled in td-agent-debuginfo. It is intended not to
+# conflict with other packages
+%define _build_id_links alldebug
 %endif
 
 %if %{use_systemd}
