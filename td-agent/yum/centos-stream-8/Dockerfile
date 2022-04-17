@@ -24,6 +24,8 @@ ARG DEBUG
 
 RUN \
   quiet=$([ "${DEBUG}" = "yes" ] || echo "--quiet") && \
+  sed -i 's|^mirrorlist|#mirrorlist|g' /etc/yum.repos.d/CentOS-*.repo && \
+  sed -i 's|^#baseurl=http://mirror.centos.org/|baseurl=http://vault.centos.org/|g' /etc/yum.repos.d/CentOS-*.repo && \
   dnf install centos-release-stream -y && \
   dnf swap centos-{linux,stream}-repos -y && \
   dnf distro-sync -y && \

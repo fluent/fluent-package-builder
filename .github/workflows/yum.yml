@@ -11,7 +11,6 @@ jobs:
       matrix:
         label:
           - CentOS 7 x86_64
-          - CentOS Stream 8 x86_64
           - RockyLinux 8 x86_64
           - Amazon Linux 2 x86_64
         include:
@@ -19,10 +18,6 @@ jobs:
             rake-job: centos-7
             test-docker-image: centos:7
             centos-stream: false
-          - label: CentOS Stream 8 x86_64
-            rake-job: centos-stream-8
-            test-docker-image: centos:8
-            centos-stream: true
           - label: RockyLinux 8 x86_64
             rake-job: rockylinux-8
             test-docker-image: rockylinux/rockylinux:8
