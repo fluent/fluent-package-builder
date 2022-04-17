@@ -49,7 +49,7 @@ run mkdir -p build
 run cp /host/tmp/${PACKAGE}-${VERSION}.tar.gz \
   build/${PACKAGE}_${VERSION}.orig.tar.gz
 run cd build
-run tar xfz ${PACKAGE}_${VERSION}.orig.tar.gz
+run tar xfz ${PACKAGE}_${VERSION}.orig.tar.gz --no-same-owner
 case "${VERSION}" in
   *~dev*)
     run mv ${PACKAGE}-$(echo $VERSION | sed -e 's/~dev/-dev/') \
