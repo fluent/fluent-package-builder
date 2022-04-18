@@ -84,6 +84,7 @@ gem "winevt_c", "0.9.3", platforms: windows_platforms
 gem "win32-eventlog", "0.6.7", platforms: windows_platforms
 gem "fluent-plugin-parser-winevt_xml", "0.2.4", platforms: windows_platforms
 gem "fluent-plugin-windows-eventlog", "0.8.1", platforms: windows_platforms
+gem "fluent-plugin-windows-exporter", "1.0.0", platforms: windows_platforms
 
 not_windows_platforms = [:ruby]
 gem "rdkafka", "0.11.1", platforms: not_windows_platforms

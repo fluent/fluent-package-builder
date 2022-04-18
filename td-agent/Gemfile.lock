@@ -69,6 +69,7 @@ GEM
     console (1.14.0)
       fiber-local
     cool.io (1.7.1)
+    cool.io (1.7.1-x64-mingw32)
     digest-crc (0.6.4)
       rake (>= 12.0.0, < 14.0.0)
     digest-murmurhash (1.1.1)
@@ -177,6 +178,9 @@ GEM
       fluentd (>= 0.14.12, < 2)
       win32-eventlog
       winevt_c (>= 0.9.1)
+    fluent-plugin-windows-exporter (1.0.0)
+      bindata (~> 2.4)
+      fluentd (>= 0.14.10, < 2)
     hirb (0.7.3)
     http_parser.rb (0.8.0)
     httpclient (2.8.3)
@@ -324,6 +328,7 @@ DEPENDENCIES
   fluent-plugin-utmpx (= 0.5.0)
   fluent-plugin-webhdfs (= 1.5.0)
   fluent-plugin-windows-eventlog (= 0.8.1)
+  fluent-plugin-windows-exporter (= 1.0.0)
   fluentd!
   http_parser.rb (= 0.8.0)
   httpclient (= 2.8.3)
