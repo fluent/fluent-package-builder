@@ -427,7 +427,7 @@ class BuildTask
         cd(DOWNLOADS_DIR) do
           archive_path = @download_task.file_fluentd_archive
           fluentd_dir = archive_path.sub(/\.tar\.gz$/, '')
-          tar_options = []
+          tar_options = ["--no-same-owner"]
           tar_options << "--force-local" if windows?
           sh(*tar_command, "xvf", archive_path, *tar_options) unless File.exists?(fluentd_dir)
           cd("fluentd-#{FLUENTD_REVISION}") do

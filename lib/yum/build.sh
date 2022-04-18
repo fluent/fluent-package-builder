@@ -95,7 +95,7 @@ if [ -n "${SOURCE_ARCHIVE}" ]; then
     0.dev*)
       source_archive_base_name=$( \
         echo ${SOURCE_ARCHIVE} | sed -e 's/\.tar\.gz$//')
-      run tar xf /host/tmp/${SOURCE_ARCHIVE} \
+      run tar xf /host/tmp/${SOURCE_ARCHIVE} --no-same-owner \
         --transform="s,^[^/]*,${PACKAGE},"
       run mv \
           ${PACKAGE} \
