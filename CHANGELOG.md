@@ -13,7 +13,7 @@
 
 ### Core component
 
-* ruby v2.7.5
+* ruby v2.7.6
 * jemalloc v3.6.0
 * fluentd v1.14.6 (update)
 
