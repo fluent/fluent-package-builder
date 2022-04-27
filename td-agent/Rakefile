@@ -168,11 +168,28 @@ def tar_command
   end
 end
 
+def use_ruby3?
+  # Check whether ubuntu 22.04 (jammy) or not
+  # Basically, TD Agent adopts ruby 2.7 as default version, but on Ubuntu 22.04,
+  # use ruby 3.x because distribution switches to OpenSSL 3.x.
+  return false unless File.exist?("/etc/os-release")
+  os_release_entries = File.open("/etc/os-release").readlines.map(&:strip)
+  os_release_entries.include?("UBUNTU_CODENAME=jammy") and os_release_entries.include?("ID=ubuntu")
+end
+
+def bundled_ruby_version
+  use_ruby3? ? BUNDLED_RUBY3_VERSION : BUNDLED_RUBY_VERSION
+end
+
+def bundled_ruby_source_sha256sum
+  use_ruby3? ? BUNDLED_RUBY3_SOURCE_SHA256SUM : BUNDLED_RUBY_SOURCE_SHA256SUM
+end
+
 class DownloadTask
   include Rake::DSL
 
   attr_reader :file_jemalloc_source
-  attr_reader :file_ruby_source, :file_ruby_installer_x64
+  attr_reader :file_ruby_source, :file_ruby3_source, :file_ruby_installer_x64
   attr_reader :file_fluentd_archive
   attr_reader :files_ruby_gems
   attr_reader :file_openssl_source
@@ -186,6 +203,7 @@ class DownloadTask
       @file_jemalloc_source,
       @file_openssl_source,
       @file_ruby_source,
+      @file_ruby3_source,
       @file_ruby_installer_x64,
       @file_fluentd_archive,
       *@files_ruby_gems
@@ -204,7 +222,7 @@ class DownloadTask
       task :jemalloc => [@file_jemalloc_source]
 
       desc "Download Ruby source"
-      task :ruby => [@file_ruby_source, @file_ruby_installer_x64]
+      task :ruby => [@file_ruby_source, @file_ruby3_source, @file_ruby_installer_x64]
 
       desc "Clone fluentd repository and create a tarball"
       task :fluentd => @file_fluentd_archive
@@ -273,17 +291,24 @@ class DownloadTask
   end
 
   def define_ruby_source_file
-    version = BUNDLED_RUBY_VERSION
-    sha256sum = BUNDLED_RUBY_SOURCE_SHA256SUM
-    filename = "ruby-#{version}.tar.gz"
-    feature_version = version.match(/^(\d+\.\d+)/)[0]
-    url_base = "https://cache.ruby-lang.org/pub/ruby/"
-    url = "#{url_base}#{feature_version}/#{filename}"
+    [[BUNDLED_RUBY_VERSION, BUNDLED_RUBY_SOURCE_SHA256SUM],
+     [BUNDLED_RUBY3_VERSION, BUNDLED_RUBY3_SOURCE_SHA256SUM]].each do |version, sha256sum|
+      filename = "ruby-#{version}.tar.gz"
+      feature_version = version.match(/^(\d+\.\d+)/)[0]
+      url_base = "https://cache.ruby-lang.org/pub/ruby/"
+      url = "#{url_base}#{feature_version}/#{filename}"
 
-    @file_ruby_source = File.join(DOWNLOADS_DIR, filename)
-
-    file @file_ruby_source do
-      download_file(url, filename, sha256sum)
+      if version.start_with?("3")
+        @file_ruby3_source = File.join(DOWNLOADS_DIR, filename)
+        file @file_ruby3_source do
+          download_file(url, filename, sha256sum)
+        end
+      else
+        @file_ruby_source = File.join(DOWNLOADS_DIR, filename)
+        file @file_ruby_source do
+          download_file(url, filename, sha256sum)
+        end
+      end
     end
   end
 
@@ -625,7 +650,7 @@ class BuildTask
     BUNDLED_RUBY_PATCHES.each do |patch|
       patch_name, version_condition = patch
       dependency = Gem::Dependency.new('', version_condition)
-      if dependency.match?('', BUNDLED_RUBY_VERSION)
+      if dependency.match?('', bundled_ruby_version)
         patch_path = File.join(__dir__, "patches", patch_name)
         sh("patch", "-p1", "--input=#{patch_path}")
       end
@@ -737,7 +762,11 @@ class BuildTask
   end
 
   def build_ruby_from_source
-    tarball = @download_task.file_ruby_source
+    tarball = if use_ruby3?
+                @download_task.file_ruby3_source
+              else
+                @download_task.file_ruby_source
+              end
     ruby_source_dir = tarball.sub(/\.tar\.gz$/, '')
 
     sh(*tar_command, "xvf", tarball, "-C", DOWNLOADS_DIR)
@@ -869,7 +898,7 @@ class BuildTask
     if windows?
       ruby_version = BUNDLED_RUBY_INSTALLER_X64_VERSION
     else
-      ruby_version = BUNDLED_RUBY_VERSION
+      ruby_version = bundled_ruby_version
     end
     rb_major, rb_minor, rb_teeny = ruby_version.split("-", 2).first.split(".", 3)
     "#{rb_major}.#{rb_minor}.0" # gem path's teeny version is always 0
@@ -1248,6 +1277,7 @@ EOS
       "ubuntu-xenial",
       "ubuntu-bionic",
       "ubuntu-focal",
+      "ubuntu-jammy",
     ]
   end
 
