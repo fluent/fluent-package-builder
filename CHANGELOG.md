@@ -10,6 +10,7 @@
   * fluent-plugin-metrics-cmetrics v0.1.2
   * fluent-plugin-calyptia-monitoring v0.1.3
   * fluent-plugin-windows-exporter v1.0.0
+* RPM: Remove .build-id directories
 
 ### Core component
 
