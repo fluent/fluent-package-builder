@@ -36,9 +36,9 @@ case $1 in
     yum|rpm)
 	REPOSITORY_TYPE=yum
 	REPOSITORY_PATH=$TD_AGENT_DIR/$REPOSITORY_TYPE/repositories
-	for dist in centos amazon; do
+	for dist in centos amazon rocky; do
 	    dist_dest=$dist
-	    if [ $dist = "centos" ]; then
+	    if [ $dist = "centos" -o $dist = "rocky" ]; then
 		dist_dest="redhat"
 	    fi
 	    for release in 2 7 8; do
@@ -46,7 +46,11 @@ case $1 in
 		    echo "skip $dist:$release"
 		    continue
 		fi
-		if [ $dist = "centos" -a $release -eq 2 ]; then
+		if [ $dist = "centos" -a $release -ne 7 ]; then
+		    echo "skip $dist:$release"
+		    continue
+		fi
+		if [ $dist = "rocky" -a $release -ne 8 ]; then
 		    echo "skip $dist:$release"
 		    continue
 		fi
