@@ -14,6 +14,7 @@ jobs:
           - Debian GNU/Linux bullseye arm64
           - Ubuntu Bionic arm64
           - Ubuntu Focal arm64
+          - Ubuntu Jammy arm64
         include:
           - label: Debian GNU/Linux buster arm64
             rake-job: debian-buster
@@ -28,6 +29,10 @@ jobs:
             rake-job: ubuntu-focal
             rake-options: LINTIAN=no
             test-docker-image: arm64v8/ubuntu:focal
+          - label: Ubuntu Jammy arm64
+            rake-job: ubuntu-jammy
+            rake-options: LINTIAN=no
+            test-docker-image: arm64v8/ubuntu:jammy
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master

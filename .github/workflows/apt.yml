@@ -15,6 +15,7 @@ jobs:
           - Ubuntu Xenial amd64
           - Ubuntu Bionic amd64
           - Ubuntu Focal amd64
+          - Ubuntu Jammy amd64
         include:
           - label: Debian GNU/Linux buster amd64
             rake-job: debian-buster
@@ -31,6 +32,9 @@ jobs:
           - label: Ubuntu Focal amd64
             rake-job: ubuntu-focal
             test-docker-image: ubuntu:focal
+          - label: Ubuntu Jammy amd64
+            rake-job: ubuntu-jammy
+            test-docker-image: ubuntu:jammy
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
