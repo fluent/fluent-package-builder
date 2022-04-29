@@ -1254,7 +1254,7 @@ EOS
   def yum_targets_default
     [
       "centos-7",
-      "centos-8",
+      "rockylinux-8",
       "amazonlinux-2",
     ]
   end
