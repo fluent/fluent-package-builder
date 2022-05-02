@@ -50,7 +50,7 @@ class TdAgentAptSourcePackageTask < PackageTask
   end
 
   def repository_url
-    "http://packages.treasuredata.com"
+    "https://packages.treasuredata.com"
   end
 
   def repository_gpg_key_ids
