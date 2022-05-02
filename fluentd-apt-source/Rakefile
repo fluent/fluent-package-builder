@@ -11,9 +11,9 @@ CLEAN.include("apt/env.sh")
 CLEAN.include("debian/tmp")
 CLOBBER.include("apt/repositories")
 
-class TdAgentAptSourcePackageTask < PackageTask
+class FluentdAptSourcePackageTask < PackageTask
   def initialize
-    super("td-agent-apt-source",
+    super("fluentd-apt-source",
           repository_version,
           latest_commit_time(File.join(__dir__, "..")))
     CLEAN.include(@archive_name)
@@ -38,7 +38,7 @@ class TdAgentAptSourcePackageTask < PackageTask
   end
 
   def repository_name
-    "td-agent"
+    "fluentd"
   end
 
   def repository_label
@@ -139,5 +139,5 @@ class TdAgentAptSourcePackageTask < PackageTask
   end
 end
 
-task = TdAgentAptSourcePackageTask.new
+task = FluentdAptSourcePackageTask.new
 task.define

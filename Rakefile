@@ -20,12 +20,12 @@ PACKAGES = [
 ]
 
 APT_SOURCE_PACKAGES = [
-  "td-agent-apt-source"
+  "fluentd-apt-source"
 ]
 
 ALL_PACKAGE = [
   "td-agent",
-  "td-agent-apt-source",
+  "fluentd-apt-source",
 ]
 
 def define_bulked_task(name, description, packages = PACKAGES)
@@ -57,7 +57,7 @@ end
 end
 
 [
-  ["apt:build", "Build td-agent-apt-source deb packages", APT_SOURCE_PACKAGES],
+  ["apt:build", "Build fluentd-apt-source deb packages", APT_SOURCE_PACKAGES],
 ].each do |params|
   define_bulked_task(*params)
 end
