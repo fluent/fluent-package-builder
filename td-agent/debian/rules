@@ -6,6 +6,11 @@ export DH_RUBY = --gem-install
 %:
 	dh $@
 
+# As aptly doesn't support zstd yet, so as a workaround, force default
+# package compression to xz
+override_dh_builddeb:
+	dh_builddeb -- -Zxz
+
 override_dh_auto_install:
 	rake build:deb_config TD_AGENT_STAGING_PATH="$(CURDIR)/debian/tmp" NO_VAR_RUN=1
 	rake build:all        TD_AGENT_STAGING_PATH="$(CURDIR)/debian/tmp"
