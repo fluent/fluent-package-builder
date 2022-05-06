@@ -16,8 +16,7 @@
 
 # The "servercore" image cannot install DotNet3.5 (which is required by
 # wixtoolset) by chocolatey.
-#ARG FROM=mcr.microsoft.com/windows/servercore:ltsc2019
-ARG FROM=mcr.microsoft.com/dotnet/framework/runtime:3.5
+ARG FROM=mcr.microsoft.com/dotnet/framework/runtime:3.5-windowsservercore-ltsc2019
 FROM ${FROM}
 
 # Install Chocolatey to set up toolchain
