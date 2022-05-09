@@ -166,7 +166,7 @@ class DownloadTask
   attr_reader :file_ruby_source, :file_ruby_installer_x64
   attr_reader :file_fluentd_archive
   attr_reader :files_ruby_gems
-  attr_reader :file_openssl_source
+  attr_reader :file_openssl_source, :file_mingw_openssl
 
   def initialize(logger:)
     @logger = logger || Logger.new(STDOUT, level: Logger::Severity::INFO)
@@ -176,6 +176,7 @@ class DownloadTask
     [
       @file_jemalloc_source,
       @file_openssl_source,
+      @file_mingw_openssl,
       @file_ruby_source,
       @file_ruby_installer_x64,
       @file_fluentd_archive,
@@ -189,6 +190,7 @@ class DownloadTask
     define_fluentd_archive
     define_gem_files
     define_openssl_file
+    define_mingw_openssl_file
 
     namespace :download do
       desc "Download jemalloc source"
@@ -205,6 +207,9 @@ class DownloadTask
 
       desc "Download openssl source"
       task :openssl => @file_openssl_source
+
+      desc "Download MinGW's openssl package"
+      task :mingw_openssl => @file_mingw_openssl
     end
   end
 
@@ -288,6 +293,20 @@ class DownloadTask
     @file_ruby_installer_x64 = File.join(DOWNLOADS_DIR, filename)
 
     file @file_ruby_installer_x64 do
+      download_file(url, filename, sha256sum)
+    end
+  end
+
+  def define_mingw_openssl_file
+    version = MINGW_OPENSSL_VERSION
+    sha256sum = MINGW_OPENSSL_SHA256SUM
+    filename = "mingw-w64-x86_64-openssl-#{version}-any.pkg.tar.zst"
+    url_base = "https://mirror.msys2.org/mingw/mingw64/"
+    url = "#{url_base}#{filename}"
+
+    @file_mingw_openssl = File.join(DOWNLOADS_DIR, filename)
+
+    file @file_mingw_openssl do
       download_file(url, filename, sha256sum)
     end
   end
@@ -388,6 +407,7 @@ class BuildTask
       task :ruby => [:jemalloc, :openssl, :"download:ruby"] do
         if windows?
           extract_ruby_installer
+          replace_openssl_in_ruby_installer
           setup_windows_build_env
           find_and_put_dynamiclibs
         else
@@ -753,6 +773,19 @@ class BuildTask
       cp_r(Dir.glob(File.join(src_dir, "*")), ".")
       rm_rf(src_dir)
     end
+  end
+
+  # Fix memory leak in OpenSSL: https://github.com/fluent/fluent-package-builder/issues/374
+  def replace_openssl_in_ruby_installer
+    tarball = @download_task.file_mingw_openssl
+    sh("ridk", "exec", "tar", "xvf", tarball, "-C", DOWNLOADS_DIR, "--force-local")
+    source_dir = File.join(DOWNLOADS_DIR, "mingw64", "bin")
+    ensure_directory(td_agent_staging_dir) do
+      dest_dir = File.join(".", "bin", "ruby_builtin_dlls")
+      cp(File.join(source_dir, "libcrypto-1_1-x64.dll"), dest_dir)
+      cp(File.join(source_dir, "libssl-1_1-x64.dll"), dest_dir)
+    end
+    rm_rf(source_dir)
   end
 
   def find_and_put_dynamiclibs

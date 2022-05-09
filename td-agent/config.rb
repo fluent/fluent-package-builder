@@ -10,6 +10,10 @@ JEMALLOC_VERSION = "5.2.1"
 # https://www.openssl.org/source/
 OPENSSL_VERSION = "1.1.1j"
 
+# To fix memory leak issue: https://github.com/fluent/fluent-package-builder/issues/374
+MINGW_OPENSSL_VERSION = "1.1.1.o-2"
+MINGW_OPENSSL_SHA256SUM = "e1e642d441de3d6b9d4e499b42bb5464458e3a2d2431012b28e6f1ad94099167"
+
 BUNDLER_VERSION= "2.2.11"
 
 # https://www.ruby-lang.org/en/downloads/ (tar.gz)
