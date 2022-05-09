@@ -34,6 +34,11 @@ if [ -e $conf_path ]; then
     exit 1
 fi
 
+if [ ${code_name} = "jammy" ]; then
+    # TODO: Remove when repository for jammy has been deployed
+    echo "skip to install via apt repository: <${code_name}>"
+    exit 0
+fi
 apt clean all
 apt_source_package=${apt_source_repositories_dir}/${distribution}/pool/${code_name}/${channel}/*/*/td-agent-apt-source*_all.deb
 apt install -V -y ${apt_source_package}

@@ -13,6 +13,11 @@ case ${code_name} in
 	apt install -V -y piuparts mount gnupg curl eatmydata apt-transport-https
 	gpg_command=gpg
 	;;
+    jammy)
+	# TODO: Remove when repository for jammy has been deployed
+	echo "skip piuparts test for jammy"
+	exit 0
+	;;
     *)
 	DEBIAN_FRONTEND=noninteractive apt install -V -y piuparts mount gnupg1 curl eatmydata
 	gpg_command=gpg1
