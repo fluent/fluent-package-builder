@@ -41,6 +41,6 @@ if [ ${code_name} = "jammy" ]; then
 fi
 apt clean all
 apt_source_package=${apt_source_repositories_dir}/${distribution}/pool/${code_name}/${channel}/*/*/fluentd-apt-source*_all.deb
-apt install -V -y ${apt_source_package}
+apt install -V -y ${apt_source_package} ca-certificates
 apt update
 apt install -V -y td-agent
