@@ -1,4 +1,4 @@
-Source: td-agent-apt-source
+Source: fluentd-apt-source
 Section: misc
 Priority: important
 Maintainer: Fluentd developers <fluentd@googlegroups.com>
@@ -9,7 +9,7 @@ Build-Depends:
 Standards-Version: 3.9.8
 Homepage: https://www.fluentd.org/
 
-Package: td-agent-apt-source
+Package: fluentd-apt-source
 Section: misc
 Architecture: all
 Depends:

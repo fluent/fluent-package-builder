@@ -9,10 +9,16 @@ export DH_OPTIONS
 %:
 	dh $@
 
+# As aptly doesn't support zstd yet, so as a workaround, force default
+# package compression to xz
+override_dh_builddeb:
+	dh_builddeb -- -Zxz
+
+
 override_dh_auto_build:
 	gpg \
 	  --no-default-keyring \
-	  --keyring ./td-agent-archive-keyring.gpg \
+	  --keyring ./fluentd-archive-keyring.gpg \
 	  --import keys
 
 	( \
@@ -24,19 +30,19 @@ override_dh_auto_build:
 	    component=main; \
 	  fi; \
 	  echo "Types: deb"; \
-	  echo "URIs: http://packages.treasuredata.com/4/$${distribution}/$${code_name}/"; \
+	  echo "URIs: https://packages.treasuredata.com/4/$${distribution}/$${code_name}/"; \
 	  echo "Suites: $${code_name}"; \
 	  echo "Components: contrib"; \
-	  echo "Signed-By: /usr/share/keyrings/td-agent-archive-keyring.gpg"; \
-	) > td-agent.sources
+	  echo "Signed-By: /usr/share/keyrings/fluentd-archive-keyring.gpg"; \
+	) > fluentd.sources
 
 override_dh_install:
 	install -d debian/tmp/usr/share/keyrings/
-	install -m 0644 td-agent-archive-keyring.gpg \
+	install -m 0644 fluentd-archive-keyring.gpg \
 	  debian/tmp/usr/share/keyrings/
 
 	install -d debian/tmp/etc/apt/sources.list.d/
-	install -m 0644 td-agent.sources \
+	install -m 0644 fluentd.sources \
 	  debian/tmp/etc/apt/sources.list.d/
 
 	dh_install

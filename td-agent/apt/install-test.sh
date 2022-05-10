@@ -24,8 +24,8 @@ if [ ! -s $conf_path ]; then
     exit 1
 fi
 
-echo "td-agent-apt-source test"
-apt_source_repositories_dir=/fluentd/td-agent-apt-source/apt/repositories
+echo "fluentd-apt-source test"
+apt_source_repositories_dir=/fluentd/fluentd-apt-source/apt/repositories
 apt purge -y td-agent
 
 conf_path=/etc/td-agent/td-agent.conf
@@ -40,7 +40,7 @@ if [ ${code_name} = "jammy" ]; then
     exit 0
 fi
 apt clean all
-apt_source_package=${apt_source_repositories_dir}/${distribution}/pool/${code_name}/${channel}/*/*/td-agent-apt-source*_all.deb
-apt install -V -y ${apt_source_package}
+apt_source_package=${apt_source_repositories_dir}/${distribution}/pool/${code_name}/${channel}/*/*/fluentd-apt-source*_all.deb
+apt install -V -y ${apt_source_package} ca-certificates
 apt update
 apt install -V -y td-agent
