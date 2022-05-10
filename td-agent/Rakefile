@@ -401,7 +401,7 @@ class BuildTask
     namespace :build do
       desc "Install jemalloc"
       task :jemalloc => [:"download:jemalloc"] do
-        build_jemalloc unless windows?
+        build_jemalloc
       end
 
       desc "Install OpenSSL"
@@ -414,15 +414,16 @@ class BuildTask
 
       desc "Install Ruby"
       task :ruby => [:jemalloc, :openssl, :"download:ruby"] do
-        if windows?
-          extract_ruby_installer
-          apply_ruby_installer_patches
-          replace_openssl_in_ruby_installer
-          setup_windows_build_env
-          find_and_put_dynamiclibs
-        else
-          build_ruby_from_source
-        end
+        build_ruby_from_source
+      end
+
+      desc "Install Ruby for Windows"
+      task :rubyinstaller => [:"download:ruby", :"download:mingw_openssl"] do
+        extract_ruby_installer
+        apply_ruby_installer_patches
+        replace_openssl_in_ruby_installer
+        setup_windows_build_env
+        find_and_put_dynamiclibs
       end
 
       desc "Install ruby gems"
@@ -443,7 +444,7 @@ class BuildTask
       end
 
       desc "Install fluentd"
-      task :fluentd => [:"download:fluentd", :ruby] do
+      task :fluentd => [:"download:fluentd", windows? ? :rubyinstaller : :ruby] do
         cd(DOWNLOADS_DIR) do
           archive_path = @download_task.file_fluentd_archive
           fluentd_dir = archive_path.sub(/\.tar\.gz$/, '')
