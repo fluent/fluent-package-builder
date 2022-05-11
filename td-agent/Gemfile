@@ -13,12 +13,12 @@ gem "bundler", BUNDLER_VERSION
 gem "cool.io", "1.7.1"
 gem "sigdump", "0.2.4"
 gem "http_parser.rb", "0.6.0"
-gem "yajl-ruby", "1.4.1"
+gem "yajl-ruby", "1.4.2"
 gem "serverengine", '2.2.3'
-gem "msgpack", "1.4.2"
+gem "msgpack", "1.5.1"
 gem "oj", "3.10.18"
 gem "tzinfo", "2.0.4"
-gem "tzinfo-data", "1.2021.1"
+gem "tzinfo-data", "1.2022.1"
 gem "async-http", "0.54.1"
 gem "fluentd", git: FLUENTD_REPOSITORY, ref: FLUENTD_REVISION
 gem "webrick", "1.7.0"
@@ -54,7 +54,7 @@ gem "fluent-plugin-sd-dns", "0.1.0"
 gem "fluent-plugin-flowcounter-simple", "0.1.0"
 
 windows_platforms = [:mingw, :x64_mingw] # :mswin
-gem "ffi", "1.14.2", platforms: windows_platforms
+gem "ffi", "1.15.5", platforms: windows_platforms
 gem "ffi-win32-extensions", "1.0.4", platforms: windows_platforms
 gem "win32-api", "1.9.2", platforms: windows_platforms
 gem "win32-event", "0.6.3", platforms: windows_platforms
