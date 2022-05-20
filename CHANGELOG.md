@@ -1,5 +1,15 @@
 # Treasure Agent 4 changelog
 
+## Release v4.3.1.1 - 2022/05/24
+
+### News
+
+v4.3.1.1 is a bug fix release only for Windows
+
+* Replace OpenSSL included in RubyInstaller with MinGW's OpenSSL v1.1.1.o-2 to
+  fix memory leak: https://github.com/fluent/fluent-package-builder/issues/374
+* Update nokogiri to 1.13.6 to fix some vulnerabilities.
+
 ## Release v4.3.1 - 2022/04/29
 
 ### News
