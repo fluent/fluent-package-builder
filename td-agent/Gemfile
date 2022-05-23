@@ -61,7 +61,6 @@ gem "webhdfs", "0.10.2"
 gem "fluent-plugin-webhdfs", "1.5.0"
 gem "fluent-plugin-record-modifier", "2.1.0"
 gem "fluent-plugin-rewrite-tag-filter", "2.4.0"
-gem "nokogiri", "1.13.4"
 gem "fluent-plugin-sd-dns", "0.1.0"
 gem "fluent-plugin-flowcounter-simple", "0.1.0"
 gem "mini_portile2", "2.8.0"
@@ -74,6 +73,7 @@ gem "fluent-plugin-opensearch", "1.0.4"
 windows_platforms = [:mingw, :x64_mingw] # :mswin
 gem "ffi", "1.15.5", platforms: windows_platforms
 gem "ffi-win32-extensions", "1.0.4", platforms: windows_platforms
+gem "nokogiri", "1.13.6", platforms: windows_platforms
 gem "win32-api", "1.10.1", platforms: windows_platforms
 gem "win32-event", "0.6.3", platforms: windows_platforms
 gem "win32-ipc", "0.7.0", platforms: windows_platforms
