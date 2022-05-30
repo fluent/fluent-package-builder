@@ -94,12 +94,18 @@ EOF
 		buster|bullseye)
 		    aptly -config=$conf repo add td-agent4-$d $FLUENT_RELEASE_DIR/4/debian/$d/
 		    aptly -config=$conf snapshot create td-agent4-$d-${FLUENT_PACKAGE_VERSION}-1 from repo td-agent4-$d
-		    aptly -config=$conf publish snapshot -component=contrib -gpg-key=$SIGNING_KEY td-agent4-$d-${FLUENT_PACKAGE_VERSION}-1 debian/$d
+		    # publish snapshot with prefix, InRelease looks like (e.g. bullseye):
+		    #   Origin: bullseye bullseye
+		    #   Label: bullseye bullseye
+		    aptly -config=$conf publish snapshot -component=contrib -gpg-key=$SIGNING_KEY td-agent4-$d-${FLUENT_PACKAGE_VERSION}-1 $d
 		    ;;
 		xenial|bionic|focal|jammy)
 		    aptly -config=$conf repo add td-agent4-$d $FLUENT_RELEASE_DIR/4/ubuntu/$d/
 		    aptly -config=$conf snapshot create td-agent4-$d-${FLUENT_PACKAGE_VERSION}-1 from repo td-agent4-$d
-		    aptly -config=$conf publish snapshot -component=contrib -gpg-key=$SIGNING_KEY td-agent4-$d-${FLUENT_PACKAGE_VERSION}-1 ubuntu/$d
+		    # publish snapshot with prefix, InRelease looks like (e.g. focal):
+		    #   Origin: focal focal
+		    #   Label: focal focal
+		    aptly -config=$conf publish snapshot -component=contrib -gpg-key=$SIGNING_KEY td-agent4-$d-${FLUENT_PACKAGE_VERSION}-1 $d
 		    ;;
 	    esac
 	done
