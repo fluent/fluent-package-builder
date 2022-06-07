@@ -37,6 +37,10 @@ case ${DISTRIBUTION} in
 	;;
     centos)
 	case $VERSION in
+	    stream-9)
+		SKIP_SIZE_COMPARISON=1
+		VERSION=9-stream
+		;;
 	    stream-8)
 		SKIP_SIZE_COMPARISON=1
 		VERSION=8-stream
