@@ -31,7 +31,7 @@ case ${distribution} in
         DISTRIBUTION_VERSION=${version}
         ;;
       *)
-        DNF="dnf --enablerepo=powertools"
+        DNF="dnf --enablerepo=crb"
         ENABLE_UPGRADE_TEST=0
         if [ x"${CENTOS_STREAM}" == x"true" ]; then
             echo "MIGRATE TO CENTOS STREAM"
