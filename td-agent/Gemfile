@@ -18,6 +18,7 @@ gem "msgpack", "1.5.1"
 gem "oj", "3.13.11"
 gem "tzinfo", "2.0.4"
 gem "tzinfo-data", "1.2022.1"
+gem "async", "1.30.2"
 gem "async-http", "0.56.5"
 gem "webrick", "1.7.0"
 
