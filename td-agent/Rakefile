@@ -174,7 +174,9 @@ def use_ruby3?
   # use ruby 3.x because distribution switches to OpenSSL 3.x.
   return false unless File.exist?("/etc/os-release")
   os_release_entries = File.open("/etc/os-release").readlines.map(&:strip)
-  os_release_entries.include?("UBUNTU_CODENAME=jammy") and os_release_entries.include?("ID=ubuntu")
+  return true if os_release_entries.include?("UBUNTU_CODENAME=jammy") and os_release_entries.include?("ID=ubuntu")
+  return true if os_release_entries.include?("PLATFORM_ID=\"platform:el9\"")
+  return false
 end
 
 def bundled_ruby_version

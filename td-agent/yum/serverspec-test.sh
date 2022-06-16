@@ -48,7 +48,7 @@ case ${distribution} in
         ;;
     esac
     ;;
-  rocky)
+  rocky|almalinux)
     DNF=dnf
     DISTRIBUTION_VERSION=$(echo ${version} | cut -d. -f1)
     version=$DISTRIBUTION_VERSION
