@@ -63,7 +63,8 @@ ${DNF} install -y \
 td-agent --version
 
 if [ $ENABLE_SERVERSPEC_TEST -eq 1 ]; then
-    ${DNF} install -y curl which ${repositories_dir}/${distribution}/${DISTRIBUTION_VERSION}/x86_64/Packages/*.rpm
+    curl -V > /dev/null 2>&1 || ${DNF} install -y curl
+    ${DNF} install -y which ${repositories_dir}/${distribution}/${DISTRIBUTION_VERSION}/x86_64/Packages/*.rpm
 
     /usr/sbin/td-agent-gem install --no-document serverspec
     if [ $ENABLE_KAFKA_TEST -eq 1 ]; then
