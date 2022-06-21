@@ -1321,6 +1321,7 @@ EOS
     [
       "centos-7",
       "rockylinux-8",
+      "almalinux-9",
       "amazonlinux-2",
     ]
   end
