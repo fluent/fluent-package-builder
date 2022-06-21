@@ -234,7 +234,6 @@ fi
 %endif
 %defattr(-,root,root,-)
 /opt/*
-/opt/@PACKAGE@/share/@PACKAGE@.conf.tmpl
 %if %{use_systemd}
 %{_unitdir}/@PACKAGE@.service
 %{_tmpfilesdir}/@PACKAGE@.conf
