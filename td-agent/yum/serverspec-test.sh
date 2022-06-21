@@ -52,6 +52,12 @@ case ${distribution} in
     DNF=dnf
     DISTRIBUTION_VERSION=$(echo ${version} | cut -d. -f1)
     version=$DISTRIBUTION_VERSION
+    case ${version} in
+      9)
+        # FIXME: Enable it when the package is released
+        ENABLE_KAFKA_TEST=0
+        ;;
+    esac
     ;;
 esac
 
