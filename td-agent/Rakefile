@@ -1136,11 +1136,13 @@ class BuildTask
     end
     Dir.glob("#{gem_staging_dir}/gems/*").each do |gem_dir|
       cd(gem_dir) do
-        rm_rf(["test", "spec"])
+        rm_rf(["test", "tests", "spec"])
         remove_files("**/gem.build_complete")
         remove_files("ext/**/a.out")
         remove_files("ext/**/*.{o,la,a}")
         remove_files("ext/**/.libs", true)
+        remove_files("ext/**/tmp", true)
+        remove_files("ports", true) if gem_dir.start_with?("#{gem_staging_dir}/gems/cmetrics-")
       end
     end
     Dir.glob("#{td_agent_staging_dir}/lib/lib*.a").each do |static_library|
