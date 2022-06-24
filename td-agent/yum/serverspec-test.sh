@@ -48,10 +48,16 @@ case ${distribution} in
         ;;
     esac
     ;;
-  rocky)
+  rocky|almalinux)
     DNF=dnf
     DISTRIBUTION_VERSION=$(echo ${version} | cut -d. -f1)
     version=$DISTRIBUTION_VERSION
+    case ${version} in
+      9)
+        # FIXME: Enable it when the package is released
+        ENABLE_KAFKA_TEST=0
+        ;;
+    esac
     ;;
 esac
 
@@ -63,7 +69,8 @@ ${DNF} install -y \
 td-agent --version
 
 if [ $ENABLE_SERVERSPEC_TEST -eq 1 ]; then
-    ${DNF} install -y curl which ${repositories_dir}/${distribution}/${DISTRIBUTION_VERSION}/x86_64/Packages/*.rpm
+    curl -V > /dev/null 2>&1 || ${DNF} install -y curl
+    ${DNF} install -y which ${repositories_dir}/${distribution}/${DISTRIBUTION_VERSION}/x86_64/Packages/*.rpm
 
     /usr/sbin/td-agent-gem install --no-document serverspec
     if [ $ENABLE_KAFKA_TEST -eq 1 ]; then

@@ -12,6 +12,7 @@ jobs:
         label:
           - CentOS 7 aarch64
           - RockyLinux 8 aarch64
+          - AlmaLinux 9 aarch64
           - Amazon Linux 2 aarch64
         include:
           - label: CentOS 7 aarch64
@@ -20,6 +21,9 @@ jobs:
           - label: RockyLinux 8 aarch64
             rake-job: rockylinux-8
             test-docker-image: rockylinux:8
+          - label: AlmaLinux 9 aarch64
+            rake-job: almalinux-9
+            test-docker-image: almalinux:9
           - label: Amazon Linux 2 aarch64
             rake-job: amazonlinux-2
             test-docker-image: amazonlinux:2

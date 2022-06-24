@@ -61,6 +61,12 @@ case ${DISTRIBUTION} in
 	# /etc/os-release ID=rocky
 	DISTRIBUTION=rocky
 	;;
+    almalinux)
+	# FIXME: no previous release package for almalinux
+	SKIP_SIZE_COMPARISON=1
+	# /etc/os-release ID=almalinux
+	DISTRIBUTION=almalinux
+	;;
     *)
 	echo "${DISTRIBUTION} is not supported"
 	exit 1
