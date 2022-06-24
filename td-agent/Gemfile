@@ -12,7 +12,7 @@ gem "bundler", BUNDLER_VERSION
 gem "cool.io", "1.7.1",  platforms: no_fat_gem
 gem "sigdump", "0.2.4"
 gem "http_parser.rb", "0.8.0"
-gem "yajl-ruby", "1.4.2"
+gem "yajl-ruby", "1.4.3"
 gem "serverengine", '2.2.5'
 gem "msgpack", "1.5.1"
 gem "oj", "3.13.11"

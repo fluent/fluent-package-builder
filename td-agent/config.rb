@@ -1,5 +1,5 @@
 PACKAGE_NAME = "td-agent"
-PACKAGE_VERSION = "4.3.1.1"
+PACKAGE_VERSION = "4.3.2"
 
 FLUENTD_REVISION = 'c0f48a0080550eff6aa6fa19d269e480684e7a45' # v1.14.6
 FLUENTD_LOCAL_GEM_REPO = "file://" + File.expand_path(File.join(__dir__, "local_gem_repo"))
@@ -11,11 +11,11 @@ JEMALLOC_VERSION = "3.6.0"
 #JEMALLOC_VERSION = "5.2.1"
 
 # https://www.openssl.org/source/
-OPENSSL_VERSION = "1.1.1n"
+OPENSSL_VERSION = "1.1.1p"
 
 # To fix memory leak issue: https://github.com/fluent/fluent-package-builder/issues/374
-MINGW_OPENSSL_VERSION = "1.1.1.o-2"
-MINGW_OPENSSL_SHA256SUM = "e1e642d441de3d6b9d4e499b42bb5464458e3a2d2431012b28e6f1ad94099167"
+MINGW_OPENSSL_VERSION = "1.1.1.p-1"
+MINGW_OPENSSL_SHA256SUM = "1b665a0acc0d84d20e2d5acb454956b10d17078596e360e604cb78bd54f7c915"
 
 BUNDLER_VERSION= "2.3.11"
 
