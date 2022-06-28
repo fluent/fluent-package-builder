@@ -17,11 +17,11 @@ Usage:
   $0 COMMAND FLUENT_RELEASE_PROFILE FLUENT_RELEASE_DIR FLUENT_PACKAGE_VERSION"
 
 Example:
-  $ $0 ls release-td-agent
-  $ $0 download release-td-agent /tmp/td-agent-release
-  $ $0 deb release-td-agent /tmp/td-agent-release 4.2.0
-  $ $0 rpm release-td-agent /tmp/td-agent-release 4.2.0
-  $ $0 upload release-td-agent /tmp/td-agent-release
+  $ $0 ls profile release-td-agent
+  $ $0 download profile release-td-agent /tmp/td-agent-release
+  $ $0 deb profile release-td-agent /tmp/td-agent-release 4.2.0
+  $ $0 rpm profile release-td-agent /tmp/td-agent-release 4.2.0
+  $ $0 upload profile release-td-agent /tmp/td-agent-release
 EOF
 }
 
@@ -122,13 +122,16 @@ EOF
 	find $FLUENT_RELEASE_DIR/4 -name "*$FLUENT_PACKAGE_VERSION*.rpm" | xargs rpm --resign --define "_gpg_name support@treasure-data.com"
 	find $FLUENT_RELEASE_DIR/4 -name "*$FLUENT_PACKAGE_VERSION*.rpm" | xargs rpm -K
 
-	# sign rpm repository
-	find $FLUENT_RELEASE_DIR/4 -name 'repomd.xml'
-	for f in `find $FLUENT_RELEASE_DIR/4 -name 'repomd.xml'`; do
-	    if [ -f "$f.asc" ]; then
-		rm -f $f.asc
+	# update & sign rpm repository
+	repodirs=`find "${FLUENT_RELEASE_DIR}" -regex "^${FLUENT_RELEASE_DIR}/4/\(redhat\|amazon\)/[2789]/\(x86_64\|aarch64\)$"`
+	for repodir in $repodirs; do
+	    createrepo_c -v "${repodir}"
+
+	    repofile="${repodir}/repodata/repomd.xml"
+	    if [ -f "${repofile}.asc" ]; then
+		rm -f "${repofile}.asc"
 	    fi
-	    gpg --detach-sign --armor --local-user $SIGNING_KEY $f
+	    gpg --verbose --detach-sign --armor --local-user $SIGNING_KEY "${repofile}"
 	done
 	;;
     *)
