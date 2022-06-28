@@ -1,5 +1,22 @@
 # Treasure Agent 4 changelog
 
+## Release v4.3.2 - 2022/06/28
+
+### News
+
+This release is mainly for supporting new distributions released in 2022Q2.
+We choose Ruby 3.1 to bundle for such new distributions to adopt to recent
+environment such as OpenSSL 3.0. For other distributions, we still use
+Ruby 2.7. We'll migrate to Ruby 3 completely after Ruby 3.2 is released.
+
+* Support new distributions
+  * Red Hat Enterprise Linux 9
+  * Ubuntu 22.04 LTS (Jammy Jellyfish)
+* Remove nokogiri from Linux and macOS packages
+  * It's not used in actual by default on such environments.
+* Update yajl-ruby to v1.4.3 to address vulnerability
+* Update OpenSSL to 1.1.1p (for macOS and Windows)
+
 ## Release v4.3.1.1 - 2022/05/24
 
 ### News
