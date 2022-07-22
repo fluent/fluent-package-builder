@@ -1,3 +1,9 @@
+td-agent (4.4.0-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Takuro Ashie <ashie@clear-code.com>  Fri, 22 Jul 2022 05:22:13 -0000
+
 td-agent (4.3.2-1) unstable; urgency=low
 
   * New upstream release.

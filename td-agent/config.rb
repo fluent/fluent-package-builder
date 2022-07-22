@@ -1,7 +1,7 @@
 PACKAGE_NAME = "td-agent"
-PACKAGE_VERSION = "4.3.2"
+PACKAGE_VERSION = "4.4.0"
 
-FLUENTD_REVISION = 'c0f48a0080550eff6aa6fa19d269e480684e7a45' # v1.14.6
+FLUENTD_REVISION = '79ead40de9dec33afc2a9bf6cc25f5ec2d65a482' # v1.15.0
 FLUENTD_LOCAL_GEM_REPO = "file://" + File.expand_path(File.join(__dir__, "local_gem_repo"))
 
 # https://github.com/jemalloc/jemalloc/releases
@@ -11,13 +11,13 @@ JEMALLOC_VERSION = "3.6.0"
 #JEMALLOC_VERSION = "5.2.1"
 
 # https://www.openssl.org/source/
-OPENSSL_VERSION = "1.1.1p"
+OPENSSL_VERSION = "1.1.1q"
 
 # To fix memory leak issue: https://github.com/fluent/fluent-package-builder/issues/374
-MINGW_OPENSSL_VERSION = "1.1.1.p-1"
-MINGW_OPENSSL_SHA256SUM = "1b665a0acc0d84d20e2d5acb454956b10d17078596e360e604cb78bd54f7c915"
+MINGW_OPENSSL_VERSION = "1.1.1.q-1"
+MINGW_OPENSSL_SHA256SUM = "4fb25397e48f6ab22e8b07d40519fddf3eec3dc6a163b2a1ecc68326d31fcb65"
 
-BUNDLER_VERSION= "2.3.11"
+BUNDLER_VERSION= "2.3.18"
 
 # https://www.ruby-lang.org/en/downloads/ (tar.gz)
 BUNDLED_RUBY_VERSION = "2.7.6"

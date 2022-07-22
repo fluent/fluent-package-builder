@@ -254,6 +254,9 @@ fi
 # NOTE: %{_tmpfilesdir} is available since CentOS 7
 %attr(0755,td-agent,td-agent) %dir /tmp/@PACKAGE@
 %changelog
+* Fri Jul 22 2022 Takuro Ashie <ashie@clear-code.com> - 4.4.0-1
+- New upstream release.
+
 * Fri Jun 24 2022 Takuro Ashie <ashie@clear-code.com> - 4.3.2-1
 - New upstream release.
 
