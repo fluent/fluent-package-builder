@@ -52,12 +52,16 @@
 * fluent-plugin-flowcounter-simple 0.1.0
 * fluent-diagtool v1.0.1
 * fluent-plugin-utmpx v0.5.0
+* fluent-plugin-opensearch v1.0.7 (update)
+* fluent-plugin-metrics-cmetrics v0.1.2
+* fluent-plugin-calyptia-monitoring v0.1.3
 
 On Windows
 
 * winevt_c v0.10.0 (update)
 * fluent-plugin-parser-winevt_xml v0.2.4
 * fluent-plugin-windows-eventlog v0.8.1
+* fluent-plugin-windows-exporter v1.0.0
 
 ## Release v4.3.2 - 2022/06/28
 
