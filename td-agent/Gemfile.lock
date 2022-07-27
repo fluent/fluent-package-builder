@@ -1,9 +1,9 @@
 GIT
   remote: https://github.com/fluent/fluentd
-  revision: 79ead40de9dec33afc2a9bf6cc25f5ec2d65a482
-  ref: 79ead40de9dec33afc2a9bf6cc25f5ec2d65a482
+  revision: cf241f0d9449a19346cc252946f14b7a79e2a4d2
+  ref: cf241f0d9449a19346cc252946f14b7a79e2a4d2
   specs:
-    fluentd (1.15.0)
+    fluentd (1.15.1)
       bundler
       certstore_c (~> 0.1.7)
       cool.io (>= 1.4.5, < 2.0.0)
