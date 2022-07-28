@@ -6,6 +6,8 @@
 
 * Update fluentd to 1.15.1
 * Drop Ubuntu 16.04 "Xenial Xerus" support
+* Remove `TD_AGENT_OPTIONS=` from systemd unit file.
+  Load it from /etc/sysconfig/td-agent or /etc/default/td-agent instead.
 
 ### Core component
 
