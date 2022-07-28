@@ -599,6 +599,7 @@ class BuildTask
         dest =  File.join(STAGING_DIR, 'usr', 'lib', 'systemd', 'system', PACKAGE_NAME + ".service")
         params = {pkg_type: "rpm"}
         render_systemd_unit_file(dest, template_params(params))
+        render_systemd_environment_file(template_params(params))
       end
 
       desc "Create sysv init file for Red Hat like systems"
@@ -613,6 +614,7 @@ class BuildTask
         dest = File.join(STAGING_DIR, 'lib', 'systemd', 'system', PACKAGE_NAME + ".service")
         params = {pkg_type: "deb"}
         render_systemd_unit_file(dest, template_params(params))
+        render_systemd_environment_file(template_params(params))
       end
 
       desc "Create config files for WiX Toolset"
@@ -660,6 +662,17 @@ class BuildTask
 
   def render_systemd_unit_file(dest_path, config)
     template_file_path = template_path('etc', 'systemd', "#{PACKAGE_NAME}.service.erb")
+    render_template(dest_path, template_file_path, config)
+  end
+
+  def render_systemd_environment_file(config)
+    dest_path =
+      if config[:pkg_type] == 'deb'
+        File.join(STAGING_DIR, 'etc', 'default', PACKAGE_NAME)
+      else
+        File.join(STAGING_DIR, 'etc', 'sysconfig', PACKAGE_NAME)
+      end
+    template_file_path = template_path('etc', 'systemd', "#{PACKAGE_NAME}.erb")
     render_template(dest_path, template_file_path, config)
   end
 
