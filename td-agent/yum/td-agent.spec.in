@@ -244,6 +244,7 @@ fi
 %{_sbindir}/td-agent
 %{_sbindir}/td-agent-gem
 %{_mandir}/man1/td*
+%config(noreplace) %{_sysconfdir}/sysconfig/@PACKAGE@
 %config(noreplace) %{_sysconfdir}/@PACKAGE@/@PACKAGE@.conf
 %config(noreplace) %{_sysconfdir}/logrotate.d/@PACKAGE@
 %attr(0755,td-agent,td-agent) %dir %{_localstatedir}/log/@PACKAGE@
