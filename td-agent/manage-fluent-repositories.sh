@@ -18,7 +18,9 @@ Usage:
 
 Example:
   $ $0 ls release-td-agent
+  $ $0 dry-download release-td-agent /tmp/td-agent-release
   $ $0 download release-td-agent /tmp/td-agent-release
+  $ $0 dry-upload release-td-agent /tmp/td-agent-release
   $ $0 upload release-td-agent /tmp/td-agent-release
   $ $0 deb /tmp/td-agent-release 4.2.0
   $ $0 rpm /tmp/td-agent-release 4.2.0
@@ -61,18 +63,26 @@ case $COMMAND in
 	echo $command
 	$command
 	;;
-    upload)
+    dry-upload|upload)
 	TARGETS="amazon redhat windows macosx debian/buster debian/bullseye ubuntu/jammy ubuntu/focal ubuntu/bionic"
+	DRYRUN_OPTION="--dryrun"
+	if [ $COMMAND = "upload" ]; then
+	   DRYRUN_OPTION=""
+	fi
 	for target in $TARGETS; do
-	    command="aws s3 sync --delete $FLUENT_RELEASE_DIR/4/$target s3://packages.treasuredata.com/4/$target --profile $FLUENT_RELEASE_PROFILE"
+	    command="aws s3 sync $DRYRUN_OPTION --delete $FLUENT_RELEASE_DIR/4/$target s3://packages.treasuredata.com/4/$target --profile $FLUENT_RELEASE_PROFILE"
 	    echo $command
 	    $command
 	done
 	;;
-    download)
+    dry-download|download)
 	VERSIONS="4"
+	DRYRUN_OPTION="--dryrun"
+	if [ $COMMAND = "download" ]; then
+	   DRYRUN_OPTION=""
+	fi
 	for target in $VERSIONS; do
-	    command="aws s3 sync --delete s3://packages.treasuredata.com/$target $FLUENT_RELEASE_DIR/$target --profile $FLUENT_RELEASE_PROFILE"
+	    command="aws s3 sync $DRYRUN_OPTION --delete s3://packages.treasuredata.com/$target $FLUENT_RELEASE_DIR/$target --profile $FLUENT_RELEASE_PROFILE"
 	    echo $command
 	    $command
 	done
