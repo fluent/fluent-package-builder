@@ -14,14 +14,14 @@ set -e
 function usage {
     cat <<EOF
 Usage:
-  $0 COMMAND FLUENT_RELEASE_PROFILE FLUENT_RELEASE_DIR FLUENT_PACKAGE_VERSION
+  $0 COMMAND [FLUENT_RELEASE_PROFILE] [FLUENT_RELEASE_DIR] [FLUENT_PACKAGE_VERSION]
 
 Example:
   $ $0 ls release-td-agent
   $ $0 download release-td-agent /tmp/td-agent-release
-  $ $0 deb release-td-agent /tmp/td-agent-release 4.2.0
-  $ $0 rpm release-td-agent /tmp/td-agent-release 4.2.0
   $ $0 upload release-td-agent /tmp/td-agent-release
+  $ $0 deb /tmp/td-agent-release 4.2.0
+  $ $0 rpm /tmp/td-agent-release 4.2.0
 EOF
 }
 
@@ -31,21 +31,24 @@ if [ $# -eq 0 ]; then
 fi
 
 COMMAND=$1
-FLUENT_RELEASE_PROFILE=$2
-FLUENT_RELEASE_DIR=$3
-FLUENT_PACKAGE_VERSION=$4
 SIGNING_KEY=BEE682289B2217F45AF4CC3F901F9177AB97ACBE
-
-if [ -z "$FLUENT_RELEASE_PROFILE" ]; then
-    echo "ERROR: No s3 profile for releasing fluentd packages"
-    usage
-    exit 1
-fi
 
 case $COMMAND in
     deb|rpm)
+	FLUENT_RELEASE_DIR=$2
+	FLUENT_PACKAGE_VERSION=$3
 	if [ -z "$FLUENT_PACKAGE_VERSION" ]; then
 	    echo "ERROR: No package version for releasing fluentd packages, (e.g export FLUENT_PACKAGE_VERSION=4.2.0)"
+	    exit 1
+	fi
+	;;
+    *)
+	FLUENT_RELEASE_PROFILE=$2
+	FLUENT_RELEASE_DIR=$3
+	FLUENT_PACKAGE_VERSION=$4
+	if [ -z "$FLUENT_RELEASE_PROFILE" ]; then
+	    echo "ERROR: No s3 profile for releasing fluentd packages"
+	    usage
 	    exit 1
 	fi
 	;;
