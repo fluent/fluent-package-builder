@@ -14,14 +14,14 @@ set -e
 function usage {
     cat <<EOF
 Usage:
-  $0 COMMAND FLUENT_RELEASE_PROFILE FLUENT_RELEASE_DIR FLUENT_PACKAGE_VERSION"
+  $0 COMMAND FLUENT_RELEASE_PROFILE FLUENT_RELEASE_DIR FLUENT_PACKAGE_VERSION
 
 Example:
-  $ $0 ls profile release-td-agent
-  $ $0 download profile release-td-agent /tmp/td-agent-release
-  $ $0 deb profile release-td-agent /tmp/td-agent-release 4.2.0
-  $ $0 rpm profile release-td-agent /tmp/td-agent-release 4.2.0
-  $ $0 upload profile release-td-agent /tmp/td-agent-release
+  $ $0 ls release-td-agent
+  $ $0 download release-td-agent /tmp/td-agent-release
+  $ $0 deb release-td-agent /tmp/td-agent-release 4.2.0
+  $ $0 rpm release-td-agent /tmp/td-agent-release 4.2.0
+  $ $0 upload release-td-agent /tmp/td-agent-release
 EOF
 }
 
@@ -110,7 +110,7 @@ EOF
 	    esac
 	done
 	echo
-	echo "Don't forget to sync from $rootdir/.public/ to $FLUENT_RELEASE_DIR/4/"
+	echo "Don't forget to sync from $rootdir/public/ to $FLUENT_RELEASE_DIR/4/"
 	echo
 	;;
     rpm)
