@@ -120,7 +120,7 @@ EOF
 		    # publish snapshot with prefix, InRelease looks like (e.g. focal):
 		    #   Origin: focal focal
 		    #   Label: focal focal
-		    aptly -config=$aptly_conf publish snapshot -component=contrib -gpg-key=$SIGNING_KEY td-agent4-$d-${FLUENT_PACKAGE_VERSION}-1 $d
+		    aptly -config="$aptly_conf" publish snapshot -component=contrib -gpg-key=$SIGNING_KEY td-agent4-$d-${FLUENT_PACKAGE_VERSION}-1 $d
 		    # Place generated files, package files themselves are already in there
 		    tar cf - --exclude="td-agent_*.deb" -C "$aptly_rootdir/public" $d | tar xvf - -C $FLUENT_RELEASE_DIR/4/ubuntu/
 		    ;;
