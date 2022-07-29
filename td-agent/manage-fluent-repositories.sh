@@ -89,42 +89,44 @@ case $COMMAND in
 	;;
     deb)
 	# Use custom .aptly and .aptly.conf (Do not override ~/.aptly)
-	rootdir=$(realpath $FLUENT_RELEASE_DIR/../.aptly)
-	conf=$(realpath $FLUENT_RELEASE_DIR/../.aptly.conf)
-	rm -fr $rootdir
-	mkdir -p $rootdir
-	cat << EOF > $conf
+	aptly_rootdir=$(realpath $FLUENT_RELEASE_DIR/../.aptly)
+	aptly_conf=$(realpath $FLUENT_RELEASE_DIR/../.aptly.conf)
+	rm -fr "$aptly_rootdir"
+	mkdir -p "$aptly_rootdir"
+	cat << EOF > "$aptly_conf"
 {
-    "rootDir": "$rootdir"
+    "rootDir": "$aptly_rootdir"
 }
 EOF
 	echo "Ready to type signing passphrase? (process starts in 10 seconds, Ctrl+C to abort)"
 	sleep 10
 	export GPG_TTY=$(tty)
 	for d in buster bullseye bionic focal jammy; do
-	    aptly -config=$conf repo create -distribution=$d -component=contrib td-agent4-$d
+	    aptly -config="$aptly_conf" repo create -distribution=$d -component=contrib td-agent4-$d
 	    case $d in
 		buster|bullseye)
-		    aptly -config=$conf repo add td-agent4-$d $FLUENT_RELEASE_DIR/4/debian/$d/
-		    aptly -config=$conf snapshot create td-agent4-$d-${FLUENT_PACKAGE_VERSION}-1 from repo td-agent4-$d
+		    aptly -config="$aptly_conf" repo add td-agent4-$d $FLUENT_RELEASE_DIR/4/debian/$d/
+		    aptly -config="$aptly_conf" snapshot create td-agent4-$d-${FLUENT_PACKAGE_VERSION}-1 from repo td-agent4-$d
 		    # publish snapshot with prefix, InRelease looks like (e.g. bullseye):
 		    #   Origin: bullseye bullseye
 		    #   Label: bullseye bullseye
-		    aptly -config=$conf publish snapshot -component=contrib -gpg-key=$SIGNING_KEY td-agent4-$d-${FLUENT_PACKAGE_VERSION}-1 $d
+		    aptly -config="$aptly_conf" publish snapshot -component=contrib -gpg-key=$SIGNING_KEY td-agent4-$d-${FLUENT_PACKAGE_VERSION}-1 $d
+		    # Place generated files, package files themselves are already in there
+		    tar cf - --exclude="td-agent_*.deb" -C "$aptly_rootdir/public" $d | tar xvf - -C $FLUENT_RELEASE_DIR/4/debian/
 		    ;;
 		bionic|focal|jammy)
-		    aptly -config=$conf repo add td-agent4-$d $FLUENT_RELEASE_DIR/4/ubuntu/$d/
-		    aptly -config=$conf snapshot create td-agent4-$d-${FLUENT_PACKAGE_VERSION}-1 from repo td-agent4-$d
+		    aptly -config="$aptly_conf" repo add td-agent4-$d $FLUENT_RELEASE_DIR/4/ubuntu/$d/
+		    aptly -config="$aptly_conf" snapshot create td-agent4-$d-${FLUENT_PACKAGE_VERSION}-1 from repo td-agent4-$d
 		    # publish snapshot with prefix, InRelease looks like (e.g. focal):
 		    #   Origin: focal focal
 		    #   Label: focal focal
-		    aptly -config=$conf publish snapshot -component=contrib -gpg-key=$SIGNING_KEY td-agent4-$d-${FLUENT_PACKAGE_VERSION}-1 $d
+		    aptly -config=$aptly_conf publish snapshot -component=contrib -gpg-key=$SIGNING_KEY td-agent4-$d-${FLUENT_PACKAGE_VERSION}-1 $d
+		    # Place generated files, package files themselves are already in there
+		    tar cf - --exclude="td-agent_*.deb" -C "$aptly_rootdir/public" $d | tar xvf - -C $FLUENT_RELEASE_DIR/4/ubuntu/
 		    ;;
 	    esac
 	done
-	echo
-	echo "Don't forget to sync from $rootdir/public/ to $FLUENT_RELEASE_DIR/4/"
-	echo
+	rm -rf "$aptly_rootdir" "$aptly_conf"
 	;;
     rpm)
 	# resign rpm packages
