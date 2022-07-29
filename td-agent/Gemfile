@@ -13,13 +13,13 @@ gem "cool.io", "1.7.1",  platforms: no_fat_gem
 gem "sigdump", "0.2.4"
 gem "http_parser.rb", "0.8.0"
 gem "yajl-ruby", "1.4.3"
-gem "serverengine", '2.2.5'
-gem "msgpack", "1.5.1"
-gem "oj", "3.13.11"
-gem "tzinfo", "2.0.4"
+gem "serverengine", '2.3.0'
+gem "msgpack", "1.5.3"
+gem "oj", "3.13.17"
+gem "tzinfo", "2.0.5"
 gem "tzinfo-data", "1.2022.1"
-gem "async", "1.30.2"
-gem "async-http", "0.56.5"
+gem "async", "1.30.3"
+gem "async-http", "0.56.6"
 gem "webrick", "1.7.0"
 
 if ENV["INSTALL_GEM_FROM_LOCAL_REPO"]
@@ -37,27 +37,27 @@ end
 
 # plugin gems
 
-gem "elasticsearch", "8.1.2"
-gem "fluent-plugin-elasticsearch", "5.2.2"
-gem "ruby-kafka", "1.4.0"
+gem "elasticsearch", "8.3.0"
+gem "fluent-plugin-elasticsearch", "5.2.3"
+gem "ruby-kafka", "1.5.0"
 gem "digest-murmurhash", "1.1.1"
-gem "fluent-plugin-kafka", "0.17.5"
+gem "fluent-plugin-kafka", "0.18.0"
 gem "prometheus-client", "2.1.0"
-gem "fluent-plugin-prometheus", "2.0.2"
+gem "fluent-plugin-prometheus", "2.0.3"
 gem "fluent-plugin-prometheus_pushgateway", "0.1.0"
 gem "jmespath", "1.6.1"
-gem "aws-partitions", "1.577.0"
-gem "aws-sdk-core", "3.130.1"
-gem "aws-sdk-kms", "1.55.0"
-gem "aws-sdk-sqs", "1.51.0"
-gem "aws-sigv4", "1.4.0"
-gem "aws-sdk-s3", "1.113.0"
-gem "fluent-plugin-s3", "1.6.1"
+gem "aws-partitions", "1.609.0"
+gem "aws-sdk-core", "3.131.3"
+gem "aws-sdk-kms", "1.58.0"
+gem "aws-sdk-sqs", "1.51.1"
+gem "aws-sigv4", "1.5.1"
+gem "aws-sdk-s3", "1.114.0"
+gem "fluent-plugin-s3", "1.7.1"
 gem "httpclient", "2.8.3"
 gem "fluent-diagtool", "1.0.1"
 gem "td", "0.16.9"
 gem "td-client", "1.0.8"
-gem "fluent-plugin-td", "1.1.0"
+gem "fluent-plugin-td", "1.2.0"
 gem "webhdfs", "0.10.2"
 gem "fluent-plugin-webhdfs", "1.5.0"
 gem "fluent-plugin-record-modifier", "2.1.0"
@@ -65,23 +65,23 @@ gem "fluent-plugin-rewrite-tag-filter", "2.4.0"
 gem "fluent-plugin-sd-dns", "0.1.0"
 gem "fluent-plugin-flowcounter-simple", "0.1.0"
 gem "mini_portile2", "2.8.0"
-gem "cmetrics", "0.2.5"
+gem "cmetrics", "0.3.3"
 gem "fluent-plugin-metrics-cmetrics", "0.1.2"
 gem "fluent-plugin-calyptia-monitoring", "0.1.3"
-gem "opensearch-ruby", "1.0.0"
-gem "fluent-plugin-opensearch", "1.0.4"
+gem "opensearch-ruby", "2.0.2"
+gem "fluent-plugin-opensearch", "1.0.7"
 
 windows_platforms = [:mingw, :x64_mingw] # :mswin
 gem "ffi", "1.15.5", platforms: windows_platforms
 gem "ffi-win32-extensions", "1.0.4", platforms: windows_platforms
-gem "nokogiri", "1.13.6", platforms: windows_platforms
+gem "nokogiri", "1.13.7", platforms: windows_platforms
 gem "win32-api", "1.10.1", platforms: windows_platforms
 gem "win32-event", "0.6.3", platforms: windows_platforms
 gem "win32-ipc", "0.7.0", platforms: windows_platforms
 gem "win32-service", "2.3.2", platforms: windows_platforms
-gem "windows-api", "0.4.4", platforms: windows_platforms
+gem "windows-api", "0.4.5", platforms: windows_platforms
 gem "windows-pr", "1.2.6", platforms: windows_platforms
-gem "winevt_c", "0.9.3", platforms: windows_platforms
+gem "winevt_c", "0.10.0", platforms: windows_platforms
 gem "win32-eventlog", "0.6.7", platforms: windows_platforms
 gem "fluent-plugin-parser-winevt_xml", "0.2.4", platforms: windows_platforms
 gem "fluent-plugin-windows-eventlog", "0.8.1", platforms: windows_platforms

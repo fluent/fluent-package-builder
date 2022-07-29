@@ -771,6 +771,7 @@ class BuildTask
     configure_opts = [
       "--prefix=#{install_prefix}",
       "--openssldir=#{File.join("etc", "openssl")}",
+      "no-tests",
       "no-unit-test",
       "no-comp",
       "no-idea",
@@ -1325,7 +1326,6 @@ EOS
     [
       "debian-buster",
       "debian-bullseye",
-      "ubuntu-xenial",
       "ubuntu-bionic",
       "ubuntu-focal",
       "ubuntu-jammy",

@@ -12,7 +12,6 @@ jobs:
         label:
           - Debian GNU/Linux buster amd64
           - Debian GNU/Linux bullseye amd64
-          - Ubuntu Xenial amd64
           - Ubuntu Bionic amd64
           - Ubuntu Focal amd64
           - Ubuntu Jammy amd64
@@ -23,9 +22,6 @@ jobs:
           - label: Debian GNU/Linux bullseye amd64
             rake-job: debian-bullseye
             test-docker-image: debian:bullseye
-          - label: Ubuntu Xenial amd64
-            rake-job: ubuntu-xenial
-            test-docker-image: ubuntu:xenial
           - label: Ubuntu Bionic amd64
             rake-job: ubuntu-bionic
             test-docker-image: ubuntu:bionic
