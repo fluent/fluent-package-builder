@@ -13,6 +13,7 @@
 
 * ruby v2.7.6
 * jemalloc v3.6.0
+* OpenSSL 1.1.1q for macOS and Windows (update)
 * fluentd v1.15.1 (update)
 
 ### Core gems
