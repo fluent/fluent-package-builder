@@ -62,7 +62,7 @@ case $COMMAND in
 	$command
 	;;
     upload)
-	TARGETS="amazon redhat windows macosx debian/buster debian/bullseye ubuntu/jammy ubuntu/focal ubuntu/xenial ubuntu/bionic"
+	TARGETS="amazon redhat windows macosx debian/buster debian/bullseye ubuntu/jammy ubuntu/focal ubuntu/bionic"
 	for target in $TARGETS; do
 	    command="aws s3 sync --delete $FLUENT_RELEASE_DIR/4/$target s3://packages.treasuredata.com/4/$target --profile $FLUENT_RELEASE_PROFILE"
 	    echo $command
@@ -91,7 +91,7 @@ EOF
 	echo "Ready to type signing passphrase? (process starts in 10 seconds, Ctrl+C to abort)"
 	sleep 10
 	export GPG_TTY=$(tty)
-	for d in buster bullseye xenial bionic focal jammy; do
+	for d in buster bullseye bionic focal jammy; do
 	    aptly -config=$conf repo create -distribution=$d -component=contrib td-agent4-$d
 	    case $d in
 		buster|bullseye)
@@ -102,7 +102,7 @@ EOF
 		    #   Label: bullseye bullseye
 		    aptly -config=$conf publish snapshot -component=contrib -gpg-key=$SIGNING_KEY td-agent4-$d-${FLUENT_PACKAGE_VERSION}-1 $d
 		    ;;
-		xenial|bionic|focal|jammy)
+		bionic|focal|jammy)
 		    aptly -config=$conf repo add td-agent4-$d $FLUENT_RELEASE_DIR/4/ubuntu/$d/
 		    aptly -config=$conf snapshot create td-agent4-$d-${FLUENT_PACKAGE_VERSION}-1 from repo td-agent4-$d
 		    # publish snapshot with prefix, InRelease looks like (e.g. focal):
