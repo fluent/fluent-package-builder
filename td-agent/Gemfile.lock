@@ -1,9 +1,9 @@
 GIT
   remote: https://github.com/fluent/fluentd
-  revision: cf241f0d9449a19346cc252946f14b7a79e2a4d2
-  ref: cf241f0d9449a19346cc252946f14b7a79e2a4d2
+  revision: c32842297ed2c306f1b841a8f6e55bdd0f1cb27f
+  ref: c32842297ed2c306f1b841a8f6e55bdd0f1cb27f
   specs:
-    fluentd (1.15.1)
+    fluentd (1.15.2)
       bundler
       certstore_c (~> 0.1.7)
       cool.io (>= 1.4.5, < 2.0.0)
@@ -15,19 +15,16 @@ GIT
       tzinfo (>= 1.0, < 3.0)
       tzinfo-data (~> 1.0)
       webrick (>= 1.4.2, < 1.8.0)
-      win32-api (>= 1.10, < 2.0.0)
       win32-event (~> 0.6.3)
       win32-ipc (~> 0.7.0)
       win32-service (~> 2.3.0)
-      windows-api (~> 0.4.5)
-      windows-pr (~> 1.2.6)
       yajl-ruby (~> 1.0)
 
 GEM
   remote: https://rubygems.org/
   specs:
-    addressable (2.8.0)
-      public_suffix (>= 2.0.2, < 5.0)
+    addressable (2.8.1)
+      public_suffix (>= 2.0.2, < 6.0)
     async (1.30.3)
       console (~> 1.10)
       nio4r (~> 2.3)
@@ -42,7 +39,7 @@ GEM
       traces (~> 0.4.0)
     async-io (1.33.0)
       async
-    async-pool (0.3.10)
+    async-pool (0.3.11)
       async (>= 1.25)
     aws-eventstream (1.2.0)
     aws-partitions (1.609.0)
@@ -84,7 +81,7 @@ GEM
     elasticsearch-api (8.3.0)
       multi_json
     excon (0.92.4)
-    faraday (1.10.0)
+    faraday (1.10.1)
       faraday-em_http (~> 1.0)
       faraday-em_synchrony (~> 1.0)
       faraday-excon (~> 1.1)
@@ -132,7 +129,7 @@ GEM
       fluentd (>= 0.14.22)
     fluent-plugin-flowcounter-simple (0.1.0)
       fluentd (>= 1.0)
-    fluent-plugin-kafka (0.18.0)
+    fluent-plugin-kafka (0.18.1)
       fluentd (>= 0.10.58, < 2)
       ltsv
       ruby-kafka (>= 1.4.0, < 2)
@@ -210,13 +207,13 @@ GEM
     parallel (1.22.1)
     prometheus-client (2.1.0)
     protocol-hpack (1.4.2)
-    protocol-http (0.22.6)
+    protocol-http (0.22.9)
     protocol-http1 (0.14.4)
       protocol-http (~> 0.22)
     protocol-http2 (0.14.2)
       protocol-hpack (~> 1.4)
       protocol-http (~> 0.18)
-    public_suffix (4.0.7)
+    public_suffix (5.0.0)
     racc (1.6.0)
     rake (13.0.6)
     rdkafka (0.11.1)
@@ -260,8 +257,6 @@ GEM
     webhdfs (0.10.2)
       addressable
     webrick (1.7.0)
-    win32-api (1.10.1)
-    win32-api (1.10.1-universal-mingw32)
     win32-event (0.6.3)
       win32-ipc (>= 0.6.0)
     win32-eventlog (0.6.7)
@@ -271,11 +266,6 @@ GEM
     win32-service (2.3.2)
       ffi
       ffi-win32-extensions
-    windows-api (0.4.5)
-      win32-api (>= 1.4.5)
-    windows-pr (1.2.6)
-      win32-api (>= 1.4.5)
-      windows-api (>= 0.4.0)
     winevt_c (0.10.0)
     yajl-ruby (1.4.3)
     zip-zip (0.3)
@@ -307,7 +297,7 @@ DEPENDENCIES
   fluent-plugin-calyptia-monitoring (= 0.1.3)
   fluent-plugin-elasticsearch (= 5.2.3)
   fluent-plugin-flowcounter-simple (= 0.1.0)
-  fluent-plugin-kafka (= 0.18.0)
+  fluent-plugin-kafka (= 0.18.1)
   fluent-plugin-metrics-cmetrics (= 0.1.2)
   fluent-plugin-opensearch (= 1.0.7)
   fluent-plugin-parser-winevt_xml (= 0.2.4)
@@ -345,13 +335,10 @@ DEPENDENCIES
   tzinfo-data (= 1.2022.1)
   webhdfs (= 0.10.2)
   webrick (= 1.7.0)
-  win32-api (= 1.10.1)
   win32-event (= 0.6.3)
   win32-eventlog (= 0.6.7)
   win32-ipc (= 0.7.0)
   win32-service (= 2.3.2)
-  windows-api (= 0.4.5)
-  windows-pr (= 1.2.6)
   winevt_c (= 0.10.0)
   yajl-ruby (= 1.4.3)
 
