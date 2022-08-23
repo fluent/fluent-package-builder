@@ -15,14 +15,14 @@ case $1 in
     apt|deb)
 	REPOSITORY_TYPE=apt
 	REPOSITORY_PATH=$TD_AGENT_DIR/$REPOSITORY_TYPE/repositories
-	for d in buster bullseye xenial bionic focal jammy; do
+	for d in buster bullseye bionic focal jammy; do
 	    case $d in
 		buster|bullseye)
 		    # e.g. mapping debian/pool/buster/main/t/td-agent/ => 4/debian/buster/pool/contrib/t/td-agent
 		    mkdir -p $ARTIFACTS_DIR/4/debian/$d/pool/contrib/t/td-agent
 		    find $REPOSITORY_PATH/debian/pool/$d -name '*.deb' -not -name '*dbgsym*' -exec cp {} $ARTIFACTS_DIR/4/debian/$d/pool/contrib/t/td-agent \;
 		    ;;
-		xenial|bionic|focal|jammy)
+		bionic|focal|jammy)
 		    # e.g. mapping ubuntu/pool/.../main/t/td-agent/ => 4/ubuntu/.../pool/contrib/t/td-agent
 		    mkdir -p $ARTIFACTS_DIR/4/ubuntu/$d/pool/contrib/t/td-agent
 		    find $REPOSITORY_PATH/ubuntu/pool/$d -name '*.deb' -exec cp {} $ARTIFACTS_DIR/4/ubuntu/$d/pool/contrib/t/td-agent \;
