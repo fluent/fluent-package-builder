@@ -1,5 +1,15 @@
 # Treasure Agent 4 changelog
 
+## Release v4.4.1 - 2022/08/23
+
+### News
+
+* Update fluentd to 1.15.2
+  * out_file: Fix append mode with `--daemon` flag
+  * Drop win32-api gem dependency
+* Update fluent-plugin-kafka to 0.18.1
+  * Fix out_kafka2 doesn't respect `chunk_limit_records` and `chunk_limit_size`
+
 ## Release v4.4.0 - 2022/07/29
 
 ### News
