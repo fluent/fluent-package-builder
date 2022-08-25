@@ -38,11 +38,6 @@ case ${DISTRIBUTION} in
 	done
 	;;
     ubuntu)
-	if [ $CODE_NAME = "jammy" ]; then
-	    # TODO: Remove when repository for jammy has been deployed
-	    echo "No previous ${CODE_NAME} release"
-	    exit 0
-	fi
 	BASE_URI=http://packages.treasuredata.com.s3.amazonaws.com/4/ubuntu/${CODE_NAME}
 	CHANNEL=universe
 	for v in "${PREVIOUS_VERSIONS[@]}"; do

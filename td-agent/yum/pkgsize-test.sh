@@ -8,7 +8,7 @@ echo "CHECK PACKAGE SIZE"
 # Usage: $0 centos:8 aarch64
 #
 DISTRIBUTION=$(echo $1 | cut -d- -f1)
-VERSION=$(echo $1 | cut -d- -f2,3)
+DISTRO_VERSION=$(echo $1 | cut -d- -f2,3)
 ARCH=$2
 
 REPOSITORIES_DIR=td-agent/yum/repositories
@@ -21,51 +21,19 @@ for v in `git tag | grep "^v" | sort -r`; do
 done
 
 SKIP_SIZE_COMPARISON=0
+BASE_URI=http://packages.treasuredata.com.s3.amazonaws.com/4/redhat/${DISTRO_VERSION}
+DISTRO_VERSION_PREFIX=el
 case ${DISTRIBUTION} in
     amazonlinux)
-	BASE_URI=http://packages.treasuredata.com.s3.amazonaws.com/4/amazon/2
+	BASE_URI=http://packages.treasuredata.com.s3.amazonaws.com/4/amazon/${DISTRO_VERSION}
 	DISTRIBUTION=amazon
-	for v in "${PREVIOUS_VERSIONS[@]}"; do
-	    BASE_NAME=td-agent-${v}-1.amzn2.${ARCH}.rpm
-	    PREVIOUS_RPM=${BASE_URI}/${ARCH}/${BASE_NAME}
-	    set +e
-	    wget ${PREVIOUS_RPM}
-	    if [ $? -eq 0 ]; then
-		break
-	    fi
-	done
+	DISTRO_VERSION_PREFIX=amzn
 	;;
-    centos)
-	case $VERSION in
-	    stream-8)
-		SKIP_SIZE_COMPARISON=1
-		VERSION=8-stream
-		;;
-	    *)
-		BASE_URI=http://packages.treasuredata.com.s3.amazonaws.com/4/redhat/${VERSION}
-		for v in "${PREVIOUS_VERSIONS[@]}"; do
-		    BASE_NAME=td-agent-${v}-1.el${VERSION}.${ARCH}.rpm
-		    PREVIOUS_RPM=${BASE_URI}/${ARCH}/${BASE_NAME}
-		    set +e
-		    wget ${PREVIOUS_RPM}
-		    if [ $? -eq 0 ]; then
-			break
-		    fi
-		done
-		;;
-	esac
+    centos|almalinux)
 	;;
     rockylinux)
-	# FIXME: no previous release package for rockylinux
-	SKIP_SIZE_COMPARISON=1
 	# /etc/os-release ID=rocky
 	DISTRIBUTION=rocky
-	;;
-    almalinux)
-	# FIXME: no previous release package for almalinux
-	SKIP_SIZE_COMPARISON=1
-	# /etc/os-release ID=almalinux
-	DISTRIBUTION=almalinux
 	;;
     *)
 	echo "${DISTRIBUTION} is not supported"
@@ -75,17 +43,27 @@ esac
 
 set -e
 if [ $SKIP_SIZE_COMPARISON -eq 1 ]; then
-    RPM=$(find $REPOSITORIES_DIR/${DISTRIBUTION}/${VERSION}/${ARCH}/Packages/td-agent-*.rpm -not -name '*debuginfo*' -not -name '*debugsource*' | sort -n | tail -1)
+    RPM=$(find $REPOSITORIES_DIR/${DISTRIBUTION}/${DISTRO_VERSION}/${ARCH}/Packages/td-agent-*.rpm -not -name '*debuginfo*' -not -name '*debugsource*' | sort -n | tail -1)
     CURRENT_SIZE=$(stat -c %s $RPM)
     CURRENT_SIZE_MIB=$(echo "scale=2; ${CURRENT_SIZE} / 1024 / 1024" | bc)
     echo "NEW: ${CURRENT_SIZE_MIB} MiB (${CURRENT_SIZE}) : ${RPM}"
     exit 0
 fi
 
+for v in "${PREVIOUS_VERSIONS[@]}"; do
+    BASE_NAME=td-agent-${v}-1.${DISTRO_VERSION_PREFIX}${DISTRO_VERSION}.${ARCH}.rpm
+    PREVIOUS_RPM=${BASE_URI}/${ARCH}/${BASE_NAME}
+    set +e
+    wget ${PREVIOUS_RPM}
+    if [ $? -eq 0 ]; then
+	break
+    fi
+done
+
 PREVIOUS_SIZE=$(stat -c %s $BASE_NAME)
 THRESHOLD_SIZE=`echo "$PREVIOUS_SIZE * 1.2" | bc -l | cut -d. -f1`
 find $REPOSITORIES_DIR/${DISTRIBUTION} -name td-agent-*.rpm
-RPM=$(find $REPOSITORIES_DIR/${DISTRIBUTION}/${VERSION}/${ARCH}/Packages/td-agent-*.rpm -not -name '*debuginfo*' -not -name '*debugsource*' | sort -n | tail -1)
+RPM=$(find $REPOSITORIES_DIR/${DISTRIBUTION}/${DISTRO_VERSION}/${ARCH}/Packages/td-agent-*.rpm -not -name '*debuginfo*' -not -name '*debugsource*' | sort -n | tail -1)
 CURRENT_SIZE=$(stat -c %s $RPM)
 
 PREVIOUS_SIZE_MIB=$(echo "scale=2; ${PREVIOUS_SIZE} / 1024 / 1024" | bc)
