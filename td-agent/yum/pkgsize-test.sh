@@ -28,6 +28,10 @@ case ${DISTRIBUTION} in
 	BASE_URI=http://packages.treasuredata.com.s3.amazonaws.com/4/amazon/${DISTRO_VERSION}
 	DISTRIBUTION=amazon
 	DISTRO_VERSION_PREFIX=amzn
+	if [ $DISTRO_VERSION -eq 2022 ]; then
+		# FIXME: no previous release package for Amazon Linux 2022
+		SKIP_SIZE_COMPARISON=1
+	fi
 	;;
     centos|almalinux)
 	;;
