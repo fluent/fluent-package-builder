@@ -26,6 +26,11 @@ case ${distribution} in
         ENABLE_SERVERSPEC_TEST=0
         DISTRIBUTION_VERSION=${version}
         ;;
+      2022)
+        ENABLE_SERVERSPEC_TEST=0
+        DNF=dnf
+        DISTRIBUTION_VERSION=${version}
+        ;;
     esac
     ;;
   centos)
