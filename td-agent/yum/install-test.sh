@@ -46,7 +46,6 @@ case ${distribution} in
     esac
     ;;
   rocky|almalinux)
-    ENABLE_UPGRADE_TEST=0
     DNF=dnf
     DISTRIBUTION_VERSION=$(echo ${version} | cut -d. -f1)
     ;;
