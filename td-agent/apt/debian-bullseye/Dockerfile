@@ -54,5 +54,5 @@ RUN \
   # raise IPv4 priority
   sed -i'' -e 's,#precedence ::ffff:0:0/96  100,precedence ::ffff:0:0/96  100,' /etc/gai.conf && \
   # enable multiplatform feature
-  gem install --no-document --install-dir /usr/share/rubygems-integration/all bundler && \
+  gem install --no-document --install-dir /usr/share/rubygems-integration/all bundler builder && \
   rm -rf /var/lib/apt/lists/*

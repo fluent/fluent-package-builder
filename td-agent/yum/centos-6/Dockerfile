@@ -56,7 +56,7 @@ RUN \
     # raise IPv4 priority
     echo "precedence ::ffff:0:0/96 100" > /etc/gai.conf && \
     # enable multiplatform feature
-    source /opt/rh/rh-ruby24/enable && gem install --no-document --install-dir /opt/rh/rh-ruby24/root/usr/share/gems/ bundler && \
+    source /opt/rh/rh-ruby24/enable && gem install --no-document --install-dir /opt/rh/rh-ruby24/root/usr/share/gems/ bundler builder && \
   curl -sfL -o cmake.sh https://github.com/Kitware/CMake/releases/download/v3.22.1/cmake-3.22.1-linux-x86_64.sh && \
   bash ./cmake.sh --skip-license --prefix=/usr && \
   rm cmake.sh && \
