@@ -52,8 +52,10 @@ Then restart Windows.
 
   * macOS 10.15 (Catalina)
   * Ruby 2.5 or later
-  * Bundler 2.2.0 or later
+  * [Bundler](https://rubygems.org/gems/bundler) 2.2.0 or later
+  * [builder](https://rubygems.org/gems/builder) gem
   * Git
+  * [CMake](https://cmake.org/)
 
 ## How to build .rpm package
 
