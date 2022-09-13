@@ -783,9 +783,13 @@ class BuildTask
       "no-zlib",
       "shared",
     ]
-    arch_opts = [
-      "darwin64-x86_64-cc",
-    ]
+    if RUBY_PLATFORM.include?("x86_64")
+      arch_opts = ["darwin64-x86_64-cc"]
+    elsif RUBY_PLATFORM.include?("arm64")
+      arch_opts = ["darwin64-arm64-cc"]
+    else
+      raise "Unknown architecture: #{RUBY_PLATFORM}"
+    end
 
     cd(source_dir) do
       # Currently, macOS only.
