@@ -53,7 +53,7 @@ Then restart Windows.
   * macOS 10.15 (Catalina)
   * Ruby 2.5 or later
   * [Bundler](https://rubygems.org/gems/bundler) 2.2.0 or later
-  * [builder](https://rubygems.org/gems/builder) gem
+  * [Builder](https://rubygems.org/gems/builder) gem
   * Git
   * [CMake](https://cmake.org/)
 
@@ -186,6 +186,8 @@ cmd> ridk exec td-agent-gem install winevt_c
 ## How to build .dmg package
 
 ```console
+% sudo mkdir /opt/td-agent
+% sudo chown $(whoami) /opt/td-agent
 % rake dmg:selfbuild
 ```
 
