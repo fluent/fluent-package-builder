@@ -783,9 +783,13 @@ class BuildTask
       "no-zlib",
       "shared",
     ]
-    arch_opts = [
-      "darwin64-x86_64-cc",
-    ]
+    if RUBY_PLATFORM.include?("x86_64")
+      arch_opts = ["darwin64-x86_64-cc"]
+    elsif RUBY_PLATFORM.include?("arm64")
+      arch_opts = ["darwin64-arm64-cc"]
+    else
+      fail "Unknown architecture: #{RUBY_PLATFORM}"
+    end
 
     cd(source_dir) do
       # Currently, macOS only.
@@ -1105,7 +1109,6 @@ class BuildTask
       FileUtils.cp(entry, local_gems_dir)
     end
     cd(local_repo_dir) do
-      sh("gem", "install", "builder")
       sh("gem", "generate_index")
     end
   end
@@ -1357,10 +1360,17 @@ class CompressDMG
 
   def initialize(version:, window_bounds:, pkg_position:, logger:)
     @version = version
+    if RUBY_PLATFORM.include?("x86_64")
+      @arch = "x86_64"
+    elsif RUBY_PLATFORM.include?("arm64")
+      @arch = "arm64"
+    else
+      fail "Unknown architecture: #{RUBY_PLATFORM}"
+    end
     @window_bounds = window_bounds
     @pkg_position = pkg_position
-    @dmg_temp_name = "rw.#{PACKAGE_NAME}-#{@version}.dmg"
-    @dmg_name = "#{PACKAGE_NAME}-#{@version}.dmg"
+    @dmg_temp_name = "rw.#{PACKAGE_NAME}-#{@version}-#{@arch}.dmg"
+    @dmg_name = "#{PACKAGE_NAME}-#{@version}-#{@arch}.dmg"
     @pkg_name = "#{PACKAGE_NAME}-#{@version}.pkg"
     @volume_name = "#{PACKAGE_NAME}"
     @device = nil

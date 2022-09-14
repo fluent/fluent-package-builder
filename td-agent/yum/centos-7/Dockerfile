@@ -51,5 +51,5 @@ RUN \
     # raise IPv4 priority
     echo "precedence ::ffff:0:0/96 100" > /etc/gai.conf && \
     # enable multiplatform feature
-    source /opt/rh/rh-ruby26/enable && gem install --no-document --install-dir /opt/rh/rh-ruby26/root/usr/share/gems bundler && \
+    source /opt/rh/rh-ruby26/enable && gem install --no-document --install-dir /opt/rh/rh-ruby26/root/usr/share/gems bundler builder && \
   yum clean ${quiet} all

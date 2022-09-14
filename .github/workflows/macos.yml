@@ -14,6 +14,9 @@ jobs:
       - name: Install cmake
         run: |
           brew install cmake
+      - name: Install gems
+        run: |
+          gem install bundler builder
       - name: Build
         run: |
           sudo mkdir /opt/td-agent
