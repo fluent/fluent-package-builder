@@ -788,7 +788,7 @@ class BuildTask
     elsif RUBY_PLATFORM.include?("arm64")
       arch_opts = ["darwin64-arm64-cc"]
     else
-      raise "Unknown architecture: #{RUBY_PLATFORM}"
+      fail "Unknown architecture: #{RUBY_PLATFORM}"
     end
 
     cd(source_dir) do
@@ -1360,10 +1360,17 @@ class CompressDMG
 
   def initialize(version:, window_bounds:, pkg_position:, logger:)
     @version = version
+    if RUBY_PLATFORM.include?("x86_64")
+      @arch = "x86_64"
+    elsif RUBY_PLATFORM.include?("arm64")
+      @arch = "arm64"
+    else
+      fail "Unknown architecture: #{RUBY_PLATFORM}"
+    end
     @window_bounds = window_bounds
     @pkg_position = pkg_position
-    @dmg_temp_name = "rw.#{PACKAGE_NAME}-#{@version}.dmg"
-    @dmg_name = "#{PACKAGE_NAME}-#{@version}.dmg"
+    @dmg_temp_name = "rw.#{PACKAGE_NAME}-#{@version}-#{@arch}.dmg"
+    @dmg_name = "#{PACKAGE_NAME}-#{@version}-#{@arch}.dmg"
     @pkg_name = "#{PACKAGE_NAME}-#{@version}.pkg"
     @volume_name = "#{PACKAGE_NAME}"
     @device = nil
