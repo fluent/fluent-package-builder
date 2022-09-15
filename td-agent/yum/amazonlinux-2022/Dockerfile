@@ -51,5 +51,5 @@ RUN \
   # raise IPv4 priority
   echo "precedence ::ffff:0:0/96 100" > /etc/gai.conf && \
   # enable multiplatform feature
-  gem install --no-document bundler && \
+  gem install --no-document bundler builder && \
   yum clean ${quiet} all
