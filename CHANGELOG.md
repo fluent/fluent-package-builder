@@ -1,5 +1,21 @@
 # Treasure Agent 4 changelog
 
+## Release v4.4.2 - 2022/11/04
+
+### News
+
+* Update fluentd to 1.15.3
+  * Fix log initializer to correctly create per-process files on Windows
+  * out_file: Fix the multi-worker check with `<worker 0-N>` directive
+  * Remove meaningless oj options
+  * Support glob for `!include` directive in YAML config format
+* Update fluent-plugin-elasticsearch to 5.2.4
+* Update fluent-plugin-opensearch to 1.0.8
+* Update fluent-plugin-s3 to 1.7.2
+* Update fluent-plugin-windows-eventlog to 0.8.2
+* Update nokogiri to 1.13.9 (Windows)
+* macOS: Support Apple Silicon
+
 ## Release v4.4.1 - 2022/08/23
 
 ### News
