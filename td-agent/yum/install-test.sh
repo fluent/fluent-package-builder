@@ -22,6 +22,11 @@ case ${distribution} in
         DNF=yum
         DISTRIBUTION_VERSION=${version}
         ;;
+      2022)
+        ENABLE_UPGRADE_TEST=0
+        DNF=dnf
+        DISTRIBUTION_VERSION=${version}
+        ;;
     esac
     ;;
   centos)

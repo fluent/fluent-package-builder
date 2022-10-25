@@ -76,6 +76,12 @@ BuildRequires:	rh-ruby%{scl_ruby_ver}-ruby-devel
 BuildRequires:	rh-ruby%{scl_ruby_ver}-rubygems
 BuildRequires:	rh-ruby%{scl_ruby_ver}-rubygem-bundler
 %else
+%if %{_amazon_ver} >= 2022
+BuildRequires:	ruby3.1
+BuildRequires:	ruby3.1-rubygems
+BuildRequires:	ruby3.1-rubygem-rake
+BuildRequires:	libffi-devel
+%else
 %if %{_amazon_ver} > 0
 BuildRequires:	ruby
 BuildRequires:	rubygems
@@ -89,6 +95,7 @@ BuildRequires:	ruby2.4-rubygem-bundler
 BuildRequires:	ruby-devel
 BuildRequires:	rubygems
 BuildRequires:	rubygem-bundler
+%endif
 %endif
 %endif
 %endif

@@ -176,6 +176,7 @@ def use_ruby3?
   os_release_entries = File.open("/etc/os-release").readlines.map(&:strip)
   return true if os_release_entries.include?("UBUNTU_CODENAME=jammy") and os_release_entries.include?("ID=ubuntu")
   return true if os_release_entries.include?("PLATFORM_ID=\"platform:el9\"")
+  return true if os_release_entries.include?("PLATFORM_ID=\"platform:al2022\"")
   return false
 end
 
