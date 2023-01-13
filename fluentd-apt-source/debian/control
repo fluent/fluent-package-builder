@@ -1,6 +1,6 @@
 Source: fluentd-apt-source
 Section: misc
-Priority: important
+Priority: optional
 Maintainer: Fluentd developers <fluentd@googlegroups.com>
 Build-Depends:
   debhelper (>= 9),
