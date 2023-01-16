@@ -10,21 +10,13 @@ jobs:
       fail-fast: false
       matrix:
         label:
-          - Debian GNU/Linux buster amd64
           - Debian GNU/Linux bullseye amd64
-          - Ubuntu Bionic amd64
           - Ubuntu Focal amd64
           - Ubuntu Jammy amd64
         include:
-          - label: Debian GNU/Linux buster amd64
-            rake-job: debian-buster
-            test-docker-image: debian:buster
           - label: Debian GNU/Linux bullseye amd64
             rake-job: debian-bullseye
             test-docker-image: debian:bullseye
-          - label: Ubuntu Bionic amd64
-            rake-job: ubuntu-bionic
-            test-docker-image: ubuntu:bionic
           - label: Ubuntu Focal amd64
             rake-job: ubuntu-focal
             test-docker-image: ubuntu:focal
