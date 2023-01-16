@@ -58,5 +58,6 @@ RUN \
   # raise IPv4 priority
   sed -i'' -e 's,#precedence ::ffff:0:0/96  100,precedence ::ffff:0:0/96  100,' /etc/gai.conf && \
   # enable multiplatform feature
-  gem install --no-document bundler builder && \
+  gem install --no-document bundler --version 2.3.26 && \
+  gem install --no-document builder && \
   rm -rf /var/lib/apt/lists/*
