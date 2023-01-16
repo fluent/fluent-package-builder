@@ -20,30 +20,17 @@ MINGW_OPENSSL_SHA256SUM = "4fb25397e48f6ab22e8b07d40519fddf3eec3dc6a163b2a1ecc68
 BUNDLER_VERSION= "2.3.18"
 
 # https://www.ruby-lang.org/en/downloads/ (tar.gz)
-BUNDLED_RUBY_VERSION = "2.7.6"
-BUNDLED_RUBY_SOURCE_SHA256SUM = "e7203b0cc09442ed2c08936d483f8ac140ec1c72e37bb5c401646b7866cb5d10"
-#BUNDLED_RUBY_VERSION = "3.0.4"
-#BUNDLED_RUBY_SOURCE_SHA256SUM = "70b47c207af04bce9acea262308fb42893d3e244f39a4abc586920a1c723722b"
-#BUNDLED_RUBY_VERSION = "3.1.2"
-#BUNDLED_RUBY_SOURCE_SHA256SUM = "61843112389f02b735428b53bb64cf988ad9fb81858b8248e22e57336f24a83e"
-
-BUNDLED_RUBY3_VERSION = "3.1.2"
-BUNDLED_RUBY3_SOURCE_SHA256SUM = "61843112389f02b735428b53bb64cf988ad9fb81858b8248e22e57336f24a83e"
+BUNDLED_RUBY_VERSION = "3.2.0"
+BUNDLED_RUBY_SOURCE_SHA256SUM = "daaa78e1360b2783f98deeceb677ad900f3a36c0ffa6e2b6b19090be77abc272"
 
 BUNDLED_RUBY_PATCHES = [
-  ["ruby-2.7/0001-Removed-the-old-executables-of-racc.patch",            ["~> 2.7.0"]],
-  ["ruby-2.7/0002-Fixup-a6864f6d2f39bcd1ff04516591cc18d4027ab186.patch", ["~> 2.7.0"]],
-  ["ruby-3.0/0001-ruby-resolv-Fix-confusion-of-received-response-messa.patch",   ["= 2.7.3"]],
-  ["ruby-3.0/0001-ruby-resolv-Fix-confusion-of-received-response-messa.patch",   ["= 3.0.1"]],
+  # An example entry:
+  # ["ruby-3.0/0001-ruby-resolv-Fix-confusion-of-received-response-messa.patch",   ["= 3.0.1"]],
 ]
 
 # https://rubyinstaller.org/downloads/ (7-ZIP ARCHIVES)
-BUNDLED_RUBY_INSTALLER_X64_VERSION = "2.7.6-1"
-BUNDLED_RUBY_INSTALLER_X64_SHA256SUM = "7c74064a4c410a866e37dc04bf35945dc1c7c313f32a4bf773e145662bbc285a"
-#BUNDLED_RUBY_INSTALLER_X64_VERSION = "3.0.4-1"
-#BUNDLED_RUBY_INSTALLER_X64_SHA256SUM = "0c272c995e8247ab7a9db176e84cec46044d15c2cc318d3973def8a410df2b61"
-#BUNDLED_RUBY_INSTALLER_X64_VERSION = "3.1.2-1"
-#BUNDLED_RUBY_INSTALLER_X64_SHA256SUM = "637039c18dd4ad4a1fed326eed8caca8a686b79cee68bf6b85636bf9ec3a083c"
+BUNDLED_RUBY_INSTALLER_X64_VERSION = "3.2.0-1"
+BUNDLED_RUBY_INSTALLER_X64_SHA256SUM = "c89a52859e9b008f73ad2bb2bce57b70b40ed90ccce68eefe16e49803bbb2c41"
 
 # Patch files are assumed to be for Ruby's source tree, then applied to
 # lib/ruby/x.y.0 in RubyInstaller. So that "-p2" options will be passed
