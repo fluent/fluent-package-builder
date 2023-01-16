@@ -54,4 +54,5 @@ RUN \
   # enable multiplatform feature
   source /opt/rh/rh-ruby26/enable && gem install --no-document --install-dir /opt/rh/rh-ruby26/root/usr/share/gems bundler builder && \
   scl enable devtoolset-11 bash && \
-  yum clean ${quiet} all
+  yum clean ${quiet} all && \
+  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
