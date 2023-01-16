@@ -29,7 +29,8 @@ RUN \
   yum install -y ${quiet} epel-release && \
   yum groupinstall -y ${quiet} "Development Tools" && \
   yum install -y ${quiet} \
-    rh-ruby26-ruby-devel  \
+    devtoolset-11 \
+    rh-ruby26-ruby-devel \
     rh-ruby26-rubygems \
     rh-ruby26-rubygem-rake \
     rh-ruby26-rubygem-bundler \
@@ -48,8 +49,9 @@ RUN \
     zlib-devel \
     rpmlint \
     cmake3 && \
-    # raise IPv4 priority
-    echo "precedence ::ffff:0:0/96 100" > /etc/gai.conf && \
-    # enable multiplatform feature
-    source /opt/rh/rh-ruby26/enable && gem install --no-document --install-dir /opt/rh/rh-ruby26/root/usr/share/gems bundler builder && \
+  # raise IPv4 priority
+  echo "precedence ::ffff:0:0/96 100" > /etc/gai.conf && \
+  # enable multiplatform feature
+  source /opt/rh/rh-ruby26/enable && gem install --no-document --install-dir /opt/rh/rh-ruby26/root/usr/share/gems bundler builder && \
+  scl enable devtoolset-11 bash && \
   yum clean ${quiet} all

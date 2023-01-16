@@ -21,6 +21,7 @@
 %define _amazon_ver %{?amzn:%{amzn}}%{!?amzn:0}
 %define _suse_ver %{?suse_version:%{suse_version}}%{!?suse_version:0}
 %define use_suse (%{_suse_ver} >= 1315)
+%define use_scl_gcc (%{_centos_ver} <= 7 && %{_amazon_ver} == 0)
 %define use_scl_ruby (%{_centos_ver} <= 7 && %{_amazon_ver} == 0)
 %define use_devtoolset (%{_centos_ver} <= 6 && %{_amazon_ver} == 0)
 %if %{_centos_ver} <= 6
@@ -139,8 +140,14 @@ The stable distribution of Fluentd, called td-agent.
 %setup -q -n @PACKAGE@-%{version}
 
 %build
+%if %{use_scl_gcc}
+. /opt/rh/devtoolset-11/enable
+%endif
 
 %install
+%if %{use_scl_gcc}
+. /opt/rh/devtoolset-11/enable
+%endif
 %if %{use_scl_ruby}
 . /opt/rh/rh-ruby%{scl_ruby_ver}/enable
 %endif
