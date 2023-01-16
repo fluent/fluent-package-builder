@@ -24,6 +24,7 @@ ARG DEBUG
 
 RUN \
   quiet=$([ "${DEBUG}" = "yes" ] || echo "--quiet") && \
+  dnf module enable ruby:3.1 -y && \
   dnf install --enablerepo=powertools -y ${quiet} \
     make \
     gcc-c++ \
