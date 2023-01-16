@@ -24,6 +24,7 @@ ARG DEBUG
 
 RUN \
   quiet=$([ "${DEBUG}" = "yes" ] || echo "--quiet") && \
+  dnf module enable ruby:3.1 -y && \
   dnf install --enablerepo=powertools -y ${quiet} \
     make \
     gcc-c++ \
@@ -50,6 +51,5 @@ RUN \
     # raise IPv4 priority
     echo "precedence ::ffff:0:0/96 100" > /etc/gai.conf && \
     # enable multiplatform feature
-    gem install --no-document --install-dir /usr/share/gems bundler --version 2.3.26 && \
-    gem install --no-document --install-dir /usr/share/gems builder && \
+    gem install --no-document --install-dir /usr/share/gems bundler builder && \
   yum clean ${quiet} all
