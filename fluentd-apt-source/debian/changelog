@@ -1,3 +1,10 @@
+fluentd-apt-source (2023.1.13-1) unstable; urgency=medium
+
+  * Fix incorrect priority. changed from important to optional. (GitHub#422)
+    See https://www.debian.org/doc/debian-policy/ch-archive.html#priorities.
+
+ -- Kentaro Hayashi <hayashi@clear-code.com>  Fri, 13 Jan 2023 10:53:41 +0900
+
 fluentd-apt-source (2020.8.25-1) unstable; urgency=low
 
   * New upstream release.
