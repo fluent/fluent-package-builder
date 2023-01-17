@@ -62,4 +62,5 @@ RUN \
   # enable multiplatform feature
   gem install --no-document bundler --version 2.3.26 && \
   gem install --no-document builder && \
-  rm -rf /var/lib/apt/lists/*
+  rm -rf /var/lib/apt/lists/* && \
+  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y

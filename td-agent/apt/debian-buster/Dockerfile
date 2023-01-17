@@ -58,4 +58,5 @@ RUN \
   # enable multiplatform feature
   gem install --no-document --install-dir /usr/share/rubygems-integration/all bundler --version 2.3.26 && \
   gem install --no-document --install-dir /usr/share/rubygems-integration/all builder && \
-  rm -rf /var/lib/apt/lists/*
+  rm -rf /var/lib/apt/lists/* && \
+  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
