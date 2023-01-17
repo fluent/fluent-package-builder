@@ -40,6 +40,8 @@ RUN \
     libedit2 \
     libncurses5-dev \
     libyaml-dev \
+    libffi-dev \
+    libreadline-dev \
     git \
     pkg-config \
     libssl-dev \
