@@ -36,6 +36,7 @@ RUN \
     libedit-devel \
     ncurses-devel \
     libyaml-devel \
+    libffi-devel \
     git \
     cyrus-sasl-devel \
     nss-softokn-freebl-devel \

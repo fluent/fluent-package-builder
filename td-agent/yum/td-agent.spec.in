@@ -72,6 +72,7 @@ License:	ASL 2.0
 URL:		https://www.treasuredata.com/
 Source0:	@PACKAGE@-@VERSION@.tar.gz
 
+BuildRequires:	libffi-devel
 %if %{use_scl_ruby}
 BuildRequires:	rh-ruby%{scl_ruby_ver}-ruby-devel
 BuildRequires:	rh-ruby%{scl_ruby_ver}-rubygems
@@ -81,7 +82,6 @@ BuildRequires:	rh-ruby%{scl_ruby_ver}-rubygem-bundler
 BuildRequires:	ruby3.1
 BuildRequires:	ruby3.1-rubygems
 BuildRequires:	ruby3.1-rubygem-rake
-BuildRequires:	libffi-devel
 %else
 %if %{_amazon_ver} > 0
 BuildRequires:	ruby

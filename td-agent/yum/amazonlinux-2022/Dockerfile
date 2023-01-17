@@ -31,6 +31,7 @@ RUN \
     libedit-devel \
     ncurses-devel \
     libyaml-devel \
+    libffi-devel \
     git \
     cyrus-sasl-devel \
     nss-softokn-freebl-devel \
@@ -46,7 +47,6 @@ RUN \
     ruby3.1 \
     ruby3.1-rubygems \
     ruby3.1-rubygem-rake \
-    libffi-devel \
     && \
   # raise IPv4 priority
   echo "precedence ::ffff:0:0/96 100" > /etc/gai.conf && \
