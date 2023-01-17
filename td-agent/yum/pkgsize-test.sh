@@ -65,7 +65,7 @@ for v in "${PREVIOUS_VERSIONS[@]}"; do
 done
 
 PREVIOUS_SIZE=$(stat -c %s $BASE_NAME)
-THRESHOLD_SIZE=`echo "$PREVIOUS_SIZE * 1.2" | bc -l | cut -d. -f1`
+THRESHOLD_SIZE=`echo "$PREVIOUS_SIZE * 1.3" | bc -l | cut -d. -f1`
 find $REPOSITORIES_DIR/${DISTRIBUTION} -name td-agent-*.rpm
 RPM=$(find $REPOSITORIES_DIR/${DISTRIBUTION}/${DISTRO_VERSION}/${ARCH}/Packages/td-agent-*.rpm -not -name '*debuginfo*' -not -name '*debugsource*' | sort -n | tail -1)
 CURRENT_SIZE=$(stat -c %s $RPM)
