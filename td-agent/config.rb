@@ -32,6 +32,6 @@ BUNDLED_RUBY_INSTALLER_X64_SHA256SUM = "c89a52859e9b008f73ad2bb2bce57b70b40ed90c
 # lib/ruby/x.y.0 in RubyInstaller. So that "-p2" options will be passed
 # to patch command.
 BUNDLED_RUBY_INSTALLER_PATCHES = [
-  ["ruby-3.0/0001-ruby-resolv-Fix-confusion-of-received-response-messa.patch", ["= 2.7.3"]],
-  ["ruby-3.0/0001-ruby-resolv-Fix-confusion-of-received-response-messa.patch", ["= 3.0.1"]],
+  # An example entry:
+  # ["ruby-3.0/0001-ruby-resolv-Fix-confusion-of-received-response-messa.patch", ["= 3.0.1"]],
 ]
