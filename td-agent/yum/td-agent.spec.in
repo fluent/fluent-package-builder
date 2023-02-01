@@ -21,6 +21,7 @@
 %define _amazon_ver %{?amzn:%{amzn}}%{!?amzn:0}
 %define _suse_ver %{?suse_version:%{suse_version}}%{!?suse_version:0}
 %define use_suse (%{_suse_ver} >= 1315)
+%define use_scl_gcc (%{_centos_ver} <= 7 && %{_amazon_ver} == 0)
 %define use_scl_ruby (%{_centos_ver} <= 7 && %{_amazon_ver} == 0)
 %define use_devtoolset (%{_centos_ver} <= 6 && %{_amazon_ver} == 0)
 %if %{_centos_ver} <= 6
@@ -71,6 +72,7 @@ License:	ASL 2.0
 URL:		https://www.treasuredata.com/
 Source0:	@PACKAGE@-@VERSION@.tar.gz
 
+BuildRequires:	libffi-devel
 %if %{use_scl_ruby}
 BuildRequires:	rh-ruby%{scl_ruby_ver}-ruby-devel
 BuildRequires:	rh-ruby%{scl_ruby_ver}-rubygems
@@ -80,7 +82,6 @@ BuildRequires:	rh-ruby%{scl_ruby_ver}-rubygem-bundler
 BuildRequires:	ruby3.1
 BuildRequires:	ruby3.1-rubygems
 BuildRequires:	ruby3.1-rubygem-rake
-BuildRequires:	libffi-devel
 %else
 %if %{_amazon_ver} > 0
 BuildRequires:	ruby
@@ -139,8 +140,14 @@ The stable distribution of Fluentd, called td-agent.
 %setup -q -n @PACKAGE@-%{version}
 
 %build
+%if %{use_scl_gcc}
+. /opt/rh/devtoolset-11/enable
+%endif
 
 %install
+%if %{use_scl_gcc}
+. /opt/rh/devtoolset-11/enable
+%endif
 %if %{use_scl_ruby}
 . /opt/rh/rh-ruby%{scl_ruby_ver}/enable
 %endif
@@ -149,11 +156,11 @@ The stable distribution of Fluentd, called td-agent.
 %endif
 %if %{use_systemd}
 rake build:rpm_config TD_AGENT_STAGING_PATH=%{buildroot} NO_VAR_RUN=1
-rake build:all TD_AGENT_STAGING_PATH=%{buildroot}
+rake build:all TD_AGENT_STAGING_PATH=%{buildroot} PATH="$HOME/.cargo/bin:$PATH"
 %else
 rake build:rpm_old_config TD_AGENT_STAGING_PATH=%{buildroot} NO_VAR_RUN=0
 # Fat gem of nokogiri 1.11 requires glibc 2.17 which doesn't exist on CentOS 6
-rake build:all TD_AGENT_STAGING_PATH=%{buildroot} REBUILD_GEMS="nokogiri"
+rake build:all TD_AGENT_STAGING_PATH=%{buildroot} REBUILD_GEMS="nokogiri" PATH="$HOME/.cargo/bin:$PATH"
 %endif
 mkdir -p %{buildroot}%{_mandir}/man1
 cp @PACKAGE@/debian/*.1 %{buildroot}%{_mandir}/man1/
@@ -261,6 +268,9 @@ fi
 # NOTE: %{_tmpfilesdir} is available since CentOS 7
 %attr(0755,td-agent,td-agent) %dir /tmp/@PACKAGE@
 %changelog
+* Tue Jan 17 2023 Takuro Ashie <ashie@clear-code.com> - 5.0.0-1
+- New upstream release.
+
 * Tue Oct 25 2022 Takuro Ashie <ashie@clear-code.com> - 4.4.2-1
 - New upstream release.
 

@@ -56,6 +56,7 @@ Then restart Windows.
   * [Builder](https://rubygems.org/gems/builder) gem
   * Git
   * [CMake](https://cmake.org/)
+  * [Rust](https://www.rust-lang.org/) to enable Ruby's YJIT feature
 
 ## How to build .rpm package
 

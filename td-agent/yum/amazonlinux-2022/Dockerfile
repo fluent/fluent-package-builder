@@ -31,6 +31,7 @@ RUN \
     libedit-devel \
     ncurses-devel \
     libyaml-devel \
+    libffi-devel \
     git \
     cyrus-sasl-devel \
     nss-softokn-freebl-devel \
@@ -46,10 +47,10 @@ RUN \
     ruby3.1 \
     ruby3.1-rubygems \
     ruby3.1-rubygem-rake \
-    libffi-devel \
     && \
   # raise IPv4 priority
   echo "precedence ::ffff:0:0/96 100" > /etc/gai.conf && \
   # enable multiplatform feature
   gem install --no-document bundler builder && \
-  yum clean ${quiet} all
+  yum clean ${quiet} all && \
+  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y

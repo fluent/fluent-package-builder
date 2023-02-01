@@ -41,6 +41,8 @@ RUN \
     libedit2 \
     libncurses5-dev \
     libyaml-dev \
+    libffi-dev \
+    libreadline-dev \
     git \
     pkg-config \
     libssl-dev \
@@ -55,4 +57,5 @@ RUN \
   sed -i'' -e 's,#precedence ::ffff:0:0/96  100,precedence ::ffff:0:0/96  100,' /etc/gai.conf && \
   # enable multiplatform feature
   gem install --no-document --install-dir /usr/share/rubygems-integration/all bundler builder && \
-  rm -rf /var/lib/apt/lists/*
+  rm -rf /var/lib/apt/lists/* && \
+  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y

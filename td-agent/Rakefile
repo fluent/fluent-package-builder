@@ -168,34 +168,14 @@ def tar_command
   end
 end
 
-def use_ruby3?
-  # Check whether ubuntu 22.04 (jammy) or not
-  # Basically, TD Agent adopts ruby 2.7 as default version, but on Ubuntu 22.04,
-  # use ruby 3.x because distribution switches to OpenSSL 3.x.
-  return false unless File.exist?("/etc/os-release")
-  os_release_entries = File.open("/etc/os-release").readlines.map(&:strip)
-  return true if os_release_entries.include?("UBUNTU_CODENAME=jammy") and os_release_entries.include?("ID=ubuntu")
-  return true if os_release_entries.include?("PLATFORM_ID=\"platform:el9\"")
-  return true if os_release_entries.include?("PLATFORM_ID=\"platform:al2022\"")
-  return false
-end
-
-def bundled_ruby_version
-  use_ruby3? ? BUNDLED_RUBY3_VERSION : BUNDLED_RUBY_VERSION
-end
-
-def bundled_ruby_source_sha256sum
-  use_ruby3? ? BUNDLED_RUBY3_SOURCE_SHA256SUM : BUNDLED_RUBY_SOURCE_SHA256SUM
-end
-
 class DownloadTask
   include Rake::DSL
 
   attr_reader :file_jemalloc_source
-  attr_reader :file_ruby_source, :file_ruby3_source, :file_ruby_installer_x64
+  attr_reader :file_ruby_source, :file_ruby_installer_x64
   attr_reader :file_fluentd_archive
   attr_reader :files_ruby_gems
-  attr_reader :file_openssl_source, :file_mingw_openssl
+  attr_reader :file_openssl_source
 
   def initialize(logger:)
     @logger = logger || Logger.new(STDOUT, level: Logger::Severity::INFO)
@@ -205,9 +185,7 @@ class DownloadTask
     [
       @file_jemalloc_source,
       @file_openssl_source,
-      @file_mingw_openssl,
       @file_ruby_source,
-      @file_ruby3_source,
       @file_ruby_installer_x64,
       @file_fluentd_archive,
       *@files_ruby_gems
@@ -220,14 +198,13 @@ class DownloadTask
     define_fluentd_archive
     define_gem_files
     define_openssl_file
-    define_mingw_openssl_file
 
     namespace :download do
       desc "Download jemalloc source"
       task :jemalloc => [@file_jemalloc_source]
 
       desc "Download Ruby source"
-      task :ruby => [@file_ruby_source, @file_ruby3_source, @file_ruby_installer_x64]
+      task :ruby => [@file_ruby_source, @file_ruby_installer_x64]
 
       desc "Clone fluentd repository and create a tarball"
       task :fluentd => @file_fluentd_archive
@@ -237,9 +214,6 @@ class DownloadTask
 
       desc "Download openssl source"
       task :openssl => @file_openssl_source
-
-      desc "Download MinGW's openssl package"
-      task :mingw_openssl => @file_mingw_openssl
     end
   end
 
@@ -299,24 +273,14 @@ class DownloadTask
   end
 
   def define_ruby_source_file
-    [[BUNDLED_RUBY_VERSION, BUNDLED_RUBY_SOURCE_SHA256SUM],
-     [BUNDLED_RUBY3_VERSION, BUNDLED_RUBY3_SOURCE_SHA256SUM]].each do |version, sha256sum|
-      filename = "ruby-#{version}.tar.gz"
-      feature_version = version.match(/^(\d+\.\d+)/)[0]
-      url_base = "https://cache.ruby-lang.org/pub/ruby/"
-      url = "#{url_base}#{feature_version}/#{filename}"
+    filename = "ruby-#{BUNDLED_RUBY_VERSION}.tar.gz"
+    feature_version = BUNDLED_RUBY_VERSION.match(/^(\d+\.\d+)/)[0]
+    url_base = "https://cache.ruby-lang.org/pub/ruby/"
+    url = "#{url_base}#{feature_version}/#{filename}"
 
-      if version.start_with?("3")
-        @file_ruby3_source = File.join(DOWNLOADS_DIR, filename)
-        file @file_ruby3_source do
-          download_file(url, filename, sha256sum)
-        end
-      else
-        @file_ruby_source = File.join(DOWNLOADS_DIR, filename)
-        file @file_ruby_source do
-          download_file(url, filename, sha256sum)
-        end
-      end
+    @file_ruby_source = File.join(DOWNLOADS_DIR, filename)
+    file @file_ruby_source do
+      download_file(url, filename, BUNDLED_RUBY_SOURCE_SHA256SUM)
     end
   end
 
@@ -330,20 +294,6 @@ class DownloadTask
     @file_ruby_installer_x64 = File.join(DOWNLOADS_DIR, filename)
 
     file @file_ruby_installer_x64 do
-      download_file(url, filename, sha256sum)
-    end
-  end
-
-  def define_mingw_openssl_file
-    version = MINGW_OPENSSL_VERSION
-    sha256sum = MINGW_OPENSSL_SHA256SUM
-    filename = "mingw-w64-x86_64-openssl-#{version}-any.pkg.tar.zst"
-    url_base = "https://mirror.msys2.org/mingw/mingw64/"
-    url = "#{url_base}#{filename}"
-
-    @file_mingw_openssl = File.join(DOWNLOADS_DIR, filename)
-
-    file @file_mingw_openssl do
       download_file(url, filename, sha256sum)
     end
   end
@@ -446,10 +396,9 @@ class BuildTask
       end
 
       desc "Install Ruby for Windows"
-      task :rubyinstaller => [:"download:ruby", :"download:mingw_openssl"] do
+      task :rubyinstaller => [:"download:ruby"] do
         extract_ruby_installer
         apply_ruby_installer_patches
-        replace_openssl_in_ruby_installer
         setup_windows_build_env
         find_and_put_dynamiclibs
       end
@@ -687,7 +636,7 @@ class BuildTask
     BUNDLED_RUBY_PATCHES.each do |patch|
       patch_name, version_condition = patch
       dependency = Gem::Dependency.new('', version_condition)
-      if dependency.match?('', bundled_ruby_version)
+      if dependency.match?('', BUNDLED_RUBY_VERSION)
         patch_path = File.join(__dir__, "patches", patch_name)
         sh("patch", "-p1", "--input=#{patch_path}")
       end
@@ -804,11 +753,7 @@ class BuildTask
   end
 
   def build_ruby_from_source
-    tarball = if use_ruby3?
-                @download_task.file_ruby3_source
-              else
-                @download_task.file_ruby_source
-              end
+    tarball = @download_task.file_ruby_source
     ruby_source_dir = tarball.sub(/\.tar\.gz$/, '')
 
     sh(*tar_command, "xvf", tarball, "-C", DOWNLOADS_DIR)
@@ -866,19 +811,6 @@ class BuildTask
         end
       end
     end
-  end
-
-  # Fix memory leak in OpenSSL: https://github.com/fluent/fluent-package-builder/issues/374
-  def replace_openssl_in_ruby_installer
-    tarball = @download_task.file_mingw_openssl
-    sh(*tar_command, "xvf", tarball, "-C", DOWNLOADS_DIR, "--force-local")
-    source_dir = File.join(DOWNLOADS_DIR, "mingw64", "bin")
-    ensure_directory(td_agent_staging_dir) do
-      dest_dir = File.join(".", "bin", "ruby_builtin_dlls")
-      cp(File.join(source_dir, "libcrypto-1_1-x64.dll"), dest_dir)
-      cp(File.join(source_dir, "libssl-1_1-x64.dll"), dest_dir)
-    end
-    rm_rf(source_dir)
   end
 
   def find_and_put_dynamiclibs
@@ -953,7 +885,7 @@ class BuildTask
     if windows?
       ruby_version = BUNDLED_RUBY_INSTALLER_X64_VERSION
     else
-      ruby_version = bundled_ruby_version
+      ruby_version = BUNDLED_RUBY_VERSION
     end
     rb_major, rb_minor, rb_teeny = ruby_version.split("-", 2).first.split(".", 3)
     "#{rb_major}.#{rb_minor}.0" # gem path's teeny version is always 0
@@ -1328,9 +1260,7 @@ EOS
 
   def apt_targets_default
     [
-      "debian-buster",
       "debian-bullseye",
-      "ubuntu-bionic",
       "ubuntu-focal",
       "ubuntu-jammy",
     ]
