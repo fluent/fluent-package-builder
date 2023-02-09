@@ -33,28 +33,21 @@ rpmbuild_options=
 
 . /host/env.sh
 
-if [ -f /etc/os-release ]; then
-  . /etc/os-release
-  case $ID in
-    amzn)
-      # The ID is translated for repository layout
-      distribution=amazon
-      ;;
-    *)
-      distribution=$ID
-      ;;
-  esac
-  if [ "$NAME" = "CentOS Stream" ]; then
-    # ${version}-stream
-    distribution_version="${VERSION_ID}-stream"
-  else
-    distribution_version=$VERSION_ID
-  fi
+. /etc/os-release
+case $ID in
+  amzn)
+    # The ID is translated for repository layout
+    distribution=amazon
+    ;;
+  *)
+    distribution=$ID
+    ;;
+esac
+if [ "$NAME" = "CentOS Stream" ]; then
+  # ${version}-stream
+  distribution_version="${VERSION_ID}-stream"
 else
-  # Keep backward compatibility especially for CentOS 6 only
-  # TODO: Drop this block when no need to build CentOS 6 completely
-  distribution=$(cut -d " " -f 1 /etc/system-release | tr "A-Z" "a-z")
-  distribution_version=$(cut -d " " -f 3 /etc/system-release)
+  distribution_version=$VERSION_ID
 fi
 distribution_version=$(echo ${distribution_version} | sed -e 's/\..*$//g')
 

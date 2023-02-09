@@ -6,8 +6,6 @@ set -exu
 # cpe:2.3:o:amazon:amazon_linux:2
 # CentOS 7 system-release-cpe is:
 # cpe:/o:centos:centos:7
-# CentOS 6 system-release-cpe is:
-# cpe:/o:centos:linux:6
 # This means that column glitch exists.
 # So, we should remove before "o" character.
 

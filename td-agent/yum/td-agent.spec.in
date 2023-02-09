@@ -23,35 +23,19 @@
 %define use_suse (%{_suse_ver} >= 1315)
 %define use_scl_gcc (%{_centos_ver} <= 7 && %{_amazon_ver} == 0)
 %define use_scl_ruby (%{_centos_ver} <= 7 && %{_amazon_ver} == 0)
-%define use_devtoolset (%{_centos_ver} <= 6 && %{_amazon_ver} == 0)
-%if %{_centos_ver} <= 6
-%define scl_ruby_ver 24
-%define devtoolset_ver 9
-%else
 %define scl_ruby_ver 26
-%endif
 %define use_systemd (%{_centos_ver} >= 7) || %{_suse_ver} >= 1315
 %define use_license (%{_centos_ver} >= 7)
 # Omit check-rpath and brp-mangle-shebangs since we use our own Ruby
 %define __arch_install_post %{nil}
 %undefine __brp_mangle_shebangs
 
-%if %{_centos_ver} < 7
-%filter_provides_in .*\.so
-%filter_from_provides /pkgconfig.*/d
-%filter_from_provides /perl.*/d
-%filter_requires_in libjemalloc.*
-%filter_requires_in libruby.*
-%filter_from_requires /\/opt\/td-agent\/bin\/ruby/d
-%filter_setup
-%else
 %global __provides_exclude_from ^/opt/%{name}/.*\\.so.*
 %global __requires_exclude libjemalloc.*|libruby.*|/opt/%{name}/.*
 # Omit build_id links (/usr/lib/.build-id/xx/yy) from td-agent package
 # They are bundled in td-agent-debuginfo. It is intended not to
 # conflict with other packages
 %define _build_id_links alldebug
-%endif
 
 %if %{use_systemd}
 %define control_service() (systemctl %1 %2)
@@ -100,10 +84,6 @@ BuildRequires:	rubygem-bundler
 %endif
 %endif
 %endif
-%if %{use_devtoolset}
-BuildRequires:	devtoolset-%{devtoolset_ver}-gcc-c++
-%else
-%endif
 BuildRequires:	gcc-c++
 BuildRequires:	git
 BuildRequires:	zlib-devel
@@ -150,9 +130,6 @@ The stable distribution of Fluentd, called td-agent.
 %endif
 %if %{use_scl_ruby}
 . /opt/rh/rh-ruby%{scl_ruby_ver}/enable
-%endif
-%if %{use_devtoolset}
-. /opt/rh/devtoolset-%{devtoolset_ver}/enable
 %endif
 %if %{use_systemd}
 rake build:rpm_config TD_AGENT_STAGING_PATH=%{buildroot} NO_VAR_RUN=1
