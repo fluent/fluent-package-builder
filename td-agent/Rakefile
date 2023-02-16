@@ -257,13 +257,13 @@ class DownloadTask
   end
 
   def define_openssl_file
-    version = OPENSSL_VERSION
+    version = OPENSSL_FOR_MACOS_VERSION
     filename = "openssl-#{version}.tar.gz"
     url_base = "https://www.openssl.org/source/"
     @file_openssl_source = File.join(DOWNLOADS_DIR, filename)
     file @file_openssl_source do
       url = "#{url_base}/#{filename}"
-      download_file(url, filename)
+      download_file(url, filename, OPENSSL_FOR_MACOS_SHA256SUM)
     end
   end
 
