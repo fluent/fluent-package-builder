@@ -14,7 +14,7 @@ jobs:
           - RockyLinux 8 x86_64
           - AlmaLinux 9 x86_64
           - Amazon Linux 2 x86_64
-          - Amazon Linux 2022 x86_64
+          - Amazon Linux 2023 x86_64
         include:
           - label: CentOS 7 x86_64
             rake-job: centos-7
@@ -32,9 +32,9 @@ jobs:
             rake-job: amazonlinux-2
             test-docker-image: amazonlinux:2
             centos-stream: false
-          - label: Amazon Linux 2022 x86_64
-            rake-job: amazonlinux-2022
-            test-docker-image: amazonlinux:2022
+          - label: Amazon Linux 2023 x86_64
+            rake-job: amazonlinux-2023
+            test-docker-image: amazonlinux:2023
             centos-stream: false
     runs-on: ubuntu-latest
     steps:

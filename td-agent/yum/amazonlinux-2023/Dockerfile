@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-ARG FROM=amazonlinux:2022
+ARG FROM=amazonlinux:2023
 FROM ${FROM}
 
 COPY qemu-* /usr/bin/

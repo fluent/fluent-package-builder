@@ -20,7 +20,7 @@ case ${distribution} in
         DNF=yum
         DISTRIBUTION_VERSION=${version}
         ;;
-      2022)
+      2023)
         DNF=dnf
         DISTRIBUTION_VERSION=${version}
         ;;

@@ -15,7 +15,7 @@ jobs:
           - AlmaLinux 9 aarch64
           - Amazon Linux 2 aarch64
           # It takes too long time on GitHub Actions.
-          #- Amazon Linux 2022 aarch64
+          #- Amazon Linux 2023 aarch64
         include:
           - label: CentOS 7 aarch64
             rake-job: centos-7
@@ -29,9 +29,9 @@ jobs:
           - label: Amazon Linux 2 aarch64
             rake-job: amazonlinux-2
             test-docker-image: amazonlinux:2
-          #- label: Amazon Linux 2022 aarch64
-          #  rake-job: amazonlinux-2022
-          #  test-docker-image: amazonlinux:2022
+          #- label: Amazon Linux 2023 aarch64
+          #  rake-job: amazonlinux-2023
+          #  test-docker-image: amazonlinux:2023
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
