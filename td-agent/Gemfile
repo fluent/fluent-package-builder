@@ -38,7 +38,7 @@ end
 # plugin gems
 
 gem "elasticsearch", "8.4.0"
-gem "fluent-plugin-elasticsearch", "5.2.4"
+gem "fluent-plugin-elasticsearch", "5.2.5"
 gem "ruby-kafka", "1.5.0"
 gem "digest-murmurhash", "1.1.1"
 gem "fluent-plugin-kafka", "0.18.1"
@@ -55,7 +55,7 @@ gem "aws-sdk-s3", "1.119.1"
 gem "fluent-plugin-s3", "1.7.2"
 gem "httpclient", "2.8.3"
 gem "fluent-diagtool", "1.0.1"
-gem "td", "0.16.9"
+gem "td", "0.17.0"
 gem "td-client", "1.0.8"
 gem "fluent-plugin-td", "1.2.0"
 gem "webhdfs", "0.10.2"
