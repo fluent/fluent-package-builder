@@ -44,9 +44,9 @@ RUN \
     zlib-devel \
     rpmlint \
     cmake3 \
-    ruby3.1 \
-    ruby3.1-rubygems \
-    ruby3.1-rubygem-rake \
+    ruby3.2 \
+    ruby3.2-rubygems \
+    ruby3.2-rubygem-rake \
     && \
   # raise IPv4 priority
   echo "precedence ::ffff:0:0/96 100" > /etc/gai.conf && \

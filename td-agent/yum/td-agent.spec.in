@@ -62,10 +62,10 @@ BuildRequires:	rh-ruby%{scl_ruby_ver}-ruby-devel
 BuildRequires:	rh-ruby%{scl_ruby_ver}-rubygems
 BuildRequires:	rh-ruby%{scl_ruby_ver}-rubygem-bundler
 %else
-%if %{_amazon_ver} >= 2022
-BuildRequires:	ruby3.1
-BuildRequires:	ruby3.1-rubygems
-BuildRequires:	ruby3.1-rubygem-rake
+%if %{_amazon_ver} >= 2023
+BuildRequires:	ruby3.2
+BuildRequires:	ruby3.2-rubygems
+BuildRequires:	ruby3.2-rubygem-rake
 %else
 %if %{_amazon_ver} > 0
 BuildRequires:	ruby
