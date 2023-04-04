@@ -13,7 +13,7 @@ gem "cool.io", "1.7.1",  platforms: no_fat_gem
 gem "sigdump", "0.2.4"
 gem "http_parser.rb", "0.8.0"
 gem "yajl-ruby", "1.4.3"
-gem "serverengine", '2.3.1'
+gem "serverengine", '2.3.2'
 gem "msgpack", "1.6.0"
 gem "oj", "3.14.2"
 gem "tzinfo", "2.0.6"
