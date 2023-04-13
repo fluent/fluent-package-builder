@@ -1124,12 +1124,12 @@ class LinuxPackageTask < PackageTask
       File.join("..", path)
     end
 
-    debian_copyright_file = File.join("#{PACKAGE_NAME}", "debian", "copyright")
+    debian_copyright_file = File.join("debian", "copyright")
     file debian_copyright_file do
       build_copyright_file
     end
 
-    debian_include_binaries_file = File.join("#{PACKAGE_NAME}", "debian", "source", "include-binaries")
+    debian_include_binaries_file = File.join("debian", "source", "include-binaries")
     file debian_include_binaries_file do
       build_include_binaries_file
     end
