@@ -74,7 +74,7 @@ gem "fluent-plugin-opensearch", "1.0.10"
 windows_platforms = [:mingw, :x64_mingw] # :mswin
 gem "ffi", "1.15.5", platforms: windows_platforms
 gem "ffi-win32-extensions", "1.0.4", platforms: windows_platforms
-gem "nokogiri", "1.14.2", platforms: windows_platforms
+gem "nokogiri", "1.14.3", platforms: windows_platforms
 gem "win32-event", "0.6.3", platforms: windows_platforms
 gem "win32-ipc", "0.7.0", platforms: windows_platforms
 gem "win32-service", "2.3.2", platforms: windows_platforms
