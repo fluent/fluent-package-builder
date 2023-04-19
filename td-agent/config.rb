@@ -1,7 +1,7 @@
 PACKAGE_NAME = "td-agent"
 PACKAGE_VERSION = "4.4.2"
 
-FLUENTD_REVISION = 'e89092ce1132a933c12bb23fe8c9323c07ca81f5' # v1.15.3
+FLUENTD_REVISION = '0a6d706a9cee5882d751b2cc6169696709df0134' # v1.16.1
 FLUENTD_LOCAL_GEM_REPO = "file://" + File.expand_path(File.join(__dir__, "local_gem_repo"))
 
 # https://github.com/jemalloc/jemalloc/releases
@@ -13,7 +13,7 @@ JEMALLOC_VERSION = "3.6.0"
 # https://www.openssl.org/source/
 OPENSSL_VERSION = "1.1.1t"
 
-BUNDLER_VERSION= "2.3.18"
+BUNDLER_VERSION= "2.3.26"
 
 # https://www.ruby-lang.org/en/downloads/ (tar.gz)
 BUNDLED_RUBY_VERSION = "2.7.8"
