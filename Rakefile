@@ -16,7 +16,7 @@
 #
 
 PACKAGES = [
-  "td-agent",
+  "fluent-package",
 ]
 
 APT_SOURCE_PACKAGES = [
@@ -24,7 +24,7 @@ APT_SOURCE_PACKAGES = [
 ]
 
 ALL_PACKAGE = [
-  "td-agent",
+  "fluent-package",
   "fluentd-apt-source",
 ]
 
