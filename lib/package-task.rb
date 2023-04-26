@@ -304,7 +304,7 @@ PACKAGEDIR=#{package_dir}
     when "RELEASE"
       @rpm_release
     when "PACKAGE_DIR"
-      File.basename(Dir.pwd)
+      "td-agent"
     else
       nil
     end
