@@ -30,4 +30,4 @@ jobs:
         uses: actions/upload-artifact@master
         with:
           name: packages-macos
-          path: td-agent/dmg/*.dmg
+          path: fluent-package/dmg/*.dmg

@@ -67,7 +67,7 @@ case ${distribution} in
 esac
 
 echo "INSTALL TEST"
-repositories_dir=/fluentd/td-agent/yum/repositories
+repositories_dir=/fluentd/fluent-package/yum/repositories
 ${DNF} install -y \
   ${repositories_dir}/${distribution}/${DISTRIBUTION_VERSION}/x86_64/Packages/*.rpm
 

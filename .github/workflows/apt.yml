@@ -47,7 +47,7 @@ jobs:
           path: td-agent-apt-source/apt/repositories
       - name: Check Package Size
         run: |
-          td-agent/apt/pkgsize-test.sh ${{ matrix.rake-job }} amd64
+          fluent-package/apt/pkgsize-test.sh ${{ matrix.rake-job }} amd64
       - name: Installation Test
         run: |
           mkdir -p .bundle
@@ -56,7 +56,7 @@ jobs:
           --tty \
           --volume ${PWD}:/fluentd:ro \
           ${{ matrix.test-docker-image }} \
-          /fluentd/td-agent/apt/install-test.sh
+          /fluentd/fluent-package/apt/install-test.sh
       - name: Piuparts (Install/Remove/Upgrade) Test
         run: |
           mkdir -p .bundle
@@ -66,7 +66,7 @@ jobs:
           --tty \
           --volume ${PWD}:/fluentd:ro \
           ${{ matrix.test-docker-image }} \
-          /fluentd/td-agent/apt/piuparts-test.sh
+          /fluentd/fluent-package/apt/piuparts-test.sh
       - name: Serverspec Test
         run: |
           mkdir -p .bundle
@@ -75,7 +75,7 @@ jobs:
           --tty \
           --volume ${PWD}:/fluentd:ro \
           ${{ matrix.test-docker-image }} \
-          /fluentd/td-agent/apt/serverspec-test.sh
+          /fluentd/fluent-package/apt/serverspec-test.sh
       - name: Binstubs Test
         run: |
           mkdir -p .bundle
@@ -84,4 +84,4 @@ jobs:
           --tty \
           --volume ${PWD}:/fluentd:ro \
           ${{ matrix.test-docker-image }} \
-          /fluentd/td-agent/apt/binstubs-test.sh
+          /fluentd/fluent-package/apt/binstubs-test.sh

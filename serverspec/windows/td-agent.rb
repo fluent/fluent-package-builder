@@ -5,7 +5,7 @@ require "bundler"
 require "win32/service"
 
 config_path = File.join(File.dirname(File.dirname(File.dirname(__FILE__))),
-                        "td-agent/config.rb")
+                        "fluent-package/config.rb")
 require config_path
 
 describe package("td-agent v#{PACKAGE_VERSION}") do
@@ -14,7 +14,7 @@ end
 
 describe "gem files" do
   lock_path = File.join(File.dirname(File.dirname(File.dirname(__FILE__))),
-                        "td-agent/Gemfile.lock")
+                        "fluent-package/Gemfile.lock")
   gem_path = File.join(File.dirname(lock_path),
                        File.basename(lock_path, ".lock"))
   parser = Bundler::LockfileParser.new(Bundler.read_file(lock_path))

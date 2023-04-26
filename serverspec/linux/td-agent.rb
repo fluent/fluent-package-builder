@@ -18,7 +18,7 @@ end
 
 describe "gem files" do
   lock_path = File.join(File.dirname(File.dirname(File.dirname(__FILE__))),
-                        "td-agent/Gemfile.lock")
+                        "fluent-package/Gemfile.lock")
   gem_path = File.join(File.dirname(lock_path),
                        File.basename(lock_path, ".lock"))
   Bundler::Definition.build(gem_path, lock_path, false).dependencies.each do |spec|
