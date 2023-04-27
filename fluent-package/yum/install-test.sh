@@ -65,7 +65,7 @@ ${DNF} install -y \
 td-agent --version
 
 echo "UNINSTALL TEST"
-${DNF} remove -y td-agent
+${DNF} remove -y fluent-package
 
 conf_path=/etc/td-agent/td-agent.conf
 if [ -e $conf_path ]; then
@@ -81,7 +81,7 @@ if [ $ENABLE_UPGRADE_TEST -eq 1 ]; then
             cat >/etc/yum.repos.d/td.repo <<'EOF';
 [treasuredata]
 name=TreasureData
-baseurl=https://packages.treasuredata.com/3/amazon/2/\$releasever/\$basearch
+baseurl=https://packages.treasuredata.com/4/amazon/\$releasever/\$basearch
 gpgcheck=1
 gpgkey=https://packages.treasuredata.com/GPG-KEY-td-agent
 EOF
@@ -91,7 +91,7 @@ EOF
             cat >/etc/yum.repos.d/td.repo <<'EOF';
 [treasuredata]
 name=TreasureData
-baseurl=https://packages.treasuredata.com/3/redhat/\$releasever/\$basearch
+baseurl=https://packages.treasuredata.com/4/redhat/\$releasever/\$basearch
 gpgcheck=1
 gpgkey=https://packages.treasuredata.com/GPG-KEY-td-agent
 EOF

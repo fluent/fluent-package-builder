@@ -47,7 +47,7 @@ esac
 
 set -e
 if [ $SKIP_SIZE_COMPARISON -eq 1 ]; then
-    RPM=$(find $REPOSITORIES_DIR/${DISTRIBUTION}/${DISTRO_VERSION}/${ARCH}/Packages/td-agent-*.rpm -not -name '*debuginfo*' -not -name '*debugsource*' | sort -n | tail -1)
+    RPM=$(find $REPOSITORIES_DIR/${DISTRIBUTION}/${DISTRO_VERSION}/${ARCH}/Packages/fluent-package-*.rpm -not -name '*debuginfo*' -not -name '*debugsource*' | sort -n | tail -1)
     CURRENT_SIZE=$(stat -c %s $RPM)
     CURRENT_SIZE_MIB=$(echo "scale=2; ${CURRENT_SIZE} / 1024 / 1024" | bc)
     echo "NEW: ${CURRENT_SIZE_MIB} MiB (${CURRENT_SIZE}) : ${RPM}"
@@ -66,8 +66,7 @@ done
 
 PREVIOUS_SIZE=$(stat -c %s $BASE_NAME)
 THRESHOLD_SIZE=`echo "$PREVIOUS_SIZE * 1.3" | bc -l | cut -d. -f1`
-find $REPOSITORIES_DIR/${DISTRIBUTION} -name td-agent-*.rpm
-RPM=$(find $REPOSITORIES_DIR/${DISTRIBUTION}/${DISTRO_VERSION}/${ARCH}/Packages/td-agent-*.rpm -not -name '*debuginfo*' -not -name '*debugsource*' | sort -n | tail -1)
+RPM=$(find $REPOSITORIES_DIR/${DISTRIBUTION}/${DISTRO_VERSION}/${ARCH}/Packages/fluent-package-*.rpm -not -name '*debuginfo*' -not -name '*debugsource*' | sort -n | tail -1)
 CURRENT_SIZE=$(stat -c %s $RPM)
 
 PREVIOUS_SIZE_MIB=$(echo "scale=2; ${PREVIOUS_SIZE} / 1024 / 1024" | bc)

@@ -3,7 +3,7 @@ require "rdkafka"
 require "json"
 require "bundler"
 
-describe package("td-agent") do
+describe package("fluent-package") do
   it { should be_installed }
 end
 

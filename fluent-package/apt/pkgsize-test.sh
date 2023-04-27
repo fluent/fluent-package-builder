@@ -59,8 +59,7 @@ esac
 set -e
 PREVIOUS_SIZE=$(stat -c %s $BASE_NAME)
 THRESHOLD_SIZE=`echo "$PREVIOUS_SIZE * 1.2" | bc -l | cut -d. -f1`
-find $REPOSITORIES_DIR/${DISTRIBUTION} -name td-agent_*${ARCH}.deb
-DEB=$(find $REPOSITORIES_DIR/${DISTRIBUTION}/pool/${CODE_NAME}/${CHANNEL}/t/td-agent/td-agent_*${ARCH}.deb | sort -n | tail -1)
+DEB=$(find $REPOSITORIES_DIR/${DISTRIBUTION}/pool/${CODE_NAME}/${CHANNEL}/f/fluent-package/fluent-package_*${ARCH}.deb | sort -n | tail -1)
 CURRENT_SIZE=$(stat -c %s $DEB)
 
 PREVIOUS_SIZE_MIB=$(echo "scale=2; ${PREVIOUS_SIZE} / 1024 / 1024" | bc)

@@ -12,7 +12,7 @@ apt install -V -y \
 
 td-agent --version
 
-apt remove -y td-agent
+apt remove -y fluent-package
 
 conf_path=/etc/td-agent/td-agent.conf
 if [ ! -f $conf_path ]; then
@@ -26,7 +26,7 @@ fi
 
 echo "fluentd-apt-source test"
 apt_source_repositories_dir=/fluentd/fluentd-apt-source/apt/repositories
-apt purge -y td-agent
+apt purge -y fluent-package
 
 conf_path=/etc/td-agent/td-agent.conf
 if [ -e $conf_path ]; then

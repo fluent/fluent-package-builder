@@ -1,6 +1,6 @@
 $ErrorActionPreference = 'Stop'
 
-$msi = ((Get-Item "C:\\fluentd\\fluent-package\\msi\\repositories\\td-agent-*.msi") | Sort-Object -Descending { $_.LastWriteTime } | Select-Object -First 1).FullName
+$msi = ((Get-Item "C:\\fluentd\\fluent-package\\msi\\repositories\\fluent-package-*.msi") | Sort-Object -Descending { $_.LastWriteTime } | Select-Object -First 1).FullName
 Write-Host "Installing ${msi} ..."
 
 Start-Process msiexec -ArgumentList "/i", $msi, "/quiet" -Wait -NoNewWindow
@@ -9,8 +9,8 @@ $ENV:PATH="C:\\opt\\td-agent\\bin;" + $ENV:PATH
 
 td-agent --version
 
-$msi -Match "td-agent-([0-9\.]+)-.+\.msi"
-$name = "Td-agent v" + $matches[1]
+$msi -Match "fluent-package-([0-9\.]+)-.+\.msi"
+$name = "Fluent-package v" + $matches[1]
 Write-Host "Uninstalling ...${name}"
 Get-CimInstance -Class Win32_Product -Filter "Name='${name}'" | Invoke-CimMethod -MethodName Uninstall
 $exitcode = $LASTEXITCODE
