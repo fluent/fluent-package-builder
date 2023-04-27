@@ -7,25 +7,25 @@ set -e
 prevver="$2"
 
 add_system_user() {
-    if ! getent passwd <%= project_name %> >/dev/null; then
-        adduser --group --system --home /var/lib/<%= project_name %> <%= project_name %>
+    if ! getent passwd <%= package_dir %> >/dev/null; then
+        adduser --group --system --home /var/lib/<%= package_dir %> <%= package_dir %>
     fi
 }
 
 add_directories() {
-    mkdir -p /var/run/<%= project_name %>
-    mkdir -p /etc/<%= project_name %>
-    mkdir -p /etc/<%= project_name %>/plugin
-    mkdir -p /var/log/<%= project_name %>
+    mkdir -p /var/run/<%= package_dir %>
+    mkdir -p /etc/<%= package_dir %>
+    mkdir -p /etc/<%= package_dir %>/plugin
+    mkdir -p /var/log/<%= package_dir %>
 }
 
 fixperms() {
-    dpkg-statoverride --list /var/run/<%= project_name %> >/dev/null || \
-        dpkg-statoverride --update --add <%= project_name %> <%= project_name %> 0755 /var/run/<%= project_name %>
-    dpkg-statoverride --list /etc/<%= project_name %> >/dev/null || \
-        dpkg-statoverride --update --add <%= project_name %> <%= project_name %> 0755 /etc/<%= project_name %>
-    dpkg-statoverride --list /var/log/<%= project_name %> >/dev/null || \
-        dpkg-statoverride --update --add <%= project_name %> <%= project_name %> 0755 /var/log/<%= project_name %>
+    dpkg-statoverride --list /var/run/<%= package_dir %> >/dev/null || \
+        dpkg-statoverride --update --add <%= package_dir %> <%= package_dir %> 0755 /var/run/<%= package_dir %>
+    dpkg-statoverride --list /etc/<%= package_dir %> >/dev/null || \
+        dpkg-statoverride --update --add <%= package_dir %> <%= package_dir %> 0755 /etc/<%= package_dir %>
+    dpkg-statoverride --list /var/log/<%= package_dir %> >/dev/null || \
+        dpkg-statoverride --update --add <%= package_dir %> <%= package_dir %> 0755 /var/log/<%= package_dir %>
 }
 
 case "$1" in

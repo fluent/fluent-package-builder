@@ -5,7 +5,7 @@ Files: *
 Copyright: 2019-2020 Treasure Data, Inc.
 License: Apache-2.0
 
-Files: td-agent/downloads/ruby-<%= bundled_ruby_version %>.tar.gz
+Files: fluent-package/downloads/ruby-<%= bundled_ruby_version %>.tar.gz
 Copyright: Yukihiro Matsumoto <matz@netlab.jp> and others
 License: BSD-2-Clause or Ruby
 

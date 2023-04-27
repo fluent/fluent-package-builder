@@ -1,13 +1,13 @@
-/var/log/<%= project_name %>/<%= project_name %>.log {
+/var/log/<%= package_dir %>/<%= package_dir %>.log {
   daily
   rotate 30
   compress
   delaycompress
   notifempty
-  create 640 <%= project_name %> <%= project_name %>
+  create 640 <%= package_dir %> <%= package_dir %>
   sharedscripts
   postrotate
-    pid=/var/run/<%= project_name %>/<%= project_name %>.pid
+    pid=/var/run/<%= package_dir %>/<%= package_dir %>.pid
     if [ -s "$pid" ]
     then
       kill -USR1 "$(cat $pid)"

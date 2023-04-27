@@ -1,5 +1,8 @@
-PACKAGE_NAME = "td-agent"
+PACKAGE_NAME = "fluent-package"
 PACKAGE_VERSION = "5.0.0"
+
+# Keep internal path (/opt/td-agent) for package name migration
+PACKAGE_DIR = "td-agent"
 
 FLUENTD_REVISION = '0a6d706a9cee5882d751b2cc6169696709df0134' # v1.16.1
 FLUENTD_LOCAL_GEM_REPO = "file://" + File.expand_path(File.join(__dir__, "local_gem_repo"))
