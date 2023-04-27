@@ -1025,8 +1025,7 @@ class BuildTask
   def install_gemfiles
     ensure_directory(staging_sharedir) do
       ["Gemfile", "Gemfile.lock", "config.rb"].each do |file|
-        source_dir = File.join(__dir__, "..")
-        src = File.join(source_dir, "#{PACKAGE_NAME}/#{file}")
+        src = File.join(__dir__, file)
         dest = File.join(staging_sharedir, file)
         cp(src, dest)
       end
@@ -1250,7 +1249,7 @@ EOS
         # build debian/copyright. Probably it should be built in the build container.
         cp_r(path, dest_dir) unless path.end_with?(".gem")
       end
-      cp_r("#{PACKAGE_NAME}/debian/copyright", "#{@archive_base_name}/#{PACKAGE_NAME}/debian/copyright")
+      cp(File.join(__dir__, "debian", "copyright"), File.join(@archive_base_name, File.basename(__dir__), "debian", "copyright"))
       tar_options = []
       tar_options << "--force-local" if windows?
       sh(*tar_command, "cvfz", @full_archive_name, @archive_base_name, *tar_options)
@@ -1606,7 +1605,7 @@ SET ARCH=#{arch}
     ]
     docker_context = "msi"
     build_command_line << docker_context
-    run_command_line.concat([docker_tag, "c:\\fluent-package-builder\\#{PACKAGE_NAME}\\msi\\build.bat"])
+    run_command_line.concat([docker_tag, "c:\\fluent-package-builder\\#{File.basename(__dir__)}\\msi\\build.bat"])
 
     write_env
 

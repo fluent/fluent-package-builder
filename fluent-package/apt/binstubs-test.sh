@@ -11,7 +11,7 @@ apt install -V -y \
   ${repositories_dir}/${distribution}/pool/${code_name}/${channel}/*/*/*_${architecture}.deb
 
 echo "BINSTUBS TEST"
-/opt/td-agent/bin/ruby /fluentd/td-agent/binstubs-test.rb
+/opt/td-agent/bin/ruby /fluentd/fluent-package/binstubs-test.rb
 if [ $? -eq 0 ]; then
     echo "Checking existence of binstubs: OK"
 else

@@ -140,7 +140,7 @@ rake build:rpm_old_config TD_AGENT_STAGING_PATH=%{buildroot} NO_VAR_RUN=0
 rake build:all TD_AGENT_STAGING_PATH=%{buildroot} REBUILD_GEMS="nokogiri" PATH="$HOME/.cargo/bin:$PATH"
 %endif
 mkdir -p %{buildroot}%{_mandir}/man1
-cp @PACKAGE@/debian/*.1 %{buildroot}%{_mandir}/man1/
+cp @PACKAGE_DIR@/debian/*.1 %{buildroot}%{_mandir}/man1/
 for man in `find %{buildroot} -type f -wholename '*/man/man[1-9]/*.[1-9]'`; do
     gzip ${man}
 done

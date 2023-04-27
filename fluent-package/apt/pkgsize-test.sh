@@ -14,7 +14,7 @@ DISTRIBUTION=$(echo $1 | cut -d- -f1)
 CODE_NAME=$(echo $1 | cut -d- -f2)
 ARCH=$2
 
-REPOSITORIES_DIR=td-agent/apt/repositories
+REPOSITORIES_DIR=fluent-package/apt/repositories
 
 git fetch --unshallow
 git fetch --all

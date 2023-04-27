@@ -11,7 +11,7 @@ DISTRIBUTION=$(echo $1 | cut -d- -f1)
 DISTRO_VERSION=$(echo $1 | cut -d- -f2,3)
 ARCH=$2
 
-REPOSITORIES_DIR=td-agent/yum/repositories
+REPOSITORIES_DIR=fluent-package/yum/repositories
 
 git fetch --unshallow
 git fetch --all

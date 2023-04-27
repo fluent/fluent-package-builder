@@ -43,7 +43,7 @@ jobs:
           path: td-agent/apt/repositories
       - name: Check Package Size
         run: |
-          td-agent/apt/pkgsize-test.sh ${{ matrix.rake-job }} arm64
+          fluent-package/apt/pkgsize-test.sh ${{ matrix.rake-job }} arm64
       - name: Binstubs Test
         run: |
           mkdir -p .bundle
@@ -52,4 +52,4 @@ jobs:
           --tty \
           --volume ${PWD}:/fluentd:ro \
           ${{ matrix.test-docker-image }} \
-          /fluentd/td-agent/apt/binstubs-test.sh
+          /fluentd/fluent-package/apt/binstubs-test.sh

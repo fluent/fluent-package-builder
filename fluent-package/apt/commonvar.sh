@@ -1,6 +1,6 @@
 code_name=$(lsb_release --codename --short)
 architecture=$(dpkg --print-architecture)
-repositories_dir=/fluentd/td-agent/apt/repositories
+repositories_dir=/fluentd/fluent-package/apt/repositories
 java_jdk=openjdk-11-jre
 case ${code_name} in
   xenial)

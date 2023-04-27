@@ -24,11 +24,11 @@ jobs:
         uses: actions/upload-artifact@master
         with:
           name: packages-windows-x86_64
-          path: td-agent/msi/repositories
+          path: fluent-package/msi/repositories
       - name: Check Package Size
         shell: pwsh
         run: |
-          powershell -ExecutionPolicy Bypass -Command ".\td-agent\msi\pkgsize-test.ps1"
+          powershell -ExecutionPolicy Bypass -Command ".\fluent-package\msi\pkgsize-test.ps1"
       - name: Installation Test
         shell: pwsh
         run: |
@@ -38,7 +38,7 @@ jobs:
           --tty `
           --volume ${PWD}:C:\fluentd:ro `
           mcr.microsoft.com/dotnet/framework/runtime:3.5 `
-          powershell -ExecutionPolicy Bypass -Command "C:\fluentd\td-agent\msi\install-test.ps1"
+          powershell -ExecutionPolicy Bypass -Command "C:\fluentd\fluent-package\msi\install-test.ps1"
       - name: Serverspec Test
         shell: pwsh
         run: |
@@ -47,4 +47,4 @@ jobs:
           --tty `
           --volume ${PWD}:C:\fluentd:ro `
           mcr.microsoft.com/dotnet/framework/runtime:3.5 `
-          powershell -ExecutionPolicy Bypass -Command "C:\fluentd\td-agent\msi\serverspec-test.ps1"
+          powershell -ExecutionPolicy Bypass -Command "C:\fluentd\fluent-package\msi\serverspec-test.ps1"

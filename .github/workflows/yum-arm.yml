@@ -42,16 +42,16 @@ jobs:
           sudo gem uninstall fileutils
       - name: Build rpm with Docker
         run: |
-          cp /usr/bin/qemu-aarch64-static td-agent/yum/${{ matrix.rake-job }}/
+          cp /usr/bin/qemu-aarch64-static fluent-package/yum/${{ matrix.rake-job }}/
           rake yum:build YUM_TARGETS=${{ matrix.rake-job }}-aarch64
       - name: Upload td-agent rpm
         uses: actions/upload-artifact@master
         with:
           name: packages-${{ matrix.rake-job }}-aarch64
-          path: td-agent/yum/repositories
+          path: fluent-package/yum/repositories
       - name: Check Package Size
         run: |
-          td-agent/yum/pkgsize-test.sh ${{ matrix.rake-job }} aarch64
+          fluent-package/yum/pkgsize-test.sh ${{ matrix.rake-job }} aarch64
       - name: Binstubs Test
         run: |
           mkdir -p .bundle
@@ -61,4 +61,4 @@ jobs:
           --volume ${PWD}:/fluentd:ro \
           --env CENTOS_STREAM=false \
           arm64v8/${{ matrix.test-docker-image }} \
-          /fluentd/td-agent/yum/binstubs-test.sh
+          /fluentd/fluent-package/yum/binstubs-test.sh

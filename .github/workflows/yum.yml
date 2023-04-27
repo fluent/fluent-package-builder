@@ -52,10 +52,10 @@ jobs:
         uses: actions/upload-artifact@master
         with:
           name: packages-${{ matrix.rake-job }}
-          path: td-agent/yum/repositories
+          path: fluent-package/yum/repositories
       - name: Check Package Size
         run: |
-          td-agent/yum/pkgsize-test.sh ${{ matrix.rake-job }} x86_64
+          fluent-package/yum/pkgsize-test.sh ${{ matrix.rake-job }} x86_64
       - name: Installation Test
         run: |
           mkdir -p .bundle
@@ -65,7 +65,7 @@ jobs:
           --volume ${PWD}:/fluentd:ro \
           --env CENTOS_STREAM=${{ matrix.centos-stream }} \
           ${{ matrix.test-docker-image }} \
-          /fluentd/td-agent/yum/install-test.sh
+          /fluentd/fluent-package/yum/install-test.sh
       - name: Serverspec Test
         run: |
           mkdir -p .bundle
@@ -75,7 +75,7 @@ jobs:
           --volume ${PWD}:/fluentd:ro \
           --env CENTOS_STREAM=${{ matrix.centos-stream }} \
           ${{ matrix.test-docker-image }} \
-          /fluentd/td-agent/yum/serverspec-test.sh
+          /fluentd/fluent-package/yum/serverspec-test.sh
       - name: Binstubs Test
         run: |
           mkdir -p .bundle
@@ -85,4 +85,4 @@ jobs:
           --volume ${PWD}:/fluentd:ro \
           --env CENTOS_STREAM=${{ matrix.centos-stream }} \
           ${{ matrix.test-docker-image }} \
-          /fluentd/td-agent/yum/binstubs-test.sh
+          /fluentd/fluent-package/yum/binstubs-test.sh

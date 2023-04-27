@@ -1,6 +1,6 @@
 $ErrorActionPreference = 'Stop'
 
-$msi = ((Get-Item "C:\\fluentd\\td-agent\\msi\\repositories\\td-agent-*.msi") | Sort-Object -Descending { $_.LastWriteTime } | Select-Object -First 1).FullName
+$msi = ((Get-Item "C:\\fluentd\\fluent-package\\msi\\repositories\\td-agent-*.msi") | Sort-Object -Descending { $_.LastWriteTime } | Select-Object -First 1).FullName
 Write-Host "Installing ${msi} ..."
 
 Start-Process msiexec -ArgumentList "/i", $msi, "/quiet" -Wait -NoNewWindow
