@@ -5,12 +5,12 @@
   <key>KeepAlive</key>
   <true/>
   <key>Label</key>
-  <string><%= project_name %></string>
+  <string><%= package_dir %></string>
   <key>ProgramArguments</key>
   <array>
-    <string>/opt/<%= project_name %>/usr/sbin/<%= project_name %></string>
+    <string>/opt/<%= package_dir %>/usr/sbin/<%= package_dir %></string>
     <string>--log</string>
-    <string>/var/log/<%= project_name %>/<%= project_name %>.log</string>
+    <string>/var/log/<%= package_dir %>/<%= package_dir %>.log</string>
     <string>--use-v1-config</string>
   </array>
   <key>RunAtLoad</key>
