@@ -16,7 +16,9 @@ ARCH=$2
 
 REPOSITORIES_DIR=fluent-package/apt/repositories
 
-git fetch --unshallow
+if [ -f .git/shallow ]; then
+    git fetch --unshallow
+fi
 git fetch --all
 PREVIOUS_VERSIONS=()
 for v in `git tag | grep "^v" | sort -r`; do
