@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <WixLocalization Culture="en-us" xmlns="http://schemas.microsoft.com/wix/2006/localization">
   <String Id="LANG">1033</String>
-  <String Id="ProductName">Td-agent</String>
+  <String Id="ProductName">Fluent-package</String>
   <String Id="ManufacturerName">Treasure Data, Inc</String>
   <String Id="WelcomeDlgTitle">{\WixUI_Font_Bigger}Welcome to the [ProductName] Setup Wizard</String>
 
