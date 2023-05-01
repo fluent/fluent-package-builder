@@ -1119,6 +1119,17 @@ class LinuxPackageTask < PackageTask
 
   private
 
+  def yum_expand_variable(key)
+    case key
+    when "PACKAGE_DIR"
+      PACKAGE_DIR
+    when "SERVICE_NAME"
+      SERVICE_NAME
+    else
+      super(key)
+    end
+  end
+
   def define_archive_task
     repo_files = `git ls-files --full-name`.split("\n").collect do |path|
       File.join("..", path)
