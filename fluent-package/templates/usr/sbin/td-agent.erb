@@ -3,7 +3,7 @@ ENV["GEM_HOME"]="<%= gem_install_path %>/"
 ENV["GEM_PATH"]="<%= gem_install_path %>/"
 ENV["FLUENT_CONF"]="/etc/<%= package_dir %>/<%= package_dir %>.conf"
 ENV["FLUENT_PLUGIN"]="/etc/<%= package_dir %>/plugin"
-ENV["FLUENT_SOCKET"]="/var/run/<%= package_dir %>/<%= package_dir %>.sock"
+ENV["FLUENT_SOCKET"]="/var/run/<%= package_dir %>/<%= service_name %>.sock"
 if ARGV.include?("--version")
   require "<%= install_path %>/share/config"
   Dir.glob("<%= install_path %>/lib/ruby/**/gems/**/fluent/version.rb").each do |v|

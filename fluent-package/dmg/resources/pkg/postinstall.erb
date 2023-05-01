@@ -1,9 +1,9 @@
 #!/bin/bash
 #
-# Create directories for <%= package_dir %>
+# Create directories for <%= service_name %>
 #
 
-# Create <%= package_dir %> related directories and files
+# Create <%= service_name %> related directories and files
 
 if [ ! -e "/var/log/<%= package_dir %>/" ]; then
   mkdir -p /var/log/<%= package_dir %>/

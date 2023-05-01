@@ -120,7 +120,8 @@ def template_params(params = nil)
     version: PACKAGE_VERSION,
     install_message: nil,
     pkg_type: nil,
-    package_dir: PACKAGE_DIR
+    package_dir: PACKAGE_DIR,
+    service_name: SERVICE_NAME
   }
 
   unless windows?
@@ -475,17 +476,17 @@ class BuildTask
       desc "Create td-agent configuration files from template"
       task :td_agent_config do
         configs = [
-          "etc/#{PACKAGE_DIR}/#{PACKAGE_DIR}.conf"
+          "etc/#{PACKAGE_DIR}/#{SERVICE_NAME}.conf"
         ]
         configs.concat([
           "etc/logrotate.d/#{PACKAGE_DIR}",
-          "opt/#{PACKAGE_DIR}/share/#{PACKAGE_DIR}-ruby.conf",
-          "opt/#{PACKAGE_DIR}/share/#{PACKAGE_DIR}.conf.tmpl"
+          "opt/#{PACKAGE_DIR}/share/#{SERVICE_NAME}-ruby.conf",
+          "opt/#{PACKAGE_DIR}/share/#{SERVICE_NAME}.conf.tmpl"
         ]) unless windows? || macos?
         configs.each do |config|
           src = template_path(config)
-          if config == "etc/#{PACKAGE_DIR}/#{PACKAGE_DIR}.conf"
-            src = template_path("opt/#{PACKAGE_DIR}/share/#{PACKAGE_DIR}.conf.tmpl")
+          if config == "etc/#{PACKAGE_DIR}/#{SERVICE_NAME}.conf"
+            src = template_path("opt/#{PACKAGE_DIR}/share/#{SERVICE_NAME}.conf.tmpl")
           end
           dest = File.join(STAGING_DIR, config)
           render_template(dest, src, template_params)
@@ -495,7 +496,7 @@ class BuildTask
       desc "Create systemd-tmpfiles configuration files from template"
       task :systemd_tmpfiles_config do
         configs = [
-          "usr/lib/tmpfiles.d/#{PACKAGE_DIR}.conf",
+          "usr/lib/tmpfiles.d/#{SERVICE_NAME}.conf",
         ]
         configs.each do |config|
           src = template_path(config)
@@ -508,8 +509,8 @@ class BuildTask
       task :bin_scripts do
         scripts = [
           "usr/bin/td",
-          "usr/sbin/#{PACKAGE_DIR}",
-          "usr/sbin/#{PACKAGE_DIR}-gem",
+          "usr/sbin/#{SERVICE_NAME}",
+          "usr/sbin/#{SERVICE_NAME}-gem",
         ]
         scripts.each do |script|
           src = template_path("#{script}.erb")
@@ -537,11 +538,11 @@ class BuildTask
       desc "Install additional .bat files for Windows"
       task :win_batch_files do
         ensure_directory(staging_bindir)
-        cp("msi/assets/#{PACKAGE_DIR}-prompt.bat", td_agent_staging_dir)
-        cp("msi/assets/#{PACKAGE_DIR}-post-install.bat", staging_bindir)
-        cp("msi/assets/#{PACKAGE_DIR}.bat", staging_bindir)
-        cp("msi/assets/#{PACKAGE_DIR}-gem.bat", staging_bindir)
-        cp("msi/assets/#{PACKAGE_DIR}-version.rb", staging_bindir)
+        cp("msi/assets/#{SERVICE_NAME}-prompt.bat", td_agent_staging_dir)
+        cp("msi/assets/#{SERVICE_NAME}-post-install.bat", staging_bindir)
+        cp("msi/assets/#{SERVICE_NAME}.bat", staging_bindir)
+        cp("msi/assets/#{SERVICE_NAME}-gem.bat", staging_bindir)
+        cp("msi/assets/#{SERVICE_NAME}-version.rb", staging_bindir)
       end
 
       desc "Create systemd unit file for Red Hat like systems"
@@ -611,7 +612,7 @@ class BuildTask
   private
 
   def render_systemd_unit_file(dest_path, config)
-    template_file_path = template_path('etc', 'systemd', "#{PACKAGE_DIR}.service.erb")
+    template_file_path = template_path('etc', 'systemd', "#{SERVICE_NAME}.service.erb")
     render_template(dest_path, template_file_path, config)
   end
 
@@ -622,12 +623,12 @@ class BuildTask
       else
         File.join(STAGING_DIR, 'etc', 'sysconfig', PACKAGE_DIR)
       end
-    template_file_path = template_path('etc', 'systemd', "#{PACKAGE_DIR}.erb")
+    template_file_path = template_path('etc', 'systemd', "#{SERVICE_NAME}.erb")
     render_template(dest_path, template_file_path, config)
   end
 
   def render_sysv_init_file(dest_path, config)
-    template_file_path = template_path('etc', 'init.d', "#{PACKAGE_DIR}.erb")
+    template_file_path = template_path('etc', 'init.d', "#{SERVICE_NAME}.erb")
     render_template(dest_path, template_file_path, config, {mode: 0755})
   end
 
@@ -1018,7 +1019,7 @@ class BuildTask
   def install_td_agent_license
     ensure_directory(licenses_staging_dir)
     src = File.join(__dir__, "..", "LICENSE")
-    dest = File.join(licenses_staging_dir, "LICENSE-#{PACKAGE_DIR}.txt")
+    dest = File.join(licenses_staging_dir, "LICENSE-#{SERVICE_NAME}.txt")
     cp(src, dest)
   end
 

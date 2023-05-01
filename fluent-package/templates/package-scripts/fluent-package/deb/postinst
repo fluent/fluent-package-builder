@@ -7,8 +7,8 @@ set -e
 prevver="$2"
 
 add_system_user() {
-    if ! getent passwd <%= package_dir %> >/dev/null; then
-        adduser --group --system --home /var/lib/<%= package_dir %> <%= package_dir %>
+    if ! getent passwd <%= service_name %> >/dev/null; then
+        adduser --group --system --home /var/lib/<%= package_dir %> <%= service_name %>
     fi
 }
 
@@ -21,11 +21,11 @@ add_directories() {
 
 fixperms() {
     dpkg-statoverride --list /var/run/<%= package_dir %> >/dev/null || \
-        dpkg-statoverride --update --add <%= package_dir %> <%= package_dir %> 0755 /var/run/<%= package_dir %>
+        dpkg-statoverride --update --add <%= service_name %> <%= service_name %> 0755 /var/run/<%= package_dir %>
     dpkg-statoverride --list /etc/<%= package_dir %> >/dev/null || \
-        dpkg-statoverride --update --add <%= package_dir %> <%= package_dir %> 0755 /etc/<%= package_dir %>
+        dpkg-statoverride --update --add <%= service_name %> <%= service_name %> 0755 /etc/<%= package_dir %>
     dpkg-statoverride --list /var/log/<%= package_dir %> >/dev/null || \
-        dpkg-statoverride --update --add <%= package_dir %> <%= package_dir %> 0755 /var/log/<%= package_dir %>
+        dpkg-statoverride --update --add <%= service_name %> <%= service_name %> 0755 /var/log/<%= package_dir %>
 }
 
 case "$1" in

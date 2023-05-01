@@ -157,21 +157,21 @@ mkdir -p %{buildroot}%{_sysconfdir}/@PACKAGE_DIR@/plugin
 mkdir -p %{buildroot}/tmp/@PACKAGE_DIR@
 
 %pre
-if ! getent group @PACKAGE_DIR@ >/dev/null; then
-    /usr/sbin/groupadd -r @PACKAGE_DIR@
+if ! getent group @SERVICE_NAME@ >/dev/null; then
+    /usr/sbin/groupadd -r @SERVICE_NAME@
 fi
-if ! getent passwd @PACKAGE_DIR@ >/dev/null; then
+if ! getent passwd @SERVICE_NAME@ >/dev/null; then
 %if %{use_suse}
-    /usr/sbin/useradd -r -g @PACKAGE_DIR@ -d %{_localstatedir}/lib/@PACKAGE_DIR@ -s /sbin/nologin -c '@PACKAGE_DIR@' @PACKAGE_DIR@
+    /usr/sbin/useradd -r -g @SERVICE_NAME@ -d %{_localstatedir}/lib/@PACKAGE_DIR@ -s /sbin/nologin -c '@SERVICE_NAME@' @SERVICE_NAME@
 %else
-    /usr/sbin/adduser -r -g @PACKAGE_DIR@ -d %{_localstatedir}/lib/@PACKAGE_DIR@ -s /sbin/nologin -c '@PACKAGE_DIR@' @PACKAGE_DIR@
+    /usr/sbin/adduser -r -g @SERVICE_NAME@ -d %{_localstatedir}/lib/@PACKAGE_DIR@ -s /sbin/nologin -c '@SERVICE_NAME@' @SERVICE_NAME@
 %endif
 fi
 
 %preun
 if [ $1 -eq 0 ]; then
-  %{control_service stop @PACKAGE_DIR@}
-  %{disable_service disable @PACKAGE_DIR@}
+  %{control_service stop @SERVICE_NAME@}
+  %{disable_service disable @SERVICE_NAME@}
   %if ! %{?use_systemd}
     for keep in /tmp/@PACKAGE_DIR@/.keep /var/run/@PACKAGE_DIR@/.keep; do
       if [ -p $keep ]; then
@@ -183,10 +183,10 @@ fi
 
 %post
 if [ $1 -eq 1 ]; then
-  %{enable_service enable @PACKAGE_DIR@}
+  %{enable_service enable @SERVICE_NAME@}
 fi
 if [ $1 -eq 2 ]; then
-  %{control_service condrestart @PACKAGE_DIR@}
+  %{control_service condrestart @SERVICE_NAME@}
 fi
 %if ! %{?use_systemd}
   if [ $1 -eq 1 -o $1 -eq 2 ]; then
@@ -230,8 +230,8 @@ fi
 %defattr(-,root,root,-)
 /opt/*
 %if %{use_systemd}
-%{_unitdir}/@PACKAGE_DIR@.service
-%{_tmpfilesdir}/@PACKAGE_DIR@.conf
+%{_unitdir}/@SERVICE_NAME@.service
+%{_tmpfilesdir}/@SERVICE_NAME@.conf
 %else
 %{_sysconfdir}/init.d/@PACKAGE_DIR@
 %endif
@@ -239,8 +239,8 @@ fi
 %{_sbindir}/td-agent
 %{_sbindir}/td-agent-gem
 %{_mandir}/man1/td*
-%config(noreplace) %{_sysconfdir}/sysconfig/@PACKAGE_DIR@
-%config(noreplace) %{_sysconfdir}/@PACKAGE_DIR@/@PACKAGE_DIR@.conf
+%config(noreplace) %{_sysconfdir}/sysconfig/@SERVICE_NAME@
+%config(noreplace) %{_sysconfdir}/@PACKAGE_DIR@/@SERVICE_NAME@.conf
 %config(noreplace) %{_sysconfdir}/logrotate.d/@PACKAGE_DIR@
 %attr(0755,td-agent,td-agent) %dir %{_localstatedir}/log/@PACKAGE_DIR@
 %attr(0755,td-agent,td-agent) %dir %{_localstatedir}/log/@PACKAGE_DIR@/buffer
