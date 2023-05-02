@@ -56,6 +56,10 @@ License:	ASL 2.0
 URL:		https://www.treasuredata.com/
 Source0:	@PACKAGE@-@VERSION@.tar.gz
 
+Obsoletes: td-agent < 5.0.0
+Provides: td-agent
+Requires: @PACKAGE@ >= 5.0.0
+
 BuildRequires:	libffi-devel
 %if %{use_scl_ruby}
 BuildRequires:	rh-ruby%{scl_ruby_ver}-ruby-devel
@@ -140,36 +144,36 @@ rake build:rpm_old_config TD_AGENT_STAGING_PATH=%{buildroot} NO_VAR_RUN=0
 rake build:all TD_AGENT_STAGING_PATH=%{buildroot} REBUILD_GEMS="nokogiri" PATH="$HOME/.cargo/bin:$PATH"
 %endif
 mkdir -p %{buildroot}%{_mandir}/man1
-cp @PACKAGE_DIR@/debian/*.1 %{buildroot}%{_mandir}/man1/
+cp @PACKAGE@/debian/*.1 %{buildroot}%{_mandir}/man1/
 for man in `find %{buildroot} -type f -wholename '*/man/man[1-9]/*.[1-9]'`; do
     gzip ${man}
 done
 
 cd -
-mkdir -p %{buildroot}%{_localstatedir}/run/@PACKAGE@
-mkdir -p %{buildroot}%{_localstatedir}/log/@PACKAGE@
-mkdir -p %{buildroot}%{_localstatedir}/log/@PACKAGE@/buffer
-mkdir -p %{buildroot}%{_sysconfdir}/@PACKAGE@/plugin
-mkdir -p %{buildroot}/tmp/@PACKAGE@
+mkdir -p %{buildroot}%{_localstatedir}/run/@PACKAGE_DIR@
+mkdir -p %{buildroot}%{_localstatedir}/log/@PACKAGE_DIR@
+mkdir -p %{buildroot}%{_localstatedir}/log/@PACKAGE_DIR@/buffer
+mkdir -p %{buildroot}%{_sysconfdir}/@PACKAGE_DIR@/plugin
+mkdir -p %{buildroot}/tmp/@PACKAGE_DIR@
 
 %pre
-if ! getent group @PACKAGE@ >/dev/null; then
-    /usr/sbin/groupadd -r @PACKAGE@
+if ! getent group @SERVICE_NAME@ >/dev/null; then
+    /usr/sbin/groupadd -r @SERVICE_NAME@
 fi
-if ! getent passwd @PACKAGE@ >/dev/null; then
+if ! getent passwd @SERVICE_NAME@ >/dev/null; then
 %if %{use_suse}
-    /usr/sbin/useradd -r -g @PACKAGE@ -d %{_localstatedir}/lib/@PACKAGE@ -s /sbin/nologin -c '@PACKAGE@' @PACKAGE@
+    /usr/sbin/useradd -r -g @SERVICE_NAME@ -d %{_localstatedir}/lib/@PACKAGE_DIR@ -s /sbin/nologin -c '@SERVICE_NAME@' @SERVICE_NAME@
 %else
-    /usr/sbin/adduser -r -g @PACKAGE@ -d %{_localstatedir}/lib/@PACKAGE@ -s /sbin/nologin -c '@PACKAGE@' @PACKAGE@
+    /usr/sbin/adduser -r -g @SERVICE_NAME@ -d %{_localstatedir}/lib/@PACKAGE_DIR@ -s /sbin/nologin -c '@SERVICE_NAME@' @SERVICE_NAME@
 %endif
 fi
 
 %preun
 if [ $1 -eq 0 ]; then
-  %{control_service stop @PACKAGE@}
-  %{disable_service disable @PACKAGE@}
+  %{control_service stop @SERVICE_NAME@}
+  %{disable_service disable @SERVICE_NAME@}
   %if ! %{?use_systemd}
-    for keep in /tmp/@PACKAGE@/.keep /var/run/@PACKAGE@/.keep; do
+    for keep in /tmp/@PACKAGE_DIR@/.keep /var/run/@PACKAGE_DIR@/.keep; do
       if [ -p $keep ]; then
           rm -f $keep
       fi
@@ -179,17 +183,17 @@ fi
 
 %post
 if [ $1 -eq 1 ]; then
-  %{enable_service enable @PACKAGE@}
+  %{enable_service enable @SERVICE_NAME@}
 fi
 if [ $1 -eq 2 ]; then
-  %{control_service condrestart @PACKAGE@}
+  %{control_service condrestart @SERVICE_NAME@}
 fi
 %if ! %{?use_systemd}
   if [ $1 -eq 1 -o $1 -eq 2 ]; then
     # On CentOS 6, tmpwatch cleanups under /tmp in 10d without
     # create, access, modify operations. (See /etc/cron.daily/tmpwatch)
     # To keep it, create special file under /tmp/td-agent.
-    for keep in /tmp/@PACKAGE@/.keep /var/run/@PACKAGE@/.keep; do
+    for keep in /tmp/@PACKAGE_DIR@/.keep /var/run/@PACKAGE_DIR@/.keep; do
       if [ ! -p $keep ]; then
         mkfifo $keep
       fi
@@ -226,24 +230,24 @@ fi
 %defattr(-,root,root,-)
 /opt/*
 %if %{use_systemd}
-%{_unitdir}/@PACKAGE@.service
-%{_tmpfilesdir}/@PACKAGE@.conf
+%{_unitdir}/@SERVICE_NAME@.service
+%{_tmpfilesdir}/@SERVICE_NAME@.conf
 %else
-%{_sysconfdir}/init.d/@PACKAGE@
+%{_sysconfdir}/init.d/@PACKAGE_DIR@
 %endif
 %{_bindir}/td
 %{_sbindir}/td-agent
 %{_sbindir}/td-agent-gem
 %{_mandir}/man1/td*
-%config(noreplace) %{_sysconfdir}/sysconfig/@PACKAGE@
-%config(noreplace) %{_sysconfdir}/@PACKAGE@/@PACKAGE@.conf
-%config(noreplace) %{_sysconfdir}/logrotate.d/@PACKAGE@
-%attr(0755,td-agent,td-agent) %dir %{_localstatedir}/log/@PACKAGE@
-%attr(0755,td-agent,td-agent) %dir %{_localstatedir}/log/@PACKAGE@/buffer
-%attr(0755,td-agent,td-agent) %dir %{_sysconfdir}/@PACKAGE@
-%attr(0755,td-agent,td-agent) %dir %{_sysconfdir}/@PACKAGE@/plugin
+%config(noreplace) %{_sysconfdir}/sysconfig/@SERVICE_NAME@
+%config(noreplace) %{_sysconfdir}/@PACKAGE_DIR@/@SERVICE_NAME@.conf
+%config(noreplace) %{_sysconfdir}/logrotate.d/@PACKAGE_DIR@
+%attr(0755,td-agent,td-agent) %dir %{_localstatedir}/log/@PACKAGE_DIR@
+%attr(0755,td-agent,td-agent) %dir %{_localstatedir}/log/@PACKAGE_DIR@/buffer
+%attr(0755,td-agent,td-agent) %dir %{_sysconfdir}/@PACKAGE_DIR@
+%attr(0755,td-agent,td-agent) %dir %{_sysconfdir}/@PACKAGE_DIR@/plugin
 # NOTE: %{_tmpfilesdir} is available since CentOS 7
-%attr(0755,td-agent,td-agent) %dir /tmp/@PACKAGE@
+%attr(0755,td-agent,td-agent) %dir /tmp/@PACKAGE_DIR@
 %changelog
 * Tue Jan 17 2023 Takuro Ashie <ashie@clear-code.com> - 5.0.0-1
 - New upstream release.

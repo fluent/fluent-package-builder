@@ -19,7 +19,7 @@ catch {
     $response = Invoke-WebRequest -Uri "${base_uri}/4/windows/${previous_msi_name}" -OutFile $previous_msi_name -PassThru
 }
 
-$msi = (Get-Item "fluent-package\\msi\\repositories\\td-agent-*.msi") | Sort-Object -Descending { $_.LastWriteTime } | Select-Object -First 1
+$msi = (Get-Item "fluent-package\\msi\\repositories\\fluent-package-*.msi") | Sort-Object -Descending { $_.LastWriteTime } | Select-Object -First 1
 "Checking package size: {0}" -F $msi.FullName | Write-Host
 $package_size_threshold = $response.RawContentLength * 1.2
 $previous_msi = (Get-Item $previous_msi_name)

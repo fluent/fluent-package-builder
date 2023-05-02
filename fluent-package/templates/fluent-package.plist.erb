@@ -8,9 +8,9 @@
   <string><%= project_name %></string>
   <key>ProgramArguments</key>
   <array>
-    <string>/opt/<%= project_name %>/usr/sbin/<%= project_name %></string>
+    <string>/opt/<%= package_dir %>/usr/sbin/<%= service_name %></string>
     <string>--log</string>
-    <string>/var/log/<%= project_name %>/<%= project_name %>.log</string>
+    <string>/var/log/<%= package_dir %>/<%= service_name %>.log</string>
     <string>--use-v1-config</string>
   </array>
   <key>RunAtLoad</key>

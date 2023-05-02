@@ -8,7 +8,7 @@ config_path = File.join(File.dirname(File.dirname(File.dirname(__FILE__))),
                         "fluent-package/config.rb")
 require config_path
 
-describe package("td-agent v#{PACKAGE_VERSION}") do
+describe package("Fluent Package v#{PACKAGE_VERSION}") do
   it { should be_installed }
 end
 

@@ -303,8 +303,6 @@ PACKAGEDIR=#{package_dir}
       @rpm_version
     when "RELEASE"
       @rpm_release
-    when "PACKAGE_DIR"
-      File.basename(Dir.pwd)
     else
       nil
     end

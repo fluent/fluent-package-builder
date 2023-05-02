@@ -1,23 +1,23 @@
 #!/bin/bash
 #
-# Create directories for <%= project_name %>
+# Create directories for <%= service_name %>
 #
 
-# Create <%= project_name %> related directories and files
+# Create <%= service_name %> related directories and files
 
-if [ ! -e "/var/log/<%= project_name %>/" ]; then
-  mkdir -p /var/log/<%= project_name %>/
-  mkdir -p /var/log/<%= project_name %>/buffer/
+if [ ! -e "/var/log/<%= package_dir %>/" ]; then
+  mkdir -p /var/log/<%= package_dir %>/
+  mkdir -p /var/log/<%= package_dir %>/buffer/
 fi
-if [ ! -e "/var/run/<%= project_name %>/" ]; then
-  mkdir -p /var/run/<%= project_name %>/
+if [ ! -e "/var/run/<%= package_dir %>/" ]; then
+  mkdir -p /var/run/<%= package_dir %>/
 fi
-if [ ! -e "/etc/<%= project_name %>/" ]; then
-  mkdir -p /etc/<%= project_name %>/
-  mkdir -p /etc/<%= project_name %>/plugin
+if [ ! -e "/etc/<%= package_dir %>/" ]; then
+  mkdir -p /etc/<%= package_dir %>/
+  mkdir -p /etc/<%= package_dir %>/plugin
 fi
-if [ ! -e "/tmp/<%= project_name %>/" ]; then
-  mkdir -p /tmp/<%= project_name %>/
+if [ ! -e "/tmp/<%= package_dir %>/" ]; then
+  mkdir -p /tmp/<%= package_dir %>/
 fi
 
 exit 0

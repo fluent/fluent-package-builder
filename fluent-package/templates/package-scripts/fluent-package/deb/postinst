@@ -1,0 +1,52 @@
+#! /bin/sh
+
+set -e
+
+. /usr/share/debconf/confmodule
+
+prevver="$2"
+
+add_system_user() {
+    if ! getent passwd <%= service_name %> >/dev/null; then
+        adduser --group --system --home /var/lib/<%= package_dir %> <%= service_name %>
+    fi
+}
+
+add_directories() {
+    mkdir -p /var/run/<%= package_dir %>
+    mkdir -p /etc/<%= package_dir %>
+    mkdir -p /etc/<%= package_dir %>/plugin
+    mkdir -p /var/log/<%= package_dir %>
+}
+
+fixperms() {
+    dpkg-statoverride --list /var/run/<%= package_dir %> >/dev/null || \
+        dpkg-statoverride --update --add <%= service_name %> <%= service_name %> 0755 /var/run/<%= package_dir %>
+    dpkg-statoverride --list /etc/<%= package_dir %> >/dev/null || \
+        dpkg-statoverride --update --add <%= service_name %> <%= service_name %> 0755 /etc/<%= package_dir %>
+    dpkg-statoverride --list /var/log/<%= package_dir %> >/dev/null || \
+        dpkg-statoverride --update --add <%= service_name %> <%= service_name %> 0755 /var/log/<%= package_dir %>
+}
+
+case "$1" in
+    configure)
+        add_system_user
+        add_directories
+        fixperms
+        ;;
+    abort-upgrade|abort-deconfigure|abort-remove)
+        :
+        ;;
+    *)
+        echo "Called with unknown argument $1, bailing out."
+        exit 1
+        ;;
+esac
+
+<% if install_message %>
+if [ "$1" = "configure" ]; then
+  echo "<%= install_message %>"
+fi
+<% end %>
+
+#DEBHELPER#

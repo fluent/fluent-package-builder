@@ -1,4 +1,4 @@
-Source: td-agent
+Source: fluent-package
 Section: net
 Priority: optional
 Maintainer: Fluentd developers <fluentd@googlegroups.com>
@@ -17,8 +17,10 @@ Build-Depends:
 Standards-Version: 4.3.0
 Homepage: https://www.fluentd.org/
 
-Package: td-agent
+Package: fluent-package
 Architecture: any
+Replaces: td-agent (<< 5.0.0-1)
+Breaks: td-agent (<< 5.0.0-1)
 Pre-Depends: adduser
 Depends:
   ${misc:Depends},
@@ -28,3 +30,13 @@ Description: Treasure Agent: A data collector for Treasure Data
  related gem packages.
  .
  It is installable alongside with system's gem packages separately.
+
+Package: td-agent
+Architecture: all
+Depends:
+  fluent-package,
+  ${misc:Depends}
+Description: Transitional package
+ This is a transitional package for fluent-package.
+ .
+ It can be safely be removed.
