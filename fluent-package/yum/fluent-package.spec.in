@@ -24,7 +24,6 @@
 %define use_scl_gcc (%{_centos_ver} <= 7 && %{_amazon_ver} == 0)
 %define use_scl_ruby (%{_centos_ver} <= 7 && %{_amazon_ver} == 0)
 %define scl_ruby_ver 26
-%define use_systemd (%{_centos_ver} >= 7) || %{_suse_ver} >= 1315
 %define use_license (%{_centos_ver} >= 7)
 # Omit check-rpath and brp-mangle-shebangs since we use our own Ruby
 %define __arch_install_post %{nil}
@@ -37,15 +36,9 @@
 # conflict with other packages
 %define _build_id_links alldebug
 
-%if %{use_systemd}
 %define control_service() (systemctl %1 %2)
 %define disable_service() (systemctl %1 %2)
 %define enable_service() (systemctl %1 %2)
-%else
-%define control_service() (/sbin/service %2 %1)
-%define disable_service() (/sbin/chkconfig --del %2)
-%define enable_service() (/sbin/chkconfig --add %2)
-%endif
 
 Name:		@PACKAGE@
 Version:	@VERSION@
@@ -103,13 +96,8 @@ BuildRequires:	cyrus-sasl-devel
 BuildRequires:	libedit-devel
 BuildRequires:	ncurses-devel
 BuildRequires:	libyaml-devel
-%if %{use_systemd}
 %{?systemd_requires}
 BuildRequires: systemd
-%else
-# It's optional, see ../templates/etc/init.d/td-agent.erb
-#Requires: redhat-lsb-core
-%endif
 Requires(pre): /usr/bin/getent
 %if %{use_suse}
 Requires(pre): /usr/sbin/useradd
@@ -135,14 +123,8 @@ The stable distribution of Fluentd, called td-agent.
 %if %{use_scl_ruby}
 . /opt/rh/rh-ruby%{scl_ruby_ver}/enable
 %endif
-%if %{use_systemd}
 rake build:rpm_config TD_AGENT_STAGING_PATH=%{buildroot} NO_VAR_RUN=1
 rake build:all TD_AGENT_STAGING_PATH=%{buildroot} PATH="$HOME/.cargo/bin:$PATH"
-%else
-rake build:rpm_old_config TD_AGENT_STAGING_PATH=%{buildroot} NO_VAR_RUN=0
-# Fat gem of nokogiri 1.11 requires glibc 2.17 which doesn't exist on CentOS 6
-rake build:all TD_AGENT_STAGING_PATH=%{buildroot} REBUILD_GEMS="nokogiri" PATH="$HOME/.cargo/bin:$PATH"
-%endif
 mkdir -p %{buildroot}%{_mandir}/man1
 cp @PACKAGE@/debian/*.1 %{buildroot}%{_mandir}/man1/
 for man in `find %{buildroot} -type f -wholename '*/man/man[1-9]/*.[1-9]'`; do
@@ -172,13 +154,6 @@ fi
 if [ $1 -eq 0 ]; then
   %{control_service stop @SERVICE_NAME@}
   %{disable_service disable @SERVICE_NAME@}
-  %if ! %{?use_systemd}
-    for keep in /tmp/@PACKAGE_DIR@/.keep /var/run/@PACKAGE_DIR@/.keep; do
-      if [ -p $keep ]; then
-          rm -f $keep
-      fi
-    done
-  %endif
 fi
 
 %post
@@ -188,18 +163,6 @@ fi
 if [ $1 -eq 2 ]; then
   %{control_service condrestart @SERVICE_NAME@}
 fi
-%if ! %{?use_systemd}
-  if [ $1 -eq 1 -o $1 -eq 2 ]; then
-    # On CentOS 6, tmpwatch cleanups under /tmp in 10d without
-    # create, access, modify operations. (See /etc/cron.daily/tmpwatch)
-    # To keep it, create special file under /tmp/td-agent.
-    for keep in /tmp/@PACKAGE_DIR@/.keep /var/run/@PACKAGE_DIR@/.keep; do
-      if [ ! -p $keep ]; then
-        mkfifo $keep
-      fi
-    done
-fi
-%endif
 if [ -d "%{_sysconfdir}/prelink.conf.d/" ]; then
   echo "prelink detected. Installing /etc/prelink.conf.d/td-agent-ruby.conf ..."
   if [ ! -f %{_sysconfdir}/prelink.conf.d/td-agent-ruby.conf ]; then
@@ -229,12 +192,8 @@ fi
 %endif
 %defattr(-,root,root,-)
 /opt/*
-%if %{use_systemd}
 %{_unitdir}/@SERVICE_NAME@.service
 %{_tmpfilesdir}/@SERVICE_NAME@.conf
-%else
-%{_sysconfdir}/init.d/@PACKAGE_DIR@
-%endif
 %{_bindir}/td
 %{_sbindir}/td-agent
 %{_sbindir}/td-agent-gem

@@ -44,7 +44,6 @@ end
   ["clobber",          "Remove any generated files", ALL_PACKAGE],
   ["build:deb_config", "Create configuration files for Debian like systems"],
   ["build:rpm_config", "Create configuration files for Red Hat like systems with systemd"],
-  ["build:rpm_old_config", "Create configuration files for Red Hat like systems without systemd"],
   ["build:all",        "Install all components"],
   ["apt:build",        "Build deb packages"],
   ["yum:build",        "Build RPM packages"],
