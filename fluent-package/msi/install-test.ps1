@@ -10,7 +10,7 @@ $ENV:PATH="C:\\opt\\td-agent\\bin;" + $ENV:PATH
 td-agent --version
 
 $msi -Match "fluent-package-([0-9\.]+)-.+\.msi"
-$name = "Fluent-package v" + $matches[1]
+$name = "Fluent Package v" + $matches[1]
 Write-Host "Uninstalling ...${name}"
 Get-CimInstance -Class Win32_Product -Filter "Name='${name}'" | Invoke-CimMethod -MethodName Uninstall
 $exitcode = $LASTEXITCODE
