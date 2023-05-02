@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <installer-gui-script minSpecVersion="1">
-    <title>Td-agent v<%= pkg_version %></title>
+    <title>Fluent Package v<%= pkg_version %></title>
     <background file="background.png" alignment="bottomleft" mime-type="image/png"/>
     <license file="license.rtf" mime-type="text/html"/>
     <welcome file="welcome.html" mime-type="text/html"/>
@@ -15,5 +15,5 @@
     <choice id="com.treasuredata.tdagent" visible="false">
         <pkg-ref id="com.treasuredata.tdagent"/>
     </choice>
-    <pkg-ref id="com.treasuredata.tdagent" version="<%= version %>" onConclusion="none">td-agent.pkg</pkg-ref>
+    <pkg-ref id="com.treasuredata.tdagent" version="<%= version %>" onConclusion="none">fluent-package.pkg</pkg-ref>
 </installer-gui-script>
