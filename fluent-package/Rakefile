@@ -547,7 +547,7 @@ class BuildTask
 
       desc "Create systemd unit file for Red Hat like systems"
       task :rpm_systemd do
-        dest =  File.join(STAGING_DIR, 'usr', 'lib', 'systemd', 'system', PACKAGE_DIR + ".service")
+        dest =  File.join(STAGING_DIR, 'usr', 'lib', 'systemd', 'system', SERVICE_NAME + ".service")
         params = {pkg_type: "rpm"}
         render_systemd_unit_file(dest, template_params(params))
         render_systemd_environment_file(template_params(params))
@@ -555,14 +555,14 @@ class BuildTask
 
       desc "Create sysv init file for Red Hat like systems"
       task :rpm_sysvinit do
-        dest =  File.join(STAGING_DIR, 'etc', 'init.d', PACKAGE_DIR)
+        dest =  File.join(STAGING_DIR, 'etc', 'init.d', SERVICE_NAME)
         params = {pkg_type: "rpm"}
         render_sysv_init_file(dest, template_params(params))
       end
 
       desc "Create systemd unit file for Debian like systems"
       task :deb_systemd do
-        dest = File.join(STAGING_DIR, 'lib', 'systemd', 'system', PACKAGE_DIR + ".service")
+        dest = File.join(STAGING_DIR, 'lib', 'systemd', 'system', SERVICE_NAME + ".service")
         params = {pkg_type: "deb"}
         render_systemd_unit_file(dest, template_params(params))
         render_systemd_environment_file(template_params(params))
@@ -619,9 +619,9 @@ class BuildTask
   def render_systemd_environment_file(config)
     dest_path =
       if config[:pkg_type] == 'deb'
-        File.join(STAGING_DIR, 'etc', 'default', PACKAGE_DIR)
+        File.join(STAGING_DIR, 'etc', 'default', SERVICE_NAME)
       else
-        File.join(STAGING_DIR, 'etc', 'sysconfig', PACKAGE_DIR)
+        File.join(STAGING_DIR, 'etc', 'sysconfig', SERVICE_NAME)
       end
     template_file_path = template_path('etc', 'systemd', "#{SERVICE_NAME}.erb")
     render_template(dest_path, template_file_path, config)
