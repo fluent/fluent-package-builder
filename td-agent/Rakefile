@@ -84,7 +84,7 @@ def macos?
 end
 
 def ensure_directory(dirname)
-  mkdir_p(dirname) unless File.exists?(dirname)
+  mkdir_p(dirname) unless File.exist?(dirname)
   if block_given?
     cd(dirname) do
       yield
@@ -353,8 +353,8 @@ class DownloadTask
     file @file_fluentd_archive do
       ensure_directory(DOWNLOADS_DIR) do
         dirname = "fluentd-#{FLUENTD_REVISION}"
-        rm_rf("fluentd") if File.exists?("fluentd")
-        rm_rf(dirname) if File.exists?(dirname)
+        rm_rf("fluentd") if File.exist?("fluentd")
+        rm_rf(dirname) if File.exist?(dirname)
         sh("git", "clone", "https://github.com/fluent/fluentd.git")
         cd("fluentd") do
           sh("git", "checkout", FLUENTD_REVISION)
@@ -478,7 +478,7 @@ class BuildTask
           fluentd_dir = archive_path.sub(/\.tar\.gz$/, '')
           tar_options = ["--no-same-owner"]
           tar_options << "--force-local" if windows?
-          sh(*tar_command, "xvf", archive_path, *tar_options) unless File.exists?(fluentd_dir)
+          sh(*tar_command, "xvf", archive_path, *tar_options) unless File.exist?(fluentd_dir)
           cd("fluentd-#{FLUENTD_REVISION}") do
             sh("rake", "build")
             setup_local_gem_repo
