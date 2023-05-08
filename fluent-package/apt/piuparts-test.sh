@@ -25,7 +25,6 @@ echo "deb [signed-by=/usr/share/keyrings/td-agent-archive-keyring.gpg] https://p
 rm -rf $CHROOT/opt
 piuparts --distribution=${code_name} \
 	 --existing-chroot=${CHROOT} \
-	 --keyring=$TD_AGENT_KEYRING \
 	 --mirror="http://packages.treasuredata.com/4/${distribution}/${code_name}/ ${code_name} contrib" \
 	 --skip-logrotatefiles-test \
 	 /tmp/*_${architecture}.deb
