@@ -9,10 +9,6 @@ apt install -V -y lsb-release
 
 find ${repositories_dir}
 case ${code_name} in
-    xenial)
-	apt install -V -y piuparts mount gnupg curl eatmydata apt-transport-https
-	gpg_command=gpg
-	;;
     jammy)
 	# TODO: Remove when repository for jammy has been deployed
 	echo "skip piuparts test for jammy"
