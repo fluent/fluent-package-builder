@@ -16,8 +16,8 @@ ${gpg_command} --no-default-keyring --keyring $TD_AGENT_KEYRING --import td-agen
 CHROOT=/var/lib/chroot/${code_name}-root
 mkdir -p $CHROOT
 debootstrap ${code_name} $CHROOT ${mirror}
-cp $TD_AGENT_KEYRING $CHROOT/etc/apt/trusted.gpg.d/
-chmod 644 $CHROOT/etc/apt/trusted.gpg.d/td-agent-archive-keyring.gpg
+cp $TD_AGENT_KEYRING $CHROOT/usr/share/keyrings/
+chmod 644 $CHROOT/usr/share/keyrings/td-agent-archive-keyring.gpg
 chroot $CHROOT apt install -V -y libyaml-0-2
 if [ "${code_name}" = "bionic" ]; then
    echo "deb http://archive.ubuntu.com/ubuntu bionic-updates main" > $CHROOT/etc/apt/sources.list
