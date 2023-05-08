@@ -18,14 +18,20 @@ case $1 in
 	for d in buster bullseye bionic focal jammy; do
 	    case $d in
 		buster|bullseye)
-		    # e.g. mapping debian/pool/buster/main/t/td-agent/ => 4/debian/buster/pool/contrib/t/td-agent
-		    mkdir -p $ARTIFACTS_DIR/4/debian/$d/pool/contrib/t/td-agent
-		    find $REPOSITORY_PATH/debian/pool/$d -name '*.deb' -not -name '*dbgsym*' -exec cp {} $ARTIFACTS_DIR/4/debian/$d/pool/contrib/t/td-agent \;
+		    # e.g. mapping debian/pool/buster/main/t/td-agent/ => 5/debian/buster/pool/contrib/t/td-agent
+		    #      mapping debian/pool/buster/main/f/fluent-package/ => 5/debian/buster/pool/contrib/f/fluent-package
+		    mkdir -p $ARTIFACTS_DIR/5/debian/$d/pool/contrib/t/td-agent
+		    mkdir -p $ARTIFACTS_DIR/5/debian/$d/pool/contrib/f/fluent-package
+		    find $REPOSITORY_PATH/debian/pool/$d -name 'td-agent*.deb' -not -name '*dbgsym*' -exec cp {} $ARTIFACTS_DIR/5/debian/$d/pool/contrib/t/td-agent \;
+		    find $REPOSITORY_PATH/debian/pool/$d -name 'fluent-package*.deb' -not -name '*dbgsym*' -exec cp {} $ARTIFACTS_DIR/5/debian/$d/pool/contrib/f/fluent-package \;
 		    ;;
 		bionic|focal|jammy)
-		    # e.g. mapping ubuntu/pool/.../main/t/td-agent/ => 4/ubuntu/.../pool/contrib/t/td-agent
-		    mkdir -p $ARTIFACTS_DIR/4/ubuntu/$d/pool/contrib/t/td-agent
-		    find $REPOSITORY_PATH/ubuntu/pool/$d -name '*.deb' -exec cp {} $ARTIFACTS_DIR/4/ubuntu/$d/pool/contrib/t/td-agent \;
+		    # e.g. mapping ubuntu/pool/.../main/t/td-agent/ => 5/ubuntu/.../pool/contrib/t/td-agent
+		    #      mapping ubuntu/pool/.../main/f/fluent-package/ => 5/ubuntu/.../pool/contrib/f/fluent-package
+		    mkdir -p $ARTIFACTS_DIR/5/ubuntu/$d/pool/contrib/t/td-agent
+		    mkdir -p $ARTIFACTS_DIR/5/ubuntu/$d/pool/contrib/f/fluent-package
+		    find $REPOSITORY_PATH/ubuntu/pool/$d -name 'td-agent*.deb' -exec cp {} $ARTIFACTS_DIR/5/ubuntu/$d/pool/contrib/t/td-agent \;
+		    find $REPOSITORY_PATH/ubuntu/pool/$d -name 'fluent-package*.deb' -exec cp {} $ARTIFACTS_DIR/5/ubuntu/$d/pool/contrib/f/fluent-package \;
 		    ;;
 		*)
 		    exit 1
@@ -59,9 +65,9 @@ case $1 in
 		    continue
 		fi
 		for arch in aarch64 x86_64; do
-		    # e.g. mapping amazon/2/x86_64/Packages/ => 4/amazon/2/x86_64
-		    mkdir -p $ARTIFACTS_DIR/4/$dist_dest/$release/$arch
-		    find $REPOSITORY_PATH/$dist/$release/$arch -name '*.rpm' -not -name '*debug*' -exec cp {} $ARTIFACTS_DIR/4/$dist_dest/$release/$arch \;
+		    # e.g. mapping amazon/2/x86_64/Packages/ => 5/amazon/2/x86_64
+		    mkdir -p $ARTIFACTS_DIR/5/$dist_dest/$release/$arch
+		    find $REPOSITORY_PATH/$dist/$release/$arch -name '*.rpm' -not -name '*debug*' -exec cp {} $ARTIFACTS_DIR/5/$dist_dest/$release/$arch \;
 		done
 	    done
 	done
