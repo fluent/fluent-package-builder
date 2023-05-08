@@ -8,8 +8,8 @@ apt install -V -y lsb-release
 . $(dirname $0)/commonvar.sh
 
 find ${repositories_dir}
-	DEBIAN_FRONTEND=noninteractive apt install -V -y piuparts mount gnupg1 curl eatmydata
-	gpg_command=gpg1
+DEBIAN_FRONTEND=noninteractive apt install -V -y piuparts mount gnupg1 curl eatmydata
+gpg_command=gpg1
 curl https://packages.treasuredata.com/GPG-KEY-td-agent > td-agent.gpg
 TD_AGENT_KEYRING=/usr/share/keyrings/td-agent-archive-keyring.gpg
 ${gpg_command} --no-default-keyring --keyring $TD_AGENT_KEYRING --import td-agent.gpg
