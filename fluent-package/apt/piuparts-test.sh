@@ -21,6 +21,7 @@ chmod 644 $CHROOT/usr/share/keyrings/td-agent-archive-keyring.gpg
 chroot $CHROOT apt install -V -y libyaml-0-2
 package=${repositories_dir}/${distribution}/pool/${code_name}/${channel}/*/*/*_${architecture}.deb
 cp ${package} /tmp
+echo "deb [signed-by=/usr/share/keyrings/td-agent-archive-keyring.gpg] https://packages.treasuredata.com/4/${distribution}/${code_name}/ ${code_name} contrib" | tee $CHROOT/etc/apt/sources.list.d/td.list
 rm -rf $CHROOT/opt
 piuparts --distribution=${code_name} \
 	 --existing-chroot=${CHROOT} \
