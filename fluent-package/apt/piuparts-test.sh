@@ -15,7 +15,7 @@ TD_AGENT_KEYRING=/usr/share/keyrings/td-agent-archive-keyring.gpg
 ${gpg_command} --no-default-keyring --keyring $TD_AGENT_KEYRING --import td-agent.gpg
 CHROOT=/var/lib/chroot/${code_name}-root
 mkdir -p $CHROOT
-debootstrap ${code_name} $CHROOT ${mirror}
+debootstrap --include=ca-certificates ${code_name} $CHROOT ${mirror}
 cp $TD_AGENT_KEYRING $CHROOT/usr/share/keyrings/
 chmod 644 $CHROOT/usr/share/keyrings/td-agent-archive-keyring.gpg
 chroot $CHROOT apt install -V -y libyaml-0-2
