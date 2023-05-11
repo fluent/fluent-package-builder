@@ -139,14 +139,14 @@ mkdir -p %{buildroot}%{_sysconfdir}/@PACKAGE_DIR@/plugin
 mkdir -p %{buildroot}/tmp/@PACKAGE_DIR@
 
 %pre
-if ! getent group @SERVICE_NAME@ >/dev/null; then
-    /usr/sbin/groupadd -r @SERVICE_NAME@
+if ! getent group @COMPAT_SERVICE_NAME@ >/dev/null; then
+    /usr/sbin/groupadd -r @COMPAT_SERVICE_NAME@
 fi
-if ! getent passwd @SERVICE_NAME@ >/dev/null; then
+if ! getent passwd @COMPAT_SERVICE_NAME@ >/dev/null; then
 %if %{use_suse}
-    /usr/sbin/useradd -r -g @SERVICE_NAME@ -d %{_localstatedir}/lib/@PACKAGE_DIR@ -s /sbin/nologin -c '@SERVICE_NAME@' @SERVICE_NAME@
+    /usr/sbin/useradd -r -g @COMPAT_SERVICE_NAME@ -d %{_localstatedir}/lib/@PACKAGE_DIR@ -s /sbin/nologin -c '@COMPAT_SERVICE_NAME@' @COMPAT_SERVICE_NAME@
 %else
-    /usr/sbin/adduser -r -g @SERVICE_NAME@ -d %{_localstatedir}/lib/@PACKAGE_DIR@ -s /sbin/nologin -c '@SERVICE_NAME@' @SERVICE_NAME@
+    /usr/sbin/adduser -r -g @COMPAT_SERVICE_NAME@ -d %{_localstatedir}/lib/@PACKAGE_DIR@ -s /sbin/nologin -c '@COMPAT_SERVICE_NAME@' @COMPAT_SERVICE_NAME@
 %endif
 fi
 
@@ -193,14 +193,14 @@ fi
 %defattr(-,root,root,-)
 /opt/*
 %{_unitdir}/@SERVICE_NAME@.service
-%{_tmpfilesdir}/@SERVICE_NAME@.conf
+%{_tmpfilesdir}/@COMPAT_SERVICE_NAME@.conf
 %{_bindir}/td
 %{_sbindir}/td-agent
 %{_sbindir}/td-agent-gem
 %{_mandir}/man1/td*
 %config(noreplace) %{_sysconfdir}/sysconfig/@SERVICE_NAME@
-%config(noreplace) %{_sysconfdir}/@PACKAGE_DIR@/@SERVICE_NAME@.conf
-%config(noreplace) %{_sysconfdir}/logrotate.d/@PACKAGE_DIR@
+%config(noreplace) %{_sysconfdir}/@PACKAGE_DIR@/@COMPAT_SERVICE_NAME@.conf
+%config(noreplace) %{_sysconfdir}/logrotate.d/@COMPAT_SERVICE_NAME@
 %attr(0755,td-agent,td-agent) %dir %{_localstatedir}/log/@PACKAGE_DIR@
 %attr(0755,td-agent,td-agent) %dir %{_localstatedir}/log/@PACKAGE_DIR@/buffer
 %attr(0755,td-agent,td-agent) %dir %{_sysconfdir}/@PACKAGE_DIR@
