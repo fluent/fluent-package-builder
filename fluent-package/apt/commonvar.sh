@@ -19,4 +19,10 @@ case ${code_name} in
     channel=main
     mirror=http://deb.debian.org/debian
     ;;
+  bookworm)
+    distribution=debian
+    channel=main
+    mirror=http://deb.debian.org/debian
+    java_jdk=openjdk-17-jre
+    ;;
 esac

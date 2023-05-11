@@ -16,6 +16,11 @@ ARCH=$2
 
 REPOSITORIES_DIR=fluent-package/apt/repositories
 
+if [ "${code_name}" == "bookworm" ]; then
+    echo "As bookworm is not published yet, so package size check for ${code_name} is disabled"
+    exit 0
+fi
+
 if [ -f .git/shallow ]; then
     git fetch --unshallow
 fi
