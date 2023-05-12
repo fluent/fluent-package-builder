@@ -151,18 +151,10 @@ if ! getent passwd @COMPAT_SERVICE_NAME@ >/dev/null; then
 fi
 
 %preun
-if [ $1 -eq 0 ]; then
-  %{control_service stop @SERVICE_NAME@}
-  %{disable_service disable @SERVICE_NAME@}
-fi
+%systemd_preun @SERVICE_NAME@.service
 
 %post
-if [ $1 -eq 1 ]; then
-  %{enable_service enable @SERVICE_NAME@}
-fi
-if [ $1 -eq 2 ]; then
-  %{control_service condrestart @SERVICE_NAME@}
-fi
+%systemd_post @SERVICE_NAME@.service
 if [ -d "%{_sysconfdir}/prelink.conf.d/" ]; then
   echo "prelink detected. Installing /etc/prelink.conf.d/td-agent-ruby.conf ..."
   if [ ! -f %{_sysconfdir}/prelink.conf.d/td-agent-ruby.conf ]; then
@@ -182,6 +174,9 @@ elif [ -f "%{_sysconfdir}/prelink.conf" ]; then
     echo "-b /opt/td-agent/bin/ruby" >> /etc/prelink.conf
   fi
 fi
+
+%postun
+%systemd_postun_with_restart @SERVICE_NAME@.service
 
 %files
 %doc README.md
