@@ -188,7 +188,7 @@ fi
 %defattr(-,root,root,-)
 /opt/*
 %{_unitdir}/@SERVICE_NAME@.service
-%{_tmpfilesdir}/@COMPAT_SERVICE_NAME@.conf
+%{_tmpfilesdir}/@SERVICE_NAME@.conf
 %{_bindir}/td
 %{_sbindir}/td-agent
 %{_sbindir}/td-agent-gem

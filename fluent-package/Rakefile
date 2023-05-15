@@ -497,7 +497,7 @@ class BuildTask
       desc "Create systemd-tmpfiles configuration files from template"
       task :systemd_tmpfiles_config do
         configs = [
-          "usr/lib/tmpfiles.d/#{COMPAT_SERVICE_NAME}.conf",
+          "usr/lib/tmpfiles.d/#{SERVICE_NAME}.conf",
         ]
         configs.each do |config|
           src = template_path(config)
