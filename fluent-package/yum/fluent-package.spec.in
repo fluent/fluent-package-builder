@@ -154,6 +154,16 @@ fi
 
 %post
 %systemd_post @SERVICE_NAME@.service
+if [ $1 -eq 1 ]; then
+    systemctl is-active @COMPAT_SERVICE_NAME@
+    if [ $? -eq 0 ]; then
+	# When upgrading from v4, td-agent.service will be removed
+	# with %postun scriptlet. fluentd service also inactive even though
+	# td-agent.service is running before upgrade process. Try to
+	# keep running fluentd service, explicitly restart it.
+	systemctl restart @SERVICE_NAME@.service
+    fi
+fi
 if [ -d "%{_sysconfdir}/prelink.conf.d/" ]; then
   echo "prelink detected. Installing /etc/prelink.conf.d/td-agent-ruby.conf ..."
   if [ ! -f %{_sysconfdir}/prelink.conf.d/td-agent-ruby.conf ]; then
