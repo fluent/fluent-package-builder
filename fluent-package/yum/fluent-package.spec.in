@@ -51,7 +51,6 @@ Source0:	@PACKAGE@-@VERSION@.tar.gz
 
 Obsoletes: td-agent < 5.0.0
 Provides: td-agent
-Requires: @PACKAGE@ >= 5.0.0
 
 BuildRequires:	libffi-devel
 %if %{use_scl_ruby}
