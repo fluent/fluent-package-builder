@@ -186,6 +186,22 @@ fi
 
 %postun
 %systemd_postun_with_restart @SERVICE_NAME@.service
+if [ -f /usr/sbin/@COMPAT_SERVICE_NAME@ ]; then
+  rm -f /usr/sbin/@COMPAT_SERVICE_NAME@
+fi
+if [ -f /usr/sbin/@COMPAT_SERVICE_NAME@-gem ]; then
+  rm -f /usr/sbin/@COMPAT_SERVICE_NAME@-gem
+fi
+
+%posttrans
+if [ ! -f /usr/sbin/@COMPAT_SERVICE_NAME@ ]; then
+  # provides /usr/sbin/td-agent for backward compatibility
+  ln -sf /usr/sbin/@SERVICE_NAME@ /usr/sbin/@COMPAT_SERVICE_NAME@
+fi
+if [ ! -f /usr/sbin/@COMPAT_SERVICE_NAME@-gem ]; then
+  # provides /usr/sbin/td-agent-gem for backward compatibility
+  ln -sf /usr/sbin/fluent-gem /usr/sbin/@COMPAT_SERVICE_NAME@-gem
+fi
 
 %files
 %doc README.md
