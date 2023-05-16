@@ -1006,7 +1006,7 @@ class BuildTask
   def install_td_agent_license
     ensure_directory(licenses_staging_dir)
     src = File.join(__dir__, "..", "LICENSE")
-    dest = File.join(licenses_staging_dir, "LICENSE-#{COMPAT_SERVICE_NAME}.txt")
+    dest = File.join(licenses_staging_dir, "LICENSE-#{PACKAGE_NAME}.txt")
     cp(src, dest)
   end
 
