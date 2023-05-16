@@ -132,9 +132,9 @@ done
 
 cd -
 mkdir -p %{buildroot}%{_localstatedir}/run/@PACKAGE_DIR@
-mkdir -p %{buildroot}%{_localstatedir}/log/@PACKAGE_DIR@
-mkdir -p %{buildroot}%{_localstatedir}/log/@PACKAGE_DIR@/buffer
-mkdir -p %{buildroot}%{_sysconfdir}/@PACKAGE_DIR@/plugin
+mkdir -p %{buildroot}%{_localstatedir}/log/@COMPAT_PACKAGE_DIR@
+mkdir -p %{buildroot}%{_localstatedir}/log/@COMPAT_PACKAGE_DIR@/buffer
+mkdir -p %{buildroot}%{_sysconfdir}/@COMPAT_PACKAGE_DIR@/plugin
 mkdir -p %{buildroot}/tmp/@PACKAGE_DIR@
 
 %pre
@@ -199,16 +199,16 @@ fi
 %{_unitdir}/@SERVICE_NAME@.service
 %{_tmpfilesdir}/@SERVICE_NAME@.conf
 %{_bindir}/td
-%{_sbindir}/td-agent
-%{_sbindir}/td-agent-gem
+%{_sbindir}/@SERVICE_NAME@
+%{_sbindir}/fluent-gem
 %{_mandir}/man1/td*
 %config(noreplace) %{_sysconfdir}/sysconfig/@SERVICE_NAME@
-%config(noreplace) %{_sysconfdir}/@PACKAGE_DIR@/@COMPAT_SERVICE_NAME@.conf
+%config(noreplace) %{_sysconfdir}/@COMPAT_PACKAGE_DIR@/@COMPAT_SERVICE_NAME@.conf
 %config(noreplace) %{_sysconfdir}/logrotate.d/@COMPAT_SERVICE_NAME@
-%attr(0755,td-agent,td-agent) %dir %{_localstatedir}/log/@PACKAGE_DIR@
-%attr(0755,td-agent,td-agent) %dir %{_localstatedir}/log/@PACKAGE_DIR@/buffer
-%attr(0755,td-agent,td-agent) %dir %{_sysconfdir}/@PACKAGE_DIR@
-%attr(0755,td-agent,td-agent) %dir %{_sysconfdir}/@PACKAGE_DIR@/plugin
+%attr(0755,td-agent,td-agent) %dir %{_localstatedir}/log/@COMPAT_PACKAGE_DIR@
+%attr(0755,td-agent,td-agent) %dir %{_localstatedir}/log/@COMPAT_PACKAGE_DIR@/buffer
+%attr(0755,td-agent,td-agent) %dir %{_sysconfdir}/@COMPAT_PACKAGE_DIR@
+%attr(0755,td-agent,td-agent) %dir %{_sysconfdir}/@COMPAT_PACKAGE_DIR@/plugin
 # NOTE: %{_tmpfilesdir} is available since CentOS 7
 %attr(0755,td-agent,td-agent) %dir /tmp/@PACKAGE_DIR@
 %changelog
