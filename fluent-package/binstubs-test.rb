@@ -2,9 +2,10 @@
 
 require "fileutils"
 require "tmpdir"
+require_relative "config"
 
 STUB_DIR=File.join(Dir.tmpdir, "stubs")
-TD_AGENT_DIR="/opt/td-agent"
+TD_AGENT_DIR="/opt/#{PACKAGE_DIR}"
 SHARE_DIR=File.join(TD_AGENT_DIR, "share")
 
 # Copy Gemfile* to temporary directory to avoid permission error with bundle binstubs
