@@ -122,7 +122,8 @@ def template_params(params = nil)
     pkg_type: nil,
     package_dir: PACKAGE_DIR,
     service_name: SERVICE_NAME,
-    compat_service_name: COMPAT_SERVICE_NAME
+    compat_service_name: COMPAT_SERVICE_NAME,
+    compat_package_dir: COMPAT_PACKAGE_DIR
   }
 
   unless windows?
@@ -477,16 +478,16 @@ class BuildTask
       desc "Create td-agent configuration files from template"
       task :td_agent_config do
         configs = [
-          "etc/#{PACKAGE_DIR}/#{COMPAT_SERVICE_NAME}.conf"
+          "etc/#{COMPAT_PACKAGE_DIR}/#{COMPAT_SERVICE_NAME}.conf"
         ]
         configs.concat([
-          "etc/logrotate.d/#{PACKAGE_DIR}",
+          "etc/logrotate.d/#{COMPAT_SERVICE_NAME}",
           "opt/#{PACKAGE_DIR}/share/#{COMPAT_SERVICE_NAME}-ruby.conf",
           "opt/#{PACKAGE_DIR}/share/#{COMPAT_SERVICE_NAME}.conf.tmpl"
         ]) unless windows? || macos?
         configs.each do |config|
           src = template_path(config)
-          if config == "etc/#{PACKAGE_DIR}/#{COMPAT_SERVICE_NAME}.conf"
+          if config == "etc/#{COMPAT_PACKAGE_DIR}/#{COMPAT_SERVICE_NAME}.conf"
             src = template_path("opt/#{PACKAGE_DIR}/share/#{COMPAT_SERVICE_NAME}.conf.tmpl")
           end
           dest = File.join(STAGING_DIR, config)
@@ -510,8 +511,8 @@ class BuildTask
       task :bin_scripts do
         scripts = [
           "usr/bin/td",
-          "usr/sbin/#{COMPAT_SERVICE_NAME}",
-          "usr/sbin/#{COMPAT_SERVICE_NAME}-gem",
+          "usr/sbin/#{SERVICE_NAME}",
+          "usr/sbin/#{PACKAGE_DIR}-gem",
         ]
         scripts.each do |script|
           src = template_path("#{script}.erb")
@@ -1109,6 +1110,8 @@ class LinuxPackageTask < PackageTask
     case key
     when "PACKAGE_DIR"
       PACKAGE_DIR
+    when "COMPAT_PACKAGE_DIR"
+      COMPAT_PACKAGE_DIR
     when "SERVICE_NAME"
       SERVICE_NAME
     when "COMPAT_SERVICE_NAME"
