@@ -51,7 +51,6 @@ Source0:	@PACKAGE@-@VERSION@.tar.gz
 
 Obsoletes: td-agent < 5.0.0
 Provides: td-agent
-Requires: @PACKAGE@ >= 5.0.0
 
 BuildRequires:	libffi-devel
 %if %{use_scl_ruby}
@@ -139,29 +138,31 @@ mkdir -p %{buildroot}%{_sysconfdir}/@PACKAGE_DIR@/plugin
 mkdir -p %{buildroot}/tmp/@PACKAGE_DIR@
 
 %pre
-if ! getent group @SERVICE_NAME@ >/dev/null; then
-    /usr/sbin/groupadd -r @SERVICE_NAME@
+if ! getent group @COMPAT_SERVICE_NAME@ >/dev/null; then
+    /usr/sbin/groupadd -r @COMPAT_SERVICE_NAME@
 fi
-if ! getent passwd @SERVICE_NAME@ >/dev/null; then
+if ! getent passwd @COMPAT_SERVICE_NAME@ >/dev/null; then
 %if %{use_suse}
-    /usr/sbin/useradd -r -g @SERVICE_NAME@ -d %{_localstatedir}/lib/@PACKAGE_DIR@ -s /sbin/nologin -c '@SERVICE_NAME@' @SERVICE_NAME@
+    /usr/sbin/useradd -r -g @COMPAT_SERVICE_NAME@ -d %{_localstatedir}/lib/@PACKAGE_DIR@ -s /sbin/nologin -c '@COMPAT_SERVICE_NAME@' @COMPAT_SERVICE_NAME@
 %else
-    /usr/sbin/adduser -r -g @SERVICE_NAME@ -d %{_localstatedir}/lib/@PACKAGE_DIR@ -s /sbin/nologin -c '@SERVICE_NAME@' @SERVICE_NAME@
+    /usr/sbin/adduser -r -g @COMPAT_SERVICE_NAME@ -d %{_localstatedir}/lib/@PACKAGE_DIR@ -s /sbin/nologin -c '@COMPAT_SERVICE_NAME@' @COMPAT_SERVICE_NAME@
 %endif
 fi
 
 %preun
-if [ $1 -eq 0 ]; then
-  %{control_service stop @SERVICE_NAME@}
-  %{disable_service disable @SERVICE_NAME@}
-fi
+%systemd_preun @SERVICE_NAME@.service
 
 %post
+%systemd_post @SERVICE_NAME@.service
 if [ $1 -eq 1 ]; then
-  %{enable_service enable @SERVICE_NAME@}
-fi
-if [ $1 -eq 2 ]; then
-  %{control_service condrestart @SERVICE_NAME@}
+    systemctl is-active @COMPAT_SERVICE_NAME@
+    if [ $? -eq 0 ]; then
+	# When upgrading from v4, td-agent.service will be removed
+	# with %postun scriptlet. fluentd service also inactive even though
+	# td-agent.service is running before upgrade process. Try to
+	# keep running fluentd service, explicitly restart it.
+	systemctl restart @SERVICE_NAME@.service
+    fi
 fi
 if [ -d "%{_sysconfdir}/prelink.conf.d/" ]; then
   echo "prelink detected. Installing /etc/prelink.conf.d/td-agent-ruby.conf ..."
@@ -183,6 +184,9 @@ elif [ -f "%{_sysconfdir}/prelink.conf" ]; then
   fi
 fi
 
+%postun
+%systemd_postun_with_restart @SERVICE_NAME@.service
+
 %files
 %doc README.md
 %if %{?use_license}
@@ -199,8 +203,8 @@ fi
 %{_sbindir}/td-agent-gem
 %{_mandir}/man1/td*
 %config(noreplace) %{_sysconfdir}/sysconfig/@SERVICE_NAME@
-%config(noreplace) %{_sysconfdir}/@PACKAGE_DIR@/@SERVICE_NAME@.conf
-%config(noreplace) %{_sysconfdir}/logrotate.d/@PACKAGE_DIR@
+%config(noreplace) %{_sysconfdir}/@PACKAGE_DIR@/@COMPAT_SERVICE_NAME@.conf
+%config(noreplace) %{_sysconfdir}/logrotate.d/@COMPAT_SERVICE_NAME@
 %attr(0755,td-agent,td-agent) %dir %{_localstatedir}/log/@PACKAGE_DIR@
 %attr(0755,td-agent,td-agent) %dir %{_localstatedir}/log/@PACKAGE_DIR@/buffer
 %attr(0755,td-agent,td-agent) %dir %{_sysconfdir}/@PACKAGE_DIR@

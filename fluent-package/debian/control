@@ -4,7 +4,7 @@ Priority: optional
 Maintainer: Fluentd developers <fluentd@googlegroups.com>
 Uploaders: HATAKE Hiroshi <hatake@clear-code.com>
 Build-Depends:
-  debhelper (>= 10),
+  debhelper-compat (= 12),
   pkg-config,
   zlib1g-dev,
   ruby-dev,

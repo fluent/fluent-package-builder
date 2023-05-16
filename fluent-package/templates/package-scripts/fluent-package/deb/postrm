@@ -5,10 +5,10 @@ set -e
 . /usr/share/debconf/confmodule
 
 if [ "$1" = "purge" ]; then
-	rm -f /etc/default/<%= service_name %>
+	rm -f /etc/default/<%= compat_service_name %>
 	dpkg-statoverride --list /etc/<%= package_dir %> > /dev/null && \
 		dpkg-statoverride --remove /etc/<%= package_dir %>
-	rm -f /etc/<%= package_dir %>/<%= service_name %>.conf
+	rm -f /etc/<%= package_dir %>/<%= compat_service_name %>.conf
 	rm -rf /etc/<%= package_dir %>
 	dpkg-statoverride --list /var/run/<%= package_dir %> > /dev/null && \
 		dpkg-statoverride --remove /var/run/<%= package_dir %>
@@ -20,7 +20,7 @@ if [ "$1" = "purge" ]; then
 	rm -rf /var/log/<%= package_dir %>/*
 	rm -rf /var/log/<%= package_dir %>
 
-	getent passwd <%= service_name %> && userdel -r <%= service_name %>
+	getent passwd <%= compat_service_name %> && userdel -r <%= compat_service_name %>
 fi
 
 #DEBHELPER#

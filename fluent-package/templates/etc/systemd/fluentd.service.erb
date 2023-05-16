@@ -5,26 +5,26 @@ After=network-online.target
 Wants=network-online.target
 
 [Service]
-User=<%= Shellwords.shellescape(service_name) %>
-Group=<%= Shellwords.shellescape(service_name) %>
+User=<%= Shellwords.shellescape(compat_service_name) %>
+Group=<%= Shellwords.shellescape(compat_service_name) %>
 LimitNOFILE=65536
 Environment=LD_PRELOAD=<%= install_path %>/lib/libjemalloc.so
 Environment=GEM_HOME=<%= gem_install_path %>/
 Environment=GEM_PATH=<%= gem_install_path %>/
-Environment=FLUENT_CONF=/etc/<%= package_dir %>/<%= service_name %>.conf
+Environment=FLUENT_CONF=/etc/<%= package_dir %>/<%= compat_service_name %>.conf
 Environment=FLUENT_PLUGIN=/etc/<%= package_dir %>/plugin
-Environment=FLUENT_SOCKET=/var/run/<%= package_dir %>/<%= service_name %>.sock
-Environment=TD_AGENT_LOG_FILE=/var/log/<%= package_dir %>/<%= service_name %>.log
+Environment=FLUENT_SOCKET=/var/run/<%= package_dir %>/<%= compat_service_name %>.sock
+Environment=TD_AGENT_LOG_FILE=/var/log/<%= package_dir %>/<%= compat_service_name %>.log
 <% if pkg_type == 'deb' %>
 EnvironmentFile=-/etc/default/<%= service_name %>
 <% else %>
 EnvironmentFile=-/etc/sysconfig/<%= service_name %>
 <% end %>
-PIDFile=<%= Shellwords.shellescape("/var/run/#{package_dir}/#{service_name}.pid") %>
+PIDFile=<%= Shellwords.shellescape("/var/run/#{package_dir}/#{compat_service_name}.pid") %>
 RuntimeDirectory=<%= Shellwords.shellescape(package_dir) %>
 Type=forking
 # XXX: Fix fluentd executables path
-ExecStart=/opt/td-agent/bin/fluentd --log $TD_AGENT_LOG_FILE --daemon <%= Shellwords.shellescape("/var/run/#{package_dir}/#{service_name}.pid") %> $TD_AGENT_OPTIONS
+ExecStart=/opt/td-agent/bin/fluentd --log $TD_AGENT_LOG_FILE --daemon <%= Shellwords.shellescape("/var/run/#{package_dir}/#{compat_service_name}.pid") %> $TD_AGENT_OPTIONS
 ExecStop=/bin/kill -TERM ${MAINPID}
 ExecReload=/bin/kill -HUP ${MAINPID}
 Restart=always
@@ -32,3 +32,4 @@ TimeoutStopSec=120
 
 [Install]
 WantedBy=multi-user.target
+Alias=<%= compat_service_name %>.service
