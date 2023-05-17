@@ -528,7 +528,7 @@ class BuildTask
       desc "Create launchctl configuration files from template"
       task :launchctl_config do
         configs = [
-          "#{PACKAGE_NAME}.plist",
+          "#{SERVICE_NAME}.plist",
         ]
         configs.each do |config|
           src = template_path("#{config}.erb")
@@ -1484,7 +1484,7 @@ class MacOSPackageTask
       # Build flat pkg installer
       sh("pkgbuild",
          "--root", STAGING_DIR,
-         "--component-plist", File.join("resources", "pkg", "#{PACKAGE_NAME}.plist"),
+         "--component-plist", File.join("resources", "pkg", "#{SERVICE_NAME}.plist"),
          "--identifier", "com.treasuredata.tdagent",
          "--version", @version,
          "--scripts", File.join("resources", "pkg", "scripts"),
