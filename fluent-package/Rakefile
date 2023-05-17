@@ -539,11 +539,11 @@ class BuildTask
       desc "Install additional .bat files for Windows"
       task :win_batch_files do
         ensure_directory(staging_bindir)
-        cp("msi/assets/#{COMPAT_SERVICE_NAME}-prompt.bat", td_agent_staging_dir)
-        cp("msi/assets/#{COMPAT_SERVICE_NAME}-post-install.bat", staging_bindir)
+        cp("msi/assets/#{PACKAGE_NAME}-prompt.bat", td_agent_staging_dir)
+        cp("msi/assets/#{PACKAGE_NAME}-post-install.bat", staging_bindir)
         cp("msi/assets/#{COMPAT_SERVICE_NAME}.bat", staging_bindir)
         cp("msi/assets/#{COMPAT_SERVICE_NAME}-gem.bat", staging_bindir)
-        cp("msi/assets/#{COMPAT_SERVICE_NAME}-version.rb", staging_bindir)
+        cp("msi/assets/#{PACKAGE_NAME}-version.rb", staging_bindir)
       end
 
       desc "Create systemd unit file for Red Hat like systems"
