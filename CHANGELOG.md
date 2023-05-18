@@ -13,13 +13,14 @@
 * Update fluent-plugin-kafka to 0.19.0
 * Update fluent-plugin-elasticsearch to 5.3.0
 * Update fluent-plugin-opensearch to 1.1.0
+* Update nokogiri to 1.14.3 (Windows)
 * Drop Debian buster support
 
 ### Core component
 
 * ruby v2.7.8 (update)
 * jemalloc v3.6.0
-* OpenSSL 1.1.1t Windows (update)
+* OpenSSL 1.1.1t Windows & macOS (update)
 * fluentd v1.16.1 (update)
 
 ### Core gems
@@ -68,8 +69,8 @@
 On Windows
 
 * winevt_c v0.10.1
-* fluent-plugin-parser-winevt_xml v0.2.5
-* fluent-plugin-windows-eventlog v0.8.3
+* fluent-plugin-parser-winevt_xml v0.2.5 (update)
+* fluent-plugin-windows-eventlog v0.8.3 (update)
 * fluent-plugin-windows-exporter v1.0.0
 
 ## Release v4.4.2 - 2022/11/04
