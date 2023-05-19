@@ -25,18 +25,18 @@
   <buffer>
     @type file
 <% if windows? %>
-    path "#{ENV['TD_AGENT_TOPDIR']}/var/log/<%= package_dir %>/buffer/td"
+    path "#{ENV['TD_AGENT_TOPDIR']}/var/log/<%= compat_package_dir %>/buffer/td"
 <% else %>
-    path /var/log/<%= package_dir %>/buffer/td
+    path /var/log/<%= compat_package_dir %>/buffer/td
 <% end %>
   </buffer>
 
   <secondary>
     @type file
 <% if windows? %>
-    path "#{ENV['TD_AGENT_TOPDIR']}/var/log/<%= package_dir %>/failed_records"
+    path "#{ENV['TD_AGENT_TOPDIR']}/var/log/<%= compat_package_dir %>/failed_records"
 <% else %>
-    path /var/log/<%= package_dir %>/failed_records
+    path /var/log/<%= compat_package_dir %>/failed_records
 <% end %>
   </secondary>
 </match>
@@ -102,7 +102,7 @@
 #<match local.**>
 #  @type file
 #  @id output_file
-#  path /var/log/<%= package_dir %>/access
+#  path /var/log/<%= compat_package_dir %>/access
 #</match>
 
 ## Forwarding
@@ -133,11 +133,11 @@
 #    auto_create_table
 #    <buffer>
 #      @type file
-#      path /var/log/<%= package_dir %>/buffer/td
+#      path /var/log/<%= compat_package_dir %>/buffer/td
 #    </buffer>
 #  </store>
 #  <store>
 #    @type file
-#    path /var/log/<%= package_dir %>/td-%Y-%m-%d/%H.log
+#    path /var/log/<%= compat_package_dir %>/td-%Y-%m-%d/%H.log
 #  </store>
 #</match>

@@ -22,9 +22,9 @@ jobs:
           gem install bundler builder
       - name: Build
         run: |
-          sudo mkdir /opt/td-agent
-          sudo chown $(whoami) /opt/td-agent
-          rm -rf td-agent/staging
+          sudo mkdir /opt/fluent
+          sudo chown $(whoami) /opt/fluent
+          rm -rf fluent/staging
           rake dmg:selfbuild PATH="$HOME/.cargo/bin:$PATH"
       - name: Upload td-agent dmg
         uses: actions/upload-artifact@master

@@ -59,7 +59,7 @@ ${DNF} install -y \
   ${repositories_dir}/${distribution}/${DISTRIBUTION_VERSION}/${ARCH}/Packages/*.rpm
 
 echo "BINSTUBS TEST"
-/opt/td-agent/bin/ruby /fluentd/fluent-package/binstubs-test.rb
+/opt/fluent/bin/ruby /fluentd/fluent-package/binstubs-test.rb
 if [ $? -eq 0 ]; then
     echo "Checking existence of binstubs: OK"
 else

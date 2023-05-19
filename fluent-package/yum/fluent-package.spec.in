@@ -132,9 +132,9 @@ done
 
 cd -
 mkdir -p %{buildroot}%{_localstatedir}/run/@PACKAGE_DIR@
-mkdir -p %{buildroot}%{_localstatedir}/log/@PACKAGE_DIR@
-mkdir -p %{buildroot}%{_localstatedir}/log/@PACKAGE_DIR@/buffer
-mkdir -p %{buildroot}%{_sysconfdir}/@PACKAGE_DIR@/plugin
+mkdir -p %{buildroot}%{_localstatedir}/log/@COMPAT_PACKAGE_DIR@
+mkdir -p %{buildroot}%{_localstatedir}/log/@COMPAT_PACKAGE_DIR@/buffer
+mkdir -p %{buildroot}%{_sysconfdir}/@COMPAT_PACKAGE_DIR@/plugin
 mkdir -p %{buildroot}/tmp/@PACKAGE_DIR@
 
 %pre
@@ -186,6 +186,22 @@ fi
 
 %postun
 %systemd_postun_with_restart @SERVICE_NAME@.service
+if [ -f /usr/sbin/@COMPAT_SERVICE_NAME@ ]; then
+  rm -f /usr/sbin/@COMPAT_SERVICE_NAME@
+fi
+if [ -f /usr/sbin/@COMPAT_SERVICE_NAME@-gem ]; then
+  rm -f /usr/sbin/@COMPAT_SERVICE_NAME@-gem
+fi
+
+%posttrans
+if [ ! -f /usr/sbin/@COMPAT_SERVICE_NAME@ ]; then
+  # provides /usr/sbin/td-agent for backward compatibility
+  ln -sf /usr/sbin/@SERVICE_NAME@ /usr/sbin/@COMPAT_SERVICE_NAME@
+fi
+if [ ! -f /usr/sbin/@COMPAT_SERVICE_NAME@-gem ]; then
+  # provides /usr/sbin/td-agent-gem for backward compatibility
+  ln -sf /usr/sbin/fluent-gem /usr/sbin/@COMPAT_SERVICE_NAME@-gem
+fi
 
 %files
 %doc README.md
@@ -199,16 +215,16 @@ fi
 %{_unitdir}/@SERVICE_NAME@.service
 %{_tmpfilesdir}/@SERVICE_NAME@.conf
 %{_bindir}/td
-%{_sbindir}/td-agent
-%{_sbindir}/td-agent-gem
+%{_sbindir}/@SERVICE_NAME@
+%{_sbindir}/fluent-gem
 %{_mandir}/man1/td*
 %config(noreplace) %{_sysconfdir}/sysconfig/@SERVICE_NAME@
-%config(noreplace) %{_sysconfdir}/@PACKAGE_DIR@/@COMPAT_SERVICE_NAME@.conf
+%config(noreplace) %{_sysconfdir}/@COMPAT_PACKAGE_DIR@/@COMPAT_SERVICE_NAME@.conf
 %config(noreplace) %{_sysconfdir}/logrotate.d/@COMPAT_SERVICE_NAME@
-%attr(0755,td-agent,td-agent) %dir %{_localstatedir}/log/@PACKAGE_DIR@
-%attr(0755,td-agent,td-agent) %dir %{_localstatedir}/log/@PACKAGE_DIR@/buffer
-%attr(0755,td-agent,td-agent) %dir %{_sysconfdir}/@PACKAGE_DIR@
-%attr(0755,td-agent,td-agent) %dir %{_sysconfdir}/@PACKAGE_DIR@/plugin
+%attr(0755,td-agent,td-agent) %dir %{_localstatedir}/log/@COMPAT_PACKAGE_DIR@
+%attr(0755,td-agent,td-agent) %dir %{_localstatedir}/log/@COMPAT_PACKAGE_DIR@/buffer
+%attr(0755,td-agent,td-agent) %dir %{_sysconfdir}/@COMPAT_PACKAGE_DIR@
+%attr(0755,td-agent,td-agent) %dir %{_sysconfdir}/@COMPAT_PACKAGE_DIR@/plugin
 # NOTE: %{_tmpfilesdir} is available since CentOS 7
 %attr(0755,td-agent,td-agent) %dir /tmp/@PACKAGE_DIR@
 %changelog

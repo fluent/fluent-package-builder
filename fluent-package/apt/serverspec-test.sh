@@ -62,6 +62,6 @@ while true ; do
 done
 /usr/bin/kafka-topics --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic test
 /usr/sbin/td-agent -c /fluentd/serverspec/test.conf &
-export PATH=/opt/td-agent/bin:$PATH
+export PATH=/opt/fluent/bin:$PATH
 export INSTALLATION_TEST=true
 cd /fluentd && rake serverspec:linux
