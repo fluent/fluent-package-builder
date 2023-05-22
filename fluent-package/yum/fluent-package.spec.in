@@ -165,22 +165,22 @@ if [ $1 -eq 1 ]; then
     fi
 fi
 if [ -d "%{_sysconfdir}/prelink.conf.d/" ]; then
-  echo "prelink detected. Installing /etc/prelink.conf.d/td-agent-ruby.conf ..."
-  if [ ! -f %{_sysconfdir}/prelink.conf.d/td-agent-ruby.conf ]; then
-      %{__cp} -f /opt/td-agent/share/td-agent-ruby.conf %{_sysconfdir}/prelink.conf.d/td-agent-ruby.conf
-  else
-    if [ $(grep '\-b /opt/td-agent/embedded/bin/ruby' -c %{_sysconfdir}/prelink.conf.d/td-agent-ruby.conf) -eq 1 ]; then
-      echo "old-prelink detected, Update /etc/prelink.conf ..."
-      %{__sed} -i"" %{_sysconfdir}/prelink.conf.d/td-agent-ruby.conf -e "s,/embedded/,/,"
-    fi
+  # Drop prelink itself which is used until v4
+  echo "prelink detected. checking /etc/prelink.conf.d/ ..."
+  if [ -f %{_sysconfdir}/prelink.conf.d/td-agent-ruby.conf ]; then
+    echo "Removing prelink configuration for td-agent (/etc/prelink.conf.d/td-agent-ruby.conf) ..."
+    rm -f %{_sysconfdir}/prelink.conf.d/td-agent-ruby.conf
   fi
-elif [ -f "%{_sysconfdir}/prelink.conf" ]; then
+fi
+if [ -f "%{_sysconfdir}/prelink.conf" ]; then
+  # Drop matched line from prelink itself which is used until v4
   if [ $(grep '\-b /opt/td-agent/embedded/bin/ruby' -c %{_sysconfdir}/prelink.conf) -eq 1 ]; then
-    echo "old-prelink detected, but /etc/prelink.conf.d/ does't exist. Update /etc/prelink.conf ..."
-    %{__sed} -i"" %{_sysconfdir}/prelink.conf -e "s,/embedded/,/,"
-  elif [ $(grep '\-b /opt/td-agent/bin/ruby' -c %{_sysconfdir}/prelink.conf) -eq 0 ]; then
-    echo "prelink detected, but /etc/prelink.conf.d/ does't exist. Adding /etc/prelink.conf ..."
-    echo "-b /opt/td-agent/bin/ruby" >> /etc/prelink.conf
+    echo "Removing prelink settings for td-agent v3 from /etc/prelink.conf ..."
+    %{__sed} -i"" %{_sysconfdir}/prelink.conf -e "/\/opt\/td-agent\/embedded\/bin\/ruby/d"
+  fi
+  if [ $(grep '\-b /opt/td-agent/bin/ruby' -c %{_sysconfdir}/prelink.conf) -eq 1 ]; then
+    echo "Removing prelink settings for td-agent v4 from /etc/prelink.conf ..."
+    %{__sed} -i"" %{_sysconfdir}/prelink.conf -e "/\/opt\/td-agent\/bin\/ruby/d"
   fi
 fi
 
