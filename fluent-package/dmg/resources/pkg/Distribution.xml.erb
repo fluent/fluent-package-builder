@@ -4,16 +4,11 @@
     <background file="background.png" alignment="bottomleft" mime-type="image/png"/>
     <license file="license.rtf" mime-type="text/html"/>
     <welcome file="welcome.html" mime-type="text/html"/>
-    <pkg-ref id="com.treasuredata.tdagent"/>
     <options customize="never" require-scripts="false"/>
     <choices-outline>
-        <line choice="default">
-            <line choice="com.treasuredata.tdagent"/>
-        </line>
+        <line choice="default"/>
     </choices-outline>
-    <choice id="default"/>
-    <choice id="com.treasuredata.tdagent" visible="false">
-        <pkg-ref id="com.treasuredata.tdagent"/>
+    <choice id="default">
+        <pkg-ref id="com.treasuredata.tdagent" version="<%= version %>" onConclusion="none">fluent-package.pkg</pkg-ref>
     </choice>
-    <pkg-ref id="com.treasuredata.tdagent" version="<%= version %>" onConclusion="none">fluent-package.pkg</pkg-ref>
 </installer-gui-script>
