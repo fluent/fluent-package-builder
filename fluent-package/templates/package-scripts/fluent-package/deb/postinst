@@ -7,25 +7,43 @@ set -e
 prevver="$2"
 
 add_system_user() {
-    if ! getent passwd <%= compat_service_name %> >/dev/null; then
-        adduser --group --system --home /var/lib/<%= package_dir %> <%= compat_service_name %>
+    if ! getent passwd _<%= service_name %> >/dev/null; then
+	if ! getent passwd <%= compat_service_name %> >/dev/null; then
+	    # With underscore prefix, need to disable NAME_REGEX restriction
+	    adduser --group --system --force-badname --home /var/lib/<%= package_dir %> _<%= service_name %>
+	else
+	    if getent group <%= compat_service_name %> >/dev/null; then
+		groupmod --new-name _<%= service_name %> <%= compat_service_name %>
+	    fi
+	    if getent passwd <%= compat_service_name %> >/dev/null; then
+		usermod --login _<%= service_name %> <%= compat_service_name %>
+	    fi
+	fi
     fi
 }
 
 add_directories() {
     mkdir -p /var/run/<%= package_dir %>
-    mkdir -p /etc/<%= package_dir %>
-    mkdir -p /etc/<%= package_dir %>/plugin
-    mkdir -p /var/log/<%= package_dir %>
+    mkdir -p /etc/<%= compat_package_dir %>
+    mkdir -p /etc/<%= compat_package_dir %>/plugin
+    mkdir -p /var/log/<%= compat_package_dir %>
 }
 
 fixperms() {
+    # If statoverride entry exits, use --force-all to ensure statoverride-add will work.
+    # If statoverride entry doen't exit, no need to --force-all.
     dpkg-statoverride --list /var/run/<%= package_dir %> >/dev/null || \
-        dpkg-statoverride --update --add <%= compat_service_name %> <%= compat_service_name %> 0755 /var/run/<%= package_dir %>
-    dpkg-statoverride --list /etc/<%= package_dir %> >/dev/null || \
-        dpkg-statoverride --update --add <%= compat_service_name %> <%= compat_service_name %> 0755 /etc/<%= package_dir %>
-    dpkg-statoverride --list /var/log/<%= package_dir %> >/dev/null || \
-        dpkg-statoverride --update --add <%= compat_service_name %> <%= compat_service_name %> 0755 /var/log/<%= package_dir %>
+        dpkg-statoverride --update --add _<%= service_name %> _<%= service_name %> 0755 /var/run/<%= package_dir %>
+    dpkg-statoverride --list /var/run/<%= package_dir %> >/dev/null && \
+        dpkg-statoverride --force-all --update --add _<%= service_name %> _<%= service_name %> 0755 /var/run/<%= package_dir %>
+    dpkg-statoverride --list /etc/<%= compat_package_dir %> >/dev/null || \
+        dpkg-statoverride --update --add _<%= service_name %> _<%= service_name %> 0755 /etc/<%= compat_package_dir %>
+    dpkg-statoverride --list /etc/<%= compat_package_dir %> >/dev/null && \
+        dpkg-statoverride --force-all --update --add _<%= service_name %> _<%= service_name %> 0755 /etc/<%= compat_package_dir %>
+    dpkg-statoverride --list /var/log/<%= compat_package_dir %> >/dev/null || \
+        dpkg-statoverride --update --add _<%= service_name %> _<%= service_name %> 0755 /var/log/<%= compat_package_dir %>
+    dpkg-statoverride --list /var/log/<%= compat_package_dir %> >/dev/null && \
+        dpkg-statoverride --force-all --update --add _<%= service_name %> _<%= service_name %> 0755 /var/log/<%= compat_package_dir %>
 }
 
 case "$1" in
