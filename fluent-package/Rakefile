@@ -1485,7 +1485,7 @@ class MacOSPackageTask
       sh("pkgbuild",
          "--root", STAGING_DIR,
          "--component-plist", File.join("resources", "pkg", "#{SERVICE_NAME}.plist"),
-         "--identifier", "com.treasuredata.tdagent",
+         "--identifier", "org.fluent.fluentd",
          "--version", @version,
          "--scripts", File.join("resources", "pkg", "scripts"),
          "--install-location", "/",
