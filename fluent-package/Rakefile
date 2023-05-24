@@ -517,7 +517,9 @@ class BuildTask
         scripts.each do |script|
           src = template_path("#{script}.erb")
           dest = if macos?
-                   File.join(STAGING_DIR, File.join("opt", PACKAGE_DIR, script))
+                   # We should avoid touching `/usr/sbin/` because we
+                   # don't prepare the uninstall feature for macOS.
+                   File.join(td_agent_staging_dir, "sbin", File.basename(script))
                  else
                    File.join(STAGING_DIR, script)
                  end
