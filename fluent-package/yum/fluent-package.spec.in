@@ -139,14 +139,32 @@ mkdir -p %{buildroot}/tmp/@PACKAGE_DIR@
 
 %pre
 if ! getent group @COMPAT_SERVICE_NAME@ >/dev/null; then
-    /usr/sbin/groupadd -r @COMPAT_SERVICE_NAME@
+    if ! getent group @SERVICE_NAME@ >/dev/null; then
+        /usr/sbin/groupadd -r @SERVICE_NAME@
+    fi
+else
+    if ! getent group @SERVICE_NAME@ >/dev/null; then
+       echo "Migrate group @COMPAT_SERVICE_NAME@ to @SERVICE_NAME@..."
+       /usr/sbin/groupmod --new-name @SERVICE_NAME@ @COMPAT_SERVICE_NAME@
+    fi
 fi
 if ! getent passwd @COMPAT_SERVICE_NAME@ >/dev/null; then
+    if ! getent passwd @SERVICE_NAME@ >/dev/null; then
 %if %{use_suse}
-    /usr/sbin/useradd -r -g @COMPAT_SERVICE_NAME@ -d %{_localstatedir}/lib/@PACKAGE_DIR@ -s /sbin/nologin -c '@COMPAT_SERVICE_NAME@' @COMPAT_SERVICE_NAME@
+        /usr/sbin/useradd -r -g @SERVICE_NAME@ -d %{_localstatedir}/lib/@PACKAGE_DIR@ -s /sbin/nologin -c '@SERVICE_NAME@' @SERVICE_NAME@
 %else
-    /usr/sbin/adduser -r -g @COMPAT_SERVICE_NAME@ -d %{_localstatedir}/lib/@PACKAGE_DIR@ -s /sbin/nologin -c '@COMPAT_SERVICE_NAME@' @COMPAT_SERVICE_NAME@
+        /usr/sbin/adduser -r -g @SERVICE_NAME@ -d %{_localstatedir}/lib/@PACKAGE_DIR@ -s /sbin/nologin -c '@SERVICE_NAME@' @SERVICE_NAME@
 %endif
+    fi
+else
+    if ! getent passwd @SERVICE_NAME@ >/dev/null; then
+       systemctl is-active @COMPAT_SERVICE_NAME@
+       if [ $? -ne 0 ]; then
+           # As service is down, renaming user here.
+	   echo "Migrate user @COMPAT_SERVICE_NAME@ to @SERVICE_NAME@..."
+           /usr/sbin/usermod --login @SERVICE_NAME@ @COMPAT_SERVICE_NAME@
+       fi
+    fi
 fi
 
 %preun
@@ -157,6 +175,16 @@ fi
 if [ $1 -eq 1 ]; then
     systemctl is-active @COMPAT_SERVICE_NAME@
     if [ $? -eq 0 ]; then
+	if getent passwd @COMPAT_SERVICE_NAME@ >/dev/null; then
+	    if ! getent passwd @SERVICE_NAME@ >/dev/null; then
+		# usermod fails when user process is active, so
+		# postpone username migration step here. (During %pre
+		# stage, mismatch of user/group configuration cause
+		# restarting service failure.)
+		systemctl stop @COMPAT_SERVICE_NAME@.service
+		/usr/sbin/usermod --login @SERVICE_NAME@ @COMPAT_SERVICE_NAME@
+	    fi
+	fi
 	# When upgrading from v4, td-agent.service will be removed
 	# with %postun scriptlet. fluentd service also inactive even though
 	# td-agent.service is running before upgrade process. Try to
@@ -221,12 +249,12 @@ fi
 %config(noreplace) %{_sysconfdir}/sysconfig/@SERVICE_NAME@
 %config(noreplace) %{_sysconfdir}/@COMPAT_PACKAGE_DIR@/@COMPAT_SERVICE_NAME@.conf
 %config(noreplace) %{_sysconfdir}/logrotate.d/@COMPAT_SERVICE_NAME@
-%attr(0755,td-agent,td-agent) %dir %{_localstatedir}/log/@COMPAT_PACKAGE_DIR@
-%attr(0755,td-agent,td-agent) %dir %{_localstatedir}/log/@COMPAT_PACKAGE_DIR@/buffer
-%attr(0755,td-agent,td-agent) %dir %{_sysconfdir}/@COMPAT_PACKAGE_DIR@
-%attr(0755,td-agent,td-agent) %dir %{_sysconfdir}/@COMPAT_PACKAGE_DIR@/plugin
+%attr(0755,fluentd,fluentd) %dir %{_localstatedir}/log/@COMPAT_PACKAGE_DIR@
+%attr(0755,fluentd,fluentd) %dir %{_localstatedir}/log/@COMPAT_PACKAGE_DIR@/buffer
+%attr(0755,fluentd,fluentd) %dir %{_sysconfdir}/@COMPAT_PACKAGE_DIR@
+%attr(0755,fluentd,fluentd) %dir %{_sysconfdir}/@COMPAT_PACKAGE_DIR@/plugin
 # NOTE: %{_tmpfilesdir} is available since CentOS 7
-%attr(0755,td-agent,td-agent) %dir /tmp/@PACKAGE_DIR@
+%attr(0755,fluentd,fluentd) %dir /tmp/@PACKAGE_DIR@
 %changelog
 * Tue Jan 17 2023 Takuro Ashie <ashie@clear-code.com> - 5.0.0-1
 - New upstream release.
