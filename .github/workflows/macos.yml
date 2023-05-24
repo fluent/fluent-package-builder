@@ -31,3 +31,14 @@ jobs:
         with:
           name: packages-macos
           path: fluent-package/dmg/*.dmg
+  test:
+    name: Test
+    needs: build
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/download-artifact@master
+        with:
+          name: packages-macos
+      - name: Run test
+        run: fluent-package/dmg/install-test.sh *.dmg
