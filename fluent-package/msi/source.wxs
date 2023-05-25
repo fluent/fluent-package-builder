@@ -93,19 +93,15 @@
           </Component>
         </Directory>
       </Directory>
-      <Directory Id="TDAgentBinDir"
-                 Name="bin"
-                 ComponentGuidGenerationSeed="3ad15499-f8a4-471b-bc7f-16aa4abfd894">
-        <Component Id="TDAgentBat">
-          <File Name="td-agent.bat"
-                KeyPath="yes"
-                Source="$(var.ProjectSourceDir)\bin\td-agent.bat" />
-          <ServiceControl Id="ServiceControlFluentdWinSvc"
-                          Name="fluentdwinsvc"
-                          Stop="uninstall"
-                          Remove="uninstall" />
-        </Component>
-      </Directory>
+      <Component Id="FluentdBat" Guid="261158e8-7b22-48ff-b7eb-9f8296f30236">
+        <File Name="fluentd.bat"
+              KeyPath="yes"
+              Source="$(var.ProjectSourceDir)\fluentd.bat" />
+        <ServiceControl Id="ServiceControlFluentdWinSvc"
+                        Name="fluentdwinsvc"
+                        Stop="uninstall"
+                        Remove="uninstall" />
+      </Component>
     </DirectoryRef>
 
     <SetDirectory Id="WINDOWSVOLUME" Value="[WindowsVolume]" />
@@ -131,8 +127,8 @@
       <ComponentGroupRef Id="ProjectDir" />
       <ComponentRef Id="ApplicationShortcut" />
       <ComponentRef Id="TDAgentConf" />
-      <ComponentRef Id="TDAgentBat" />
       <ComponentRef Id="TDAgentAcl" />
+      <ComponentRef Id="FluentdBat" />
     </Feature>
 
     <!-- UI Stuff -->
@@ -170,7 +166,7 @@
     <Property Id="InstallFluentdWinSvc" Value=" "/>
     <CustomAction Id="SetInstallFluentdWinSvcCommand"
                   Property="InstallFluentdWinSvc"
-                  Value="&quot;[PROJECTLOCATION]bin\td-agent.bat&quot; --reg-winsvc i --reg-winsvc-delay-start --reg-winsvc-auto-start --reg-winsvc-fluentdopt &quot;-c [PROJECTLOCATION]etc\td-agent\td-agent.conf -o [PROJECTLOCATION]td-agent.log&quot;"/>
+                  Value="&quot;[PROJECTLOCATION]fluentd.bat&quot; --reg-winsvc i --reg-winsvc-delay-start --reg-winsvc-auto-start --reg-winsvc-fluentdopt &quot;-c [PROJECTLOCATION]etc\td-agent\td-agent.conf -o [PROJECTLOCATION]td-agent.log&quot;"/>
     <CustomAction Id="InstallFluentdWinSvc"
                   BinaryKey="WixCA"
                   DllEntry="WixQuietExec64"
