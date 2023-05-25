@@ -44,7 +44,7 @@ jobs:
         run: |
           cp /usr/bin/qemu-aarch64-static fluent-package/yum/${{ matrix.rake-job }}/
           rake yum:build YUM_TARGETS=${{ matrix.rake-job }}-aarch64
-      - name: Upload td-agent rpm
+      - name: Upload fluent-package rpm
         uses: actions/upload-artifact@master
         with:
           name: packages-${{ matrix.rake-job }}-aarch64
