@@ -48,7 +48,7 @@ jobs:
       - name: Build rpm with Docker
         run: |
           rake yum:build YUM_TARGETS=${{ matrix.rake-job }}
-      - name: Upload td-agent rpm
+      - name: Upload fluent-package rpm
         uses: actions/upload-artifact@master
         with:
           name: packages-${{ matrix.rake-job }}

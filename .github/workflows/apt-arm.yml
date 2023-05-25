@@ -36,11 +36,11 @@ jobs:
         run: |
           docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
           rake apt:build APT_TARGETS=${{ matrix.rake-job }}-arm64 ${{ matrix.rake-options }}
-      - name: Upload td-agent deb
+      - name: Upload fluent-package deb
         uses: actions/upload-artifact@master
         with:
           name: packages-${{ matrix.rake-job }}-arm64
-          path: td-agent/apt/repositories
+          path: fluent-package/apt/repositories
       - name: Check Package Size
         run: |
           fluent-package/apt/pkgsize-test.sh ${{ matrix.rake-job }} arm64

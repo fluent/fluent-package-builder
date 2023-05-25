@@ -35,16 +35,16 @@ jobs:
       - name: Build deb with Docker
         run: |
           rake apt:build APT_TARGETS=${{ matrix.rake-job }}
-      - name: Upload td-agent deb
+      - name: Upload fluent-package deb
         uses: actions/upload-artifact@master
         with:
           name: packages-${{ matrix.rake-job }}
-          path: td-agent/apt/repositories
-      - name: Upload td-agent-apt-source deb
+          path: fluent-package/apt/repositories
+      - name: Upload fluentd-apt-source deb
         uses: actions/upload-artifact@master
         with:
           name: packages-apt-source-${{ matrix.rake-job }}
-          path: td-agent-apt-source/apt/repositories
+          path: fluentd-apt-source/apt/repositories
       - name: Check Package Size
         run: |
           fluent-package/apt/pkgsize-test.sh ${{ matrix.rake-job }} amd64

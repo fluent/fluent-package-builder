@@ -26,7 +26,7 @@ jobs:
           sudo chown $(whoami) /opt/fluent
           rm -rf fluent/staging
           rake dmg:selfbuild PATH="$HOME/.cargo/bin:$PATH"
-      - name: Upload td-agent dmg
+      - name: Upload fluent-package dmg
         uses: actions/upload-artifact@master
         with:
           name: packages-macos
