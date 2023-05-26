@@ -1555,7 +1555,7 @@ class WindowsPackageTask
          "-sreg",   # Suppress registry harvesting
          "-gg",                          # Generate guides
          "-cg", "ProjectDir",            # Component Group Name
-         "-dr", "PROJECTLOCATION",       # Root directory reference
+         "-dr", "FLUENTPROJECTLOCATION",       # Root directory reference
          "-var", "var.ProjectSourceDir", # Substitue File/@Source="SourceDir"
          "-t",   "exclude-files.xslt",   # XSLT for exclude files
          "-out", 'project-files.wxs')
