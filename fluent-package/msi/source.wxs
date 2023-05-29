@@ -73,6 +73,13 @@
               </CreateFolder>
             </Component>
           </Directory>
+          <Directory Id="FLUENTPROJECTLOCATION" Name="fluent">
+            <Component Id="FluentAcl" Guid="c2bba014-c3c1-4817-a0c6-096dbd95991d">
+              <CreateFolder>
+                <PermissionEx Sddl="D:(A;OICI;0x1200a9;;;BU)(A;OICI;FA;;;BA)(A;OICI;FA;;;S-1-5-80-956008885-3418522649-1831038044-1853292631-2271478464)(A;OICI;FA;;;CO)(A;OICI;FA;;;SY)"/>
+              </CreateFolder>
+            </Component>
+          </Directory>
         </Directory>
       </Directory>
       <Directory Id="ProgramMenuFolder">
@@ -93,6 +100,9 @@
           </Component>
         </Directory>
       </Directory>
+    </DirectoryRef>
+
+    <DirectoryRef Id="FLUENTPROJECTLOCATION">
       <Component Id="FluentdBat" Guid="261158e8-7b22-48ff-b7eb-9f8296f30236">
         <File Name="fluentd.bat"
               KeyPath="yes"
@@ -109,7 +119,7 @@
     <!-- Shortcut on Start Menu -->
     <DirectoryRef Id="ApplicationProgramFolder">
       <Component Id="ApplicationShortcut" Guid="*">
-        <Shortcut Id="ApplicationShortcut" Name="!(loc.ProductName) Command Prompt" Description="Open !(loc.ProductName) Command Prompt" Target="[SystemFolder]cmd.exe" Arguments='/k "[PROJECTLOCATION]fluent-package-prompt.bat"' WorkingDirectory="PROJECTLOCATION" />
+        <Shortcut Id="ApplicationShortcut" Name="!(loc.ProductName) Command Prompt" Description="Open !(loc.ProductName) Command Prompt" Target="[SystemFolder]cmd.exe" Arguments='/k "[FLUENTPROJECTLOCATION]fluent-package-prompt.bat"' WorkingDirectory="FLUENTPROJECTLOCATION" />
         <RemoveFolder Id="ApplicationProgramFolder" On="uninstall" />
         <RegistryValue Root="HKCU" Key="Software\[Manufacturer]\[ProductName]" Name="installed" Type="integer" Value="1" KeyPath="yes" />
         <Environment Id="ProjectLocationDirForConf"
@@ -118,7 +128,7 @@
                      Part="all"
                      System="yes"
                      Name="TD_AGENT_TOPDIR"
-                     Value="[PROJECTLOCATION]"/>
+                     Value="[FLUENTPROJECTLOCATION]"/>
       </Component>
     </DirectoryRef>
 
@@ -128,6 +138,7 @@
       <ComponentRef Id="ApplicationShortcut" />
       <ComponentRef Id="TDAgentConf" />
       <ComponentRef Id="TDAgentAcl" />
+      <ComponentRef Id="FluentAcl" />
       <ComponentRef Id="FluentdBat" />
     </Feature>
 
@@ -156,7 +167,7 @@
     <Property Id="PostInstall" Value=" "/>
     <CustomAction Id="SetPostInstallCommand"
                   Property="PostInstall"
-                  Value="&quot;[PROJECTLOCATION]bin\fluent-package-post-install.bat&quot;"/>
+                  Value="&quot;[FLUENTPROJECTLOCATION]bin\fluent-package-post-install.bat&quot;"/>
     <CustomAction Id="PostInstall"
                   BinaryKey="WixCA"
                   DllEntry="WixQuietExec64"
@@ -166,7 +177,7 @@
     <Property Id="InstallFluentdWinSvc" Value=" "/>
     <CustomAction Id="SetInstallFluentdWinSvcCommand"
                   Property="InstallFluentdWinSvc"
-                  Value="&quot;[PROJECTLOCATION]fluentd.bat&quot; --reg-winsvc i --reg-winsvc-delay-start --reg-winsvc-auto-start --reg-winsvc-fluentdopt &quot;-c [PROJECTLOCATION]etc\td-agent\td-agent.conf -o [PROJECTLOCATION]td-agent.log&quot;"/>
+                  Value="&quot;[FLUENTPROJECTLOCATION]fluentd.bat&quot; --reg-winsvc i --reg-winsvc-delay-start --reg-winsvc-auto-start --reg-winsvc-fluentdopt &quot;-c [PROJECTLOCATION]etc\td-agent\td-agent.conf -o [PROJECTLOCATION]td-agent.log&quot;"/>
     <CustomAction Id="InstallFluentdWinSvc"
                   BinaryKey="WixCA"
                   DllEntry="WixQuietExec64"
@@ -177,7 +188,7 @@
     <Property Id="CreateCompatTdAgentBat" Value=" "/>
     <CustomAction Id="SetCreateCompatTdAgentBat"
                   Property="CreateCompatTdAgentBat"
-                  Value="&quot;cmd&quot; /c &quot;fsutil hardlink create [PROJECTLOCATION]bin\td-agent.bat [PROJECTLOCATION]fluentd.bat&quot;"/>
+                  Value="&quot;cmd&quot; /c &quot;fsutil hardlink create [FLUENTPROJECTLOCATION]bin\td-agent.bat [FLUENTPROJECTLOCATION]fluentd.bat&quot;"/>
     <CustomAction Id="CreateCompatTdAgentBat"
                   BinaryKey="WixCA"
                   DllEntry="WixQuietExec64"
@@ -187,7 +198,7 @@
     <Property Id="CreateCompatTdAgentGemBat" Value=" "/>
     <CustomAction Id="SetCreateCompatTdAgentGemBat"
                   Property="CreateCompatTdAgentGemBat"
-                  Value="&quot;cmd&quot; /c &quot;fsutil hardlink create [PROJECTLOCATION]bin\td-agent-gem.bat [PROJECTLOCATION]fluent-gem.bat&quot;"/>
+                  Value="&quot;cmd&quot; /c &quot;fsutil hardlink create [FLUENTPROJECTLOCATION]bin\td-agent-gem.bat [FLUENTPROJECTLOCATION]fluent-gem.bat&quot;"/>
     <CustomAction Id="CreateCompatTdAgentGemBat"
                   BinaryKey="WixCA"
                   DllEntry="WixQuietExec64"
@@ -198,7 +209,7 @@
     <Property Id="DeleteCompatTdAgentBat" Value=" "/>
     <CustomAction Id="SetDeleteCompatTdAgentBat"
                   Property="DeleteCompatTdAgentBat"
-                  Value="&quot;cmd&quot; /c &quot;del [PROJECTLOCATION]bin\td-agent.bat&quot;"/>
+                  Value="&quot;cmd&quot; /c &quot;del [FLUENTPROJECTLOCATION]bin\td-agent.bat&quot;"/>
     <CustomAction Id="DeleteCompatTdAgentBat"
                   BinaryKey="WixCA"
                   DllEntry="WixQuietExec64"
@@ -208,7 +219,7 @@
     <Property Id="DeleteCompatTdAgentGemBat" Value=" "/>
     <CustomAction Id="SetDeleteCompatTdAgentGemBat"
                   Property="DeleteCompatTdAgentGemBat"
-                  Value="&quot;cmd&quot; /c &quot;del [PROJECTLOCATION]bin\td-agent-gem.bat&quot;"/>
+                  Value="&quot;cmd&quot; /c &quot;del [FLUENTPROJECTLOCATION]bin\td-agent-gem.bat&quot;"/>
     <CustomAction Id="DeleteCompatTdAgentGemBat"
                   BinaryKey="WixCA"
                   DllEntry="WixQuietExec64"
