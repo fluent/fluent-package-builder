@@ -93,19 +93,15 @@
           </Component>
         </Directory>
       </Directory>
-      <Directory Id="TDAgentBinDir"
-                 Name="bin"
-                 ComponentGuidGenerationSeed="3ad15499-f8a4-471b-bc7f-16aa4abfd894">
-        <Component Id="TDAgentBat">
-          <File Name="td-agent.bat"
-                KeyPath="yes"
-                Source="$(var.ProjectSourceDir)\bin\td-agent.bat" />
-          <ServiceControl Id="ServiceControlFluentdWinSvc"
-                          Name="fluentdwinsvc"
-                          Stop="uninstall"
-                          Remove="uninstall" />
-        </Component>
-      </Directory>
+      <Component Id="FluentdBat" Guid="261158e8-7b22-48ff-b7eb-9f8296f30236">
+        <File Name="fluentd.bat"
+              KeyPath="yes"
+              Source="$(var.ProjectSourceDir)\fluentd.bat" />
+        <ServiceControl Id="ServiceControlFluentdWinSvc"
+                        Name="fluentdwinsvc"
+                        Stop="uninstall"
+                        Remove="uninstall" />
+      </Component>
     </DirectoryRef>
 
     <SetDirectory Id="WINDOWSVOLUME" Value="[WindowsVolume]" />
@@ -131,8 +127,8 @@
       <ComponentGroupRef Id="ProjectDir" />
       <ComponentRef Id="ApplicationShortcut" />
       <ComponentRef Id="TDAgentConf" />
-      <ComponentRef Id="TDAgentBat" />
       <ComponentRef Id="TDAgentAcl" />
+      <ComponentRef Id="FluentdBat" />
     </Feature>
 
     <!-- UI Stuff -->
@@ -170,18 +166,72 @@
     <Property Id="InstallFluentdWinSvc" Value=" "/>
     <CustomAction Id="SetInstallFluentdWinSvcCommand"
                   Property="InstallFluentdWinSvc"
-                  Value="&quot;[PROJECTLOCATION]bin\td-agent.bat&quot; --reg-winsvc i --reg-winsvc-delay-start --reg-winsvc-auto-start --reg-winsvc-fluentdopt &quot;-c [PROJECTLOCATION]etc\td-agent\td-agent.conf -o [PROJECTLOCATION]td-agent.log&quot;"/>
+                  Value="&quot;[PROJECTLOCATION]fluentd.bat&quot; --reg-winsvc i --reg-winsvc-delay-start --reg-winsvc-auto-start --reg-winsvc-fluentdopt &quot;-c [PROJECTLOCATION]etc\td-agent\td-agent.conf -o [PROJECTLOCATION]td-agent.log&quot;"/>
     <CustomAction Id="InstallFluentdWinSvc"
                   BinaryKey="WixCA"
                   DllEntry="WixQuietExec64"
                   Execute="deferred"
                   Return="check"
                   Impersonate="no" />
+
+    <Property Id="CreateCompatTdAgentBat" Value=" "/>
+    <CustomAction Id="SetCreateCompatTdAgentBat"
+                  Property="CreateCompatTdAgentBat"
+                  Value="&quot;cmd&quot; /c &quot;fsutil hardlink create [PROJECTLOCATION]bin\td-agent.bat [PROJECTLOCATION]fluentd.bat&quot;"/>
+    <CustomAction Id="CreateCompatTdAgentBat"
+                  BinaryKey="WixCA"
+                  DllEntry="WixQuietExec64"
+                  Execute="deferred"
+                  Return="check"
+                  Impersonate="no" />
+    <Property Id="CreateCompatTdAgentGemBat" Value=" "/>
+    <CustomAction Id="SetCreateCompatTdAgentGemBat"
+                  Property="CreateCompatTdAgentGemBat"
+                  Value="&quot;cmd&quot; /c &quot;fsutil hardlink create [PROJECTLOCATION]bin\td-agent-gem.bat [PROJECTLOCATION]fluent-gem.bat&quot;"/>
+    <CustomAction Id="CreateCompatTdAgentGemBat"
+                  BinaryKey="WixCA"
+                  DllEntry="WixQuietExec64"
+                  Execute="deferred"
+                  Return="check"
+                  Impersonate="no" />
+
+    <Property Id="DeleteCompatTdAgentBat" Value=" "/>
+    <CustomAction Id="SetDeleteCompatTdAgentBat"
+                  Property="DeleteCompatTdAgentBat"
+                  Value="&quot;cmd&quot; /c &quot;del [PROJECTLOCATION]bin\td-agent.bat&quot;"/>
+    <CustomAction Id="DeleteCompatTdAgentBat"
+                  BinaryKey="WixCA"
+                  DllEntry="WixQuietExec64"
+                  Execute="deferred"
+                  Return="check"
+                  Impersonate="no" />
+    <Property Id="DeleteCompatTdAgentGemBat" Value=" "/>
+    <CustomAction Id="SetDeleteCompatTdAgentGemBat"
+                  Property="DeleteCompatTdAgentGemBat"
+                  Value="&quot;cmd&quot; /c &quot;del [PROJECTLOCATION]bin\td-agent-gem.bat&quot;"/>
+    <CustomAction Id="DeleteCompatTdAgentGemBat"
+                  BinaryKey="WixCA"
+                  DllEntry="WixQuietExec64"
+                  Execute="deferred"
+                  Return="check"
+                  Impersonate="no" />
+
     <InstallExecuteSequence>
       <Custom Action="SetPostInstallCommand" After="InstallFiles">NOT Installed</Custom>
       <Custom Action="PostInstall" After="SetPostInstallCommand">NOT Installed</Custom>
       <Custom Action="SetInstallFluentdWinSvcCommand" After="InstallFiles">NOT Installed</Custom>
       <Custom Action="InstallFluentdWinSvc" After="SetInstallFluentdWinSvcCommand">NOT Installed</Custom>
+
+      <Custom Action="SetCreateCompatTdAgentBat" Before="InstallFinalize">NOT Installed</Custom>
+      <Custom Action="CreateCompatTdAgentBat" After="SetCreateCompatTdAgentBat">NOT Installed</Custom>
+      <Custom Action="SetCreateCompatTdAgentGemBat" Before="InstallFinalize">NOT Installed</Custom>
+      <Custom Action="CreateCompatTdAgentGemBat" After="SetCreateCompatTdAgentGemBat">NOT Installed</Custom>
+
+      <!-- Delete hardlink before removing installed files -->
+      <Custom Action="SetDeleteCompatTdAgentBat" After="InstallInitialize">Installed AND NOT REINSTALL</Custom>
+      <Custom Action="DeleteCompatTdAgentBat" After="SetDeleteCompatTdAgentBat">Installed AND NOT REINSTALL</Custom>
+      <Custom Action="SetDeleteCompatTdAgentGemBat" After="InstallInitialize">Installed AND NOT REINSTALL</Custom>
+      <Custom Action="DeleteCompatTdAgentGemBat" After="SetDeleteCompatTdAgentGemBat">Installed AND NOT REINSTALL</Custom>
     </InstallExecuteSequence>
 
   </Product>

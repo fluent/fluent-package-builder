@@ -25,7 +25,7 @@
     <xsl:template match="*[self::wix:Component or self::wix:ComponentRef][key('conf-search', @Id)]" />
     <xsl:key
         name="service-bat-search"
-        match="wix:Component[wix:File/@Source = '$(var.ProjectSourceDir)\bin\td-agent.bat']"
+        match="wix:Component[wix:File/@Source = '$(var.ProjectSourceDir)\fluentd.bat']"
         use="@Id" />
     <xsl:template match="*[self::wix:Component or self::wix:ComponentRef][key('service-bat-search', @Id)]" />
 </xsl:stylesheet>

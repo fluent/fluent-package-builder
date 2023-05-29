@@ -6,6 +6,7 @@ Write-Host "Installing ${msi} ..."
 Start-Process msiexec -ArgumentList "/i", $msi, "/quiet" -Wait -NoNewWindow
 
 $ENV:PATH="C:\\opt\\td-agent\\bin;" + $ENV:PATH
+$ENV:PATH="C:\\opt\\td-agent;" + $ENV:PATH
 
 td-agent --version
 
