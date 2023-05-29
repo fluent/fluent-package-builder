@@ -16,10 +16,7 @@ LimitNOFILE=65536
 Environment=LD_PRELOAD=<%= install_path %>/lib/libjemalloc.so
 Environment=GEM_HOME=<%= gem_install_path %>/
 Environment=GEM_PATH=<%= gem_install_path %>/
-Environment=FLUENT_CONF=/etc/<%= compat_package_dir %>/<%= compat_service_name %>.conf
-Environment=FLUENT_PLUGIN=/etc/<%= compat_package_dir %>/plugin
 Environment=FLUENT_SOCKET=/var/run/<%= package_dir %>/<%= compat_service_name %>.sock
-Environment=TD_AGENT_LOG_FILE=/var/log/<%= compat_package_dir %>/<%= compat_service_name %>.log
 <% if pkg_type == 'deb' %>
 EnvironmentFile=-/etc/default/<%= service_name %>
 <% else %>
