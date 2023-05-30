@@ -1,7 +1,7 @@
 name: Apt based Linux
 on:
   push:
-    branches: [master]
+    branches: [td-agent-v4]
   pull_request:
 jobs:
   build:
