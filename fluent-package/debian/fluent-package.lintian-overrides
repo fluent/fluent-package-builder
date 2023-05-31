@@ -12,22 +12,22 @@ fluent-package: duplicate-font-file
 fluent-package: jar-not-in-usr-share
 fluent-package: possibly-insecure-handling-of-tmp-files-in-maintainer-script
 fluent-package: maintainer-script-should-not-use-recursive-chown-or-chmod
-fluent-package: unusual-interpreter opt/td-agent/lib/ruby/gems/*/gems/bundler-*/lib/bundler/templates/Executable #!<%=
-fluent-package: unusual-interpreter opt/td-agent/lib/ruby/gems/*/gems/bundler-*/lib/bundler/templates/Executable.bundler #!<%=
-fluent-package: unusual-interpreter opt/td-agent/lib/ruby/gems/*/gems/bundler-*/lib/bundler/templates/Executable.standalone #!<%=
-fluent-package: incorrect-path-for-interpreter opt/td-agent/bin/jeprof (#!/usr/bin/env perl != /usr/bin/perl)
+fluent-package: unusual-interpreter opt/fluent/lib/ruby/gems/*/gems/bundler-*/lib/bundler/templates/Executable #!<%=
+fluent-package: unusual-interpreter opt/fluent/lib/ruby/gems/*/gems/bundler-*/lib/bundler/templates/Executable.bundler #!<%=
+fluent-package: unusual-interpreter opt/fluent/lib/ruby/gems/*/gems/bundler-*/lib/bundler/templates/Executable.standalone #!<%=
+fluent-package: incorrect-path-for-interpreter opt/fluent/bin/jeprof (#!/usr/bin/env perl != /usr/bin/perl)
 fluent-package: uses-dpkg-database-directly postinst (line 37)
 fluent-package: uses-dpkg-database-directly postinst (line 40)
-fluent-package: unusual-interpreter opt/td-agent/lib/ruby/*/bundler/templates/Executable #!<%=
-fluent-package: unusual-interpreter opt/td-agent/lib/ruby/*/bundler/templates/Executable.bundler #!<%=
-fluent-package: unusual-interpreter opt/td-agent/lib/ruby/*/bundler/templates/Executable.standalone #!<%=
+fluent-package: unusual-interpreter opt/fluent/lib/ruby/*/bundler/templates/Executable #!<%=
+fluent-package: unusual-interpreter opt/fluent/lib/ruby/*/bundler/templates/Executable.bundler #!<%=
+fluent-package: unusual-interpreter opt/fluent/lib/ruby/*/bundler/templates/Executable.standalone #!<%=
 fluent-package: package-contains-vcs-control-file
-fluent-package: binary-or-shlib-defines-rpath opt/td-agent/lib/ruby/gems/*/extensions/x86_64-linux/*/nokogiri-*/nokogiri/nokogiri.so /build/td-agent-*/debian/tmp/opt/td-agent/lib/ruby/gems/*/gems/nokogiri-*/ports/x86_64-pc-linux-gnu/libxml2/*/lib
-fluent-package: binary-or-shlib-defines-rpath opt/td-agent/lib/ruby/gems/*/extensions/x86_64-linux/*/nokogiri-*/nokogiri/nokogiri.so /build/td-agent-*/debian/tmp/opt/td-agent/lib/ruby/gems/*/gems/nokogiri-*/ports/x86_64-pc-linux-gnu/libxslt/*/lib
-fluent-package: binary-or-shlib-defines-rpath opt/td-agent/lib/ruby/gems/*/gems/nokogiri-*/lib/nokogiri/nokogiri.so /build/td-agent-*/debian/tmp/opt/td-agent/lib/ruby/gems/*/gems/nokogiri-*/ports/x86_64-pc-linux-gnu/libxslt/*/lib
-fluent-package: binary-or-shlib-defines-rpath opt/td-agent/lib/ruby/gems/*/gems/nokogiri-*/ext/nokogiri/nokogiri.so /build/td-agent-*/debian/tmp/opt/td-agent/lib/ruby/gems/*/gems/nokogiri-*/ports/x86_64-pc-linux-gnu/libxslt/*/lib
-fluent-package: binary-or-shlib-defines-rpath opt/td-agent/lib/ruby/gems/*/gems/nokogiri-*/ext/nokogiri/nokogiri.so /build/td-agent-*/debian/tmp/opt/td-agent/lib/ruby/gems/*/gems/nokogiri-*/ports/x86_64-pc-linux-gnu/libxml2/*/lib
-fluent-package: binary-or-shlib-defines-rpath opt/td-agent/lib/ruby/gems/*/gems/nokogiri-*/lib/nokogiri/nokogiri.so /build/td-agent-*/debian/tmp/opt/td-agent/lib/ruby/gems/*/gems/nokogiri-*/ports/x86_64-pc-linux-gnu/libxml2/*/lib
-fluent-package: embedded-library opt/td-agent/lib/ruby/gems/*/extensions/x86_64-linux/*/nokogiri-*/nokogiri/nokogiri.so: libxml2
-fluent-package: embedded-library opt/td-agent/lib/ruby/gems/*/gems/nokogiri-*/ext/nokogiri/nokogiri.so: libxml2
-fluent-package: embedded-library opt/td-agent/lib/ruby/gems/*/gems/nokogiri-*/lib/nokogiri/nokogiri.so: libxml2
+fluent-package: binary-or-shlib-defines-rpath opt/fluent/lib/ruby/gems/*/extensions/x86_64-linux/*/nokogiri-*/nokogiri/nokogiri.so /build/fluent-pacakge-*/debian/tmp/opt/fluent/lib/ruby/gems/*/gems/nokogiri-*/ports/x86_64-pc-linux-gnu/libxml2/*/lib
+fluent-package: binary-or-shlib-defines-rpath opt/fluent/lib/ruby/gems/*/extensions/x86_64-linux/*/nokogiri-*/nokogiri/nokogiri.so /build/fluent-package-*/debian/tmp/opt/fluent/lib/ruby/gems/*/gems/nokogiri-*/ports/x86_64-pc-linux-gnu/libxslt/*/lib
+fluent-package: binary-or-shlib-defines-rpath opt/fluent/lib/ruby/gems/*/gems/nokogiri-*/lib/nokogiri/nokogiri.so /build/fluent-package-*/debian/tmp/opt/fluent/lib/ruby/gems/*/gems/nokogiri-*/ports/x86_64-pc-linux-gnu/libxslt/*/lib
+fluent-package: binary-or-shlib-defines-rpath opt/fluent/lib/ruby/gems/*/gems/nokogiri-*/ext/nokogiri/nokogiri.so /build/fluent-package-*/debian/tmp/opt/fluent/lib/ruby/gems/*/gems/nokogiri-*/ports/x86_64-pc-linux-gnu/libxslt/*/lib
+fluent-package: binary-or-shlib-defines-rpath opt/fluent/lib/ruby/gems/*/gems/nokogiri-*/ext/nokogiri/nokogiri.so /build/fluent-package-*/debian/tmp/opt/fluent/lib/ruby/gems/*/gems/nokogiri-*/ports/x86_64-pc-linux-gnu/libxml2/*/lib
+fluent-package: binary-or-shlib-defines-rpath opt/fluent/lib/ruby/gems/*/gems/nokogiri-*/lib/nokogiri/nokogiri.so /build/fluent-package-*/debian/tmp/opt/fluent/lib/ruby/gems/*/gems/nokogiri-*/ports/x86_64-pc-linux-gnu/libxml2/*/lib
+fluent-package: embedded-library opt/fluent/lib/ruby/gems/*/extensions/x86_64-linux/*/nokogiri-*/nokogiri/nokogiri.so: libxml2
+fluent-package: embedded-library opt/fluent/lib/ruby/gems/*/gems/nokogiri-*/ext/nokogiri/nokogiri.so: libxml2
+fluent-package: embedded-library opt/fluent/lib/ruby/gems/*/gems/nokogiri-*/lib/nokogiri/nokogiri.so: libxml2
