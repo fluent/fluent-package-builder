@@ -14,10 +14,13 @@
 #    limitations under the License.
 #
 
-# The "servercore" image cannot install DotNet3.5 (which is required by
-# wixtoolset) by chocolatey.
-ARG FROM=mcr.microsoft.com/dotnet/framework/runtime:3.5-windowsservercore-ltsc2019
+# The latest chocolatey requires .net 4.8, and wixtoolset requires .net 3.5,
+# To satisfy both of them without reboot, use sdk image.
+ARG FROM=mcr.microsoft.com/dotnet/framework/sdk:3.5-windowsservercore-ltsc2019
 FROM ${FROM}
+
+# Launch the following command as if cmd /S /C ...
+SHELL ["cmd", "/S", "/C"]
 
 # Install Chocolatey to set up toolchain
 RUN @"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "[System.Net.ServicePointManager]::SecurityProtocol = 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))" && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"
