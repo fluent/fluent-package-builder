@@ -6,10 +6,17 @@ set -e
 
 if [ "$1" = "purge" ]; then
 	rm -f /etc/default/<%= compat_service_name %>
-	dpkg-statoverride --list /etc/<%= compat_package_dir %> > /dev/null && \
-		dpkg-statoverride --remove /etc/<%= compat_package_dir %>
-	rm -f /etc/<%= compat_package_dir %>/<%= compat_service_name %>.conf
-	rm -rf /etc/<%= compat_package_dir %>
+	rm -f /etc/default/<%= service_name %>
+	for target_dir in /etc/<%= compat_package_dir %> /etc/<%= package_dir %>; do
+  	    dpkg-statoverride --list $target_dir > /dev/null && \
+		dpkg-statoverride --remove $target_dir
+	    if [ "$target_dir" = "/etc/<%= compat_package_dir %>" ]; then
+		rm -f $target_dir/<%= compat_service_name %>.conf
+	    elif [ "$target_dir" = "/etc/<%= package_dir %>" ]; then
+		rm -f $target_dir/<%= service_name %>.conf
+	    fi
+	    rm -rf $target_dir
+	done
 	dpkg-statoverride --list /var/run/<%= package_dir %> > /dev/null && \
 		dpkg-statoverride --remove /var/run/<%= package_dir %>
 	rm -f /var/run/<%= package_dir %>/*
@@ -19,6 +26,15 @@ if [ "$1" = "purge" ]; then
 	rm -rf /var/log/<%= compat_package_dir %>/buffer
 	rm -rf /var/log/<%= compat_package_dir %>/*
 	rm -rf /var/log/<%= compat_package_dir %>
+	for target_dir in /var/log/<%= compat_package_dir %> /var/log/<%= package_dir %>; do
+  	    dpkg-statoverride --list $target_dir > /dev/null && \
+		dpkg-statoverride --remove $target_dir
+	    if [ "$target_dir" = "/var/log/<%= compat_package_dir %>" ]; then
+		rm -f $target_dir
+	    elif [ "$target_dir" = "/var/log/<%= package_dir %>" ]; then
+		rm -rf $target_dir
+	    fi
+	done
 
 	getent passwd _<%= service_name %> && userdel -r _<%= service_name %>
 fi
