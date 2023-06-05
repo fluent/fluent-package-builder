@@ -44,6 +44,8 @@ fixperms() {
         dpkg-statoverride --update --add _<%= service_name %> _<%= service_name %> 0755 /var/log/<%= compat_package_dir %>
     dpkg-statoverride --list /var/log/<%= compat_package_dir %> >/dev/null && \
         dpkg-statoverride --force-all --update --add _<%= service_name %> _<%= service_name %> 0755 /var/log/<%= compat_package_dir %>
+    # Cleanup /var/run/<%= compat_package_dir %>
+    dpkg-statoverride --force-all --remove /var/run/<%= compat_package_dir %>
 }
 
 case "$1" in
