@@ -477,9 +477,11 @@ class BuildTask
 
       desc "Create td-agent configuration files from template"
       task :td_agent_config do
-        configs = [
-          "etc/#{COMPAT_PACKAGE_DIR}/#{COMPAT_SERVICE_NAME}.conf"
-        ]
+        configs = if windows?
+                    ["etc/#{COMPAT_PACKAGE_DIR}/#{COMPAT_SERVICE_NAME}.conf"]
+                  else
+                    ["etc/#{PACKAGE_DIR}/#{SERVICE_NAME}.conf"]
+                  end
         configs.concat([
           "etc/logrotate.d/#{COMPAT_SERVICE_NAME}",
           "opt/#{PACKAGE_DIR}/share/#{COMPAT_SERVICE_NAME}-ruby.conf",
@@ -487,7 +489,8 @@ class BuildTask
         ]) unless windows? || macos?
         configs.each do |config|
           src = template_path(config)
-          if config == "etc/#{COMPAT_PACKAGE_DIR}/#{COMPAT_SERVICE_NAME}.conf"
+          if config == "etc/#{PACKAGE_DIR}/#{SERVICE_NAME}.conf" or
+            config == "etc/#{COMPAT_PACKAGE_DIR}/#{COMPAT_SERVICE_NAME}.conf"
             src = template_path("opt/#{PACKAGE_DIR}/share/#{COMPAT_SERVICE_NAME}.conf.tmpl")
           end
           dest = File.join(STAGING_DIR, config)
