@@ -221,6 +221,18 @@ if [ -f /usr/sbin/@COMPAT_SERVICE_NAME@-gem ]; then
   rm -f /usr/sbin/@COMPAT_SERVICE_NAME@-gem
 fi
 
+if [ $1 -eq 0 ]; then
+   # Removing
+   if getent passwd @SERVICE_NAME@ >/dev/null; then
+       echo "Removing @SERVICE_NAME@ user..."
+       /usr/sbin/userdel --remove @SERVICE_NAME@
+   fi
+   if getent group @SERVICE_NAME@ >/dev/null; then
+       echo "Removing @SERVICE_NAME@ group..."
+       /usr/sbin/groupdel @SERVICE_NAME@
+   fi
+fi
+
 %posttrans
 if [ ! -f /usr/sbin/@COMPAT_SERVICE_NAME@ ]; then
   # provides /usr/sbin/td-agent for backward compatibility
