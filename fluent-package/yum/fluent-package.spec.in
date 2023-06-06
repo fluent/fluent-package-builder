@@ -28,6 +28,8 @@
 # Omit check-rpath and brp-mangle-shebangs since we use our own Ruby
 %define __arch_install_post %{nil}
 %undefine __brp_mangle_shebangs
+%define v4migration /tmp/@PACKAGE_DIR@/.v4migration
+%define v4migration_with_restart /tmp/@PACKAGE_DIR@/.v4migration_with_restart
 
 %global __provides_exclude_from ^/opt/%{name}/.*\\.so.*
 %global __requires_exclude libjemalloc.*|libruby.*|/opt/%{name}/.*
@@ -132,9 +134,9 @@ done
 
 cd -
 mkdir -p %{buildroot}%{_localstatedir}/run/@PACKAGE_DIR@
-mkdir -p %{buildroot}%{_localstatedir}/log/@COMPAT_PACKAGE_DIR@
-mkdir -p %{buildroot}%{_localstatedir}/log/@COMPAT_PACKAGE_DIR@/buffer
-mkdir -p %{buildroot}%{_sysconfdir}/@COMPAT_PACKAGE_DIR@/plugin
+mkdir -p %{buildroot}%{_localstatedir}/log/@PACKAGE_DIR@
+mkdir -p %{buildroot}%{_localstatedir}/log/@PACKAGE_DIR@/buffer
+mkdir -p %{buildroot}%{_sysconfdir}/@PACKAGE_DIR@/plugin
 mkdir -p %{buildroot}/tmp/@PACKAGE_DIR@
 
 %pre
@@ -173,6 +175,33 @@ fi
 %post
 %systemd_post @SERVICE_NAME@.service
 if [ $1 -eq 1 ]; then
+    if [ -d /etc/@COMPAT_PACKAGE_DIR@ -a ! -h /etc/@COMPAT_PACKAGE_DIR@ ]; then
+	touch %{v4migration}
+	# /etc/@COMPAT_PACKAGE_DIR@ migration from v4
+	if [ -d /etc/@COMPAT_PACKAGE_DIR@/plugin -a -n "$(ls /etc/@COMPAT_PACKAGE_DIR@/plugin)" ]; then
+	    echo "Migrating from /etc/@COMPAT_PACKAGE_DIR@/plugin/ to /etc/@PACKAGE_DIR@/plugin/..."
+	    mv -f /etc/@COMPAT_PACKAGE_DIR@/plugin/* /etc/@PACKAGE_DIR@/plugin/
+	fi
+	if [ -f /etc/@COMPAT_PACKAGE_DIR@/@SERVICE_NAME@.conf ]; then
+	    # Avoid conflict with packaged version
+	    echo "#"
+	    echo "# Migrating from /etc/@COMPAT_PACKAGE_DIR@/@SERVICE_NAME@.conf to /etc/@PACKAGE_DIR@/@SERVICE_NAME@.conf.rpmmoved"
+	    echo "#"
+	    mv -f /etc/@COMPAT_PACKAGE_DIR@/@SERVICE_NAME@.conf /etc/@PACKAGE_DIR@/@SERVICE_NAME@.conf.rpmmoved
+	fi
+	if [ -f /etc/@COMPAT_PACKAGE_DIR@/@COMPAT_SERVICE_NAME@.conf ]; then
+	    echo "Migrating from /etc/@COMPAT_PACKAGE_DIR@/@COMPAT_SERVICE_NAME@.conf to /etc/@PACKAGE_DIR@/@COMPAT_SERVICE_NAME@.conf"
+	    cp -f /etc/@COMPAT_PACKAGE_DIR@/@COMPAT_SERVICE_NAME@.conf /etc/@PACKAGE_DIR@/@COMPAT_SERVICE_NAME@.conf
+	    for d in /etc/@COMPAT_PACKAGE_DIR@/*; do
+		if [ ! "$d" == "/etc/@COMPAT_PACKAGE_DIR@/plugin" -a ! "$d" == "/etc/@COMPAT_PACKAGE_DIR@/@COMPAT_SERVICE_NAME@.conf" ]; then
+		    # /etc/@COMPAT_PACKAGE_DIR@/plugin will be removed from td-agent
+		    mv -f $d /etc/@PACKAGE_DIR@/
+		fi
+	    done
+	    echo "Refer previous configuration @COMPAT_SERVICE_NAME@.conf ..."
+	    %{__sed} -i"" %{_sysconfdir}/sysconfig/@SERVICE_NAME@ -e "/FLUENT_CONF/c FLUENT_CONF=/etc/@PACKAGE_DIR@/@COMPAT_SERVICE_NAME@.conf"
+	fi
+    fi
     systemctl is-active @COMPAT_SERVICE_NAME@
     if [ $? -eq 0 ]; then
 	if getent passwd @COMPAT_SERVICE_NAME@ >/dev/null; then
@@ -185,11 +214,26 @@ if [ $1 -eq 1 ]; then
 		/usr/sbin/usermod --login @SERVICE_NAME@ @COMPAT_SERVICE_NAME@
 	    fi
 	fi
-	# When upgrading from v4, td-agent.service will be removed
-	# with %postun scriptlet. fluentd service also inactive even though
-	# td-agent.service is running before upgrade process. Try to
-	# keep running fluentd service, explicitly restart it.
-	systemctl restart @SERVICE_NAME@.service
+	# Want to restart with new user/group here,
+	# but to avoid holding file descriptor under /var/log/@COMPAT_PACKAGE_DIR@/,
+	# delay restarting @SERVICE_NAME@ service.
+	touch %{v4migration_with_restart}
+    fi
+    if [ -d /var/log/@COMPAT_PACKAGE_DIR@ -a ! -h /var/log/@COMPAT_PACKAGE_DIR@ ]; then
+	# /var/log/@COMPAT_PACKAGE_DIR@ migration from v4
+	if [ -d /var/log/@COMPAT_PACKAGE_DIR@/buffer -a -n "$(ls /var/log/@COMPAT_PACKAGE_DIR@/buffer)" ]; then
+	    mv -f /var/log/@COMPAT_PACKAGE_DIR@/buffer/* /var/log/@PACKAGE_DIR@/buffer/
+	fi
+	for d in /var/log/@COMPAT_PACKAGE_DIR@/*; do
+	    if [ ! "$d" == "/var/log/@COMPAT_PACKAGE_DIR@/buffer" ]; then
+		# /var/log/@COMPAT_PACKAGE_DIR@/buffer will be removed from td-agent
+		mv -f $d /var/log/@PACKAGE_DIR@/
+	    fi
+	done
+	if [ -f /var/log/@PACKAGE_DIR@/@COMPAT_SERVICE_NAME@.log ]; then
+	    echo "Keep logging to @COMPAT_SERVICE_NAME@.log ..."
+	    %{__sed} -i"" %{_sysconfdir}/sysconfig/@SERVICE_NAME@ -e "/TD_AGENT_LOG_FILE/c TD_AGENT_LOG_FILE=/var/log/@COMPAT_PACKAGE_DIR@/@COMPAT_SERVICE_NAME@.log"
+	fi
     fi
 fi
 if [ -d "%{_sysconfdir}/prelink.conf.d/" ]; then
@@ -220,6 +264,12 @@ fi
 if [ -f /usr/sbin/@COMPAT_SERVICE_NAME@-gem ]; then
   rm -f /usr/sbin/@COMPAT_SERVICE_NAME@-gem
 fi
+if [ -h /etc/@COMPAT_PACKAGE_DIR@ ]; then
+  rm -f /etc/@COMPAT_PACKAGE_DIR@
+fi
+if [ -h /var/log/@COMPAT_PACKAGE_DIR@ ]; then
+  rm -f /var/log/@COMPAT_PACKAGE_DIR@
+fi
 
 if [ $1 -eq 0 ]; then
    # Removing
@@ -235,12 +285,31 @@ fi
 
 %posttrans
 if [ ! -f /usr/sbin/@COMPAT_SERVICE_NAME@ ]; then
-  # provides /usr/sbin/td-agent for backward compatibility
+  echo "Provides /usr/sbin/td-agent symlink for backward compatibility"
   ln -sf /usr/sbin/@SERVICE_NAME@ /usr/sbin/@COMPAT_SERVICE_NAME@
 fi
 if [ ! -f /usr/sbin/@COMPAT_SERVICE_NAME@-gem ]; then
-  # provides /usr/sbin/td-agent-gem for backward compatibility
+  echo "Provides /usr/sbin/td-agent-gem symlink for backward compatibility"
   ln -sf /usr/sbin/fluent-gem /usr/sbin/@COMPAT_SERVICE_NAME@-gem
+fi
+if [ -f %{v4migration} ]; then
+    if [ ! -h /etc/@COMPAT_PACKAGE_DIR@ ]; then
+	echo "Provides /etc/td-agent symlink for backward compatibility"
+	ln -sf /etc/@PACKAGE_DIR@ /etc/@COMPAT_PACKAGE_DIR@
+    fi
+    if [ ! -h /var/log/@COMPAT_PACKAGE_DIR@ ]; then
+	echo "Provides /var/log/td-agent symlink for backward compatibility"
+	ln -sf /var/log/@PACKAGE_DIR@ /var/log/@COMPAT_PACKAGE_DIR@
+    fi
+    rm -f %{v4migration}
+    if [ -f %{v4migration_with_restart} ]; then
+	# When upgrading from v4, td-agent.service will be removed
+	# with %postun scriptlet. fluentd service also inactive even though
+	# td-agent.service is running before upgrade process. Try to
+	# keep running fluentd service, explicitly restart it.
+	systemctl restart @SERVICE_NAME@.service
+	rm -f %{v4migration_with_restart}
+    fi
 fi
 
 %files
@@ -259,12 +328,12 @@ fi
 %{_sbindir}/fluent-gem
 %{_mandir}/man1/td*
 %config(noreplace) %{_sysconfdir}/sysconfig/@SERVICE_NAME@
-%config(noreplace) %{_sysconfdir}/@COMPAT_PACKAGE_DIR@/@COMPAT_SERVICE_NAME@.conf
+%config(noreplace) %{_sysconfdir}/@PACKAGE_DIR@/@SERVICE_NAME@.conf
 %config(noreplace) %{_sysconfdir}/logrotate.d/@COMPAT_SERVICE_NAME@
-%attr(0755,fluentd,fluentd) %dir %{_localstatedir}/log/@COMPAT_PACKAGE_DIR@
-%attr(0755,fluentd,fluentd) %dir %{_localstatedir}/log/@COMPAT_PACKAGE_DIR@/buffer
-%attr(0755,fluentd,fluentd) %dir %{_sysconfdir}/@COMPAT_PACKAGE_DIR@
-%attr(0755,fluentd,fluentd) %dir %{_sysconfdir}/@COMPAT_PACKAGE_DIR@/plugin
+%attr(0755,fluentd,fluentd) %dir %{_localstatedir}/log/@PACKAGE_DIR@
+%attr(0755,fluentd,fluentd) %dir %{_localstatedir}/log/@PACKAGE_DIR@/buffer
+%attr(0755,fluentd,fluentd) %dir %{_sysconfdir}/@PACKAGE_DIR@
+%attr(0755,fluentd,fluentd) %dir %{_sysconfdir}/@PACKAGE_DIR@/plugin
 # NOTE: %{_tmpfilesdir} is available since CentOS 7
 %attr(0755,fluentd,fluentd) %dir /tmp/@PACKAGE_DIR@
 %changelog
