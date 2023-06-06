@@ -67,9 +67,20 @@ td-agent --version
 echo "UNINSTALL TEST"
 ${DNF} remove -y fluent-package
 
-conf_path=/etc/td-agent/td-agent.conf
-if [ -e $conf_path ]; then
-    echo "td-agent.conf must be removed: <${conf_path}>"
+for conf_path in /etc/td-agent/td-agent.conf /etc/fluent/fluentd.conf; do
+    if [ -e $conf_path ]; then
+	echo "$conf_path must be removed"
+	exit 1
+    fi
+done
+
+if getent passwd fluentd >/dev/null; then
+    echo "fluentd user must be removed"
+    exit 1
+fi
+
+if getent group fluentd >/dev/null; then
+    echo "fluentd group must be removed"
     exit 1
 fi
 
@@ -99,6 +110,34 @@ EOF
     esac
     ${DNF} update -y
     ${DNF} install -y td-agent
+    # equivalent to tmpfiles.d
+    mkdir -p /tmp/fluent
     ${DNF} install -y \
            ${repositories_dir}/${distribution}/${DISTRIBUTION_VERSION}/x86_64/Packages/*.rpm
+
+
+    if getent passwd td-agent >/dev/null; then
+        echo "td-agent user must be removed"
+        exit 1
+    fi
+    if getent group td-agent >/dev/null; then
+        echo "td-agent group must be removed"
+        exit 1
+    fi
+    if ! getent passwd fluentd >/dev/null; then
+        echo "fluentd user must exist"
+        exit 1
+    fi
+    if ! getent group fluentd >/dev/null; then
+        echo "fluentd group must exist"
+        exit 1
+    fi
+    if [ ! -h /var/log/td-agent ]; then
+        echo "/var/log/td-agent must be symlink"
+        exit 1
+    fi
+    if [ ! -h /etc/td-agent ]; then
+        echo "/etc/td-agent must be symlink"
+        exit 1
+    fi
 fi

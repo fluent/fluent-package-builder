@@ -60,7 +60,9 @@ for v in "${PREVIOUS_VERSIONS[@]}"; do
     BASE_NAME=td-agent-${v}-1.${DISTRO_VERSION_PREFIX}${DISTRO_VERSION}.${ARCH}.rpm
     PREVIOUS_RPM=${BASE_URI}/${ARCH}/${BASE_NAME}
     set +e
-    wget ${PREVIOUS_RPM}
+    if [ ! -f ${BASE_NAME} ]; then
+	wget ${PREVIOUS_RPM}
+    fi
     if [ $? -eq 0 ]; then
 	break
     fi
