@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -exu
+set -xu
 
 # Amazon Linux 2 system-release-cpe is:
 # cpe:2.3:o:amazon:amazon_linux:2
@@ -67,9 +67,20 @@ td-agent --version
 echo "UNINSTALL TEST"
 ${DNF} remove -y fluent-package
 
-conf_path=/etc/td-agent/td-agent.conf
-if [ -e $conf_path ]; then
-    echo "td-agent.conf must be removed: <${conf_path}>"
+for conf_path in /etc/td-agent/td-agent.conf /etc/fluent/fluentd.conf; do
+    if [ -e $conf_path ]; then
+	echo "$conf_path must be removed"
+	exit 1
+    fi
+done
+getent passwd fluentd >/dev/null
+if [ $? -eq 0 ]; then
+    echo "fluentd user must be removed"
+    exit 1
+fi
+getent group fluentd >/dev/null
+if [ $? -eq 0 ]; then
+    echo "fluentd group must be removed"
     exit 1
 fi
 
@@ -99,6 +110,38 @@ EOF
     esac
     ${DNF} update -y
     ${DNF} install -y td-agent
+    # equivalent to tmpfiles.d
+    mkdir -p /tmp/fluent
     ${DNF} install -y \
            ${repositories_dir}/${distribution}/${DISTRIBUTION_VERSION}/x86_64/Packages/*.rpm
+
+    getent passwd td-agent >/dev/null
+    if [ $? -eq 0 ]; then
+	echo "td-agent user must be removed"
+	exit 1
+    fi
+    getent group td-agent >/dev/null
+    if [ $? -eq 0 ]; then
+	echo "td-agent group must be removed"
+	exit 1
+    fi
+    getent passwd fluentd >/dev/null
+    if [ $? -ne 0 ]; then
+	echo "fluentd user must exist"
+	exit 1
+    fi
+    getent group fluentd >/dev/null
+    if [ $? -ne 0 ]; then
+	echo "fluentd group must exist"
+	exit 1
+    fi
+
+    if [ ! -s /var/log/td-agent ]; then
+	echo "/var/log/td-agent must be symlink"
+	exit 1
+    fi
+    if [ ! -s /etc/td-agent ]; then
+	echo "/etc/td-agent must be symlink"
+	exit 1
+    fi
 fi
