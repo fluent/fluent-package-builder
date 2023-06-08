@@ -5,8 +5,13 @@ After=network-online.target
 Wants=network-online.target
 
 [Service]
-User=<%= Shellwords.shellescape(compat_service_name) %>
-Group=<%= Shellwords.shellescape(compat_service_name) %>
+<% if pkg_type == 'deb' %>
+User=_<%= Shellwords.shellescape(service_name) %>
+Group=_<%= Shellwords.shellescape(service_name) %>
+<% else %>
+User=<%= Shellwords.shellescape(service_name) %>
+Group=<%= Shellwords.shellescape(service_name) %>
+<% end %>
 LimitNOFILE=65536
 Environment=LD_PRELOAD=<%= install_path %>/lib/libjemalloc.so
 Environment=GEM_HOME=<%= gem_install_path %>/

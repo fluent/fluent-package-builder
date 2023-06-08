@@ -503,7 +503,11 @@ class BuildTask
         configs.each do |config|
           src = template_path(config)
           dest = File.join(STAGING_DIR, config)
-          render_template(dest, src, template_params)
+          if File.readlines("/etc/os-release").any? { |entry| ["ID=debian", "ID=ubuntu"].include?(entry.chomp) }
+            render_template(dest, src, template_params({ pkg_type: "deb"}))
+          else
+            render_template(dest, src, template_params({ pkg_type: "rpm"}))
+          end
         end
       end
 

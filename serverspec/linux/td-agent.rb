@@ -7,13 +7,24 @@ describe package("fluent-package") do
   it { should be_installed }
 end
 
-describe user("td-agent") do
-  it { should exist }
-  it { should belong_to_group "td-agent" }
-end
+if os[:family] == 'redhat'
+  describe user("fluentd") do
+    it { should exist }
+    it { should belong_to_group "fluentd" }
+  end
 
-describe group("td-agent") do
-  it { should exist }
+  describe group("fluentd") do
+    it { should exist }
+  end
+else
+  describe user("_fluentd") do
+    it { should exist }
+    it { should belong_to_group "_fluentd" }
+  end
+
+  describe group("_fluentd") do
+    it { should exist }
+  end
 end
 
 describe "gem files" do
