@@ -5,16 +5,60 @@
 
 # Create <%= service_name %> related directories and files
 
-if [ ! -e "/var/log/<%= compat_package_dir %>/" ]; then
-  mkdir -p /var/log/<%= compat_package_dir %>/
-  mkdir -p /var/log/<%= compat_package_dir %>/buffer/
+if [ ! -e "/var/log/<%= package_dir %>/" ]; then
+    mkdir -p /var/log/<%= package_dir %>/
+    mkdir -p /var/log/<%= package_dir %>/buffer/
+fi
+if [ -d "/var/log/<%= compat_package_dir %>/" ]; then
+    if [ -d /var/log/<%= compat_package_dir %> -a ! -h /var/log/<%= compat_package_dir %> ]; then
+        # /var/log/<%= compat_package_dir %> migration from v4
+        if [ -d /var/log/<%= compat_package_dir %>/buffer -a -n "$(ls /var/log/<%= compat_package_dir %>/buffer)" ]; then
+            mv -f /var/log/<%= compat_package_dir %>/buffer/* /var/log/<%= compat_package_dir %>/buffer/
+        fi
+        for d in /var/log/<%= compat_package_dir %>/*; do
+            if [ ! "$d" == "/var/log/<%= compat_package_dir %>/buffer" ]; then
+                # /var/log/<%= compat_package_dir %>/buffer will be removed from td-agent
+                mv -f $d /var/log/<%= compat_package_dir %>/
+            fi
+        done
+        if [ -f /var/log/<%= compat_package_dir %>/<%= compat_service_name %>.log ]; then
+            echo "Moving log to /var/log/<%= package_dir %>..."
+            mv -f /var/log/<%= compat_package_dir %>/<%= compat_service_name %>.log /var/log/<%= package_dir %>/<%= compat_service_name %>.log
+        fi
+    fi
+    rm -fr /var/log/<%= compat_package_dir %>
+    ln -sf /var/log/<%= package_dir %> /var/log/<%= compat_package_dir %>
 fi
 if [ ! -e "/var/run/<%= package_dir %>/" ]; then
   mkdir -p /var/run/<%= package_dir %>/
 fi
-if [ ! -e "/etc/<%= compat_package_dir %>/" ]; then
-  mkdir -p /etc/<%= compat_package_dir %>/
-  mkdir -p /etc/<%= compat_package_dir %>/plugin
+if [ ! -e "/etc/<%= package_dir %>/" ]; then
+  mkdir -p /etc/<%= package_dir %>/
+  mkdir -p /etc/<%= package_dir %>/plugin
+fi
+if [ -d "/etc/<%= compat_package_dir %>/" ]; then
+    # /etc/<%= compat_package_dir %> migration from v4
+    if [ -d /etc/<%= compat_package_dir %>/plugin -a -n "$(ls /etc/<%= compat_package_dir %>/plugin)" ]; then
+        echo "Migrating from /etc/<%= compat_package_dir %>/plugin/ to /etc/<%= compat_package_dir %>/plugin/..."
+        mv -f /etc/<%= compat_package_dir %>/plugin/* /etc/<%= package_dir %>/plugin/
+    fi
+    if [ -f /etc/<%= compat_package_dir %>/<%= service_name %>.conf ]; then
+        # Avoid conflict with packaged version
+        echo "#"
+        echo "# Migrating from /etc/<%= compat_package_dir %>/<%= service_name %>.conf to /etc/<%= package_dir %>/<%= service_name %>.conf.moved"
+        echo "#"
+        mv -f /etc/<%= compat_package_dir %>/<%= service_name %>.conf /etc/<%= package_dir %>/<%= service_name %>.conf.moved
+    fi
+    if [ -f /etc/<%= compat_package_dir %>/<%= compat_service_name %>.conf ]; then
+        echo "Migrating from /etc/<%= compat_package_dir %>/<%= compat_service_name %>.conf to /etc/<%= package_dir %>/<%= compat_service_name %>.conf"
+        cp -f /etc/<%= compat_package_dir %>/<%= compat_service_name %>.conf /etc/<%= package_dir %>/<%= compat_service_name %>.conf
+    fi
+    for d in /etc/<%= compat_package_dir %>/*; do
+	echo "Migrating from $d to /etc/<%= package_dir %>..."
+        mv -f $d /etc/<%= package_dir %>/
+    done
+    rm -fr /etc/<%= compat_package_dir %>
+    ln -sf /etc/<%= package_dir %> /etc/<%= compat_package_dir %>
 fi
 if [ ! -e "/tmp/<%= package_dir %>/" ]; then
   mkdir -p /tmp/<%= package_dir %>/
