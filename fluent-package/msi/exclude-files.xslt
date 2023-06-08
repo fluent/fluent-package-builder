@@ -20,7 +20,7 @@
     <!-- Exclude patterns -->
     <xsl:key
         name="conf-search"
-        match="wix:Component[wix:File/@Source = '$(var.ProjectSourceDir)\etc\td-agent\td-agent.conf']"
+        match="wix:Component[wix:File/@Source = '$(var.ProjectSourceDir)\etc\fluent\fluentd.conf']"
         use="@Id" />
     <xsl:template match="*[self::wix:Component or self::wix:ComponentRef][key('conf-search', @Id)]" />
     <xsl:key
