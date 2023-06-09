@@ -18,6 +18,22 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       :id => "ubuntu-jammy",
       :box => "bento/ubuntu-22.04",
     },
+    {
+      :id => "centos-7",
+      :box => "bento/centos-7",
+    },
+    {
+      :id => "rockylinux-8",
+      :box => "bento/rockylinux-8",
+    },
+    {
+      :id => "almalinux-9",
+      :box => "bento/almalinux-9",
+    },
+    {
+      :id => "amazonlinux-2",
+      :box => "bento/amazonlinux-2",
+    },
   ]
 
   n_cpus = ENV["BOX_N_CPUS"]&.to_i || 2
