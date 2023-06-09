@@ -45,6 +45,7 @@ jobs:
         with:
           name: packages-apt-source-${{ matrix.rake-job }}
           path: fluentd-apt-source/apt/repositories
+      # TODO move the following steps to "Test" job
       - name: Check Package Size
         run: |
           fluent-package/apt/pkgsize-test.sh ${{ matrix.rake-job }} amd64
@@ -85,3 +86,27 @@ jobs:
           --volume ${PWD}:/fluentd:ro \
           ${{ matrix.test-docker-image }} \
           /fluentd/fluent-package/apt/binstubs-test.sh
+  test:
+    name: Test
+    needs: build
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        distribution:
+          - debian-bullseye
+          - ubuntu-focal
+          - ubuntu-jammy
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/download-artifact@master
+        with:
+          name: packages-${{ matrix.distribution }}
+      - name: Run VM
+        run: vagrant up ${{ matrix.distribution }}
+      - name: Run Test
+        run: |
+          vagrant \
+            ssh ${{ matrix.distribution }} \
+            -- \
+            /vagrant/fluent-package/apt/install-with-systemd-test.sh
