@@ -30,12 +30,12 @@ test $(systemctl status td-agent > /dev/null 2>&1; echo $?;) -eq 3
 # systemctl status fluentd
 
 # Test: config migration
-# test -L /etc/td-agent
-# test -e /etc/td-agent/td-agent.conf
+test -L /etc/td-agent
+test -e /etc/td-agent/td-agent.conf
 
 # Test: log file migration
-# test -L /var/log/td-agent
-# test -e /var/log/td-agent/td-agent.log
+test -L /var/log/td-agent
+test -e /var/log/td-agent/td-agent.log
 
 # Test: environmental variables
 pid=$(systemctl show fluentd --property=MainPID --value)
