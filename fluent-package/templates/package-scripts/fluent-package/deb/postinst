@@ -81,7 +81,7 @@ migration_from_v4_main_process() {
                 # but to avoid holding file descriptor under /var/log/<%= compat_package_dir %>/,
                 # delay restarting <%= service_name %> service.
                 systemctl stop <%= compat_service_name %>
-                touch $v4migration_with_restart
+                v4migration_with_restart=y
            fi
         fi
     fi
