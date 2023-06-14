@@ -22,38 +22,116 @@ add_system_user() {
     fi
 }
 
+v4migration=n
+v4migration_with_restart=n
+
 add_directories() {
     mkdir -p /var/run/<%= package_dir %>
-    mkdir -p /etc/<%= compat_package_dir %>
-    mkdir -p /etc/<%= compat_package_dir %>/plugin
-    mkdir -p /var/log/<%= compat_package_dir %>
+    mkdir -p /etc/<%= package_dir %>
+    mkdir -p /etc/<%= package_dir %>/plugin
+    mkdir -p /var/log/<%= package_dir %>
 }
 
 fixperms() {
-    # If statoverride entry exits, use --force-all to ensure statoverride-add will work.
-    # If statoverride entry doen't exit, no need to --force-all.
+    # If statoverride entry doesn't exit, set it.
     dpkg-statoverride --list /var/run/<%= package_dir %> >/dev/null || \
         dpkg-statoverride --update --add _<%= service_name %> _<%= service_name %> 0755 /var/run/<%= package_dir %>
-    dpkg-statoverride --list /var/run/<%= package_dir %> >/dev/null && \
-        dpkg-statoverride --force-all --update --add _<%= service_name %> _<%= service_name %> 0755 /var/run/<%= package_dir %>
-    dpkg-statoverride --list /etc/<%= compat_package_dir %> >/dev/null || \
-        dpkg-statoverride --update --add _<%= service_name %> _<%= service_name %> 0755 /etc/<%= compat_package_dir %>
-    dpkg-statoverride --list /etc/<%= compat_package_dir %> >/dev/null && \
-        dpkg-statoverride --force-all --update --add _<%= service_name %> _<%= service_name %> 0755 /etc/<%= compat_package_dir %>
-    dpkg-statoverride --list /var/log/<%= compat_package_dir %> >/dev/null || \
-        dpkg-statoverride --update --add _<%= service_name %> _<%= service_name %> 0755 /var/log/<%= compat_package_dir %>
-    dpkg-statoverride --list /var/log/<%= compat_package_dir %> >/dev/null && \
-        dpkg-statoverride --force-all --update --add _<%= service_name %> _<%= service_name %> 0755 /var/log/<%= compat_package_dir %>
-    # Cleanup /var/run/<%= compat_package_dir %>
-    dpkg-statoverride --force-all --remove /var/run/<%= compat_package_dir %>
+    dpkg-statoverride --list /etc/<%= package_dir %> >/dev/null || \
+        dpkg-statoverride --update --add _<%= service_name %> _<%= service_name %> 0755 /etc/<%= package_dir %>
+    dpkg-statoverride --list /var/log/<%= package_dir %> >/dev/null || \
+        dpkg-statoverride --update --add _<%= service_name %> _<%= service_name %> 0755 /var/log/<%= package_dir %>
+    # Remove obsolete statoverride
+    if dpkg-statoverride --list /var/run/<%= compat_package_dir %> >/dev/null; then
+        dpkg-statoverride --force-all --remove /var/run/<%= compat_package_dir %>
+    fi
+    if dpkg-statoverride --list /etc/<%= compat_package_dir %> >/dev/null; then
+        dpkg-statoverride --force-all --remove /etc/<%= compat_package_dir %>
+    fi
+    if dpkg-statoverride --list /var/log/<%= compat_package_dir %> >/dev/null; then
+        dpkg-statoverride --force-all --remove /var/log/<%= compat_package_dir %>
+    fi
+}
+
+migration_from_v4_main_process() {
+    # prevver can't be used to judge td-agent => fluent-package because it's empty.
+    if [ -d /etc/<%= compat_package_dir %> -a ! -h /etc/<%= compat_package_dir %> ]; then
+        v4migration=y
+        # /etc/<%= compat_package_dir %> migration from v4
+        if [ -d /etc/<%= compat_package_dir %>/plugin -a -n "$(ls /etc/<%= compat_package_dir %>/plugin)" ]; then
+            echo "Migrating from /etc/<%= compat_service_name %>/plugin/ to /etc/<%= package_dir %>/plugin/..."
+            mv -f /etc/<%= compat_service_name %>/plugin/* /etc/<%= package_dir %>/plugin/
+        fi
+        if [ -f /etc/<%= compat_package_dir %>/<%= compat_service_name %>.conf ]; then
+            echo "Migrating from /etc/<%= compat_package_dir %>/<%= compat_service_name %>.conf to /etc/<%= package_dir %>/<%= compat_service_name %>.conf"
+            cp -f /etc/<%= compat_package_dir %>/<%= compat_service_name %>.conf /etc/<%= package_dir %>/<%= compat_service_name %>.conf
+            echo "Refer previous configuration <%= compat_service_name %>.conf ..."
+            sed -i"" /etc/default/<%= service_name %> -e "/FLUENT_CONF/c FLUENT_CONF=/etc/<%= package_dir %>/<%= compat_service_name %>.conf"
+            for d in $(ls /etc/<%= compat_package_dir %>); do
+                if [ ! "$d" = "plugin" -a ! "$d" = "<%= compat_service_name %>.conf" ]; then
+                    # except managed under deb files must be migrated
+                    mv -f /etc/<%= compat_package_dir %>/$d /etc/<%= package_dir %>/
+                fi
+            done
+        fi
+    fi
+    if [ -h /etc/systemd/system/td-agent.service ]; then
+        if [ -x /usr/bin/systemctl ]; then
+            if ! systemctl is-active <%= compat_service_name %> >/dev/null; then
+                # Want to restart with new user/group here,
+                # but to avoid holding file descriptor under /var/log/<%= compat_package_dir %>/,
+                # delay restarting <%= service_name %> service.
+                systemctl stop <%= compat_service_name %>
+                v4migration_with_restart=y
+           fi
+        fi
+    fi
+    if [ -d /var/log/<%= compat_package_dir %> -a ! -h /var/log/<%= compat_package_dir %> ]; then
+        # /var/log/<%= compat_package_dir %> migration from v4
+        if [ -d /var/log/<%= compat_package_dir %>/buffer ]; then
+            if [ -n "$(ls /var/log/<%= compat_package_dir %>/buffer)" ]; then
+                mv -f /var/log/<%= compat_package_dir %>/buffer/* /var/log/<%= package_dir %>/buffer/
+            fi
+        fi
+        for d in $(ls /var/log/<%= compat_package_dir %>); do
+            if [ ! "$d" = "buffer" ]; then
+                # except /var/log/<%= compat_package_dir %>/buffer must be migrated
+                mv -f /var/log/<%= compat_package_dir %>/$d /var/log/<%= package_dir %>/
+            fi
+        done
+        if [ -f /var/log/<%= package_dir %>/<%= compat_service_name %>.log ]; then
+            echo "Keep logging to <%= compat_service_name %>.log ..."
+            sed -i"" /etc/default/<%= service_name %> -e "/TD_AGENT_LOG_FILE/c TD_AGENT_LOG_FILE=/var/log/<%= package_dir %>/<%= compat_service_name %>.log"
+        fi
+    fi
+}
+
+migration_from_v4_post_process() {
+    if [ ! "$v4migration" = "y" ]; then
+       return
+    fi
+    if [ -d /etc/<%= compat_package_dir %> -a ! -h /etc/<%= compat_package_dir %> ]; then
+        rm -fr /etc/<%= compat_package_dir %>
+        ln -sf /etc/<%= package_dir %> /etc/<%= compat_package_dir %>
+    fi
+    if [ -d /var/log/<%= compat_package_dir %> -a ! -h /var/log/<%= compat_package_dir %> ]; then
+        rm -fr /var/log/<%= compat_package_dir %>
+        ln -sf /var/log/<%= package_dir %> /var/log/<%= compat_package_dir %>
+    fi
+    if [ "$v4migration_with_restart" = "y" ]; then
+        if [ -x /usr/bin/systemctl ]; then
+            systemctl restart <%= service_name %>
+        fi
+    fi
 }
 
 case "$1" in
     configure)
         add_system_user
         add_directories
+        migration_from_v4_main_process
         fixperms
-        ;;
+        migration_from_v4_post_process
+	;;
     abort-upgrade|abort-deconfigure|abort-remove)
         :
         ;;
