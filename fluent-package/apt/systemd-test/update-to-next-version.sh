@@ -18,7 +18,7 @@ dpkg-deb --build tmp next_version.deb
 sudo apt install -V -y ./next_version.deb
 
 # Test: service
-systemctl status fluentd
+systemctl status --no-pager fluentd
 
 # Test: migration process from v4 must not be done
 ! test -e /etc/td-agent
@@ -38,5 +38,5 @@ test $(eval $env_vars && echo $USER) = "_fluentd"
 
 # Uninstall
 sudo apt remove -y fluent-package
-! systemctl status td-agent
-! systemctl status fluentd
+! systemctl status --no-pager td-agent
+! systemctl status --no-pager fluentd

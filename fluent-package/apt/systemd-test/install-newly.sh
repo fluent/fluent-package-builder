@@ -7,7 +7,7 @@ set -exu
 sudo apt install -V -y \
     /vagrant/${distribution}/pool/${code_name}/${channel}/*/*/fluent-package_*_${architecture}.deb
 
-systemctl status fluentd
+systemctl status --no-pager fluentd
 
 sudo apt remove -y fluent-package
 
