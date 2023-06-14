@@ -11,23 +11,23 @@ sudo apt install -V -y ${apt_source_package} ca-certificates
 sudo apt update
 sudo apt install -V -y td-agent=4.5.0-1
 
-systemctl status td-agent
+systemctl status --no-pager td-agent
 
 # Install the current
 sudo apt install -V -y \
     /vagrant/${distribution}/pool/${code_name}/${channel}/*/*/fluent-package_*_${architecture}.deb
 
 # Test: service status
-systemctl status fluentd
-test $(systemctl status td-agent > /dev/null 2>&1; echo $?;) -eq 3
+systemctl status --no-pager fluentd
+test $(systemctl status --no-pager td-agent > /dev/null 2>&1; echo $?;) -eq 3
 
 # TODO: There are some tests being commented out. They will be supported by future fixes.
 
 # Test: restoring td-agent service alias
 # sudo systemctl unmask td-agent
 # sudo systemctl enable fluentd
-# systemctl status td-agent
-# systemctl status fluentd
+# systemctl status --no-pager td-agent
+# systemctl status --no-pager fluentd
 
 # Test: config migration
 test -L /etc/td-agent
@@ -48,5 +48,5 @@ test $(eval $env_vars && echo $USER) = "_fluentd"
 
 # Uninstall
 sudo apt remove -y fluent-package
-! systemctl status td-agent
-! systemctl status fluentd
+! systemctl status --no-pager td-agent
+! systemctl status --no-pager fluentd
