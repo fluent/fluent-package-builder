@@ -32,9 +32,9 @@ pid=$(systemctl show fluentd --property=MainPID --value)
 env_vars=$(sudo sed -e 's/\x0/\n/g' /proc/$pid/environ)
 test $(eval $env_vars && echo $LOGNAME) = "_fluentd"
 test $(eval $env_vars && echo $USER) = "_fluentd"
-# test $(eval $env_vars && echo $FLUENT_CONF) = "/etc/fluent/fluentd.conf"
-# test $(eval $env_vars && echo $FLUENT_PLUGIN) = "/etc/fluent/plugin"
-# test $(eval $env_vars && echo $TD_AGENT_LOG_FILE) = "/var/log/fluent/fluentd.log"
+test $(eval $env_vars && echo $FLUENT_CONF) = "/etc/fluent/fluentd.conf"
+test $(eval $env_vars && echo $FLUENT_PLUGIN) = "/etc/fluent/plugin"
+test $(eval $env_vars && echo $TD_AGENT_LOG_FILE) = "/var/log/fluent/fluentd.log"
 
 # Uninstall
 sudo apt remove -y fluent-package
