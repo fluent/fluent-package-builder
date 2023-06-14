@@ -24,10 +24,10 @@ test $(systemctl status --no-pager td-agent > /dev/null 2>&1; echo $?;) -eq 3
 # TODO: There are some tests being commented out. They will be supported by future fixes.
 
 # Test: restoring td-agent service alias
-# sudo systemctl unmask td-agent
-# sudo systemctl enable fluentd
-# systemctl status --no-pager td-agent
-# systemctl status --no-pager fluentd
+sudo systemctl unmask td-agent
+sudo systemctl enable fluentd
+systemctl status --no-pager td-agent
+systemctl status --no-pager fluentd
 
 # Test: config migration
 test -L /etc/td-agent
@@ -42,9 +42,9 @@ pid=$(systemctl show fluentd --property=MainPID --value)
 env_vars=$(sudo sed -e 's/\x0/\n/g' /proc/$pid/environ)
 test $(eval $env_vars && echo $LOGNAME) = "_fluentd"
 test $(eval $env_vars && echo $USER) = "_fluentd"
-# test $(eval $env_vars && echo $FLUENT_CONF) = "/etc/fluent/td-agent.conf"
-# test $(eval $env_vars && echo $FLUENT_PLUGIN) = "/etc/fluent/plugin"
-# test $(eval $env_vars && echo $TD_AGENT_LOG_FILE) = "/var/log/fluent/td-agent.log"
+test $(eval $env_vars && echo $FLUENT_CONF) = "/etc/fluent/td-agent.conf"
+test $(eval $env_vars && echo $FLUENT_PLUGIN) = "/etc/fluent/plugin"
+test $(eval $env_vars && echo $TD_AGENT_LOG_FILE) = "/var/log/fluent/td-agent.log"
 
 # Uninstall
 sudo apt remove -y fluent-package
