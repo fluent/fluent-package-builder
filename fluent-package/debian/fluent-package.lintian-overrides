@@ -10,9 +10,6 @@ fluent-package: duplicate-font-file
 fluent-package: jar-not-in-usr-share
 fluent-package: possibly-insecure-handling-of-tmp-files-in-maintainer-script
 fluent-package: maintainer-script-should-not-use-recursive-chown-or-chmod
-fluent-package: unusual-interpreter opt/fluent/lib/ruby/gems/*/gems/bundler-*/lib/bundler/templates/Executable #!<%=
-fluent-package: unusual-interpreter opt/fluent/lib/ruby/gems/*/gems/bundler-*/lib/bundler/templates/Executable.bundler #!<%=
-fluent-package: unusual-interpreter opt/fluent/lib/ruby/gems/*/gems/bundler-*/lib/bundler/templates/Executable.standalone #!<%=
 fluent-package: incorrect-path-for-interpreter opt/fluent/bin/jeprof (#!/usr/bin/env perl != /usr/bin/perl)
 fluent-package: uses-dpkg-database-directly postinst (line 37)
 fluent-package: uses-dpkg-database-directly postinst (line 40)
