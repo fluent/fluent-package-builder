@@ -32,6 +32,7 @@ Description: Treasure Agent: A data collector for Treasure Data
  It is installable alongside with system's gem packages separately.
 
 Package: td-agent
+Section: oldlibs
 Architecture: all
 Depends:
   fluent-package,
