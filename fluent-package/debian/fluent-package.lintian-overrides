@@ -29,3 +29,4 @@ fluent-package: binary-or-shlib-defines-rpath opt/fluent/lib/ruby/gems/*/gems/no
 fluent-package: embedded-library opt/fluent/lib/ruby/gems/*/extensions/x86_64-linux/*/nokogiri-*/nokogiri/nokogiri.so: libxml2
 fluent-package: embedded-library opt/fluent/lib/ruby/gems/*/gems/nokogiri-*/ext/nokogiri/nokogiri.so: libxml2
 fluent-package: embedded-library opt/fluent/lib/ruby/gems/*/gems/nokogiri-*/lib/nokogiri/nokogiri.so: libxml2
+fluent-package: unstripped-binary-or-object opt/fluent/lib/ruby/gems/*/extensions/x86_64-linux/*/debug-*/debug/debug.so
