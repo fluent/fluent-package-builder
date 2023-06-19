@@ -21,18 +21,18 @@ if ($exitcode -ne 0) {
 }
 Write-Host "Succeeded to uninstall ${name}"
 
-# td-agent.conf should not be removed
-$conf = (Get-ChildItem -Path "c:\\opt" -Filter "td-agent.conf" -Recurse -Name)
-if ($conf -ne "td-agent\etc\td-agent\td-agent.conf") {
-  Write-Host "Failed to find td-agent.conf: <${conf}>"
+# fluentd.conf should not be removed
+$conf = (Get-ChildItem -Path "c:\\opt" -Filter "fluentd.conf" -Recurse -Name)
+if ($conf -ne "fluent\etc\fluent\fluentd.conf") {
+  Write-Host "Failed to find fluentd.conf: <${conf}>"
   [Environment]::Exit(1)
 }
-Write-Host "Succeeded to find td-agent.conf"
+Write-Host "Succeeded to find fluentd.conf"
 
-# td-agent-0.log should not be removed
-$conf = (Get-ChildItem -Path "c:\\opt" -Filter "td-agent-0.log" -Recurse -Name)
-if ($conf -ne "td-agent\td-agent-0.log") {
-  Write-Host "Failed to find td-agent-0.log: <${conf}>"
+# fluentd-0.log should not be removed
+$conf = (Get-ChildItem -Path "c:\\opt" -Filter "fluentd-0.log" -Recurse -Name)
+if ($conf -ne "fluent\fluentd-0.log") {
+  Write-Host "Failed to find fluentd-0.log: <${conf}>"
   [Environment]::Exit(1)
 }
-Write-Host "Succeeded to find td-agent-0.log"
+Write-Host "Succeeded to find fluentd-0.log"
