@@ -1,2 +1,4 @@
 fluent-package source: changelog-should-mention-nmu
 fluent-package source: source-nmu-has-incorrect-version-number
+# You can remove it if you switched aptly which supports zstd.
+fluent-package source: debian-rules-should-not-use-custom-compression-settings
