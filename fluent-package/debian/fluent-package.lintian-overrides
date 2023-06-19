@@ -4,8 +4,6 @@ fluent-package: script-not-executable
 fluent-package: python-script-but-no-python-dep
 fluent-package: executable-not-elf-or-script
 fluent-package: missing-dep-for-interpreter
-fluent-package: gz-file-not-gzip
-fluent-package: no-upstream-changelog
 fluent-package: library-not-linked-against-libc
 fluent-package: wrong-path-for-interpreter
 fluent-package: duplicate-font-file
