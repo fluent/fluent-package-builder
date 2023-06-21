@@ -19,7 +19,7 @@ sudo apt install -V -y \
 
 # Test: service status
 systemctl status --wait --no-pager fluentd
-test $(systemctl status --no-pager td-agent > /dev/null 2>&1; echo $?;) -eq 3
+! systemctl status --wait --no-pager td-agent
 
 # TODO: There are some tests being commented out. They will be supported by future fixes.
 
