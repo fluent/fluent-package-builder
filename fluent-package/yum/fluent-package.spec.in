@@ -317,6 +317,7 @@ fi
 %{_sbindir}/@SERVICE_NAME@
 %{_sbindir}/fluent-gem
 %{_mandir}/man1/td*
+%{_mandir}/man1/fluent*
 %config(noreplace) %{_sysconfdir}/sysconfig/@SERVICE_NAME@
 %config(noreplace) %{_sysconfdir}/@PACKAGE_DIR@/@SERVICE_NAME@.conf
 %config(noreplace) %{_sysconfdir}/logrotate.d/@COMPAT_SERVICE_NAME@
