@@ -1,7 +1,6 @@
 fluent-package: windows-devel-file-in-package
 fluent-package: ruby-script-but-no-ruby-dep
 fluent-package: script-not-executable
-fluent-package: python-script-but-no-python-dep
 fluent-package: executable-not-elf-or-script
 fluent-package: missing-dep-for-interpreter
 fluent-package: library-not-linked-against-libc
