@@ -1,20 +1,14 @@
 fluent-package: windows-devel-file-in-package
 fluent-package: ruby-script-but-no-ruby-dep
 fluent-package: script-not-executable
-fluent-package: python-script-but-no-python-dep
 fluent-package: executable-not-elf-or-script
 fluent-package: missing-dep-for-interpreter
-fluent-package: gz-file-not-gzip
-fluent-package: no-upstream-changelog
 fluent-package: library-not-linked-against-libc
 fluent-package: wrong-path-for-interpreter
 fluent-package: duplicate-font-file
 fluent-package: jar-not-in-usr-share
 fluent-package: possibly-insecure-handling-of-tmp-files-in-maintainer-script
 fluent-package: maintainer-script-should-not-use-recursive-chown-or-chmod
-fluent-package: unusual-interpreter opt/fluent/lib/ruby/gems/*/gems/bundler-*/lib/bundler/templates/Executable #!<%=
-fluent-package: unusual-interpreter opt/fluent/lib/ruby/gems/*/gems/bundler-*/lib/bundler/templates/Executable.bundler #!<%=
-fluent-package: unusual-interpreter opt/fluent/lib/ruby/gems/*/gems/bundler-*/lib/bundler/templates/Executable.standalone #!<%=
 fluent-package: incorrect-path-for-interpreter opt/fluent/bin/jeprof (#!/usr/bin/env perl != /usr/bin/perl)
 fluent-package: uses-dpkg-database-directly postinst (line 37)
 fluent-package: uses-dpkg-database-directly postinst (line 40)
@@ -31,3 +25,5 @@ fluent-package: binary-or-shlib-defines-rpath opt/fluent/lib/ruby/gems/*/gems/no
 fluent-package: embedded-library opt/fluent/lib/ruby/gems/*/extensions/x86_64-linux/*/nokogiri-*/nokogiri/nokogiri.so: libxml2
 fluent-package: embedded-library opt/fluent/lib/ruby/gems/*/gems/nokogiri-*/ext/nokogiri/nokogiri.so: libxml2
 fluent-package: embedded-library opt/fluent/lib/ruby/gems/*/gems/nokogiri-*/lib/nokogiri/nokogiri.so: libxml2
+fluent-package: unstripped-binary-or-object opt/fluent/lib/ruby/gems/*/extensions/x86_64-linux/*/debug-*/debug/debug.so
+fluent-package: unusual-interpreter opt/fluent/lib/ruby/gems/*/gems/ffi-*/ext/ffi_c/libffi/generate-darwin-source-and-headers.py #!python

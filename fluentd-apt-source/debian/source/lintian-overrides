@@ -2,3 +2,6 @@ fluentd-apt-source source: changelog-should-mention-nmu
 fluentd-apt-source source: source-nmu-has-incorrect-version-number
 fluentd-apt-source source: package-uses-deprecated-debhelper-compat-version 9
 fluentd-apt-source source: ancient-standards-version 3.9.8 (released 2016-04-06) (current is 4.5.0)
+# When development machine has switched to aptly 1.4.0+ds1-7 or later,
+# remove the following (bookworm or later, ubuntu 22.10 or later)
+fluentd-apt-source: debian-rules-should-not-use-custom-compression-settings
