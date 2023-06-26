@@ -12,9 +12,7 @@ fluent-package: maintainer-script-should-not-use-recursive-chown-or-chmod
 fluent-package: incorrect-path-for-interpreter opt/fluent/bin/jeprof (#!/usr/bin/env perl != /usr/bin/perl)
 fluent-package: uses-dpkg-database-directly postinst (line 37)
 fluent-package: uses-dpkg-database-directly postinst (line 40)
-fluent-package: unusual-interpreter opt/fluent/lib/ruby/*/bundler/templates/Executable #!<%=
-fluent-package: unusual-interpreter opt/fluent/lib/ruby/*/bundler/templates/Executable.bundler #!<%=
-fluent-package: unusual-interpreter opt/fluent/lib/ruby/*/bundler/templates/Executable.standalone #!<%=
+fluent-package: unusual-interpreter
 fluent-package: package-contains-vcs-control-file
 fluent-package: binary-or-shlib-defines-rpath opt/fluent/lib/ruby/gems/*/extensions/x86_64-linux/*/nokogiri-*/nokogiri/nokogiri.so /build/fluent-pacakge-*/debian/tmp/opt/fluent/lib/ruby/gems/*/gems/nokogiri-*/ports/x86_64-pc-linux-gnu/libxml2/*/lib
 fluent-package: binary-or-shlib-defines-rpath opt/fluent/lib/ruby/gems/*/extensions/x86_64-linux/*/nokogiri-*/nokogiri/nokogiri.so /build/fluent-package-*/debian/tmp/opt/fluent/lib/ruby/gems/*/gems/nokogiri-*/ports/x86_64-pc-linux-gnu/libxslt/*/lib
@@ -26,7 +24,6 @@ fluent-package: embedded-library opt/fluent/lib/ruby/gems/*/extensions/x86_64-li
 fluent-package: embedded-library opt/fluent/lib/ruby/gems/*/gems/nokogiri-*/ext/nokogiri/nokogiri.so: libxml2
 fluent-package: embedded-library opt/fluent/lib/ruby/gems/*/gems/nokogiri-*/lib/nokogiri/nokogiri.so: libxml2
 fluent-package: unstripped-binary-or-object opt/fluent/lib/ruby/gems/*/extensions/x86_64-linux/*/debug-*/debug/debug.so
-fluent-package: unusual-interpreter opt/fluent/lib/ruby/gems/*/gems/ffi-*/ext/ffi_c/libffi/generate-darwin-source-and-headers.py #!python
 fluent-package: maintainer-script-calls-systemctl
 fluent-package: no-manual-page usr/sbin/td-agent
 fluent-package: no-manual-page usr/sbin/td-agent-gem
