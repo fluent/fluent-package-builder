@@ -75,7 +75,7 @@ migration_from_v4_main_process() {
         fi
     fi
     if [ -h /etc/systemd/system/td-agent.service ]; then
-        if [ -x /usr/bin/systemctl ]; then
+        if [ -n "$(command -v systemctl)" ]; then
             if ! systemctl is-active <%= compat_service_name %> >/dev/null; then
                 # Want to restart with new user/group here,
                 # but to avoid holding file descriptor under /var/log/<%= compat_package_dir %>/,
@@ -118,7 +118,7 @@ migration_from_v4_post_process() {
         ln -sf /var/log/<%= package_dir %> /var/log/<%= compat_package_dir %>
     fi
     if [ "$v4migration_with_restart" = "y" ]; then
-        if [ -x /usr/bin/systemctl ]; then
+        if [ -n "$(command -v systemctl)" ]; then
             systemctl restart <%= service_name %>
         fi
     fi
