@@ -12,11 +12,16 @@ add_system_user() {
 	    # With underscore prefix, need to disable NAME_REGEX restriction
 	    adduser --group --system --force-badname --home /var/lib/<%= package_dir %> _<%= service_name %>
 	else
+	    # When upgrading from v4, keep <%= compat_service_name %> user/group and 
+	    # create _<%= service_name %> user/group with same uid/gid for compatibility easily.
 	    if getent group <%= compat_service_name %> >/dev/null; then
-		groupmod --new-name _<%= service_name %> <%= compat_service_name %>
+		TD_GID=$(getent group <%= compat_service_name %> | cut -d':' -f3)
+		groupadd -g $TD_GID -o _<%= service_name %>
 	    fi
 	    if getent passwd <%= compat_service_name %> >/dev/null; then
-		usermod --login _<%= service_name %> <%= compat_service_name %>
+		TD_UID=$(id --user <%= compat_service_name %>)
+		TD_GID=$(getent group <%= compat_service_name %> | cut -d':' -f3)
+		useradd -u $TD_UID -g $TD_GID -o _<%= service_name %>
 	    fi
 	fi
     fi

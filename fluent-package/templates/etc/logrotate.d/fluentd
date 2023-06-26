@@ -1,4 +1,4 @@
-/var/log/<%= compat_package_dir %>/<%= service_name %>.log {
+/var/log/<%= package_dir %>/<%= service_name %>.log {
   daily
   rotate 30
   compress
