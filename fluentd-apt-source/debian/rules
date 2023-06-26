@@ -20,6 +20,10 @@ override_dh_auto_build:
 	  --no-default-keyring \
 	  --keyring ./fluentd-archive-keyring.gpg \
 	  --import keys
+	gpg \
+	  --no-default-keyring \
+	  --keyring ./fluentd-archive-keyring.gpg \
+	  --import fluent-package.pub
 
 	( \
 	  distribution=$$(lsb_release --id --short | tr 'A-Z' 'a-z'); \
@@ -30,7 +34,7 @@ override_dh_auto_build:
 	    component=main; \
 	  fi; \
 	  echo "Types: deb"; \
-	  echo "URIs: https://packages.treasuredata.com/4/$${distribution}/$${code_name}/"; \
+	  echo "URIs: https://packages.treasuredata.com/5/$${distribution}/$${code_name}/"; \
 	  echo "Suites: $${code_name}"; \
 	  echo "Components: contrib"; \
 	  echo "Signed-By: /usr/share/keyrings/fluentd-archive-keyring.gpg"; \

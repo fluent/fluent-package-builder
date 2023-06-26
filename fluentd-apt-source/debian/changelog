@@ -1,3 +1,10 @@
+fluentd-apt-source (2023.6.29-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Added new Fluent Package Official Signing Key.
+
+ -- Kentaro Hayashi <kenhys@xdump.org>  Mon, 26 Jun 2023 18:06:04 +0900
+
 fluentd-apt-source (2023.1.13-1) unstable; urgency=medium
 
   * Fix incorrect priority. changed from important to optional. (GitHub#422)
