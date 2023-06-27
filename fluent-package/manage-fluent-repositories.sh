@@ -70,7 +70,7 @@ case $COMMAND in
 	   DRYRUN_OPTION=""
 	fi
 	for target in $TARGETS; do
-	    command="aws s3 sync $DRYRUN_OPTION --delete $FLUENT_RELEASE_DIR/4/$target s3://packages.treasuredata.com/4/$target --profile $FLUENT_RELEASE_PROFILE"
+	    command="aws s3 sync $DRYRUN_OPTION --delete $FLUENT_RELEASE_DIR/5/$target s3://packages.treasuredata.com/5/$target --profile $FLUENT_RELEASE_PROFILE"
 	    echo $command
 	    $command
 	done
