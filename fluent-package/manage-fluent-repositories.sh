@@ -101,10 +101,10 @@ EOF
 	echo "Ready to type signing passphrase? (process starts in 10 seconds, Ctrl+C to abort)"
 	sleep 10
 	export GPG_TTY=$(tty)
-	for d in buster bullseye bionic focal jammy; do
+	for d in bullseye bookworm focal jammy; do
 	    aptly -config="$aptly_conf" repo create -distribution=$d -component=contrib fluent-package5-$d
 	    case $d in
-		buster|bullseye)
+		bullseye|bookworm)
 		    aptly -config="$aptly_conf" repo add fluent-package5-$d $FLUENT_RELEASE_DIR/5/debian/$d/
 		    aptly -config="$aptly_conf" snapshot create fluent-package5-$d-${FLUENT_PACKAGE_VERSION}-1 from repo fluent-package5-$d
 		    # publish snapshot with prefix, InRelease looks like (e.g. bullseye):
@@ -114,7 +114,7 @@ EOF
 		    # Place generated files, package files themselves are already in there
 		    tar cf - --exclude="td-agent_*.deb" --exclude="fluent-package_*.deb" -C "$aptly_rootdir/public" $d | tar xvf - -C $FLUENT_RELEASE_DIR/5/debian/
 		    ;;
-		bionic|focal|jammy)
+		focal|jammy)
 		    aptly -config="$aptly_conf" repo add fluent-package5-$d $FLUENT_RELEASE_DIR/5/ubuntu/$d/
 		    aptly -config="$aptly_conf" snapshot create fluent-package5-$d-${FLUENT_PACKAGE_VERSION}-1 from repo fluent-package5-$d
 		    # publish snapshot with prefix, InRelease looks like (e.g. focal):
