@@ -15,9 +15,9 @@ case $1 in
     apt|deb)
 	REPOSITORY_TYPE=apt
 	REPOSITORY_PATH=$TD_AGENT_DIR/$REPOSITORY_TYPE/repositories
-	for d in buster bullseye bionic focal jammy; do
+	for d in bullseye bookworm focal jammy; do
 	    case $d in
-		buster|bullseye)
+		bullseye|bookworm)
 		    # e.g. mapping debian/pool/buster/main/t/td-agent/ => 5/debian/buster/pool/contrib/t/td-agent
 		    #      mapping debian/pool/buster/main/f/fluent-package/ => 5/debian/buster/pool/contrib/f/fluent-package
 		    mkdir -p $ARTIFACTS_DIR/5/debian/$d/pool/contrib/t/td-agent
@@ -25,7 +25,7 @@ case $1 in
 		    find $REPOSITORY_PATH/debian/pool/$d -name 'td-agent*.deb' -not -name '*dbgsym*' -exec cp {} $ARTIFACTS_DIR/5/debian/$d/pool/contrib/t/td-agent \;
 		    find $REPOSITORY_PATH/debian/pool/$d -name 'fluent-package*.deb' -not -name '*dbgsym*' -exec cp {} $ARTIFACTS_DIR/5/debian/$d/pool/contrib/f/fluent-package \;
 		    ;;
-		bionic|focal|jammy)
+		focal|jammy)
 		    # e.g. mapping ubuntu/pool/.../main/t/td-agent/ => 5/ubuntu/.../pool/contrib/t/td-agent
 		    #      mapping ubuntu/pool/.../main/f/fluent-package/ => 5/ubuntu/.../pool/contrib/f/fluent-package
 		    mkdir -p $ARTIFACTS_DIR/5/ubuntu/$d/pool/contrib/t/td-agent
