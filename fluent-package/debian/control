@@ -14,7 +14,7 @@ Build-Depends:
   libncurses5-dev,
   libyaml-dev,
   libssl-dev
-Standards-Version: 4.3.0
+Standards-Version: 4.5.0
 Homepage: https://www.fluentd.org/
 
 Package: fluent-package

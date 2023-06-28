@@ -3,10 +3,10 @@ Section: misc
 Priority: optional
 Maintainer: Fluentd developers <fluentd@googlegroups.com>
 Build-Depends:
-  debhelper (>= 9),
+  debhelper-compat (= 12),
   gnupg,
   lsb-release
-Standards-Version: 3.9.8
+Standards-Version: 4.5.0
 Homepage: https://www.fluentd.org/
 
 Package: fluentd-apt-source
