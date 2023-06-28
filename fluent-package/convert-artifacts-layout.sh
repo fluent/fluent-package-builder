@@ -22,7 +22,7 @@ case $1 in
 		    #      mapping debian/pool/buster/main/f/fluent-package/ => 5/debian/buster/pool/contrib/f/fluent-package
 		    mkdir -p $ARTIFACTS_DIR/5/debian/$d/pool/contrib/t/td-agent
 		    mkdir -p $ARTIFACTS_DIR/5/debian/$d/pool/contrib/f/fluent-package
-		    find $REPOSITORY_PATH/debian/pool/$d -name 'td-agent*.deb' -not -name '*dbgsym*' -exec cp {} $ARTIFACTS_DIR/5/debian/$d/pool/contrib/t/td-agent \;
+		    find $REPOSITORY_PATH/debian/pool/$d -name 'td-agent*.deb' -not -name '*dbgsym*' -exec cp {} $ARTIFACTS_DIR/5/debian/$d/pool/contrib/f/fluent-package \;
 		    find $REPOSITORY_PATH/debian/pool/$d -name 'fluent-package*.deb' -not -name '*dbgsym*' -exec cp {} $ARTIFACTS_DIR/5/debian/$d/pool/contrib/f/fluent-package \;
 		    ;;
 		focal|jammy)
@@ -30,7 +30,7 @@ case $1 in
 		    #      mapping ubuntu/pool/.../main/f/fluent-package/ => 5/ubuntu/.../pool/contrib/f/fluent-package
 		    mkdir -p $ARTIFACTS_DIR/5/ubuntu/$d/pool/contrib/t/td-agent
 		    mkdir -p $ARTIFACTS_DIR/5/ubuntu/$d/pool/contrib/f/fluent-package
-		    find $REPOSITORY_PATH/ubuntu/pool/$d -name 'td-agent*.deb' -exec cp {} $ARTIFACTS_DIR/5/ubuntu/$d/pool/contrib/t/td-agent \;
+		    find $REPOSITORY_PATH/ubuntu/pool/$d -name 'td-agent*.deb' -exec cp {} $ARTIFACTS_DIR/5/ubuntu/$d/pool/contrib/f/fluent-package \;
 		    find $REPOSITORY_PATH/ubuntu/pool/$d -name 'fluent-package*.deb' -exec cp {} $ARTIFACTS_DIR/5/ubuntu/$d/pool/contrib/f/fluent-package \;
 		    ;;
 		*)
