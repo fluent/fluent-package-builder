@@ -117,7 +117,7 @@
                      Permanent="no"
                      Part="all"
                      System="yes"
-                     Name="TD_AGENT_TOPDIR"
+                     Name="FLUENT_PACKAGE_TOPDIR"
                      Value="[FLUENTPROJECTLOCATION]"/>
       </Component>
     </DirectoryRef>
