@@ -80,19 +80,21 @@ if [ ! -h /etc/td-agent ]; then
     exit 1
 fi
 
+# Note: As td-agent and _fluentd use same UID/GID,
+# it is regarded as preceding name (td-agent)
 owner=$(stat --format "%U/%G" /etc/fluent)
-if [ "$owner" != "_fluentd/_fluentd" ]; then
-    echo "/etc/fluent must be owned by _fluentd/_fluentd"
+if [ "$owner" != "td-agent/td-agent" ]; then
+    echo "/etc/fluent must be owned by td-agent/td-agent"
     exit 1
 fi
 owner=$(stat --format "%U/%G" /var/log/fluent)
-if [ "$owner" != "_fluentd/_fluentd" ]; then
-    echo "/var/log/fluent must be owned by _fluentd/_fluentd"
+if [ "$owner" != "td-agent/td-agent" ]; then
+    echo "/var/log/fluent must be owned by td-agent/td-agent"
     exit 1
 fi
 owner=$(stat --format "%U/%G" /var/run/fluent)
-if [ "$owner" != "_fluentd/_fluentd" ]; then
-    echo "/var/run/fluent must be owned by _fluentd/_fluentd"
+if [ "$owner" != "td-agent/td-agent" ]; then
+    echo "/var/run/fluent must be owned by td-agent/td-agent"
     exit 1
 fi
 
