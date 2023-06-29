@@ -51,13 +51,13 @@ apt install -V -y \
   ${repositories_dir}/${distribution}/pool/${code_name}/${channel}/*/*/*_${architecture}.deb
 
 
-if getent passwd td-agent >/dev/null; then
-    echo "td-agent user must be removed"
+if ! getent passwd td-agent >/dev/null; then
+    echo "td-agent user must exist"
     exit 1
 fi
 
-if getent group td-agent >/dev/null; then
-    echo "td-agent group must be removed"
+if ! getent group td-agent >/dev/null; then
+    echo "td-agent group must exist"
     exit 1
 fi
 
