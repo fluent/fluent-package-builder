@@ -300,6 +300,10 @@ if [ -f %{v4migration} ]; then
     echo "Provides /var/log/td-agent symlink for backward compatibility"
     ln -sf /var/log/@PACKAGE_DIR@ /var/log/@COMPAT_PACKAGE_DIR@
   fi
+  if [ -f /etc/logrotate.d/@COMPAT_SERVICE_NAME@ ]; then
+     echo "Migrating path of pid ..."
+     sed -i"" /etc/logrotate.d/@COMPAT_SERVICE_NAME@ -e "s,/var/run/@COMPAT_PACKAGE_DIR@/@COMPAT_SERVICE_NAME@.pid,/var/run/@PACKAGE_DIR@/@SERVICE_NAME@.pid,"
+  fi
   rm -f %{v4migration}
   if [ -f %{v4migration_with_restart} ]; then
     # When upgrading from v4, td-agent.service will be removed

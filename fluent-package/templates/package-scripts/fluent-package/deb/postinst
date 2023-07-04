@@ -107,6 +107,10 @@ migration_from_v4_main_process() {
             echo "Keep logging to <%= compat_service_name %>.log ..."
             sed -i"" /etc/default/<%= service_name %> -e "/TD_AGENT_LOG_FILE/c TD_AGENT_LOG_FILE=/var/log/<%= package_dir %>/<%= compat_service_name %>.log"
         fi
+        if [ -f /etc/logrotate.d/<%= compat_service_name %> ]; then
+            echo "Migrating path of pid ..."
+            sed -i"" /etc/logrotate.d/<%= compat_service_name %> -e "s,/var/run/<%= compat_package_dir %>/<%= compat_service_name %>.pid,/var/run/<%= package_dir %>/<%= service_name %>.pid,"
+        fi
     fi
 }
 
