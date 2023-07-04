@@ -27,8 +27,6 @@ sudo apt install -V -y \
 systemctl status --wait --no-pager fluentd
 ! systemctl status --wait --no-pager td-agent
 
-# TODO: There are some tests being commented out. They will be supported by future fixes.
-
 # Test: restoring td-agent service alias
 sudo systemctl unmask td-agent
 sudo systemctl enable --now fluentd
