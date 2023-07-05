@@ -116,12 +116,12 @@ EOF
            ${repositories_dir}/${distribution}/${DISTRIBUTION_VERSION}/x86_64/Packages/*.rpm
 
 
-    if getent passwd td-agent >/dev/null; then
-        echo "td-agent user must be removed"
+    if ! getent passwd td-agent >/dev/null; then
+        echo "td-agent user must exist"
         exit 1
     fi
-    if getent group td-agent >/dev/null; then
-        echo "td-agent group must be removed"
+    if ! getent group td-agent >/dev/null; then
+        echo "td-agent group must exist"
         exit 1
     fi
     if ! getent passwd fluentd >/dev/null; then

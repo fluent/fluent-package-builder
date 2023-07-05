@@ -146,8 +146,9 @@ if ! getent group @COMPAT_SERVICE_NAME@ >/dev/null; then
     fi
 else
     if ! getent group @SERVICE_NAME@ >/dev/null; then
-       echo "Migrate group @COMPAT_SERVICE_NAME@ to @SERVICE_NAME@..."
-       /usr/sbin/groupmod --new-name @SERVICE_NAME@ @COMPAT_SERVICE_NAME@
+        echo "Add group @SERVICE_NAME@ (same GID with @COMPAT_SERVICE_NAME@)..."
+        TD_GID=$(getent group @COMPAT_SERVICE_NAME@ | cut -d':' -f3)
+        /usr/sbin/groupadd -g $TD_GID -o @SERVICE_NAME@
     fi
 fi
 if ! getent passwd @COMPAT_SERVICE_NAME@ >/dev/null; then
@@ -160,12 +161,10 @@ if ! getent passwd @COMPAT_SERVICE_NAME@ >/dev/null; then
     fi
 else
     if ! getent passwd @SERVICE_NAME@ >/dev/null; then
-       systemctl is-active @COMPAT_SERVICE_NAME@
-       if [ $? -ne 0 ]; then
-           # As service is down, renaming user here.
-	   echo "Migrate user @COMPAT_SERVICE_NAME@ to @SERVICE_NAME@..."
-           /usr/sbin/usermod --login @SERVICE_NAME@ @COMPAT_SERVICE_NAME@
-       fi
+        echo "Add user @SERVICE_NAME@ (same UID/GID with @COMPAT_SERVICE_NAME@)..."
+        TD_UID=$(id --user @COMPAT_SERVICE_NAME@)
+        TD_GID=$(getent group @COMPAT_SERVICE_NAME@ | cut -d':' -f3)
+        /usr/sbin/useradd -u $TD_UID -g $TD_GID -o @SERVICE_NAME@
     fi
 fi
 
@@ -201,7 +200,9 @@ if [ $1 -eq 1 ]; then
         # stage, mismatch of user/group configuration cause
         # restarting service failure.)
         systemctl stop @COMPAT_SERVICE_NAME@.service
-        /usr/sbin/usermod --login @SERVICE_NAME@ @COMPAT_SERVICE_NAME@
+        TD_UID=$(id --user @COMPAT_SERVICE_NAME@)
+        TD_GID=$(getent group @COMPAT_SERVICE_NAME@ | cut -d':' -f3)
+        /usr/sbin/useradd -u $TD_UID -g $TD_GID -o @SERVICE_NAME@
       fi
     fi
     # Want to restart with new user/group here,
@@ -271,6 +272,14 @@ if [ $1 -eq 0 ]; then
        echo "Removing @SERVICE_NAME@ group..."
        /usr/sbin/groupdel @SERVICE_NAME@
    fi
+   if getent passwd @COMPAT_SERVICE_NAME@ >/dev/null; then
+       echo "Removing @COMPAT_SERVICE_NAME@ user..."
+       /usr/sbin/userdel --remove @COMPAT_SERVICE_NAME@
+   fi
+   if getent group @COMPAT_SERVICE_NAME@ >/dev/null; then
+       echo "Removing @COMPAT_SERVICE_NAME@ group..."
+       /usr/sbin/groupdel @COMPAT_SERVICE_NAME@
+   fi
 fi
 
 %posttrans
@@ -290,6 +299,10 @@ if [ -f %{v4migration} ]; then
   if [ ! -h /var/log/@COMPAT_PACKAGE_DIR@ ]; then
     echo "Provides /var/log/td-agent symlink for backward compatibility"
     ln -sf /var/log/@PACKAGE_DIR@ /var/log/@COMPAT_PACKAGE_DIR@
+  fi
+  if [ -f /etc/logrotate.d/@COMPAT_SERVICE_NAME@ ]; then
+     echo "Migrating path of pid ..."
+     sed -i"" /etc/logrotate.d/@COMPAT_SERVICE_NAME@ -e "s,/var/run/@COMPAT_PACKAGE_DIR@/@COMPAT_SERVICE_NAME@.pid,/var/run/@PACKAGE_DIR@/@SERVICE_NAME@.pid,"
   fi
   rm -f %{v4migration}
   if [ -f %{v4migration_with_restart} ]; then
@@ -320,7 +333,7 @@ fi
 %{_mandir}/man1/fluent*
 %config(noreplace) %{_sysconfdir}/sysconfig/@SERVICE_NAME@
 %config(noreplace) %{_sysconfdir}/@PACKAGE_DIR@/@SERVICE_NAME@.conf
-%config(noreplace) %{_sysconfdir}/logrotate.d/@COMPAT_SERVICE_NAME@
+%config(noreplace) %{_sysconfdir}/logrotate.d/@SERVICE_NAME@
 %attr(0755,fluentd,fluentd) %dir %{_localstatedir}/log/@PACKAGE_DIR@
 %attr(0755,fluentd,fluentd) %dir %{_localstatedir}/log/@PACKAGE_DIR@/buffer
 %attr(0755,fluentd,fluentd) %dir %{_sysconfdir}/@PACKAGE_DIR@

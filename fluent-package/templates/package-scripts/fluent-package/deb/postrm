@@ -31,7 +31,12 @@ if [ "$1" = "purge" ]; then
 	    fi
 	done
 
-	getent passwd _<%= service_name %> && userdel -r _<%= service_name %>
+	if getent passwd _<%= service_name %>; then
+	    userdel --remove --force _<%= service_name %>
+	fi
+	if getent passwd <%= compat_service_name %>; then
+	    userdel --remove --force <%= compat_service_name %>
+	fi
 fi
 
 #DEBHELPER#

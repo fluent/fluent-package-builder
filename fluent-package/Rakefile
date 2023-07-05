@@ -483,7 +483,7 @@ class BuildTask
                     ["etc/#{PACKAGE_DIR}/#{SERVICE_NAME}.conf"]
                   end
         configs.concat([
-          "etc/logrotate.d/#{COMPAT_SERVICE_NAME}",
+          "etc/logrotate.d/#{SERVICE_NAME}",
           "opt/#{PACKAGE_DIR}/share/#{COMPAT_SERVICE_NAME}-ruby.conf",
           "opt/#{PACKAGE_DIR}/share/#{COMPAT_SERVICE_NAME}.conf.tmpl"
         ]) unless windows? || macos?
