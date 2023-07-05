@@ -95,7 +95,8 @@ case $COMMAND in
 	mkdir -p "$aptly_rootdir"
 	cat << EOF > "$aptly_conf"
 {
-    "rootDir": "$aptly_rootdir"
+    "rootDir": "$aptly_rootdir",
+    "architectures": ["all", "amd64", "arm64"]
 }
 EOF
 	echo "Ready to type signing passphrase? (process starts in 10 seconds, Ctrl+C to abort)"
