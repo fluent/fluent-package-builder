@@ -34,7 +34,7 @@ class FluentdAptSourcePackageTask < PackageTask
   end
 
   def repository_version
-    "2023.1.13"
+    "2023.6.29"
   end
 
   def repository_name
@@ -78,6 +78,7 @@ class FluentdAptSourcePackageTask < PackageTask
       end
       sh("gpg", "--armor", "--export", *repository_gpg_key_ids,
          out: "#{@archive_base_name}/keys")
+      cp("fluent-package.pub", @archive_base_name)
       sh("tar", "czf", @archive_name, @archive_base_name)
       rm_rf(@archive_base_name)
     end
