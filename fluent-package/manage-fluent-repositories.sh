@@ -76,7 +76,7 @@ case $COMMAND in
 	done
 	;;
     dry-download|download)
-	VERSIONS="4"
+	VERSIONS="5"
 	DRYRUN_OPTION="--dryrun"
 	if [ $COMMAND = "download" ]; then
 	   DRYRUN_OPTION=""
