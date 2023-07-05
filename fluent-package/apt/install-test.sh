@@ -41,11 +41,6 @@ apt install -y curl
 curl -O https://packages.treasuredata.com/4/${distribution}/${code_name}/pool/contrib/f/fluentd-apt-source/fluentd-apt-source_2020.8.25-1_all.deb
 apt install -y ./fluentd-apt-source_2020.8.25-1_all.deb
 
-if [ ${code_name} = "jammy" ]; then
-    # TODO: Remove when repository for jammy has been deployed
-    echo "skip to install via apt repository: <${code_name}>"
-    exit 0
-fi
 apt clean all
 # Uncomment when v5 repository was deployed
 #apt_source_package=${apt_source_repositories_dir}/${distribution}/pool/${code_name}/${channel}/*/*/fluentd-apt-source*_all.deb
