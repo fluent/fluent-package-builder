@@ -14,7 +14,6 @@ Section: misc
 Architecture: all
 Depends:
   ${misc:Depends},
-  apt-transport-https,
   gnupg
 Description: GnuPG archive key and APT source of the Fluent Package archive
  The Fluentd project digitally signs its Release files. This package
