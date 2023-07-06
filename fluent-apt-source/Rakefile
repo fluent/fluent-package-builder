@@ -13,7 +13,7 @@ CLOBBER.include("apt/repositories")
 
 class FluentdAptSourcePackageTask < PackageTask
   def initialize
-    super("fluentd-apt-source",
+    super("fluent-apt-source",
           repository_version,
           latest_commit_time(File.join(__dir__, "..")))
     CLEAN.include(@archive_name)

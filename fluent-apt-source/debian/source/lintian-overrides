@@ -1,5 +1,5 @@
-fluentd-apt-source source: changelog-should-mention-nmu
-fluentd-apt-source source: source-nmu-has-incorrect-version-number
+fluent-apt-source source: changelog-should-mention-nmu
+fluent-apt-source source: source-nmu-has-incorrect-version-number
 # When development machine has switched to aptly 1.4.0+ds1-7 or later,
 # remove the following (bookworm or later, ubuntu 22.10 or later)
-fluentd-apt-source: debian-rules-should-not-use-custom-compression-settings
+fluent-apt-source: debian-rules-should-not-use-custom-compression-settings
