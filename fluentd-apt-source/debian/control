@@ -16,6 +16,6 @@ Depends:
   ${misc:Depends},
   apt-transport-https,
   gnupg
-Description: GnuPG archive key and APT source of the Treasure Agent archive
- The Treasure Agent project digitally signs its Release files. This
- package contains the archive key used for that.
+Description: GnuPG archive key and APT source of the Fluent Package archive
+ The Fluentd project digitally signs its Release files. This package
+ contains the archive key used for that.
