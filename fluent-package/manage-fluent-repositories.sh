@@ -64,7 +64,7 @@ case $COMMAND in
 	$command
 	;;
     dry-upload|upload)
-	TARGETS="amazon redhat windows macosx debian/buster debian/bullseye ubuntu/jammy ubuntu/focal ubuntu/bionic"
+	TARGETS="amazon redhat windows macosx debian/bullseye debian/bookworm ubuntu/jammy ubuntu/focal"
 	DRYRUN_OPTION="--dryrun"
 	if [ $COMMAND = "upload" ]; then
 	   DRYRUN_OPTION=""
@@ -76,7 +76,7 @@ case $COMMAND in
 	done
 	;;
     dry-download|download)
-	VERSIONS="4"
+	VERSIONS="5"
 	DRYRUN_OPTION="--dryrun"
 	if [ $COMMAND = "download" ]; then
 	   DRYRUN_OPTION=""
@@ -95,7 +95,8 @@ case $COMMAND in
 	mkdir -p "$aptly_rootdir"
 	cat << EOF > "$aptly_conf"
 {
-    "rootDir": "$aptly_rootdir"
+    "rootDir": "$aptly_rootdir",
+    "architectures": ["all", "amd64", "arm64"]
 }
 EOF
 	echo "Ready to type signing passphrase? (process starts in 10 seconds, Ctrl+C to abort)"
