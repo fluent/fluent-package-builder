@@ -35,7 +35,7 @@ case $1 in
 		    #      mapping ubuntu/pool/.../main/f/fluent-package/ => 5/ubuntu/.../pool/contrib/f/fluent-package
 		    mkdir -p $ARTIFACTS_DIR/5/ubuntu/$d/pool/contrib/t/td-agent
 		    mkdir -p $ARTIFACTS_DIR/5/ubuntu/$d/pool/contrib/f/fluent-package
-		    mkdir -p $ARTIFACTS_DIR/5/debian/$d/pool/contrib/f/fluent-apt-source
+		    mkdir -p $ARTIFACTS_DIR/5/ubuntu/$d/pool/contrib/f/fluent-apt-source
 		    find $REPOSITORY_PATH/ubuntu/pool/$d -name 'td-agent*.deb' \
 			 -exec cp {} $ARTIFACTS_DIR/5/ubuntu/$d/pool/contrib/f/fluent-package \;
 		    find $REPOSITORY_PATH/ubuntu/pool/$d -name 'fluent-package*.deb' \
