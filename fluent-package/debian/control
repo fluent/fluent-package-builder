@@ -25,9 +25,10 @@ Pre-Depends: adduser
 Depends:
   ${misc:Depends},
   ${shlibs:Depends},
-Description: Treasure Agent: A data collector for Treasure Data
- Treasure Agent is all in one package which contains Fluentd and
- related gem packages.
+Description: All in one package of Fluentd
+ Fluent Package is all in one package which contains Fluentd and
+ related gem packages. This package was formerly known as
+ Treasure Agent.
  .
  It is installable alongside with system's gem packages separately.
 
