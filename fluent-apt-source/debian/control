@@ -1,4 +1,4 @@
-Source: fluentd-apt-source
+Source: fluent-apt-source
 Section: misc
 Priority: optional
 Maintainer: Fluentd developers <fluentd@googlegroups.com>
@@ -9,13 +9,25 @@ Build-Depends:
 Standards-Version: 4.5.0
 Homepage: https://www.fluentd.org/
 
-Package: fluentd-apt-source
+Package: fluent-apt-source
 Section: misc
 Architecture: all
 Depends:
   ${misc:Depends},
-  apt-transport-https,
   gnupg
+Replaces: fluentd-apt-source (<< 2023.6.29-1)
+Breaks: fluentd-apt-source (<< 2023.6.29-1)
 Description: GnuPG archive key and APT source of the Fluent Package archive
  The Fluentd project digitally signs its Release files. This package
  contains the archive key used for that.
+
+Package: fluentd-apt-source
+Section: oldlibs
+Architecture: all
+Depends:
+  ${misc:Depends},
+  fluent-apt-source
+Description: Transitional package for fluent-apt-source
+ This is a transitional package for fluent-apt-source.
+ .
+ It can be safely be removed.

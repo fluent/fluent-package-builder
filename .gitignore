@@ -24,10 +24,10 @@
 /fluent-package/dmg/td-agent.rsrc
 /fluent-package/dmg/resources/pkg/scripts/postinstall
 /fluent-package/dmg/resources/dmg/td-agent.osascript
-/fluentd-apt-source/apt/build.sh
-/fluentd-apt-source/apt/env.sh
-/fluentd-apt-source/apt/repositories/
-/fluentd-apt-source/apt/tmp/
+/fluent-apt-source/apt/build.sh
+/fluent-apt-source/apt/env.sh
+/fluent-apt-source/apt/repositories/
+/fluent-apt-source/apt/tmp/
 *.wixobj
 *.wixpdb
 *.msi
