@@ -25,8 +25,8 @@ if ! getent group _fluentd >/dev/null; then
     exit 1
 fi
 
-echo "fluentd-apt-source test"
-apt_source_repositories_dir=/fluentd/fluentd-apt-source/apt/repositories
+echo "fluent-apt-source test"
+apt_source_repositories_dir=/fluentd/fluent-apt-source/apt/repositories
 apt purge -y fluent-package
 
 for conf_path in /etc/td-agent/td-agent.conf /etc/fluent/fluentd.conf; do
@@ -43,7 +43,7 @@ apt install -y ./fluentd-apt-source_2020.8.25-1_all.deb
 
 apt clean all
 # Uncomment when v5 repository was deployed
-#apt_source_package=${apt_source_repositories_dir}/${distribution}/pool/${code_name}/${channel}/*/*/fluentd-apt-source*_all.deb
+#apt_source_package=${apt_source_repositories_dir}/${distribution}/pool/${code_name}/${channel}/*/*/fluent-apt-source*_all.deb
 #apt install -V -y ${apt_source_package} ca-certificates
 apt update
 apt install -V -y td-agent
