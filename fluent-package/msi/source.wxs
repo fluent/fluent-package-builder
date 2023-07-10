@@ -163,6 +163,18 @@
                   Execute="deferred"
                   Return="check"
                   Impersonate="no" />
+
+    <Property Id="PostMigration" Value=" "/>
+    <CustomAction Id="SetPostMigrationCommand"
+                  Property="PostMigration"
+                  Value="&quot;[FLUENTPROJECTLOCATION]bin\fluent-package-post-migration.bat&quot;"/>
+    <CustomAction Id="PostMigration"
+                  BinaryKey="WixCA"
+                  DllEntry="WixQuietExec64"
+                  Execute="deferred"
+                  Return="check"
+                  Impersonate="no" />
+
     <Property Id="InstallFluentdWinSvc" Value=" "/>
     <CustomAction Id="SetInstallFluentdWinSvcCommand"
                   Property="InstallFluentdWinSvc"
@@ -219,6 +231,10 @@
     <InstallExecuteSequence>
       <Custom Action="SetPostInstallCommand" After="InstallFiles">NOT Installed</Custom>
       <Custom Action="PostInstall" After="SetPostInstallCommand">NOT Installed</Custom>
+
+      <Custom Action="SetPostMigrationCommand" Before="PostMigration">WIX_UPGRADE_DETECTED</Custom>
+      <Custom Action="PostMigration" Before="StartServices">WIX_UPGRADE_DETECTED</Custom>
+
       <Custom Action="SetInstallFluentdWinSvcCommand" After="InstallFiles">NOT Installed</Custom>
       <Custom Action="InstallFluentdWinSvc" After="SetInstallFluentdWinSvcCommand">NOT Installed</Custom>
 

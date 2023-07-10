@@ -546,6 +546,7 @@ class BuildTask
         ensure_directory(staging_bindir)
         cp("msi/assets/#{PACKAGE_NAME}-prompt.bat", td_agent_staging_dir)
         cp("msi/assets/#{PACKAGE_NAME}-post-install.bat", staging_bindir)
+        cp("msi/assets/#{PACKAGE_NAME}-post-migration.bat", staging_bindir)
         cp("msi/assets/#{SERVICE_NAME}.bat", td_agent_staging_dir)
         cp("msi/assets/fluent-gem.bat", td_agent_staging_dir)
         cp("msi/assets/#{PACKAGE_NAME}-version.rb", staging_bindir)
