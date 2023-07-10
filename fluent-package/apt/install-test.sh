@@ -81,6 +81,18 @@ if [ ! -h /etc/td-agent ]; then
     exit 1
 fi
 
+homedir=$(getent passwd _fluentd | cut -d: -f6)
+if [ "$homedir" != "/var/lib/fluent" ]; then
+    echo "_fluentd must use /var/lib/fluent as home directory"
+    exit 1
+fi
+
+loginshell=$(getent passwd _fluentd | cut -d: -f7)
+if [ "$loginshell" != "/usr/sbin/nologin" ]; then
+    echo "_fluentd must use nologin"
+    exit 1
+fi
+
 # Note: As td-agent and _fluentd use same UID/GID,
 # it is regarded as preceding name (td-agent)
 owner=$(stat --format "%U/%G" /etc/fluent)
