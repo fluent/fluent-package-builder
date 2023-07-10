@@ -45,10 +45,10 @@
 Name:		@PACKAGE@
 Version:	@VERSION@
 Release:	@RELEASE@%{?dist}
-Summary:	The stable distribution of Fluentd
+Summary:	All in one package of Fluentd
 
 License:	ASL 2.0
-URL:		https://www.treasuredata.com/
+URL:		https://docs.fluentd.org/
 Source0:	@PACKAGE@-@VERSION@.tar.gz
 
 Obsoletes: td-agent < 5.0.0
@@ -107,7 +107,7 @@ Requires(pre): /usr/sbin/adduser
 %endif
 
 %description
-The stable distribution of Fluentd, called td-agent.
+The stable distribution of Fluentd, formerly known as td-agent.
 
 %prep
 %setup -q -n @PACKAGE@-%{version}
