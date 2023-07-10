@@ -143,13 +143,13 @@ EOF
 
     homedir=$(getent passwd fluentd | cut -d: -f6)
     if [ "$homedir" != "/var/lib/fluent" ]; then
-	echo "_fluentd must use /var/lib/fluent as home directory"
+	echo "fluentd must use /var/lib/fluent as home directory"
 	exit 1
     fi
 
     loginshell=$(getent passwd fluentd | cut -d: -f7)
     if [ "$loginshell" != "/sbin/nologin" ]; then
-	echo "_fluentd must use nologin"
+	echo "fluentd must use nologin"
 	exit 1
     fi
 fi
