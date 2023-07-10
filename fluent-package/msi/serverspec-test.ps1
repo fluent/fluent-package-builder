@@ -4,6 +4,7 @@ $msi = ((Get-Item "C:\\fluentd\\fluent-package\\msi\\repositories\\fluent-packag
 Write-Host "Installing ${msi} ..."
 
 Start-Process msiexec -ArgumentList "/i", $msi, "/quiet" -Wait -NoNewWindow
+Start-Service fluentdwinsvc
 
 $ENV:PATH="C:\\opt\\fluent\\bin;" + $ENV:PATH
 $ENV:PATH="C:\\opt\\fluent;" + $ENV:PATH
