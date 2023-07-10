@@ -21,7 +21,7 @@ add_system_user() {
 	    if getent passwd <%= compat_service_name %> >/dev/null; then
 		TD_UID=$(id --user <%= compat_service_name %>)
 		TD_GID=$(getent group <%= compat_service_name %> | cut -d':' -f3)
-		useradd -u $TD_UID -g $TD_GID -o _<%= service_name %>
+		useradd -u $TD_UID -g $TD_GID -o -d /var/lib/<%= package_dir %> -s /usr/sbin/nologin _<%= service_name %>
 	    fi
 	fi
     fi
