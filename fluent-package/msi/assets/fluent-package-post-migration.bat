@@ -40,7 +40,7 @@ if exist "%~dp0..\..\td-agent" (
   )
 
   echo "Ensure remaining files under td-agent"
-  tree %~dp0..\..\td-agent
+  tree /F %~dp0..\..\td-agent
 
   @rem create symbolic link to c:\opt\fluent (we can't use hardlink for directory)
   if exist "%~dp0..\..\td-agent\etc\td-agent" (
