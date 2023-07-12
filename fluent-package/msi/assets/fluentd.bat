@@ -7,7 +7,7 @@ if "%~nx0" == "td-agent.bat" (
 
 @rem Convert path separator from backslash to forwardslash
 setlocal enabledelayedexpansion
-set FLUENT_PACKAGE_TOPDIR=FLUENT_PACKAGE_TOPDIR=!FLUENT_PACKAGE_TOPDIR:\=/!
+set FLUENT_PACKAGE_TOPDIR=!FLUENT_PACKAGE_TOPDIR:\=/!
 
 set PATH=%FLUENT_PACKAGE_TOPDIR%bin;%PATH%
 set PATH=%FLUENT_PACKAGE_TOPDIR%;%PATH%
