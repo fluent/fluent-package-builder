@@ -668,6 +668,7 @@ class BuildTask
     end
 
     cd(source_dir) do
+      sh("echo", "je_cv_madv_free=no", {out: "config.cache"})
       sh("./configure", *configure_opts)
       sh("make", "install", "-j#{Etc.nprocessors}", "DESTDIR=#{STAGING_DIR}")
     end

@@ -13,8 +13,8 @@ FLUENTD_LOCAL_GEM_REPO = "file://" + File.expand_path(File.join(__dir__, "local_
 # https://github.com/jemalloc/jemalloc/releases
 # Use jemalloc 3.x to reduce memory usage
 # See https://github.com/fluent-plugins-nursery/fluent-package-builder/issues/305
-JEMALLOC_VERSION = "3.6.0"
-#JEMALLOC_VERSION = "5.2.1"
+#JEMALLOC_VERSION = "3.6.0"
+JEMALLOC_VERSION = "5.3.0"
 
 # https://www.openssl.org/source/
 OPENSSL_FOR_MACOS_VERSION = "3.0.8"
