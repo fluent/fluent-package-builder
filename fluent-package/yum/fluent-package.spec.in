@@ -223,7 +223,7 @@ if [ $1 -eq 1 ]; then
     done
     if [ -f /var/log/@PACKAGE_DIR@/@COMPAT_SERVICE_NAME@.log ]; then
       echo "Keep logging to @COMPAT_SERVICE_NAME@.log ..."
-      %{__sed} -i"" %{_sysconfdir}/sysconfig/@SERVICE_NAME@ -e "/TD_AGENT_LOG_FILE/c FLUENT_PACKAGE_LOG_FILE=/var/log/@PACKAGE_DIR@/@COMPAT_SERVICE_NAME@.log"
+      %{__sed} -i"" %{_sysconfdir}/sysconfig/@SERVICE_NAME@ -e "/FLUENT_PACKAGE_LOG_FILE/c FLUENT_PACKAGE_LOG_FILE=/var/log/@PACKAGE_DIR@/@COMPAT_SERVICE_NAME@.log"
     fi
   fi
 fi
