@@ -8,13 +8,13 @@
 
 set -ex
 
-TD_AGENT_DIR=$(dirname $(realpath $0))
+FLUENT_PACKAGE_DIR=$(dirname $(realpath $0))
 REPOSITORY_TYPE=""
 ARTIFACTS_DIR="artifacts"
 case $1 in
     apt|deb)
 	REPOSITORY_TYPE=apt
-	REPOSITORY_PATH=$TD_AGENT_DIR/$REPOSITORY_TYPE/repositories
+	REPOSITORY_PATH=$FLUENT_PACKAGE_DIR/$REPOSITORY_TYPE/repositories
 	for d in bullseye bookworm focal jammy; do
 	    case $d in
 		bullseye|bookworm)
@@ -51,7 +51,7 @@ case $1 in
 	;;
     yum|rpm)
 	REPOSITORY_TYPE=yum
-	REPOSITORY_PATH=$TD_AGENT_DIR/$REPOSITORY_TYPE/repositories
+	REPOSITORY_PATH=$FLUENT_PACKAGE_DIR/$REPOSITORY_TYPE/repositories
 	for dist in centos amazon rocky almalinux; do
 	    dist_dest=$dist
 	    if [ $dist = "centos" -o $dist = "rocky" -o $dist = "almalinux" ]; then

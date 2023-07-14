@@ -124,8 +124,8 @@ The stable distribution of Fluentd, formerly known as td-agent.
 %if %{use_scl_ruby}
 . /opt/rh/rh-ruby%{scl_ruby_ver}/enable
 %endif
-rake build:rpm_config TD_AGENT_STAGING_PATH=%{buildroot} NO_VAR_RUN=1
-rake build:all TD_AGENT_STAGING_PATH=%{buildroot} PATH="$HOME/.cargo/bin:$PATH"
+rake build:rpm_config FLUENT_PACKAGE_STAGING_PATH=%{buildroot} NO_VAR_RUN=1
+rake build:all FLUENT_PACKAGE_STAGING_PATH=%{buildroot} PATH="$HOME/.cargo/bin:$PATH"
 mkdir -p %{buildroot}%{_mandir}/man1
 cp @PACKAGE@/debian/*.1 %{buildroot}%{_mandir}/man1/
 for man in `find %{buildroot} -type f -wholename '*/man/man[1-9]/*.[1-9]'`; do
@@ -223,7 +223,7 @@ if [ $1 -eq 1 ]; then
     done
     if [ -f /var/log/@PACKAGE_DIR@/@COMPAT_SERVICE_NAME@.log ]; then
       echo "Keep logging to @COMPAT_SERVICE_NAME@.log ..."
-      %{__sed} -i"" %{_sysconfdir}/sysconfig/@SERVICE_NAME@ -e "/TD_AGENT_LOG_FILE/c TD_AGENT_LOG_FILE=/var/log/@PACKAGE_DIR@/@COMPAT_SERVICE_NAME@.log"
+      %{__sed} -i"" %{_sysconfdir}/sysconfig/@SERVICE_NAME@ -e "/FLUENT_PACKAGE_LOG_FILE/c FLUENT_PACKAGE_LOG_FILE=/var/log/@PACKAGE_DIR@/@COMPAT_SERVICE_NAME@.log"
     fi
   fi
 fi

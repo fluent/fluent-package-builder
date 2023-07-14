@@ -58,7 +58,7 @@ test $(eval $env_vars && echo $LOGNAME) = "_fluentd"
 test $(eval $env_vars && echo $USER) = "_fluentd"
 test $(eval $env_vars && echo $FLUENT_CONF) = "/etc/fluent/td-agent.conf"
 test $(eval $env_vars && echo $FLUENT_PLUGIN) = "/etc/fluent/plugin"
-test $(eval $env_vars && echo $TD_AGENT_LOG_FILE) = "/var/log/fluent/td-agent.log"
+test $(eval $env_vars && echo $FLUENT_PACKAGE_LOG_FILE) = "/var/log/fluent/td-agent.log"
 
 # Uninstall
 sudo apt remove -y fluent-package

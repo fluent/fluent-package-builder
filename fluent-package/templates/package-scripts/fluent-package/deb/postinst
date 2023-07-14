@@ -105,7 +105,7 @@ migration_from_v4_main_process() {
         done
         if [ -f /var/log/<%= package_dir %>/<%= compat_service_name %>.log ]; then
             echo "Keep logging to <%= compat_service_name %>.log ..."
-            sed -i"" /etc/default/<%= service_name %> -e "/TD_AGENT_LOG_FILE/c TD_AGENT_LOG_FILE=/var/log/<%= package_dir %>/<%= compat_service_name %>.log"
+            sed -i"" /etc/default/<%= service_name %> -e "/FLUENT_PACKAGE_LOG_FILE/c FLUENT_PACKAGE_LOG_FILE=/var/log/<%= package_dir %>/<%= compat_service_name %>.log"
         fi
         if [ -f /etc/logrotate.d/<%= compat_service_name %> ]; then
             echo "Migrating path of pid ..."

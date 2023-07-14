@@ -32,10 +32,10 @@ require 'logger'
 require 'find'
 
 DOWNLOADS_DIR  = File.expand_path("downloads")
-STAGING_DIR    = File.expand_path(ENV["TD_AGENT_STAGING_PATH"]   || "staging")
+STAGING_DIR    = File.expand_path(ENV["FLUENT_PACKAGE_STAGING_PATH"]   || "staging")
 
 @logger = Logger.new(STDOUT, Logger::Severity::INFO)
-if ENV["TD_AGENT_LOG_LEVEL"] and ENV["TD_AGENT_LOG_LEVEL"] == "debug"
+if ENV["FLUENT_PACKAGE_LOG_LEVEL"] and ENV["FLUENT_PACKAGE_LOG_LEVEL"] == "debug"
   @logger = Logger.new(STDOUT, Logger::Severity::DEBUG)
 end
 
@@ -446,7 +446,7 @@ class BuildTask
       task :licenses => [:gems] do
         install_jemalloc_license
         install_ruby_license
-        install_td_agent_license
+        install_fluent_package_license
         collect_gem_licenses
       end
 
@@ -475,8 +475,8 @@ class BuildTask
         end
       end
 
-      desc "Create td-agent configuration files from template"
-      task :td_agent_config do
+      desc "Create fluent-package configuration files from template"
+      task :fluent_package_config do
         configs = ["etc/#{PACKAGE_DIR}/#{SERVICE_NAME}.conf"]
         configs.concat([
           "etc/logrotate.d/#{SERVICE_NAME}",
@@ -521,7 +521,7 @@ class BuildTask
           dest = if macos?
                    # We should avoid touching `/usr/sbin/` because we
                    # don't prepare the uninstall feature for macOS.
-                   File.join(td_agent_staging_dir, "sbin", File.basename(script))
+                   File.join(fluent_package_staging_dir, "sbin", File.basename(script))
                  else
                    File.join(STAGING_DIR, script)
                  end
@@ -544,11 +544,11 @@ class BuildTask
       desc "Install additional .bat files for Windows"
       task :win_batch_files do
         ensure_directory(staging_bindir)
-        cp("msi/assets/#{PACKAGE_NAME}-prompt.bat", td_agent_staging_dir)
+        cp("msi/assets/#{PACKAGE_NAME}-prompt.bat", fluent_package_staging_dir)
         cp("msi/assets/#{PACKAGE_NAME}-post-install.bat", staging_bindir)
         cp("msi/assets/#{PACKAGE_NAME}-post-migration.bat", staging_bindir)
-        cp("msi/assets/#{SERVICE_NAME}.bat", td_agent_staging_dir)
-        cp("msi/assets/fluent-gem.bat", td_agent_staging_dir)
+        cp("msi/assets/#{SERVICE_NAME}.bat", fluent_package_staging_dir)
+        cp("msi/assets/fluent-gem.bat", fluent_package_staging_dir)
         cp("msi/assets/#{PACKAGE_NAME}-version.rb", staging_bindir)
       end
 
@@ -593,16 +593,16 @@ class BuildTask
       end
 
       desc "Create configuration files for Red Hat like systems with systemd"
-      task :rpm_config => [:td_agent_config, :systemd_tmpfiles_config, :bin_scripts, :rpm_systemd]
+      task :rpm_config => [:fluent_package_config, :systemd_tmpfiles_config, :bin_scripts, :rpm_systemd]
 
       desc "Create configuration files for Debian like systems"
-      task :deb_config => [:td_agent_config, :systemd_tmpfiles_config, :bin_scripts, :deb_systemd, :deb_scripts]
+      task :deb_config => [:fluent_package_config, :systemd_tmpfiles_config, :bin_scripts, :deb_systemd, :deb_scripts]
 
       desc "Create configuration files for Windows"
-      task :msi_config => [:td_agent_config, :wix_config, :win_batch_files]
+      task :msi_config => [:fluent_package_config, :wix_config, :win_batch_files]
 
       desc "Create configuration files for macOS"
-      task :dmg_config => [:td_agent_config, :pkgbuild_scripts, :pkgbuild_config, :bin_scripts, :launchctl_config]
+      task :dmg_config => [:fluent_package_config, :pkgbuild_scripts, :pkgbuild_config, :bin_scripts, :launchctl_config]
     end
   end
 
@@ -647,16 +647,16 @@ class BuildTask
     ]
 
     if JEMALLOC_VERSION.split('.')[0].to_i >= 4
-      if ENV["TD_AGENT_STAGING_PATH"] and
-        (ENV["TD_AGENT_STAGING_PATH"].end_with?("el8.aarch64") or
-         ENV["TD_AGENT_STAGING_PATH"].end_with?("el7.aarch64"))
+      if ENV["FLUENT_PACKAGE_STAGING_PATH"] and
+        (ENV["FLUENT_PACKAGE_STAGING_PATH"].end_with?("el8.aarch64") or
+         ENV["FLUENT_PACKAGE_STAGING_PATH"].end_with?("el7.aarch64"))
         # NOTE: There is a case that PAGE_SIZE detection on
         # CentOS 7 CentOS 8 with aarch64 AWS ARM instance.
         # So, explicitly set PAGE_SIZE by with-lg-page 16 (2^16 = 65536)
         configure_opts.concat(["--with-lg-page=16"])
       end
-      if ENV["TD_AGENT_STAGING_PATH"] and
-        ENV["TD_AGENT_STAGING_PATH"].end_with?("el8.ppc64le")
+      if ENV["FLUENT_PACKAGE_STAGING_PATH"] and
+        ENV["FLUENT_PACKAGE_STAGING_PATH"].end_with?("el8.ppc64le")
         # NOTE: There is a case that PAGE_SIZE detection on
         # CentOS 8 with ppc64le.
         # So, explicitly set PAGE_SIZE by with-lg-page 16 (2^16 = 65536)
@@ -775,7 +775,7 @@ class BuildTask
   end
 
   def extract_ruby_installer
-    ensure_directory(td_agent_staging_dir) do
+    ensure_directory(fluent_package_staging_dir) do
       path = File.expand_path(@download_task.file_ruby_installer_x64)
       src_dir = File.basename(path).sub(/\.7z$/, '')
       sh("7z",
@@ -792,7 +792,7 @@ class BuildTask
 
     ruby_version = BUNDLED_RUBY_INSTALLER_X64_VERSION.sub(/-\d+$/, '')
     feature_version = ruby_version.sub(/\d+$/, '0')
-    ruby_lib_dir = File.join(td_agent_staging_dir, "lib", "ruby", feature_version)
+    ruby_lib_dir = File.join(fluent_package_staging_dir, "lib", "ruby", feature_version)
 
     BUNDLED_RUBY_INSTALLER_PATCHES.each do |patch|
       patch_name, version_condition = patch
@@ -830,14 +830,14 @@ class BuildTask
   end
 
   def setup_windows_build_env
-    sh("#{td_agent_staging_dir}/bin/ridk", "install", "3")
+    sh("#{fluent_package_staging_dir}/bin/ridk", "install", "3")
   end
 
   def install_prefix
     "/opt/#{PACKAGE_DIR}"
   end
 
-  def td_agent_staging_dir
+  def fluent_package_staging_dir
     # The staging directory on windows doesn't have install_prefix,
     # it's added by the installer.
     if windows?
@@ -848,15 +848,15 @@ class BuildTask
   end
 
   def staging_bindir
-    File.join(td_agent_staging_dir, "bin")
+    File.join(fluent_package_staging_dir, "bin")
   end
 
   def staging_etcdir
-    File.join(td_agent_staging_dir, "etc")
+    File.join(fluent_package_staging_dir, "etc")
   end
 
   def staging_sharedir
-    File.join(td_agent_staging_dir, "share")
+    File.join(fluent_package_staging_dir, "share")
   end
 
   def gem_command
@@ -885,7 +885,7 @@ class BuildTask
   end
 
   def licenses_staging_dir
-    File.join(td_agent_staging_dir, "LICENSES")
+    File.join(fluent_package_staging_dir, "LICENSES")
   end
 
   def gem_staging_dir
@@ -893,11 +893,11 @@ class BuildTask
     fail "Failed to get default installation directory for gems!" unless $?.success?
 
     if windows?
-      expected    = File.join(td_agent_staging_dir, gem_dir_suffix)
+      expected    = File.join(fluent_package_staging_dir, gem_dir_suffix)
       staging_dir = expected
     else
       expected    = File.join(install_prefix,       gem_dir_suffix)
-      staging_dir = File.join(td_agent_staging_dir, gem_dir_suffix)
+      staging_dir = File.join(fluent_package_staging_dir, gem_dir_suffix)
     end
     fail "Unsupposed gemdir: #{gemdir} (expected: #{expected})" unless gemdir == expected
 
@@ -994,7 +994,7 @@ class BuildTask
   def install_ruby_license
     ensure_directory(licenses_staging_dir) do
       if windows?
-        src  = File.join(td_agent_staging_dir, "LICENSE.txt")
+        src  = File.join(fluent_package_staging_dir, "LICENSE.txt")
         mv(src, "LICENSE-RubyInstaller.txt")
       end
       tarball = @download_task.file_ruby_source
@@ -1008,7 +1008,7 @@ class BuildTask
     end
   end
 
-  def install_td_agent_license
+  def install_fluent_package_license
     ensure_directory(licenses_staging_dir)
     src = File.join(__dir__, "..", "LICENSE")
     dest = File.join(licenses_staging_dir, "LICENSE-#{PACKAGE_NAME}.txt")
@@ -1070,10 +1070,10 @@ class BuildTask
   end
 
   def remove_needless_files
-    remove_files("#{td_agent_staging_dir}/bin/jeprof", true) # jemalloc 4 or later
-    remove_files("#{td_agent_staging_dir}/bin/pprof", true) # jemalloc 3
-    remove_files("#{td_agent_staging_dir}/share/doc", true) # Contains only jemalloc.html
-    remove_files("#{td_agent_staging_dir}/share/ri", true)
+    remove_files("#{fluent_package_staging_dir}/bin/jeprof", true) # jemalloc 4 or later
+    remove_files("#{fluent_package_staging_dir}/bin/pprof", true) # jemalloc 3
+    remove_files("#{fluent_package_staging_dir}/share/doc", true) # Contains only jemalloc.html
+    remove_files("#{fluent_package_staging_dir}/share/ri", true)
     cd("#{gem_staging_dir}/cache") do
       remove_files("*.gem")
       remove_files("bundler", true)
@@ -1089,12 +1089,12 @@ class BuildTask
         remove_files("ports", true) if gem_dir.start_with?("#{gem_staging_dir}/gems/cmetrics-")
       end
     end
-    Dir.glob("#{td_agent_staging_dir}/lib/lib*.a").each do |static_library|
+    Dir.glob("#{fluent_package_staging_dir}/lib/lib*.a").each do |static_library|
       unless static_library.end_with?(".dll.a")
         rm_f(static_library)
       end
     end
-    Dir.glob("#{td_agent_staging_dir}/**/.git").each do |git_dir|
+    Dir.glob("#{fluent_package_staging_dir}/**/.git").each do |git_dir|
       remove_files(git_dir, true)
     end
   end
@@ -1286,7 +1286,7 @@ EOS
 
   private
   def detect_release_time
-    release_time_env = ENV["TD_AGENT_RELEASE_TIME"]
+    release_time_env = ENV["FLUENT_PACKAGE_RELEASE_TIME"]
     if release_time_env
       Time.parse(release_time_env).utc
     else
@@ -1463,7 +1463,7 @@ end
 class MacOSPackageTask
   include Rake::DSL
 
-  PKG_OUTPUT_DIR = ENV["TD_AGENT_PKG_OUTPUT_PATH"] || "."
+  PKG_OUTPUT_DIR = ENV["FLUENT_PACKAGE_PKG_OUTPUT_PATH"] || "."
 
   def initialize(logger:)
     @package = PACKAGE_NAME
@@ -1516,7 +1516,7 @@ end
 class WindowsPackageTask
   include Rake::DSL
 
-  MSI_OUTPUT_DIR = ENV["TD_AGENT_MSI_OUTPUT_PATH"] || "."
+  MSI_OUTPUT_DIR = ENV["FLUENT_PACKAGE_MSI_OUTPUT_PATH"] || "."
 
   def initialize
     @package = PACKAGE_NAME
