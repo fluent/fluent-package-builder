@@ -26,8 +26,8 @@
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="WINDOWSVOLUME">
         <Directory Id="OPTLOCATION" Name="opt">
-          <Directory Id="PROJECTLOCATION" Name="td-agent">
-            <Component Id="TDAgentAcl" Guid="b0504030-258a-0139-ba33-7085c2f4281d">
+          <Directory Id="FLUENTPROJECTLOCATION" Name="fluent">
+            <Component Id="FluentAcl" Guid="c2bba014-c3c1-4817-a0c6-096dbd95991d">
               <CreateFolder>
                 <!--
                   The following ACL will be set by Sddl=
@@ -73,13 +73,6 @@
               </CreateFolder>
             </Component>
           </Directory>
-          <Directory Id="FLUENTPROJECTLOCATION" Name="fluent">
-            <Component Id="FluentAcl" Guid="c2bba014-c3c1-4817-a0c6-096dbd95991d">
-              <CreateFolder>
-                <PermissionEx Sddl="D:(A;OICI;0x1200a9;;;BU)(A;OICI;FA;;;BA)(A;OICI;FA;;;S-1-5-80-956008885-3418522649-1831038044-1853292631-2271478464)(A;OICI;FA;;;CO)(A;OICI;FA;;;SY)"/>
-              </CreateFolder>
-            </Component>
-          </Directory>
         </Directory>
       </Directory>
       <Directory Id="ProgramMenuFolder">
@@ -87,22 +80,19 @@
       </Directory>
     </Directory>
 
-    <DirectoryRef Id="PROJECTLOCATION">
-      <Directory Id="TDAgentEtcDir" Name="etc">
-        <Directory Id="TDAgentConfDir" Name="td-agent">
-          <Component Id="TDAgentConf"
-                     Guid="534F3E10-B04E-4C17-9DAA-A390068BA8EB"
+    <DirectoryRef Id="FLUENTPROJECTLOCATION">
+      <Directory Id="FluentEtcDir" Name="etc">
+        <Directory Id="FluentConfDir" Name="fluent">
+          <Component Id="FluentConf"
+                     Guid="340cc0a1-83cc-42df-bb66-290264c6c37b"
                      Permanent="yes"
                      NeverOverwrite="yes">
-            <File Id="TDAgentConf"
-                  Name="td-agent.conf"
-                  Source="$(var.ProjectSourceDir)\etc\td-agent\td-agent.conf" />
+            <File Id="FluentConf"
+                  Name="fluentd.conf"
+                  Source="$(var.ProjectSourceDir)\etc\fluent\fluentd.conf" />
           </Component>
         </Directory>
       </Directory>
-    </DirectoryRef>
-
-    <DirectoryRef Id="FLUENTPROJECTLOCATION">
       <Component Id="FluentdBat" Guid="261158e8-7b22-48ff-b7eb-9f8296f30236">
         <File Name="fluentd.bat"
               KeyPath="yes"
@@ -127,7 +117,7 @@
                      Permanent="no"
                      Part="all"
                      System="yes"
-                     Name="TD_AGENT_TOPDIR"
+                     Name="FLUENT_PACKAGE_TOPDIR"
                      Value="[FLUENTPROJECTLOCATION]"/>
       </Component>
     </DirectoryRef>
@@ -136,8 +126,7 @@
     <Feature Id="ProjectFeature" Title="!(loc.FeatureMainName)" Absent="disallow" AllowAdvertise="no" Level="1" ConfigurableDirectory="OPTLOCATION">
       <ComponentGroupRef Id="ProjectDir" />
       <ComponentRef Id="ApplicationShortcut" />
-      <ComponentRef Id="TDAgentConf" />
-      <ComponentRef Id="TDAgentAcl" />
+      <ComponentRef Id="FluentConf" />
       <ComponentRef Id="FluentAcl" />
       <ComponentRef Id="FluentdBat" />
     </Feature>
@@ -174,10 +163,22 @@
                   Execute="deferred"
                   Return="check"
                   Impersonate="no" />
+
+    <Property Id="PostMigration" Value=" "/>
+    <CustomAction Id="SetPostMigrationCommand"
+                  Property="PostMigration"
+                  Value="&quot;[FLUENTPROJECTLOCATION]bin\fluent-package-post-migration.bat&quot;"/>
+    <CustomAction Id="PostMigration"
+                  BinaryKey="WixCA"
+                  DllEntry="WixQuietExec64"
+                  Execute="deferred"
+                  Return="check"
+                  Impersonate="no" />
+
     <Property Id="InstallFluentdWinSvc" Value=" "/>
     <CustomAction Id="SetInstallFluentdWinSvcCommand"
                   Property="InstallFluentdWinSvc"
-                  Value="&quot;[FLUENTPROJECTLOCATION]fluentd.bat&quot; --reg-winsvc i --reg-winsvc-delay-start --reg-winsvc-fluentdopt &quot;-c [PROJECTLOCATION]etc\td-agent\td-agent.conf -o [PROJECTLOCATION]td-agent.log&quot;"/>
+                  Value="&quot;[FLUENTPROJECTLOCATION]fluentd.bat&quot; --reg-winsvc i --reg-winsvc-delay-start --reg-winsvc-fluentdopt &quot;-c [FLUENTPROJECTLOCATION]etc\fluent\fluentd.conf -o [FLUENTPROJECTLOCATION]fluentd.log&quot;"/>
     <CustomAction Id="InstallFluentdWinSvc"
                   BinaryKey="WixCA"
                   DllEntry="WixQuietExec64"
@@ -230,6 +231,10 @@
     <InstallExecuteSequence>
       <Custom Action="SetPostInstallCommand" After="InstallFiles">NOT Installed</Custom>
       <Custom Action="PostInstall" After="SetPostInstallCommand">NOT Installed</Custom>
+
+      <Custom Action="SetPostMigrationCommand" Before="PostMigration">WIX_UPGRADE_DETECTED</Custom>
+      <Custom Action="PostMigration" Before="StartServices">WIX_UPGRADE_DETECTED</Custom>
+
       <Custom Action="SetInstallFluentdWinSvcCommand" After="InstallFiles">NOT Installed</Custom>
       <Custom Action="InstallFluentdWinSvc" After="SetInstallFluentdWinSvcCommand">NOT Installed</Custom>
 
