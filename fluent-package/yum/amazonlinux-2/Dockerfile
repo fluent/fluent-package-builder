@@ -44,7 +44,9 @@ RUN \
     tar \
     zlib-devel \
     rpmlint \
-    cmake3 && \
+    cmake3 \
+    # install which for building librdkafka 1.9.0 or later
+    which && \
   amazon-linux-extras install ruby2.6 && \
   # raise IPv4 priority
   echo "precedence ::ffff:0:0/96 100" > /etc/gai.conf && \

@@ -48,7 +48,9 @@ RUN \
     zlib-devel \
     rpmlint \
     cmake \
-    libarchive && \
+    libarchive \
+    # install which for building librdkafka 1.9.0 or later
+    which && \
     # raise IPv4 priority
     echo "precedence ::ffff:0:0/96 100" > /etc/gai.conf && \
     # enable multiplatform feature
