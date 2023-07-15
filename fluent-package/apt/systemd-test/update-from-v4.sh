@@ -55,3 +55,6 @@ test $(eval $env_vars && echo $FLUENT_PACKAGE_LOG_FILE) = "/var/log/fluent/td-ag
 sudo apt remove -y fluent-package
 ! systemctl status --wait --no-pager td-agent
 ! systemctl status --wait --no-pager fluentd
+
+test -h /etc/systemd/system/td-agent.service
+test -h /etc/systemd/system/fluentd.service

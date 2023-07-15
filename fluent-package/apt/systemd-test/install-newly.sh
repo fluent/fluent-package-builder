@@ -11,13 +11,5 @@ systemctl status --no-pager fluentd
 
 sudo apt remove -y fluent-package
 
-if [ ! -e /etc/systemd/system/td-agent.service ]; then
-    echo "td-agent.service must exist"
-    exit 1
-fi
-if [ ! -e /etc/systemd/system/fluentd.service ]; then
-    echo "fluentd.service must exist"
-    exit 1
-fi
-
+test -h /etc/systemd/system/fluentd.service
 ! systemctl status fluentd
