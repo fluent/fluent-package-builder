@@ -31,16 +31,9 @@ systemctl status --wait --no-pager fluentd
 
 # Test: restoring td-agent service alias
 sudo systemctl unmask td-agent
-sudo systemctl enable fluentd
-#
-# FIXME:
-# td-agent (alias of fluentd service should be enabled,
-# but systemctl status td-agent may fail frequently with exit 3.
-# It means inactive (dead) status.
-# Until finding correct solution to fix this issue, disable it for a while.
-#
-#systemctl status --wait --no-pager td-agent
-#
+sudo systemctl enable --now fluentd
+
+systemctl status --wait --no-pager td-agent
 systemctl status --wait --no-pager fluentd
 
 # Test: config migration
