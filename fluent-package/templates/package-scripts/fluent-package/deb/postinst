@@ -128,6 +128,7 @@ migration_from_v4_post_process() {
     fi
     if [ "$v4migration_with_restart" = "y" ]; then
         if [ -n "$(command -v systemctl)" ]; then
+            systemctl daemon-reload
             systemctl restart <%= service_name %>
         fi
     fi

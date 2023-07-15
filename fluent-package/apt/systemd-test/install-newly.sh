@@ -11,4 +11,5 @@ systemctl status --no-pager fluentd
 
 sudo apt remove -y fluent-package
 
+test -h /etc/systemd/system/fluentd.service
 ! systemctl status fluentd
