@@ -17,22 +17,22 @@ sudo apt clean all
 sudo apt update
 sudo apt install -V -y td-agent=4.5.0-1
 
-systemctl status --wait --no-pager td-agent
+systemctl status --no-pager td-agent
 
 # Install the current
 sudo apt install -V -y \
     /vagrant/${distribution}/pool/${code_name}/${channel}/*/*/fluent-package_*_${architecture}.deb
 
 # Test: service status
-systemctl status --wait --no-pager fluentd
-! systemctl status --wait --no-pager td-agent
+systemctl status --no-pager fluentd
+! systemctl status --no-pager td-agent
 
 # Test: restoring td-agent service alias
 sudo systemctl unmask td-agent
 sudo systemctl enable --now fluentd
 
-systemctl status --wait --no-pager td-agent
-systemctl status --wait --no-pager fluentd
+systemctl status --no-pager td-agent
+systemctl status --no-pager fluentd
 
 # Test: config migration
 test -L /etc/td-agent
@@ -53,8 +53,8 @@ test $(eval $env_vars && echo $FLUENT_PACKAGE_LOG_FILE) = "/var/log/fluent/td-ag
 
 # Uninstall
 sudo apt remove -y fluent-package
-! systemctl status --wait --no-pager td-agent
-! systemctl status --wait --no-pager fluentd
+! systemctl status --no-pager td-agent
+! systemctl status --no-pager fluentd
 
 test -h /etc/systemd/system/td-agent.service
 test -h /etc/systemd/system/fluentd.service
