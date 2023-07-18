@@ -39,6 +39,9 @@ sudo ${DNF} install -y \
 sudo systemctl enable --now fluentd
 systemctl status fluentd
 
+sleep 3
+! grep -q -e '\[warn\]' -e '\[error\]' -e '\[fatal\]' /var/log/fluent/fluentd.log
+
 sudo ${DNF} remove -y fluent-package
 
 ! systemctl status fluentd

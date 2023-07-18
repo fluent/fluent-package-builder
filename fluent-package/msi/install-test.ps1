@@ -11,6 +11,15 @@ $ENV:PATH="C:\\opt\\fluent;" + $ENV:PATH
 
 td-agent --version
 
+Start-Sleep 3
+Get-ChildItem "C:\\opt\\fluent\\*.log" | %{
+    if (Select-String -Path $_ -Pattern "[warn]", "[error]", "[fatal]" -SimpleMatch -Quiet) {
+        Write-Host "There are abnormal level logs in ${_}:"
+        Select-String -Path $_ -Pattern "[warn]", "[error]", "[fatal]" -SimpleMatch
+        [Environment]::Exit(1)
+    }
+}
+
 $msi -Match "fluent-package-([0-9\.]+)-.+\.msi"
 $name = "Fluent Package v" + $matches[1]
 Write-Host "Uninstalling ...${name}"
