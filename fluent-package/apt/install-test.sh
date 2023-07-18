@@ -13,13 +13,11 @@ apt install -V -y \
 td-agent --version
 test -e /etc/logrotate.d/fluentd
 test -e /opt/fluent/share/td-agent.conf.tmpl
-test -e /opt/fluent/share/td-agent-ruby.conf
 
 apt remove -y fluent-package
 
 test -e /etc/logrotate.d/fluentd
 ! test -e /opt/fluent/share/td-agent.conf.tmpl
-! test -e /opt/fluent/share/td-agent-ruby.conf
 
 if ! getent passwd _fluentd >/dev/null; then
     echo "_fluentd user must be kept"
