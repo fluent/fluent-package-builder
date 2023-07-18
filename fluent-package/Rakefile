@@ -482,7 +482,6 @@ class BuildTask
         configs = [fluentd_conf]
         configs.concat([
           "etc/logrotate.d/#{SERVICE_NAME}",
-          "opt/#{PACKAGE_DIR}/share/#{COMPAT_SERVICE_NAME}-ruby.conf",
           fluentd_conf_default,
         ]) unless windows? || macos?
         configs.each do |config|
