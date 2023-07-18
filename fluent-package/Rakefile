@@ -478,7 +478,7 @@ class BuildTask
       desc "Create fluent-package configuration files from template"
       task :fluent_package_config do
         fluentd_conf = "etc/#{PACKAGE_DIR}/#{SERVICE_NAME}.conf"
-        fluentd_conf_default = "opt/#{PACKAGE_DIR}/share/#{COMPAT_SERVICE_NAME}.conf.tmpl"
+        fluentd_conf_default = "opt/#{PACKAGE_DIR}/share/#{SERVICE_NAME}.conf"
         configs = [fluentd_conf]
         configs.concat([
           "etc/logrotate.d/#{SERVICE_NAME}",
