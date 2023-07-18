@@ -64,13 +64,13 @@ ${DNF} install -y \
 
 td-agent --version
 test -e /etc/logrotate.d/fluentd
-test -e /opt/fluent/share/td-agent.conf.tmpl
+test -e /opt/fluent/share/fluentd.conf
 
 echo "UNINSTALL TEST"
 ${DNF} remove -y fluent-package
 
 ! test -e /etc/logrotate.d/fluentd
-! test -e /opt/fluent/share/td-agent.conf.tmpl
+! test -e /opt/fluent/share/fluentd.conf
 
 for conf_path in /etc/td-agent/td-agent.conf /etc/fluent/fluentd.conf; do
     if [ -e $conf_path ]; then
