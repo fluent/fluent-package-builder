@@ -17,9 +17,7 @@ About the past changelog entries, see [old CHANGELOG](CHANGELOG-v4.md) instead.
 Not only changing package name, but also there are some notable changes.
 Basically, for `td-agent` v4 users, it aims to keep compatibility as far as possible
 by executing the migration process with copying old files or providing
-symbolic links for it. For newly installed `fluent-package`, no such
-compatibility layer will not provided. (It means that fresh install should not provides
-such a redundant backward compatible symbolic links and so on)
+symbolic links for it.
 
 #### For all platform:
 
