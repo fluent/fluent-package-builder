@@ -108,6 +108,9 @@ symbolic links for it.
 
 #### For macOS user:
 
+WARNING: Currently we have no plan to release dmg version of `fluent-package` yet.
+It is just modified to be a minimally buildable state, it is for testing purpose only.
+
 * dmg: renamed to `fluent-package` (#474,#478,#479,#480,#481,#482,#483)
   * Note that the .dmg package support will be dropped in the future
   release. We plans to migrate for `homebrew` ecosystem.
