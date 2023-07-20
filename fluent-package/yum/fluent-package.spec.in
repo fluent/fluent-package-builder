@@ -192,7 +192,7 @@ if [ $1 -eq 1 ]; then
       %{__sed} -i"" %{_sysconfdir}/sysconfig/@SERVICE_NAME@ -e "/FLUENT_CONF/c FLUENT_CONF=/etc/@PACKAGE_DIR@/@COMPAT_SERVICE_NAME@.conf"
     fi
   fi
-  if ! systemctl is-active @COMPAT_SERVICE_NAME@; then
+  if systemctl is-active @COMPAT_SERVICE_NAME@; then
     if getent passwd @COMPAT_SERVICE_NAME@ >/dev/null; then
       if ! getent passwd @SERVICE_NAME@ >/dev/null; then
         # usermod fails when user process is active, so
