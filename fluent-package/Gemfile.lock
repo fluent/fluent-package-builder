@@ -243,6 +243,7 @@ GEM
       concurrent-ruby (~> 1.0)
     tzinfo-data (1.2023.3)
       tzinfo (>= 1.0.0)
+    uri (0.12.2)
     webhdfs (0.10.2)
       addressable
     webrick (1.8.1)
@@ -322,6 +323,7 @@ DEPENDENCIES
   td-client (= 1.0.8)
   tzinfo (= 2.0.6)
   tzinfo-data (= 1.2023.3)
+  uri (~> 0.12.2)
   webhdfs (= 0.10.2)
   webrick (= 1.8.1)
   win32-event (= 0.6.3)
