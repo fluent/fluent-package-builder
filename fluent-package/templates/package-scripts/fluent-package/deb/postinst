@@ -121,6 +121,12 @@ migration_from_v4_post_process() {
     if [ -d /etc/<%= compat_package_dir %> -a ! -h /etc/<%= compat_package_dir %> ]; then
         rm -fr /etc/<%= compat_package_dir %>
         ln -sf /etc/<%= package_dir %> /etc/<%= compat_package_dir %>
+        if [ ! -h /usr/sbin/<%= compat_service_name %> ]; then
+            ln -sf /usr/sbin/<%= service_name %> /usr/sbin/<%= compat_service_name %>
+        fi
+        if [ ! -h /usr/sbin/<%= compat_service_name %>-gem ]; then
+            ln -sf /usr/sbin/fluent-gem /usr/sbin/<%= compat_service_name %>-gem
+        fi
     fi
     if [ -d /var/log/<%= compat_package_dir %> -a ! -h /var/log/<%= compat_package_dir %> ]; then
         rm -fr /var/log/<%= compat_package_dir %>

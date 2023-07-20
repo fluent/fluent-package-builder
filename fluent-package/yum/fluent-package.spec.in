@@ -249,10 +249,10 @@ fi
 
 %postun
 %systemd_postun_with_restart @SERVICE_NAME@.service
-if [ -f /usr/sbin/@COMPAT_SERVICE_NAME@ ]; then
+if [ -h /usr/sbin/@COMPAT_SERVICE_NAME@ ]; then
   rm -f /usr/sbin/@COMPAT_SERVICE_NAME@
 fi
-if [ -f /usr/sbin/@COMPAT_SERVICE_NAME@-gem ]; then
+if [ -h /usr/sbin/@COMPAT_SERVICE_NAME@-gem ]; then
   rm -f /usr/sbin/@COMPAT_SERVICE_NAME@-gem
 fi
 if [ -h /etc/@COMPAT_PACKAGE_DIR@ ]; then
@@ -283,15 +283,15 @@ if [ $1 -eq 0 ]; then
 fi
 
 %posttrans
-if [ ! -f /usr/sbin/@COMPAT_SERVICE_NAME@ ]; then
-  echo "Provides /usr/sbin/td-agent symlink for backward compatibility"
-  ln -sf /usr/sbin/@SERVICE_NAME@ /usr/sbin/@COMPAT_SERVICE_NAME@
-fi
-if [ ! -f /usr/sbin/@COMPAT_SERVICE_NAME@-gem ]; then
-  echo "Provides /usr/sbin/td-agent-gem symlink for backward compatibility"
-  ln -sf /usr/sbin/fluent-gem /usr/sbin/@COMPAT_SERVICE_NAME@-gem
-fi
 if [ -f %{v4migration} ]; then
+  if [ ! -f /usr/sbin/@COMPAT_SERVICE_NAME@ ]; then
+    echo "Provides /usr/sbin/td-agent symlink for backward compatibility"
+    ln -sf /usr/sbin/@SERVICE_NAME@ /usr/sbin/@COMPAT_SERVICE_NAME@
+  fi
+  if [ ! -f /usr/sbin/@COMPAT_SERVICE_NAME@-gem ]; then
+    echo "Provides /usr/sbin/td-agent-gem symlink for backward compatibility"
+    ln -sf /usr/sbin/fluent-gem /usr/sbin/@COMPAT_SERVICE_NAME@-gem
+  fi
   if [ ! -h /etc/@COMPAT_PACKAGE_DIR@ ]; then
     echo "Provides /etc/td-agent symlink for backward compatibility"
     ln -sf /etc/@PACKAGE_DIR@ /etc/@COMPAT_PACKAGE_DIR@

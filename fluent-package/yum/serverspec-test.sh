@@ -71,13 +71,13 @@ repositories_dir=/fluentd/fluent-package/yum/repositories
 ${DNF} install -y \
   ${repositories_dir}/${distribution}/${DISTRIBUTION_VERSION}/x86_64/Packages/*.rpm
 
-td-agent --version
+fluentd --version
 
 if [ $ENABLE_SERVERSPEC_TEST -eq 1 ]; then
     curl -V > /dev/null 2>&1 || ${DNF} install -y curl
     ${DNF} install -y which ${repositories_dir}/${distribution}/${DISTRIBUTION_VERSION}/x86_64/Packages/*.rpm
 
-    /usr/sbin/td-agent-gem install --no-document serverspec
+    /usr/sbin/fluent-gem install --no-document serverspec
     if [ $ENABLE_KAFKA_TEST -eq 1 ]; then
         rpm --import https://packages.confluent.io/rpm/6.0/archive.key
 
@@ -127,7 +127,7 @@ EOF
 	    fi
 	done
 	/usr/bin/kafka-topics --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic test
-	/usr/sbin/td-agent -c /fluentd/serverspec/test.conf &
+	/usr/sbin/fluentd -c /fluentd/serverspec/test.conf &
     fi
     export PATH=/opt/fluent/bin:$PATH
     export INSTALLATION_TEST=true
