@@ -105,11 +105,5 @@ jobs:
       - uses: actions/download-artifact@master
         with:
           name: packages-${{ matrix.distribution }}
-      - name: Run VM
-        run: vagrant up ${{ matrix.distribution }}
       - name: Run Test
-        run: |
-          vagrant \
-            ssh ${{ matrix.distribution }} \
-            -- \
-            /vagrant/fluent-package/yum/install-with-systemd-test.sh
+        run: fluent-package/yum/systemd-test/test.sh ${{ matrix.distribution }}
