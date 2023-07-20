@@ -25,7 +25,7 @@ sudo apt install -V -y \
 
 # Test: service status
 systemctl status --no-pager fluentd
-! systemctl status --no-pager td-agent
+(! systemctl status --no-pager td-agent)
 
 # Test: restoring td-agent service alias
 sudo systemctl unmask td-agent
@@ -42,19 +42,25 @@ test -e /etc/td-agent/td-agent.conf
 test -L /var/log/td-agent
 test -e /var/log/td-agent/td-agent.log
 
+# Test: bin file migration
+test -h /usr/sbin/td-agent
+test -h /usr/sbin/td-agent-gem
+
 # Test: environmental variables
 pid=$(systemctl show fluentd --property=MainPID --value)
 env_vars=$(sudo sed -e 's/\x0/\n/g' /proc/$pid/environ)
+test $(eval $env_vars && echo $HOME) = "/var/lib/fluent"
 test $(eval $env_vars && echo $LOGNAME) = "_fluentd"
 test $(eval $env_vars && echo $USER) = "_fluentd"
 test $(eval $env_vars && echo $FLUENT_CONF) = "/etc/fluent/td-agent.conf"
-test $(eval $env_vars && echo $FLUENT_PLUGIN) = "/etc/fluent/plugin"
 test $(eval $env_vars && echo $FLUENT_PACKAGE_LOG_FILE) = "/var/log/fluent/td-agent.log"
+test $(eval $env_vars && echo $FLUENT_PLUGIN) = "/etc/fluent/plugin"
+test $(eval $env_vars && echo $FLUENT_SOCKET) = "/var/run/fluent/fluentd.sock"
 
 # Uninstall
 sudo apt remove -y fluent-package
-! systemctl status --no-pager td-agent
-! systemctl status --no-pager fluentd
+(! systemctl status --no-pager td-agent)
+(! systemctl status --no-pager fluentd)
 
 test -h /etc/systemd/system/td-agent.service
 test -h /etc/systemd/system/fluentd.service
