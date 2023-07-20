@@ -22,6 +22,9 @@ gem "async", "1.31.0"
 gem "async-http", "0.60.2"
 gem "webrick", "1.8.1"
 
+# CVE-2023-36617: should be removed after we update Ruby to 3.2.3 or later
+gem "uri", "~> 0.12.2"
+
 if ENV["INSTALL_GEM_FROM_LOCAL_REPO"]
   # During build process, pre-built fluentd gem will be installed
   # from this local repository, this way is used to avoid embedding full-path
