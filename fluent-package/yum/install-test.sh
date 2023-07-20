@@ -62,15 +62,19 @@ repositories_dir=/fluentd/fluent-package/yum/repositories
 ${DNF} install -y \
   ${repositories_dir}/${distribution}/${DISTRIBUTION_VERSION}/x86_64/Packages/*.rpm
 
-td-agent --version
+fluentd --version
 test -e /etc/logrotate.d/fluentd
 test -e /opt/fluent/share/fluentd.conf
+(! test -h /usr/sbin/td-agent)
+(! test -h /usr/sbin/td-agent-gem)
 
 echo "UNINSTALL TEST"
 ${DNF} remove -y fluent-package
 
 ! test -e /etc/logrotate.d/fluentd
 ! test -e /opt/fluent/share/fluentd.conf
+(! test -h /usr/sbin/td-agent)
+(! test -h /usr/sbin/td-agent-gem)
 
 for conf_path in /etc/td-agent/td-agent.conf /etc/fluent/fluentd.conf; do
     if [ -e $conf_path ]; then

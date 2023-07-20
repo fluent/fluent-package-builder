@@ -12,7 +12,7 @@ apt install -V -y lsb-release
 apt install -V -y \
   ${repositories_dir}/${distribution}/pool/${code_name}/${channel}/*/*/*_${architecture}.deb
 
-td-agent --version
+fluentd --version
 
 case ${code_name} in
     xenial)
@@ -23,7 +23,7 @@ case ${code_name} in
 	;;
 esac
 
-/usr/sbin/td-agent-gem install --no-document serverspec
+/usr/sbin/fluent-gem install --no-document serverspec
 wget https://packages.confluent.io/deb/6.0/archive.key
 gpg2 --homedir /tmp --no-default-keyring --keyring gnupg-ring:/usr/share/keyrings/confluent-archive-keyring.gpg --import archive.key
 chmod 644 /usr/share/keyrings/confluent-archive-keyring.gpg
@@ -61,7 +61,7 @@ while true ; do
     fi
 done
 /usr/bin/kafka-topics --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic test
-/usr/sbin/td-agent -c /fluentd/serverspec/test.conf &
+/usr/sbin/fluentd -c /fluentd/serverspec/test.conf &
 export PATH=/opt/fluent/bin:$PATH
 export INSTALLATION_TEST=true
 cd /fluentd && rake serverspec:linux

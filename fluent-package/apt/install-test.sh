@@ -10,14 +10,18 @@ apt install -V -y lsb-release
 apt install -V -y \
   ${repositories_dir}/${distribution}/pool/${code_name}/${channel}/*/*/*_${architecture}.deb
 
-td-agent --version
+fluentd --version
 test -e /etc/logrotate.d/fluentd
 test -e /opt/fluent/share/fluentd.conf
+(! test -h /usr/sbin/td-agent)
+(! test -h /usr/sbin/td-agent-gem)
 
 apt remove -y fluent-package
 
 test -e /etc/logrotate.d/fluentd
 ! test -e /opt/fluent/share/fluentd.conf
+(! test -h /usr/sbin/td-agent)
+(! test -h /usr/sbin/td-agent-gem)
 
 if ! getent passwd _fluentd >/dev/null; then
     echo "_fluentd user must be kept"

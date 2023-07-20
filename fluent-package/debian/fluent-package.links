@@ -1,2 +1,0 @@
-usr/sbin/fluentd usr/sbin/td-agent
-usr/sbin/fluent-gem usr/sbin/td-agent-gem
