@@ -71,30 +71,23 @@ test -e /opt/fluent/share/fluentd.conf
 echo "UNINSTALL TEST"
 ${DNF} remove -y fluent-package
 
-! test -e /etc/logrotate.d/fluentd
-! test -e /opt/fluent/share/fluentd.conf
+(! test -e /etc/logrotate.d/fluentd)
+(! test -e /opt/fluent/share/fluentd.conf)
 (! test -h /usr/sbin/td-agent)
 (! test -h /usr/sbin/td-agent-gem)
 
 for conf_path in /etc/td-agent/td-agent.conf /etc/fluent/fluentd.conf; do
     if [ -e $conf_path ]; then
-	echo "$conf_path must be removed"
-	exit 1
+        echo "$conf_path must be removed"
+        exit 1
     fi
 done
 
-if getent passwd fluentd >/dev/null; then
-    echo "fluentd user must be removed"
-    exit 1
-fi
-
-if getent group fluentd >/dev/null; then
-    echo "fluentd group must be removed"
-    exit 1
-fi
+(! getent passwd fluentd >/dev/null)
+(! getent group fluentd >/dev/null)
 
 if [ $ENABLE_UPGRADE_TEST -eq 1 ]; then
-    echo "UPGRADE TEST from v3"
+    echo "UPGRADE TEST from v4"
     rpm --import https://packages.treasuredata.com/GPG-KEY-td-agent
     case ${distribution} in
         amazon)
@@ -124,41 +117,18 @@ EOF
     ${DNF} install -y \
            ${repositories_dir}/${distribution}/${DISTRIBUTION_VERSION}/x86_64/Packages/*.rpm
 
-
-    if ! getent passwd td-agent >/dev/null; then
-        echo "td-agent user must exist"
-        exit 1
-    fi
-    if ! getent group td-agent >/dev/null; then
-        echo "td-agent group must exist"
-        exit 1
-    fi
-    if ! getent passwd fluentd >/dev/null; then
-        echo "fluentd user must exist"
-        exit 1
-    fi
-    if ! getent group fluentd >/dev/null; then
-        echo "fluentd group must exist"
-        exit 1
-    fi
-    if [ ! -h /var/log/td-agent ]; then
-        echo "/var/log/td-agent must be symlink"
-        exit 1
-    fi
-    if [ ! -h /etc/td-agent ]; then
-        echo "/etc/td-agent must be symlink"
-        exit 1
-    fi
+    getent passwd td-agent >/dev/null
+    getent group td-agent >/dev/null
+    getent passwd fluentd >/dev/null
+    getent group fluentd >/dev/null
+    test -h /var/log/td-agent
+    test -h /etc/td-agent
+    test -h /usr/sbin/td-agent
+    test -h /usr/sbin/td-agent-gem
 
     homedir=$(getent passwd fluentd | cut -d: -f6)
-    if [ "$homedir" != "/var/lib/fluent" ]; then
-	echo "fluentd must use /var/lib/fluent as home directory"
-	exit 1
-    fi
+    test "$homedir" = "/var/lib/fluent"
 
     loginshell=$(getent passwd fluentd | cut -d: -f7)
-    if [ "$loginshell" != "/sbin/nologin" ]; then
-	echo "fluentd must use nologin"
-	exit 1
-    fi
+    test "$loginshell" = "/sbin/nologin"
 fi

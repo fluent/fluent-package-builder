@@ -39,6 +39,8 @@ systemctl status --no-pager fluentd
 (! test -e /etc/fluent/td-agent.conf)
 (! test -e /var/log/td-agent)
 (! test -e /var/log/fluent/td-agent.log)
+(! test -h /usr/sbin/td-agent)
+(! test -h /usr/sbin/td-agent-gem)
 
 # Test: environmental variables
 pid=$(eval $(systemctl show fluentd --property=MainPID) && echo $MainPID)
