@@ -1,0 +1,601 @@
+# Treasure Agent 4 changelog
+
+## Release v4.5.0 - 2023/05/08
+
+### News
+
+* Update bundled Ruby to 2.7.8 which is the last version of Ruby 2.7 series.
+  * Exceptionally for RHEL 9 & Ubuntu 22.04 jammy, update Ruby to 3.1.4.
+  * The next major version of td-agent which bundles Ruby 3.2 is still work in
+    progress. We'll announce it as soon as we are ready for it.
+    The package name will be changed to `fluent-package`.
+* Update fluentd to 1.16.1
+* Update fluent-plugin-kafka to 0.19.0
+* Update fluent-plugin-elasticsearch to 5.3.0
+* Update fluent-plugin-opensearch to 1.1.0
+* Update nokogiri to 1.14.3 (Windows)
+* Drop Debian buster support
+
+### Core component
+
+* ruby v2.7.8 (update)
+* jemalloc v3.6.0
+* OpenSSL 1.1.1t Windows & macOS (update)
+* fluentd v1.16.1 (update)
+
+### Core gems
+
+* bundler v2.3.26 (update)
+* msgpack v1.7.0 (update)
+* cool.io v1.7.1
+* serverengine v2.3.2 (update)
+* oj v3.14.3 (update)
+* async-http v0.60.1 (update)
+* http_parser.rb v0.8.0
+* yajl-ruby v1.4.3
+* sigdump v0.2.4
+* tzinfo v2.0.6 (update)
+* tzinfo-data v1.2023.3
+
+### Bundled plugins and gems
+
+* td-client v1.0.8
+* fluent-plugin-td v1.2.0
+* aws-sdk-core v3.171.0 (update)
+* aws-sdk-s3 v1.121.0 (update)
+* fluent-plugin-s3 v1.7.2
+* webhdfs v0.10.2
+* fluent-plugin-webhdfs v1.5.0
+* ruby-kafka v1.5.0
+* rdkafka v0.11.1
+* fluent-plugin-kafka v0.19.0 (update)
+* elasticsearch v8.7.0 (update)
+* fluent-plugin-elasticsearch v5.3.0 (update)
+* prometheus-client v2.1.0
+* fluent-plugin-prometheus v2.0.3
+* fluent-plugin-prometheus_pushgateway v0.1.0
+* systemd-journal v1.4.2
+* fluent-plugin-systemd v1.0.5
+* fluent-plugin-record-modifier v2.1.1 (update)
+* fluent-plugin-rewrite-tag-filter v2.4.0
+* fluent-plugin-sd-dns 0.1.0
+* fluent-plugin-flowcounter-simple 0.1.0
+* fluent-diagtool v1.0.1
+* fluent-plugin-utmpx v0.5.0
+* fluent-plugin-opensearch v1.1.0 (update)
+* fluent-plugin-metrics-cmetrics v0.1.2
+* fluent-plugin-calyptia-monitoring v0.1.3
+
+On Windows
+
+* winevt_c v0.10.1
+* fluent-plugin-parser-winevt_xml v0.2.5 (update)
+* fluent-plugin-windows-eventlog v0.8.3 (update)
+* fluent-plugin-windows-exporter v1.0.0
+
+## Release v4.4.2 - 2022/11/04
+
+### News
+
+* Update fluentd to 1.15.3
+  * Fix log initializer to correctly create per-process files on Windows
+  * out_file: Fix the multi-worker check with `<worker 0-N>` directive
+  * Remove meaningless oj options
+  * Support glob for `!include` directive in YAML config format
+* Update fluent-plugin-elasticsearch to 5.2.4
+* Update fluent-plugin-opensearch to 1.0.8
+* Update fluent-plugin-s3 to 1.7.2
+* Update fluent-plugin-windows-eventlog to 0.8.2
+* Update nokogiri to 1.13.9 (Windows)
+* macOS: Support Apple Silicon
+
+## Release v4.4.1 - 2022/08/23
+
+### News
+
+* Update fluentd to 1.15.2
+  * out_file: Fix append mode with `--daemon` flag
+  * Drop win32-api gem dependency
+* Update fluent-plugin-kafka to 0.18.1
+  * Fix out_kafka2 doesn't respect `chunk_limit_records` and `chunk_limit_size`
+
+## Release v4.4.0 - 2022/07/29
+
+### News
+
+* Update fluentd to 1.15.1
+* Drop Ubuntu 16.04 "Xenial Xerus" support
+* Remove `TD_AGENT_OPTIONS=` from systemd unit file.
+  Load it from /etc/sysconfig/td-agent or /etc/default/td-agent instead.
+
+### Core component
+
+* ruby v2.7.6
+* jemalloc v3.6.0
+* OpenSSL 1.1.1q for macOS and Windows (update)
+* fluentd v1.15.1 (update)
+
+### Core gems
+
+* bundler v2.3.18 (update)
+* msgpack v1.5.3 (update)
+* cool.io v1.7.1
+* serverengine v2.3.0 (update)
+* oj v3.13.17 (update)
+* async-http v0.56.6 (update)
+* http_parser.rb v0.8.0
+* yajl-ruby v1.4.3
+* sigdump v0.2.4
+* tzinfo v2.0.5 (update)
+* tzinfo-data v1.2022.1
+
+### Bundled plugins and gems
+
+* td-client v1.0.8
+* fluent-plugin-td v1.2.0 (update)
+* aws-sdk-core v3.131.3 (update)
+* aws-sdk-s3 v1.114.0 (update)
+* fluent-plugin-s3 v1.7.1 (update)
+* webhdfs v0.10.2
+* fluent-plugin-webhdfs v1.5.0
+* ruby-kafka v1.5.0 (update)
+* rdkafka v0.11.1
+* fluent-plugin-kafka v0.18.0 (update)
+* elasticsearch v8.3.0 (update)
+* fluent-plugin-elasticsearch v5.2.3 (update)
+* prometheus-client v2.1.0
+* fluent-plugin-prometheus v2.0.3 (update)
+* fluent-plugin-prometheus_pushgateway v0.1.0
+* systemd-journal v1.4.2
+* fluent-plugin-systemd v1.0.5
+* fluent-plugin-record-modifier v2.1.0
+* fluent-plugin-rewrite-tag-filter v2.4.0
+* fluent-plugin-sd-dns 0.1.0
+* fluent-plugin-flowcounter-simple 0.1.0
+* fluent-diagtool v1.0.1
+* fluent-plugin-utmpx v0.5.0
+* fluent-plugin-opensearch v1.0.7 (update)
+* fluent-plugin-metrics-cmetrics v0.1.2
+* fluent-plugin-calyptia-monitoring v0.1.3
+
+On Windows
+
+* winevt_c v0.10.0 (update)
+* fluent-plugin-parser-winevt_xml v0.2.4
+* fluent-plugin-windows-eventlog v0.8.1
+* fluent-plugin-windows-exporter v1.0.0
+
+## Release v4.3.2 - 2022/06/28
+
+### News
+
+This release is mainly for supporting new distributions released in 2022Q2.
+We choose Ruby 3.1 to bundle for such new distributions to adopt to recent
+environment such as OpenSSL 3.0. For other distributions, we still use
+Ruby 2.7. We'll migrate to Ruby 3 completely after Ruby 3.2 is released.
+
+* Support new distributions
+  * Red Hat Enterprise Linux 9
+  * Ubuntu 22.04 LTS (Jammy Jellyfish)
+* Remove nokogiri from Linux and macOS packages
+  * It's not used in actual by default on such environments.
+* Update yajl-ruby to v1.4.3 to address vulnerability
+* Update OpenSSL to 1.1.1p (for macOS and Windows)
+
+## Release v4.3.1.1 - 2022/05/24
+
+### News
+
+v4.3.1.1 is a bug fix release only for Windows
+
+* Replace OpenSSL included in RubyInstaller with MinGW's OpenSSL v1.1.1.o-2 to
+  fix memory leak: https://github.com/fluent/fluent-package-builder/issues/374
+* Update nokogiri to 1.13.6 to fix some vulnerabilities.
+
+## Release v4.3.1 - 2022/04/29
+
+### News
+
+* Update fluentd to v1.14.6
+* Add some new plugins
+  * fluent-plugin-opensearch v1.0.4
+  * fluent-plugin-metrics-cmetrics v0.1.2
+  * fluent-plugin-calyptia-monitoring v0.1.3
+  * fluent-plugin-windows-exporter v1.0.0
+* RPM: Remove .build-id directories
+
+### Core component
+
+* ruby v2.7.6 (update)
+* jemalloc v3.6.0
+* fluentd v1.14.6 (update)
+
+### Core gems
+
+* bundler v2.3.11 (update)
+* msgpack v1.5.1 (update)
+* cool.io v1.7.1
+* serverengine v2.2.5 (update)
+* oj v3.13.11 (update)
+* async-http v0.56.5
+* http_parser.rb v0.8.0
+* yajl-ruby v1.4.2 (update)
+* sigdump v0.2.4
+* tzinfo v2.0.4
+* tzinfo-data v1.2022.1 (update)
+
+### Bundled plugins and gems
+
+* td-client v1.0.8
+* fluent-plugin-td v1.1.0
+* aws-sdk-core v3.130.1 (update)
+* aws-sdk-s3 v1.113.0 (update)
+* fluent-plugin-s3 v1.6.1
+* webhdfs v0.10.2
+* fluent-plugin-webhdfs v1.5.0
+* ruby-kafka v1.4.0
+* rdkafka v0.11.1
+* fluent-plugin-kafka v0.17.5 (update)
+* elasticsearch v8.1.2 (update)
+* fluent-plugin-elasticsearch v5.2.2 (update)
+* prometheus-client v2.1.0
+* fluent-plugin-prometheus v2.0.2
+* fluent-plugin-prometheus_pushgateway v0.1.0
+* systemd-journal v1.4.2
+* fluent-plugin-systemd v1.0.5
+* fluent-plugin-record-modifier v2.1.0
+* fluent-plugin-rewrite-tag-filter v2.4.0
+* fluent-plugin-sd-dns 0.1.0
+* fluent-plugin-flowcounter-simple 0.1.0
+* fluent-diagtool v1.0.1
+* fluent-plugin-utmpx v0.5.0
+
+On Windows
+
+* winevt_c v0.9.3
+* fluent-plugin-parser-winevt_xml v0.2.4
+* fluent-plugin-windows-eventlog v0.8.1
+
+## Release v4.3.0 - 2021/12/06
+
+### News
+
+* Support Debian 11 "bullseye"
+* deb: Remove needless post-install script
+* Windows: Add default log rotation setting
+
+### Core component
+
+* ruby v2.7.5 (update)
+* jemalloc v3.6.0
+* fluentd v1.14.3 (update)
+
+### Core gems
+
+* bundler v2.2.32 (update)
+* msgpack v1.4.2
+* cool.io v1.7.1
+* serverengine v2.2.4
+* oj v3.13.9 (update)
+* async-http v0.56.5 (update)
+* http_parser.rb v0.8.0 (update)
+* yajl-ruby v1.4.1
+* sigdump v0.2.4
+* tzinfo v2.0.4
+* tzinfo-data v1.2021.5 (update)
+
+### Bundled plugins and gems
+
+* td-client v1.0.8
+* fluent-plugin-td v1.1.0
+* aws-sdk-core v3.123.0 (update)
+* aws-sdk-s3 v1.107.0 (update)
+* fluent-plugin-s3 v1.6.1 (update)
+* webhdfs v0.10.2 (update)
+* fluent-plugin-webhdfs v1.5.0 (update)
+* ruby-kafka v1.4.0 (update)
+* rdkafka v0.11.1 (update)
+* fluent-plugin-kafka v0.17.3 (update)
+* elasticsearch v7.15.0 (update)
+* fluent-plugin-elasticsearch v5.1.4 (update)
+* prometheus-client v2.1.0
+* fluent-plugin-prometheus v2.0.2 (update)
+* fluent-plugin-prometheus_pushgateway v0.1.0
+* systemd-journal v1.4.2
+* fluent-plugin-systemd v1.0.5
+* fluent-plugin-record-modifier v2.1.0
+* fluent-plugin-rewrite-tag-filter v2.4.0
+* fluent-plugin-sd-dns 0.1.0
+* fluent-plugin-flowcounter-simple 0.1.0
+* fluent-diagtool v1.0.1
+* fluent-plugin-utmpx v0.5.0
+
+On Windows
+
+* winevt_c v0.9.3 (update)
+* fluent-plugin-parser-winevt_xml v0.2.3 (update)
+* fluent-plugin-windows-eventlog v0.8.1 (update)
+
+## Release v4.2.0 - 2021/07/29
+
+### News
+
+* Downgrade jemalloc to v3.6.0 to reduce memory usage
+  https://github.com/fluent-plugins-nursery/td-agent-builder/issues/305
+* Remove needless perl dependency (jeprof command was removed)
+
+### Core component
+
+* ruby v2.7.4 (update)
+* jemalloc v3.6.0 (downgrade)
+* fluentd v1.13.3 (update)
+
+### Core gems
+
+* bundler v2.2.23 (update)
+* msgpack v1.4.2
+* cool.io v1.7.1
+* serverengine v2.2.4 (update)
+* oj v3.12.1 (update)
+* async-http v0.56.3 (update)
+* http_parser.rb v0.7.0 (update)
+* yajl-ruby v1.4.1
+* sigdump v0.2.4
+* tzinfo v2.0.4
+* tzinfo-data v1.2021.1
+
+### Bundled plugins and gems
+
+* td-client v1.0.8
+* fluent-plugin-td v1.1.0
+* aws-sdk-core v3.117.0 (update)
+* aws-sdk-s3 v1.96.1 (update)
+* fluent-plugin-s3 v1.6.0
+* webhdfs v0.9.0
+* fluent-plugin-webhdfs v1.4.0
+* ruby-kafka v1.3.0
+* rdkafka v0.9.0 (update)
+* fluent-plugin-kafka v0.16.3 (update)
+* elasticsearch v7.13.3 (update)
+* fluent-plugin-elasticsearch v5.0.5 (update)
+* prometheus-client v2.1.0 (update)
+* fluent-plugin-prometheus v2.0.1 (update)
+* fluent-plugin-prometheus_pushgateway v0.1.0 (update)
+* systemd-journal v1.4.2 (update)
+* fluent-plugin-systemd v1.0.5 (update)
+* fluent-plugin-record-modifier v2.1.0
+* fluent-plugin-rewrite-tag-filter v2.4.0
+* fluent-plugin-sd-dns 0.1.0
+* fluent-plugin-flowcounter-simple 0.1.0
+* fluent-diagtool v1.0.1
+* fluent-plugin-utmpx v0.5.0
+
+On Windows
+
+* winevt_c v0.9.2
+* fluent-plugin-parser-winevt_xml v0.2.2
+* fluent-plugin-windows-eventlog v0.8.0
+
+## Release v4.1.1 - 2021/05/05
+
+### News
+
+* Remove unnecessary dependencies of RPM packages
+* Fix uninstallable MSI package on non-English environment
+* Fix broken td command executable
+* Add fluent-plugin-utmpx gem to bundled plugins
+
+### Core component
+
+* ruby v2.7.3 (update)
+* jemalloc v5.2.1
+* fluentd v1.12.3 (update)
+  * This version fixes some crash bugs of in_tail in v1.12.x
+
+### Core gems
+
+* bundler v2.2.16 (update)
+* msgpack v1.4.2
+* cool.io v1.7.1
+* serverengine v2.2.3
+* oj v3.11.5 (update)
+* async-http v0.54.1
+* http_parser.rb v0.6.0
+* yajl-ruby v1.4.1
+* sigdump v0.2.4
+* tzinfo v2.0.4
+* tzinfo-data v1.2021.1
+
+### Bundled plugins and gems
+
+* td-client v1.0.8 (update)
+* fluent-plugin-td v1.1.0
+* aws-sdk-core v3.114.0 (update)
+* aws-sdk-s3 v1.93.1 (update)
+* fluent-plugin-s3 v1.6.0 (update)
+* webhdfs v0.9.0
+* fluent-plugin-webhdfs v1.4.0
+* ruby-kafka v1.3.0
+* rdkafka v0.8.1
+* fluent-plugin-kafka v0.16.1 (update)
+* elasticsearch v7.12.0 (update)
+* fluent-plugin-elasticsearch v5.0.3 (update)
+* prometheus-client v0.9.0
+* fluent-plugin-prometheus v1.8.5
+* systemd-journal v1.3.3
+* fluent-plugin-systemd v1.0.2
+* fluent-plugin-record-modifier v2.1.0
+* fluent-plugin-rewrite-tag-filter v2.4.0 (update)
+* fluent-plugin-sd-dns 0.1.0
+* fluent-plugin-flowcounter-simple 0.1.0
+* fluent-diagtool v1.0.1
+
+On Windows
+
+* winevt_c v0.9.2 (update)
+* fluent-plugin-parser-winevt_xml v0.2.2
+* fluent-plugin-windows-eventlog v0.8.0
+
+## Release v4.1.0 - 2021/02/24
+
+### News
+
+* Add fluent-diagtool gem to bundled gems
+* Add fluent-plugin-sd-dns gem to bundled plugins
+* Add fluent-plugin-flowcounter-simple gem to bundled plugins
+
+### Core component
+
+* ruby v2.7.2 (update)
+* jemalloc v5.2.1
+* fluentd v1.12.1 (update)
+
+### Core gems
+
+* bundler v2.2.11 (update)
+* msgpack v1.4.2 (update)
+* cool.io v1.7.1 (update)
+* serverengine v2.2.3 (update)
+* oj v3.10.8 (update)
+* async-http v0.54.1 (update)
+* http_parser.rb v0.6.0
+* yajl-ruby v1.4.1
+* sigdump v0.2.4
+* tzinfo v2.0.4 (update)
+* tzinfo-data v1.2021.1 (update)
+
+### Bundled plugins and gems
+
+* td-client v1.0.7
+* fluent-plugin-td v1.1.0
+* aws-sdk-core v3.112.0 (update)
+* aws-sdk-s3 v1.75.0 (update)
+* fluent-plugin-s3 v1.5.1 (update)
+* webhdfs v0.9.0
+* fluent-plugin-webhdfs v1.4.0 (update)
+* ruby-kafka v1.3.0 (update)
+* rdkafka v0.8.1 (update)
+* fluent-plugin-kafka v0.16.0 (update)
+* elasticsearch v7.8.1 (update)
+* fluent-plugin-elasticsearch v4.1.1 (update)
+* prometheus-client v0.9.0
+* fluent-plugin-prometheus v1.8.5 (update)
+* systemd-journal v1.3.3
+* fluent-plugin-systemd v1.0.2
+* fluent-plugin-record-modifier v2.1.0
+* fluent-plugin-rewrite-tag-filter v2.3.0
+
+On Windows
+
+* winevt_c v0.9.1 (update)
+* fluent-plugin-parser-winevt_xml v0.2.2
+* fluent-plugin-windows-eventlog v0.8.0 (update)
+
+## Release v4.0.1 - 2020/08/18
+
+### News
+
+* Fix jemalloc page size issue for Redhat 7/8 aarch64
+
+### Core component
+
+* ruby v2.7.1
+* jemalloc v5.2.1
+* fluentd v1.11.2 (update)
+
+### Core gems
+
+* bundler v2.1.4
+* msgpack v1.3.3
+* cool.io v1.6.0
+* serverengine v2.2.1
+* oj v3.10.6
+* async-http v0.52.4
+* http_parser.rb v0.6.0
+* yajl-ruby v1.4.1
+* sigdump v0.2.4
+* tzinfo v2.0.2
+* tzinfo-data v1.2020.1
+
+### Bundled plugins and gems
+
+* td-client v1.0.7
+* fluent-plugin-td v1.1.0
+* aws-sdk-core v3.104.3 (update)
+* aws-sdk-s3 v1.75.0 (update)
+* fluent-plugin-s3 v1.4.0 (update)
+* webhdfs v0.9.0
+* fluent-plugin-webhdfs v1.2.5
+* ruby-kafka v1.2.0 (update)
+* rdkafka v0.8.0
+* fluent-plugin-kafka v0.14.1 (update)
+* elasticsearch v7.8.1 (update)
+* fluent-plugin-elasticsearch v4.1.1 (update)
+* prometheus-client v0.9.0
+* fluent-plugin-prometheus v1.8.2 (update)
+* systemd-journal v1.3.3
+* fluent-plugin-systemd v1.0.2
+* fluent-plugin-record-modifier v2.1.0
+* fluent-plugin-rewrite-tag-filter v2.3.0
+
+On Windows
+
+* winevt_c v0.8.1
+* fluent-plugin-parser-winevt_xml v0.2.2
+* fluent-plugin-windows-eventlog v0.7.0
+
+## Release v4.0.0 - 2020/07/02
+
+### News
+
+* Support Arm64 architecture
+  * Ubuntu xenial and Windows are excluded
+* Support Ubuntu focal
+* Drop CentOS 6 support
+
+### Core component
+
+* ruby v2.7.1
+* jemalloc v5.2.1
+* fluentd v1.11.1
+
+### Core gems
+
+* bundler v2.1.4
+* msgpack v1.3.3
+* cool.io v1.6.0
+* serverengine v2.2.1
+* oj v3.10.6
+* async-http v0.52.4
+* http_parser.rb v0.6.0
+* yajl-ruby v1.4.1
+* sigdump v0.2.4
+* tzinfo v2.0.2
+* tzinfo-data v1.2020.1
+
+### Bundled plugins and gems
+
+* td-client v1.0.7
+* fluent-plugin-td v1.1.0
+* aws-sdk-core v3.102.1
+* aws-sdk-s3 v1.72.0
+* fluent-plugin-s3 v1.3.3
+* webhdfs v0.9.0
+* fluent-plugin-webhdfs v1.2.5
+* ruby-kafka v1.1.0
+* rdkafka v0.8.0
+* fluent-plugin-kafka v0.13.0
+* elasticsearch v7.8.0
+* fluent-plugin-elasticsearch v4.0.9
+* prometheus-client v0.9.0
+* fluent-plugin-prometheus v1.8.0
+* systemd-journal v1.3.3
+* fluent-plugin-systemd v1.0.2
+* fluent-plugin-record-modifier v2.1.0
+* fluent-plugin-rewrite-tag-filter v2.3.0
+
+On Windows
+
+* winevt_c v0.8.1
+* fluent-plugin-parser-winevt_xml v0.2.3.rc1
+* fluent-plugin-windows-eventlog v0.7.1.rc1
