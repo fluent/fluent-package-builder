@@ -39,8 +39,8 @@ sudo $DNF install -y \
     /vagrant/${distribution}/${DISTRIBUTION_VERSION}/x86_64/Packages/fluent-package-[0-9]*.rpm
 
 # Test: service status
+systemctl status --no-pager fluentd # Migration process starts the service automatically
 sudo systemctl enable --now fluentd
-systemctl status --no-pager fluentd
 systemctl status --no-pager td-agent
 
 # Test: config migration
@@ -50,6 +50,10 @@ test -e /etc/td-agent/td-agent.conf
 # Test: log file migration
 test -L /var/log/td-agent
 test -e /var/log/td-agent/td-agent.log
+
+# Test: bin file migration
+test -h /usr/sbin/td-agent
+test -h /usr/sbin/td-agent-gem
 
 # Test: environmental variables
 pid=$(eval $(systemctl show fluentd --property=MainPID) && echo $MainPID)
