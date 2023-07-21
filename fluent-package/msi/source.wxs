@@ -112,13 +112,6 @@
         <Shortcut Id="ApplicationShortcut" Name="!(loc.ProductName) Command Prompt" Description="Open !(loc.ProductName) Command Prompt" Target="[SystemFolder]cmd.exe" Arguments='/k "[FLUENTPROJECTLOCATION]fluent-package-prompt.bat"' WorkingDirectory="FLUENTPROJECTLOCATION" />
         <RemoveFolder Id="ApplicationProgramFolder" On="uninstall" />
         <RegistryValue Root="HKCU" Key="Software\[Manufacturer]\[ProductName]" Name="installed" Type="integer" Value="1" KeyPath="yes" />
-        <Environment Id="ProjectLocationDirForConf"
-                     Action="set"
-                     Permanent="no"
-                     Part="all"
-                     System="yes"
-                     Name="FLUENT_PACKAGE_TOPDIR"
-                     Value="[FLUENTPROJECTLOCATION]"/>
       </Component>
     </DirectoryRef>
 
@@ -228,6 +221,30 @@
                   Return="check"
                   Impersonate="no" />
 
+    <!--
+        DO NOT DELETE FLUENT_PACKAGE_TOPDIR
+        It must be set because during msi installation process,
+        InstallFluentdWinSvc set path of fluentd.conf via reg-winsvc-fluentdopt, then
+        fluent/winsvc.rb spawn ruby process directly as a service (without using
+        fluentd.bat wrapper).
+        Thus FLUENT_PACKAGE_TOPDIR must be set explicitly as an
+        environment variable.
+        Usually, environment variable set via WiX Environment element as Component,
+        but directly separator must be changed to '/', so we need to use CustomAction.
+    -->
+    <CustomAction Id="ModifyDirSepForFluentPackageTopdir"
+                  Script="vbscript" Impersonate="no" Execute="deferred">
+      <![CDATA[
+        pathValue = Session.Property("FLUENTPROJECTLOCATION")
+        newValue = Replace(pathValue, "\\", "/")
+        Set shellObject = CreateObject("WScript.Shell")
+        Set systemEnv = shellObject.Environment("SYSTEM")
+        systemEnv.Item("FLUENT_PACKAGE_TOPDIR") = newValue
+      ]]>
+    </CustomAction>
+    <!-- Propagate changed environment variable -->
+    <CustomActionRef Id="WixBroadcastEnvironmentChange" />
+
     <InstallExecuteSequence>
       <Custom Action="SetPostInstallCommand" After="InstallFiles">NOT Installed</Custom>
       <Custom Action="PostInstall" After="SetPostInstallCommand">NOT Installed</Custom>
@@ -235,6 +252,7 @@
       <Custom Action="SetPostMigrationCommand" Before="PostMigration">WIX_UPGRADE_DETECTED</Custom>
       <Custom Action="PostMigration" Before="StartServices">WIX_UPGRADE_DETECTED</Custom>
 
+      <Custom Action="ModifyDirSepForFluentPackageTopdir" Before="SetInstallFluentdWinSvcCommand">NOT Installed</Custom>
       <Custom Action="SetInstallFluentdWinSvcCommand" After="InstallFiles">NOT Installed</Custom>
       <Custom Action="InstallFluentdWinSvc" After="SetInstallFluentdWinSvcCommand">NOT Installed</Custom>
 
