@@ -63,6 +63,21 @@ test $(eval $env_vars && echo $FLUENT_SOCKET) = "/var/run/fluent/fluentd.sock"
 sleep 3
 (! grep -q -e '\[error\]' -e '\[fatal\]' /var/log/td-agent/td-agent.log)
 
+# Test: logrotate config migration
+test -e /etc/logrotate.d/td-agent
+test -e /var/log/fluent/td-agent.log
+
+sudo logrotate -f /etc/logrotate.d/td-agent
+sleep 1
+
+test -e /var/log/fluent/td-agent.log.1
+sudo cp /var/log/fluent/td-agent.log.1 saved_rotated_logfile
+
+sudo systemctl stop td-agent
+# Check that SIGUSR1 is sent to Fluentd and Fluentd reopens the logfile
+# not to log to the rotated old file.
+sudo diff --report-identical-files /var/log/fluent/td-agent.log.1 saved_rotated_logfile
+
 # Uninstall
 sudo apt remove -y fluent-package
 (! systemctl status --no-pager td-agent)

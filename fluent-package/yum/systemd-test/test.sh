@@ -22,6 +22,7 @@ test_filenames=(
     install-newly.sh
     update-from-v4.sh
     update-to-next-version.sh
+    update-from-v4-logrotation-config-edited.sh
 )
 
 for test_filename in ${test_filenames[@]}; do
