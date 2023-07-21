@@ -19,19 +19,12 @@ test -e /opt/fluent/share/fluentd.conf
 apt remove -y fluent-package
 
 test -e /etc/logrotate.d/fluentd
-! test -e /opt/fluent/share/fluentd.conf
+(! test -e /opt/fluent/share/fluentd.conf)
 (! test -h /usr/sbin/td-agent)
 (! test -h /usr/sbin/td-agent-gem)
 
-if ! getent passwd _fluentd >/dev/null; then
-    echo "_fluentd user must be kept"
-    exit 1
-fi
-
-if ! getent group _fluentd >/dev/null; then
-    echo "_fluentd group must be kept"
-    exit 1
-fi
+getent passwd _fluentd >/dev/null
+getent group _fluentd >/dev/null
 
 echo "fluent-apt-source test"
 apt_source_repositories_dir=/fluentd/fluent-apt-source/apt/repositories
@@ -39,8 +32,8 @@ apt purge -y fluent-package
 
 for conf_path in /etc/td-agent/td-agent.conf /etc/fluent/fluentd.conf; do
     if [ -e $conf_path ]; then
-	echo "$conf_path must be removed"
-	exit 1
+        echo "$conf_path must be removed"
+        exit 1
     fi
 done
 
@@ -59,64 +52,27 @@ apt install -V -y td-agent
 apt install -V -y \
   ${repositories_dir}/${distribution}/pool/${code_name}/${channel}/*/*/*_${architecture}.deb
 
+getent passwd td-agent >/dev/null
+getent group td-agent >/dev/null
+getent passwd _fluentd >/dev/null
+getent group _fluentd >/dev/null
 
-if ! getent passwd td-agent >/dev/null; then
-    echo "td-agent user must exist"
-    exit 1
-fi
-
-if ! getent group td-agent >/dev/null; then
-    echo "td-agent group must exist"
-    exit 1
-fi
-
-if ! getent passwd _fluentd >/dev/null; then
-    echo "_fluentd user must exist"
-    exit 1
-fi
-
-if ! getent group _fluentd >/dev/null; then
-    echo "_fluentd group must exist"
-    exit 1
-fi
-
-if [ ! -h /var/log/td-agent ]; then
-    echo "/var/log/td-agent must be symlink"
-    exit 1
-fi
-if [ ! -h /etc/td-agent ]; then
-    echo "/etc/td-agent must be symlink"
-    exit 1
-fi
+test -h /var/log/td-agent
+test -h /etc/td-agent
+test -h /usr/sbin/td-agent
+test -h /usr/sbin/td-agent-gem
 
 homedir=$(getent passwd _fluentd | cut -d: -f6)
-if [ "$homedir" != "/var/lib/fluent" ]; then
-    echo "_fluentd must use /var/lib/fluent as home directory"
-    exit 1
-fi
+test "$homedir" = "/var/lib/fluent"
 
 loginshell=$(getent passwd _fluentd | cut -d: -f7)
-if [ "$loginshell" != "/usr/sbin/nologin" ]; then
-    echo "_fluentd must use nologin"
-    exit 1
-fi
+test "$loginshell" = "/usr/sbin/nologin"
 
 # Note: As td-agent and _fluentd use same UID/GID,
 # it is regarded as preceding name (td-agent)
 owner=$(stat --format "%U/%G" /etc/fluent)
-if [ "$owner" != "td-agent/td-agent" ]; then
-    echo "/etc/fluent must be owned by td-agent/td-agent"
-    exit 1
-fi
+test "$owner" = "td-agent/td-agent"
 owner=$(stat --format "%U/%G" /var/log/fluent)
-if [ "$owner" != "td-agent/td-agent" ]; then
-    echo "/var/log/fluent must be owned by td-agent/td-agent"
-    exit 1
-fi
+test "$owner" = "td-agent/td-agent"
 owner=$(stat --format "%U/%G" /var/run/fluent)
-if [ "$owner" != "td-agent/td-agent" ]; then
-    echo "/var/run/fluent must be owned by td-agent/td-agent"
-    exit 1
-fi
-
-
+test "$owner" = "td-agent/td-agent"

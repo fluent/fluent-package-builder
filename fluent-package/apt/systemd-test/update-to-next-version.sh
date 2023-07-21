@@ -21,22 +21,30 @@ sudo apt install -V -y ./next_version.deb
 systemctl status --no-pager fluentd
 
 # Test: migration process from v4 must not be done
-! test -e /etc/td-agent
-! test -e /etc/fluent/td-agent.conf
-! test -e /var/log/td-agent
-! test -e /var/log/fluent/td-agent.log
+(! test -e /etc/td-agent)
+(! test -e /etc/fluent/td-agent.conf)
+(! test -e /var/log/td-agent)
+(! test -e /var/log/fluent/td-agent.log)
+(! test -h /usr/sbin/td-agent)
+(! test -h /usr/sbin/td-agent-gem)
 
 # Test: environmental variables
-# TODO: There are some tests being commented out. They will be supported by future fixes.
 pid=$(systemctl show fluentd --property=MainPID --value)
 env_vars=$(sudo sed -e 's/\x0/\n/g' /proc/$pid/environ)
+test $(eval $env_vars && echo $HOME) = "/var/lib/fluent"
 test $(eval $env_vars && echo $LOGNAME) = "_fluentd"
 test $(eval $env_vars && echo $USER) = "_fluentd"
 test $(eval $env_vars && echo $FLUENT_CONF) = "/etc/fluent/fluentd.conf"
-test $(eval $env_vars && echo $FLUENT_PLUGIN) = "/etc/fluent/plugin"
 test $(eval $env_vars && echo $FLUENT_PACKAGE_LOG_FILE) = "/var/log/fluent/fluentd.log"
+test $(eval $env_vars && echo $FLUENT_PLUGIN) = "/etc/fluent/plugin"
+test $(eval $env_vars && echo $FLUENT_SOCKET) = "/var/run/fluent/fluentd.sock"
+
+# Test: logs
+sleep 3
+test -e /var/log/fluent/fluentd.log
+(! grep -q -e '\[warn\]' -e '\[error\]' -e '\[fatal\]' /var/log/fluent/fluentd.log)
 
 # Uninstall
 sudo apt remove -y fluent-package
-! systemctl status --no-pager td-agent
-! systemctl status --no-pager fluentd
+(! systemctl status --no-pager td-agent)
+(! systemctl status --no-pager fluentd)
