@@ -30,6 +30,7 @@
 %undefine __brp_mangle_shebangs
 %define v4migration /tmp/@PACKAGE_DIR@/.v4migration
 %define v4migration_with_restart /tmp/@PACKAGE_DIR@/.v4migration_with_restart
+%define v4migration_old_rotate_config_saved /tmp/@PACKAGE_DIR@/.old_rotate_config
 
 %global __provides_exclude_from ^/opt/%{name}/.*\\.so.*
 %global __requires_exclude libjemalloc.*|libruby.*|/opt/%{name}/.*
@@ -224,6 +225,10 @@ if [ $1 -eq 1 ]; then
     if [ -f /var/log/@PACKAGE_DIR@/@COMPAT_SERVICE_NAME@.log ]; then
       echo "Keep logging to @COMPAT_SERVICE_NAME@.log ..."
       %{__sed} -i"" %{_sysconfdir}/sysconfig/@SERVICE_NAME@ -e "/FLUENT_PACKAGE_LOG_FILE/c FLUENT_PACKAGE_LOG_FILE=/var/log/@PACKAGE_DIR@/@COMPAT_SERVICE_NAME@.log"
+      # Backup the config since RPM removes the file if it is not edited.
+      if [ -f /etc/logrotate.d/@COMPAT_SERVICE_NAME@ ]; then
+        cp /etc/logrotate.d/@COMPAT_SERVICE_NAME@ %{v4migration_old_rotate_config_saved}
+      fi
     fi
   fi
 fi
@@ -301,8 +306,20 @@ if [ -f %{v4migration} ]; then
     ln -sf /var/log/@PACKAGE_DIR@ /var/log/@COMPAT_PACKAGE_DIR@
   fi
   if [ -f /etc/logrotate.d/@COMPAT_SERVICE_NAME@ ]; then
-     echo "Migrating path of pid ..."
-     sed -i"" /etc/logrotate.d/@COMPAT_SERVICE_NAME@ -e "s,/var/run/@COMPAT_PACKAGE_DIR@/@COMPAT_SERVICE_NAME@.pid,/var/run/@PACKAGE_DIR@/@SERVICE_NAME@.pid,"
+    # Perhaps this case is impossible.
+    echo "Found /etc/logrotate.d/@COMPAT_SERVICE_NAME@"
+  elif [ -f /etc/logrotate.d/@COMPAT_SERVICE_NAME@.rpmsave ]; then
+    # When the file is edited:
+    echo "Restores logrotate config from rpmsave"
+    mv -f /etc/logrotate.d/@COMPAT_SERVICE_NAME@.rpmsave /etc/logrotate.d/@COMPAT_SERVICE_NAME@
+  elif [ -f %{v4migration_old_rotate_config_saved} ]; then
+    # When the file is not edited:
+    echo "Restores logrotate config from backup"
+    mv -f %{v4migration_old_rotate_config_saved} /etc/logrotate.d/@COMPAT_SERVICE_NAME@
+  fi
+  if [ -f /etc/logrotate.d/@COMPAT_SERVICE_NAME@ ]; then
+    echo "Migrating path of pid in the logrotate config /etc/logrotate.d/@COMPAT_SERVICE_NAME@ ..."
+    %{__sed} -i"" /etc/logrotate.d/@COMPAT_SERVICE_NAME@ -e "s,/var/run/@COMPAT_PACKAGE_DIR@/@COMPAT_SERVICE_NAME@.pid,/var/run/@PACKAGE_DIR@/@SERVICE_NAME@.pid,"
   fi
   rm -f %{v4migration}
   if [ -f %{v4migration_with_restart} ]; then
