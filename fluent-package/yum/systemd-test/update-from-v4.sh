@@ -66,6 +66,11 @@ test $(eval $env_vars && echo $FLUENT_PACKAGE_LOG_FILE) = "/var/log/fluent/td-ag
 test $(eval $env_vars && echo $FLUENT_PLUGIN) = "/etc/fluent/plugin"
 test $(eval $env_vars && echo $FLUENT_SOCKET) = "/var/run/fluent/fluentd.sock"
 
+# Test: No error logs
+# (v4 default config outputs 'warn' log, so we should check only 'error' and 'fatal' logs)
+sleep 3
+(! grep -q -e '\[error\]' -e '\[fatal\]' /var/log/td-agent/td-agent.log)
+
 # Uninstall
 sudo $DNF remove -y fluent-package
 sudo systemctl daemon-reload
