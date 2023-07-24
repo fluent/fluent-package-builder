@@ -26,6 +26,7 @@ APT_SOURCE_PACKAGES = [
 ALL_PACKAGE = [
   "fluent-package",
   "fluent-apt-source",
+  "fluent-lts-apt-source",
 ]
 
 def define_bulked_task(name, description, packages = PACKAGES)

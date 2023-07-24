@@ -1,0 +1,6 @@
+fluent-lts-apt-source (2023.7.29-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Added new Fluent Package Official Signing Key.
+
+ -- Kentaro Hayashi <kenhys@xdump.org>  Mon, 24 Jul 2023 17:02:55 +0900
