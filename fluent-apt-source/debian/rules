@@ -18,11 +18,11 @@ override_dh_builddeb:
 override_dh_auto_build:
 	gpg \
 	  --no-default-keyring \
-	  --keyring ./fluentd-archive-keyring.gpg \
+	  --keyring ./fluent-archive-keyring.gpg \
 	  --import keys
 	gpg \
 	  --no-default-keyring \
-	  --keyring ./fluentd-archive-keyring.gpg \
+	  --keyring ./fluent-archive-keyring.gpg \
 	  --import fluent-package.pub
 
 	( \
@@ -37,16 +37,16 @@ override_dh_auto_build:
 	  echo "URIs: https://packages.treasuredata.com/5/$${distribution}/$${code_name}/"; \
 	  echo "Suites: $${code_name}"; \
 	  echo "Components: contrib"; \
-	  echo "Signed-By: /usr/share/keyrings/fluentd-archive-keyring.gpg"; \
-	) > fluentd.sources
+	  echo "Signed-By: /usr/share/keyrings/fluent-archive-keyring.gpg"; \
+	) > fluent.sources
 
 override_dh_install:
 	install -d debian/tmp/usr/share/keyrings/
-	install -m 0644 fluentd-archive-keyring.gpg \
+	install -m 0644 fluent-archive-keyring.gpg \
 	  debian/tmp/usr/share/keyrings/
 
 	install -d debian/tmp/etc/apt/sources.list.d/
-	install -m 0644 fluentd.sources \
+	install -m 0644 fluent.sources \
 	  debian/tmp/etc/apt/sources.list.d/
 
 	dh_install
