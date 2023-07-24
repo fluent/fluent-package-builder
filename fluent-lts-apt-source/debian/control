@@ -1,0 +1,21 @@
+Source: fluent-lts-apt-source
+Section: misc
+Priority: optional
+Maintainer: Fluentd developers <fluentd@googlegroups.com>
+Build-Depends:
+  debhelper-compat (= 12),
+  gnupg,
+  lsb-release
+Standards-Version: 4.5.0
+Homepage: https://www.fluentd.org/
+
+Package: fluent-lts-apt-source
+Section: misc
+Architecture: all
+Depends:
+  ${misc:Depends},
+  gnupg
+Conflicts: fluent-apt-source, fluentd-apt-source
+Description: GnuPG archive key and APT source of the Fluent Package (LTS) archive
+ The Fluentd project digitally signs its Release files. This package
+ contains the archive key used for that.

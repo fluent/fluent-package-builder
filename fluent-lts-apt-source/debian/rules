@@ -1,0 +1,52 @@
+#!/usr/bin/make -f
+# -*- makefile-gmake -*-
+#
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+# This has to be exported to make some magic below work.
+export DH_OPTIONS
+
+%:
+	dh $@
+
+# As aptly doesn't support zstd yet, so as a workaround, force default
+# package compression to xz
+override_dh_builddeb:
+	dh_builddeb -- -Zxz
+
+
+override_dh_auto_build:
+	gpg \
+	  --no-default-keyring \
+	  --keyring ./fluent-lts-archive-keyring.gpg \
+	  --import keys
+	gpg \
+	  --no-default-keyring \
+	  --keyring ./fluent-lts-archive-keyring.gpg \
+	  --import fluent-package.pub
+
+	( \
+	  distribution=$$(lsb_release --id --short | tr 'A-Z' 'a-z'); \
+	  code_name=$$(lsb_release --codename --short); \
+	  if [ $${distribution} = "ubuntu" ]; then \
+	    component=contrib; \
+	  else \
+	    component=main; \
+	  fi; \
+	  echo "Types: deb"; \
+	  echo "URIs: https://packages.treasuredata.com/lts/5/$${distribution}/$${code_name}/"; \
+	  echo "Suites: $${code_name}"; \
+	  echo "Components: contrib"; \
+	  echo "Signed-By: /usr/share/keyrings/fluent-lts-archive-keyring.gpg"; \
+	) > fluent-lts.sources
+
+override_dh_install:
+	install -d debian/tmp/usr/share/keyrings/
+	install -m 0644 fluent-lts-archive-keyring.gpg \
+	  debian/tmp/usr/share/keyrings/
+
+	install -d debian/tmp/etc/apt/sources.list.d/
+	install -m 0644 fluent-lts.sources \
+	  debian/tmp/etc/apt/sources.list.d/
+
+	dh_install
