@@ -115,12 +115,22 @@ The stable distribution of Fluentd, formerly known as td-agent.
 
 %build
 %if %{use_scl_gcc}
+%ifarch aarch64
+# Because of missing complete devtoolset-11-*, enable older devtoolset-10 (only for CentOS 7 aarch64)
+. /opt/rh/devtoolset-10/enable
+%else
 . /opt/rh/devtoolset-11/enable
+%endif
 %endif
 
 %install
 %if %{use_scl_gcc}
+%ifarch aarch64
+# Because of missing complete devtoolset-11-*, enable older devtoolset-10 (only for CentOS 7 aarch64)
+. /opt/rh/devtoolset-10/enable
+%else
 . /opt/rh/devtoolset-11/enable
+%endif
 %endif
 %if %{use_scl_ruby}
 . /opt/rh/rh-ruby%{scl_ruby_ver}/enable
