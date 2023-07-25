@@ -39,6 +39,15 @@ jobs:
           --volume ${PWD}:C:\fluentd:ro `
           mcr.microsoft.com/dotnet/framework/runtime:3.5 `
           powershell -ExecutionPolicy Bypass -Command "C:\fluentd\fluent-package\msi\install-test.ps1"
+      - name: Migration From v4 Test
+        shell: pwsh
+        run: |
+          docker run `
+          --rm `
+          --tty `
+          --volume ${PWD}:C:\fluentd:ro `
+          mcr.microsoft.com/dotnet/framework/runtime:3.5 `
+          powershell -ExecutionPolicy Bypass -Command "C:\fluentd\fluent-package\msi\update-from-v4-test.ps1"
       - name: Serverspec Test
         shell: pwsh
         run: |
