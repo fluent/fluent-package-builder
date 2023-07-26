@@ -3,8 +3,16 @@
 # Utility script to convert repository layout for packages.treasuredata.com
 #
 # Usage:
+#
+#   For https://td-agent-package-browser.herokuapp.com/5
+#
 #   $ convert-artifacts-layout.sh apt
 #   $ convert-artifacts-layout.sh yum
+#
+#   For https://td-agent-package-browser.herokuapp.com/lts/5
+#
+#   $ convert-artifacts-layout.sh apt lts
+#   $ convert-artifacts-layout.sh yum lts
 
 set -ex
 
