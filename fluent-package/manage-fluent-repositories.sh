@@ -153,7 +153,7 @@ EOF
 	find $FLUENT_RELEASE_DIR/5 -name "*$FLUENT_PACKAGE_VERSION*.rpm" | xargs rpm -K
 
 	# update & sign rpm repository
-	repodirs=`find "${FLUENT_RELEASE_DIR}" -regex "^${FLUENT_RELEASE_DIR}/5/\(redhat\|amazon\)/[2789]/\(x86_64\|aarch64\)$"`
+	repodirs=`find "${FLUENT_RELEASE_DIR}" -regex "^${FLUENT_RELEASE_DIR}/5/\(redhat\|amazon\)/\([2789]\|2023\)/\(x86_64\|aarch64\)$"`
 	for repodir in $repodirs; do
 	    createrepo_c -v "${repodir}"
 
