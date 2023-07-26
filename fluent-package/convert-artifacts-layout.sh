@@ -79,10 +79,12 @@ case $1 in
 	    if [ $dist = "centos" -o $dist = "rocky" -o $dist = "almalinux" ]; then
 		dist_dest="redhat"
 	    fi
-	    for release in 2 7 8 9; do
-		if [ $dist = "amazon" -a $release -ne 2 ]; then
-		    echo "skip $dist:$release"
-		    continue
+	    for release in 2 7 8 9 2023; do
+		if [ $dist = "amazon" ]; then
+		    if [ $release -ne 2 -a $release -ne 2023 ]; then
+			echo "skip $dist:$release"
+			continue
+		    fi
 		fi
 		if [ $dist = "centos" -a $release -ne 7 ]; then
 		    echo "skip $dist:$release"
