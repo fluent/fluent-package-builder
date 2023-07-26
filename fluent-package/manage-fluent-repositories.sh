@@ -150,7 +150,9 @@ EOF
 	sleep 10
 	export GPG_TTY=$(tty)
 	find $FLUENT_RELEASE_DIR/5 -name "*$FLUENT_PACKAGE_VERSION*.rpm" | xargs rpm --resign --define "_gpg_name support@treasure-data.com"
-	find $FLUENT_RELEASE_DIR/5 -name "*$FLUENT_PACKAGE_VERSION*.rpm" | xargs rpm -K
+	# check whether packages are signed correctly.
+	find $FLUENT_RELEASE_DIR/5 -name "*$FLUENT_PACKAGE_VERSION*.rpm" | xargs rpm -K || \
+	    (echo "Import public key to verify: rpm --import https://s3.amazonaws.com/packages.treasuredata.com/GPG-KEY-td-agent" && exit 1)
 
 	# update & sign rpm repository
 	repodirs=`find "${FLUENT_RELEASE_DIR}" -regex "^${FLUENT_RELEASE_DIR}/5/\(redhat\|amazon\)/\([2789]\|2023\)/\(x86_64\|aarch64\)$"`
