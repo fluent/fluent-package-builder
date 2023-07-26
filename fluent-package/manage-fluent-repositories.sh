@@ -70,7 +70,14 @@ case $COMMAND in
 	   DRYRUN_OPTION=""
 	fi
 	for target in $TARGETS; do
-	    command="aws s3 sync $DRYRUN_OPTION --delete $FLUENT_RELEASE_DIR/5/$target s3://packages.treasuredata.com/5/$target --profile $FLUENT_RELEASE_PROFILE"
+	    case $FLUENT_RELEASE_DIR in
+		*lts)
+		    command="aws s3 sync $DRYRUN_OPTION --delete $FLUENT_RELEASE_DIR/5/$target s3://packages.treasuredata.com/lts/5/$target --profile $FLUENT_RELEASE_PROFILE"
+		    ;;
+		*)
+		    command="aws s3 sync $DRYRUN_OPTION --delete $FLUENT_RELEASE_DIR/5/$target s3://packages.treasuredata.com/5/$target --profile $FLUENT_RELEASE_PROFILE"
+		    ;;
+	    esac
 	    echo $command
 	    $command
 	done
@@ -82,7 +89,14 @@ case $COMMAND in
 	   DRYRUN_OPTION=""
 	fi
 	for target in $VERSIONS; do
-	    command="aws s3 sync $DRYRUN_OPTION --delete s3://packages.treasuredata.com/$target $FLUENT_RELEASE_DIR/$target --profile $FLUENT_RELEASE_PROFILE"
+	    case $FLUENT_RELEASE_DIR in
+		*lts)
+		    command="aws s3 sync $DRYRUN_OPTION --delete s3://packages.treasuredata.com/lts/$target $FLUENT_RELEASE_DIR/$target --profile $FLUENT_RELEASE_PROFILE"
+		    ;;
+		*)
+		    command="aws s3 sync $DRYRUN_OPTION --delete s3://packages.treasuredata.com/$target $FLUENT_RELEASE_DIR/$target --profile $FLUENT_RELEASE_PROFILE"
+		    ;;
+	    esac
 	    echo $command
 	    $command
 	done
