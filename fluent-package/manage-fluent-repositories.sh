@@ -71,6 +71,12 @@ case $COMMAND in
 	fi
 	for target in $TARGETS; do
 	    case $FLUENT_RELEASE_DIR in
+		*test/experimental/lts)
+		    command="aws s3 sync $DRYRUN_OPTION --delete $FLUENT_RELEASE_DIR/5/$target s3://packages.treasuredata.com/test/experimental/lts/5/$target --profile $FLUENT_RELEASE_PROFILE"
+		    ;;
+		*test/experimental)
+		    command="aws s3 sync $DRYRUN_OPTION --delete $FLUENT_RELEASE_DIR/5/$target s3://packages.treasuredata.com/test/experimental/5/$target --profile $FLUENT_RELEASE_PROFILE"
+		    ;;
 		*lts)
 		    command="aws s3 sync $DRYRUN_OPTION --delete $FLUENT_RELEASE_DIR/5/$target s3://packages.treasuredata.com/lts/5/$target --profile $FLUENT_RELEASE_PROFILE"
 		    ;;
@@ -90,6 +96,12 @@ case $COMMAND in
 	fi
 	for target in $VERSIONS; do
 	    case $FLUENT_RELEASE_DIR in
+		*test/experimental/lts)
+		    command="aws s3 sync $DRYRUN_OPTION --delete s3://packages.treasuredata.com/test/experimental/lts/$target $FLUENT_RELEASE_DIR/$target --profile $FLUENT_RELEASE_PROFILE"
+		    ;;
+		*test/experimental)
+		    command="aws s3 sync $DRYRUN_OPTION --delete s3://packages.treasuredata.com/test/experimental/$target $FLUENT_RELEASE_DIR/$target --profile $FLUENT_RELEASE_PROFILE"
+		    ;;
 		*lts)
 		    command="aws s3 sync $DRYRUN_OPTION --delete s3://packages.treasuredata.com/lts/$target $FLUENT_RELEASE_DIR/$target --profile $FLUENT_RELEASE_PROFILE"
 		    ;;
