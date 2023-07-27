@@ -38,11 +38,13 @@ if [ "$1" = "purge" ]; then
 	    userdel --remove --force <%= compat_service_name %>
 	fi
 fi
-if [ -h /usr/sbin/<%= compat_service_name %> ]; then
-    rm -f /usr/sbin/<%= compat_service_name %>
-fi
-if [ -h /usr/sbin/<%= compat_service_name %>-gem ]; then
-    rm -f /usr/sbin/<%= compat_service_name %>-gem
+if [ ! "$1" = "upgrade" ]; then
+	if [ -h /usr/sbin/<%= compat_service_name %> ]; then
+	    rm -f /usr/sbin/<%= compat_service_name %>
+	fi
+	if [ -h /usr/sbin/<%= compat_service_name %>-gem ]; then
+	    rm -f /usr/sbin/<%= compat_service_name %>-gem
+	fi
 fi
 
 #DEBHELPER#
