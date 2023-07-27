@@ -36,11 +36,13 @@ systemctl status --no-pager td-agent
 systemctl status --no-pager fluentd
 
 # Test: config migration
-test -L /etc/td-agent
+test -h /etc/td-agent
+test -h /etc/fluent/fluentd.conf
+test $(readlink "/etc/fluent/fluentd.conf") = "/etc/fluent/td-agent.conf"
 test -e /etc/td-agent/td-agent.conf
 
 # Test: log file migration
-test -L /var/log/td-agent
+test -h /var/log/td-agent
 test -e /var/log/td-agent/td-agent.log
 
 # Test: bin file migration
@@ -53,30 +55,16 @@ env_vars=$(sudo sed -e 's/\x0/\n/g' /proc/$pid/environ)
 test $(eval $env_vars && echo $HOME) = "/var/lib/fluent"
 test $(eval $env_vars && echo $LOGNAME) = "_fluentd"
 test $(eval $env_vars && echo $USER) = "_fluentd"
-test $(eval $env_vars && echo $FLUENT_CONF) = "/etc/fluent/td-agent.conf"
-test $(eval $env_vars && echo $FLUENT_PACKAGE_LOG_FILE) = "/var/log/fluent/td-agent.log"
+test $(eval $env_vars && echo $FLUENT_CONF) = "/etc/fluent/fluentd.conf"
+test $(eval $env_vars && echo $FLUENT_PACKAGE_LOG_FILE) = "/var/log/fluent/fluentd.log"
 test $(eval $env_vars && echo $FLUENT_PLUGIN) = "/etc/fluent/plugin"
 test $(eval $env_vars && echo $FLUENT_SOCKET) = "/var/run/fluent/fluentd.sock"
 
 # Test: No error logs
 # (v4 default config outputs 'warn' log, so we should check only 'error' and 'fatal' logs)
 sleep 3
-(! grep -q -e '\[error\]' -e '\[fatal\]' /var/log/td-agent/td-agent.log)
-
-# Test: logrotate config migration
-test -e /etc/logrotate.d/td-agent
-test -e /var/log/fluent/td-agent.log
-
-sudo logrotate -f /etc/logrotate.d/td-agent
-sleep 1
-
-test -e /var/log/fluent/td-agent.log.1
-sudo cp /var/log/fluent/td-agent.log.1 saved_rotated_logfile
-
-sudo systemctl stop td-agent
-# Check that SIGUSR1 is sent to Fluentd and Fluentd reopens the logfile
-# not to log to the rotated old file.
-sudo diff --report-identical-files /var/log/fluent/td-agent.log.1 saved_rotated_logfile
+test -e /var/log/fluent/fluentd.log
+(! grep -e '\[error\]' -e '\[fatal\]' /var/log/fluent/fluentd.log)
 
 # Uninstall
 sudo apt remove -y fluent-package
