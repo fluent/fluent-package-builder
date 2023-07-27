@@ -199,8 +199,6 @@ if [ $1 -eq 1 ]; then
           mv -f $d /etc/@PACKAGE_DIR@/
         fi
       done
-      echo "Refer previous configuration @COMPAT_SERVICE_NAME@.conf ..."
-      %{__sed} -i"" %{_sysconfdir}/sysconfig/@SERVICE_NAME@ -e "/FLUENT_CONF/c FLUENT_CONF=/etc/@PACKAGE_DIR@/@COMPAT_SERVICE_NAME@.conf"
     fi
   fi
   if systemctl is-active @COMPAT_SERVICE_NAME@; then
@@ -233,8 +231,6 @@ if [ $1 -eq 1 ]; then
       fi
     done
     if [ -f /var/log/@PACKAGE_DIR@/@COMPAT_SERVICE_NAME@.log ]; then
-      echo "Keep logging to @COMPAT_SERVICE_NAME@.log ..."
-      %{__sed} -i"" %{_sysconfdir}/sysconfig/@SERVICE_NAME@ -e "/FLUENT_PACKAGE_LOG_FILE/c FLUENT_PACKAGE_LOG_FILE=/var/log/@PACKAGE_DIR@/@COMPAT_SERVICE_NAME@.log"
       # Backup the config since RPM removes the file if it is not edited.
       if [ -f /etc/logrotate.d/@COMPAT_SERVICE_NAME@ ]; then
         cp /etc/logrotate.d/@COMPAT_SERVICE_NAME@ %{v4migration_old_rotate_config_saved}
@@ -326,10 +322,6 @@ if [ -f %{v4migration} ]; then
     # When the file is not edited:
     echo "Restores logrotate config from backup"
     mv -f %{v4migration_old_rotate_config_saved} /etc/logrotate.d/@COMPAT_SERVICE_NAME@
-  fi
-  if [ -f /etc/logrotate.d/@COMPAT_SERVICE_NAME@ ]; then
-    echo "Migrating path of pid in the logrotate config /etc/logrotate.d/@COMPAT_SERVICE_NAME@ ..."
-    %{__sed} -i"" /etc/logrotate.d/@COMPAT_SERVICE_NAME@ -e "s,/var/run/@COMPAT_PACKAGE_DIR@/@COMPAT_SERVICE_NAME@.pid,/var/run/@PACKAGE_DIR@/@SERVICE_NAME@.pid,"
   fi
   rm -f %{v4migration}
   if [ -f %{v4migration_with_restart} ]; then

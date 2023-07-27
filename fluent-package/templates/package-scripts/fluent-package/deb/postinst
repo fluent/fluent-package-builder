@@ -69,8 +69,6 @@ migration_from_v4_main_process() {
         if [ -f /etc/<%= compat_package_dir %>/<%= compat_service_name %>.conf ]; then
             echo "Migrating from /etc/<%= compat_package_dir %>/<%= compat_service_name %>.conf to /etc/<%= package_dir %>/<%= compat_service_name %>.conf"
             cp -f /etc/<%= compat_package_dir %>/<%= compat_service_name %>.conf /etc/<%= package_dir %>/<%= compat_service_name %>.conf
-            echo "Refer previous configuration <%= compat_service_name %>.conf ..."
-            sed -i"" /etc/default/<%= service_name %> -e "/FLUENT_CONF/c FLUENT_CONF=/etc/<%= package_dir %>/<%= compat_service_name %>.conf"
             for d in $(ls /etc/<%= compat_package_dir %>); do
                 if [ ! "$d" = "plugin" -a ! "$d" = "<%= compat_service_name %>.conf" ]; then
                     # except managed under deb files must be migrated
@@ -103,14 +101,6 @@ migration_from_v4_main_process() {
                 mv -f /var/log/<%= compat_package_dir %>/$d /var/log/<%= package_dir %>/
             fi
         done
-        if [ -f /var/log/<%= package_dir %>/<%= compat_service_name %>.log ]; then
-            echo "Keep logging to <%= compat_service_name %>.log ..."
-            sed -i"" /etc/default/<%= service_name %> -e "/FLUENT_PACKAGE_LOG_FILE/c FLUENT_PACKAGE_LOG_FILE=/var/log/<%= package_dir %>/<%= compat_service_name %>.log"
-        fi
-        if [ -f /etc/logrotate.d/<%= compat_service_name %> ]; then
-            echo "Migrating path of pid ..."
-            sed -i"" /etc/logrotate.d/<%= compat_service_name %> -e "s,/var/run/<%= compat_package_dir %>/<%= compat_service_name %>.pid,/var/run/<%= package_dir %>/<%= service_name %>.pid,"
-        fi
     fi
 }
 
