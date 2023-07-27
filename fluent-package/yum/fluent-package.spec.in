@@ -192,13 +192,19 @@ if [ $1 -eq 1 ]; then
       echo "Migrating from /etc/@COMPAT_PACKAGE_DIR@/plugin/ to /etc/@PACKAGE_DIR@/plugin/..."
       mv -f /etc/@COMPAT_PACKAGE_DIR@/plugin/* /etc/@PACKAGE_DIR@/plugin/
     fi
-    if [ -f /etc/@COMPAT_PACKAGE_DIR@/@COMPAT_SERVICE_NAME@.conf ]; then
-      for d in /etc/@COMPAT_PACKAGE_DIR@/*; do
-        if [ ! "$d" == "/etc/@COMPAT_PACKAGE_DIR@/plugin" ]; then
-          echo "Migrating from $d to /etc/@PACKAGE_DIR@/..."
-          mv -f $d /etc/@PACKAGE_DIR@/
-        fi
-      done
+    create_link_for_config=n
+    if [ -f /etc/@COMPAT_PACKAGE_DIR@/@COMPAT_SERVICE_NAME@.conf -a ! -e /etc/@COMPAT_PACKAGE_DIR@/@SERVICE_NAME@.conf ]; then
+      create_link_for_config=y
+    fi
+    for d in /etc/@COMPAT_PACKAGE_DIR@/*; do
+      if [ ! "$d" == "/etc/@COMPAT_PACKAGE_DIR@/plugin" ]; then
+        echo "Migrating from $d to /etc/@PACKAGE_DIR@/..."
+        mv -f $d /etc/@PACKAGE_DIR@/
+      fi
+    done
+    if [ $create_link_for_config = "y" ]; then
+      rm -f /etc/@PACKAGE_DIR@/@SERVICE_NAME@.conf
+      ln -sf /etc/@PACKAGE_DIR@/@COMPAT_SERVICE_NAME@.conf /etc/@PACKAGE_DIR@/@SERVICE_NAME@.conf
     fi
   fi
   if systemctl is-active @COMPAT_SERVICE_NAME@; then

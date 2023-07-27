@@ -66,15 +66,23 @@ migration_from_v4_main_process() {
             echo "Migrating from /etc/<%= compat_service_name %>/plugin/ to /etc/<%= package_dir %>/plugin/..."
             mv -f /etc/<%= compat_service_name %>/plugin/* /etc/<%= package_dir %>/plugin/
         fi
+        create_link_for_config=n
+        if [ -f /etc/<%= compat_package_dir %>/<%= compat_service_name %>.conf -a ! -e /etc/<%= compat_package_dir %>/<%= service_name %>.conf ]; then
+            create_link_for_config=y
+        fi
         if [ -f /etc/<%= compat_package_dir %>/<%= compat_service_name %>.conf ]; then
             echo "Migrating from /etc/<%= compat_package_dir %>/<%= compat_service_name %>.conf to /etc/<%= package_dir %>/<%= compat_service_name %>.conf"
             cp -f /etc/<%= compat_package_dir %>/<%= compat_service_name %>.conf /etc/<%= package_dir %>/<%= compat_service_name %>.conf
-            for d in $(ls /etc/<%= compat_package_dir %>); do
-                if [ ! "$d" = "plugin" -a ! "$d" = "<%= compat_service_name %>.conf" ]; then
-                    # except managed under deb files must be migrated
-                    mv -f /etc/<%= compat_package_dir %>/$d /etc/<%= package_dir %>/
-                fi
-            done
+        fi
+        for d in $(ls /etc/<%= compat_package_dir %>); do
+            if [ ! "$d" = "plugin" -a ! "$d" = "<%= compat_service_name %>.conf" ]; then
+                # except managed under deb files must be migrated
+                mv -f /etc/<%= compat_package_dir %>/$d /etc/<%= package_dir %>/
+            fi
+        done
+        if [ $create_link_for_config = "y" ]; then
+            rm -f /etc/<%= package_dir %>/<%= service_name %>.conf
+            ln -sf /etc/<%= package_dir %>/<%= compat_service_name %>.conf /etc/<%= package_dir %>/<%= service_name %>.conf
         fi
     fi
     if [ -h /etc/systemd/system/td-agent.service ]; then

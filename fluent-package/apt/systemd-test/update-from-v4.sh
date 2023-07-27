@@ -36,11 +36,13 @@ systemctl status --no-pager td-agent
 systemctl status --no-pager fluentd
 
 # Test: config migration
-test -L /etc/td-agent
+test -h /etc/td-agent
+test -h /etc/fluent/fluentd.conf
+test $(readlink "/etc/fluent/fluentd.conf") = "/etc/fluent/td-agent.conf"
 test -e /etc/td-agent/td-agent.conf
 
 # Test: log file migration
-test -L /var/log/td-agent
+test -h /var/log/td-agent
 test -e /var/log/td-agent/td-agent.log
 
 # Test: bin file migration
