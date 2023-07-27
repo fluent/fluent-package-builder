@@ -266,17 +266,22 @@ fi
 
 %postun
 %systemd_postun_with_restart @SERVICE_NAME@.service
-if [ -h /usr/sbin/@COMPAT_SERVICE_NAME@ ]; then
-  rm -f /usr/sbin/@COMPAT_SERVICE_NAME@
-fi
-if [ -h /usr/sbin/@COMPAT_SERVICE_NAME@-gem ]; then
-  rm -f /usr/sbin/@COMPAT_SERVICE_NAME@-gem
-fi
-if [ -h /etc/@COMPAT_PACKAGE_DIR@ ]; then
-  rm -f /etc/@COMPAT_PACKAGE_DIR@
-fi
-if [ -h /var/log/@COMPAT_PACKAGE_DIR@ ]; then
-  rm -f /var/log/@COMPAT_PACKAGE_DIR@
+if [ $1 -eq 0 ]; then
+  # Uninstall
+  # Without this uninstall conditional guard block ($1 -eq 0), symlink
+  # will be lost during upgrade sequence.
+  if [ -h /usr/sbin/@COMPAT_SERVICE_NAME@ ]; then
+    rm -f /usr/sbin/@COMPAT_SERVICE_NAME@
+  fi
+  if [ -h /usr/sbin/@COMPAT_SERVICE_NAME@-gem ]; then
+    rm -f /usr/sbin/@COMPAT_SERVICE_NAME@-gem
+  fi
+  if [ -h /etc/@COMPAT_PACKAGE_DIR@ ]; then
+    rm -f /etc/@COMPAT_PACKAGE_DIR@
+  fi
+  if [ -h /var/log/@COMPAT_PACKAGE_DIR@ ]; then
+    rm -f /var/log/@COMPAT_PACKAGE_DIR@
+  fi
 fi
 
 if [ $1 -eq 0 ]; then
