@@ -2,7 +2,7 @@
 
 About the past changelog entries, see [old CHANGELOG](CHANGELOG-v4.md) instead.
 
-## Release v5.0.0 - 2023/07/DD
+## Release v5.0.0 - 2023/07/28
 
 ### News
 
@@ -19,6 +19,9 @@ Basically, for `td-agent` v4 users, it aims to keep compatibility as far as poss
 by executing the migration process with copying old files or providing
 symbolic links for it.
 
+If you created custom service units, you must manually modify the old file to the new path.
+For example, you must update such as: `D_PRELOAD`, `GEM_HOME`, `GEM_PATH`, path of `fluentd` and so on.
+
 #### For all platform:
 
 * The content of `fluent-package` changed to install under `/opt/fluent`. (e.g. `c:/opt/fluent` for windows) (#464)
@@ -26,7 +29,7 @@ symbolic links for it.
   and path of log files as far as possible. (#489,#500,#505)
 * `/usr/sbin/td-agent` and `/usr/sbin/td-agent-gem` was changed to
   `/usr/sbin/fluentd` and `/usr/sbin/fluent-gem`. For backward
-  compatibility, the symbolic link is provided for upgrade users.
+  compatibility, the symbolic link is provided for upgrade users. (#531)
 * Changed the path of example default configuration file to `/opt/fluent/share/fluentd.conf`. (#525,#528)
 
 #### For Debian/Ubuntu user:
@@ -39,8 +42,10 @@ symbolic links for it.
   explicitly execute the following commands: (#461,#516)
   
   ```
+  $ sudo systemctl stop td-agent
+  $ (upgrade to fluent-package...)
   $ sudo systemctl unmask td-agent
-  $ sudo systemctl enable fluentd
+  $ sudo systemctl enable --now fluentd
   ```
   
 * deb: user/group name was changed to `_fluentd`. This change is
@@ -55,6 +60,7 @@ symbolic links for it.
 * deb: `fluentd-apt-source` was renamed to `fluent-apt-source`.
   * You can remove transitional `fluentd-apt-source` after upgrading
     to `fluent-apt-source`. (#507,#514,#515)
+* deb: for LTS users, added `fluent-lts-apt-source` package (#541)
 
 #### For RHEL user:
 
@@ -82,6 +88,7 @@ symbolic links for it.
   removed or the entry about `td-agent` will be removed from
   `/etc/sysconfig/prelink.conf`.
 * rpm: added support for Amazon Linux 2023. (#459)
+* rpm: fixed build failure on CentOS 7 aarch64 (#545)
 
 #### For Windows user:
 
@@ -117,8 +124,6 @@ It is just modified to be a minimally buildable state, it is for testing purpose
 * dms: update resources for `fluent-package` (#473)
 
 ### Core component
-
-T.B.D.
 
 * ruby v3.2.2 (update)
 * jemalloc v3.6.0
