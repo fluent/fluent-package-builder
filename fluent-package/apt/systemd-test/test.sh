@@ -19,11 +19,18 @@ fi
 set -eu
 
 test_filenames=(
-    install-newly.sh
     update-from-v4.sh
     update-to-next-version.sh
     update-to-next-version-with-backward-compat-for-v4.sh
 )
+
+for apt_repo_type in local v5 lts; do
+    echo -e "\nRun test: $apt_repo_type\n"
+    vagrant up $vm
+    vagrant ssh $vm -- $dir/setup.sh
+    vagrant ssh $vm -- $dir/install_newly.sh $apt_repo_type
+    vagrant destroy -f $vm
+done
 
 for test_filename in ${test_filenames[@]}; do
     echo -e "\nRun test: $test_filename\n"

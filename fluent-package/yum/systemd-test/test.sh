@@ -19,11 +19,17 @@ fi
 set -eu
 
 test_filenames=(
-    install-newly.sh
     update-from-v4.sh
     update-to-next-version.sh
     update-to-next-version-with-backward-compat-for-v4.sh
 )
+
+for yum_repo_type in local v5 lts do
+    echo -e "\nRun test: $yum_repo_type\n"
+    vagrant up $vm
+    vagrant ssh $vm -- $dir/install-newly.sh $yum_repo_type
+    vagrant destroy -f $vm
+done
 
 for test_filename in ${test_filenames[@]}; do
     echo -e "\nRun test: $test_filename\n"
