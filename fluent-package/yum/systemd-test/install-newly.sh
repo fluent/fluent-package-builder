@@ -10,13 +10,16 @@ case $1 in
       /vagrant/${distribution}/${DISTRIBUTION_VERSION}/x86_64/Packages/fluent-package-[0-9]*.rpm
     ;;
   v5)
+    if [ $distribution = "centos" ]; then
+      distribution="redhat"
+    fi
     rpm --import https://packages.treasuredata.com/GPG-KEY-td-agent
     rpm --import https://packages.treasuredata.com/GPG-KEY-fluent-package
     sudo sh <<SCRIPT
     cat > /etc/yum.repos.d/fluent-package.repo <<'EOF';
 [fluent-package]
 name=Fluentd Project
-baseurl=https://packages.treasuredata.com/lts/5/${distribution}/${DISTRIBUTION_VERSION}/\$basearch
+baseurl=https://packages.treasuredata.com/lts/5/${DISTRIBUTION}/${DISTRIBUTION_VERSION}/\$basearch
 gpgcheck=1
 gpgkey=https://packages.treasuredata.com/GPG-KEY-td-agent
        https://packages.treasuredata.com/GPG-KEY-fluent-package
@@ -31,7 +34,7 @@ SCRIPT
     cat > /etc/yum.repos.d/fluent-package-lts.repo <<'EOF';
 [fluent-package]
 name=Fluentd Project
-baseurl=https://packages.treasuredata.com/lts/5/${distribution}/${DISTRIBUTION_VERSION}/\$basearch
+baseurl=https://packages.treasuredata.com/lts/5/${DISTRIBUTION}/${DISTRIBUTION_VERSION}/\$basearch
 gpgcheck=1
 gpgkey=https://packages.treasuredata.com/GPG-KEY-td-agent
        https://packages.treasuredata.com/GPG-KEY-fluent-package

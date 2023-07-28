@@ -15,6 +15,7 @@ case $distribution in
         DISTRIBUTION_VERSION=$version
         ;;
     esac
+    DISTRIBUTION=amazon
     ;;
   centos)
     case $version in
@@ -23,9 +24,11 @@ case $distribution in
         DISTRIBUTION_VERSION=$version
         ;;
     esac
+    DISTRIBUTION=redhat
     ;;
   rocky|almalinux)
     DNF=dnf
+    DISTRIBUTION=redhat
     DISTRIBUTION_VERSION=$(echo $version | cut -d. -f1)
     ;;
 esac
