@@ -22,6 +22,7 @@ test_filenames=(
     install-newly.sh
     update-from-v4.sh
     update-to-next-version.sh
+    update-to-next-version-with-backward-compat-for-v4.sh
 )
 
 for test_filename in ${test_filenames[@]}; do
