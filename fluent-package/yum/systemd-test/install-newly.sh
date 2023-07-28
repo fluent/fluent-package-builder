@@ -13,8 +13,8 @@ case $1 in
     if [ $distribution = "centos" ]; then
       distribution="redhat"
     fi
-    rpm --import https://packages.treasuredata.com/GPG-KEY-td-agent
-    rpm --import https://packages.treasuredata.com/GPG-KEY-fluent-package
+    sudo rpm --import https://packages.treasuredata.com/GPG-KEY-td-agent
+    sudo rpm --import https://packages.treasuredata.com/GPG-KEY-fluent-package
     sudo sh <<SCRIPT
     cat > /etc/yum.repos.d/fluent-package.repo <<'EOF';
 [fluent-package]
@@ -28,8 +28,8 @@ SCRIPT
     sudo $DNF install -y fluent-package
     ;;
   lts)
-    rpm --import https://packages.treasuredata.com/GPG-KEY-td-agent
-    rpm --import https://packages.treasuredata.com/GPG-KEY-fluent-package
+    sudo rpm --import https://packages.treasuredata.com/GPG-KEY-td-agent
+    sudo rpm --import https://packages.treasuredata.com/GPG-KEY-fluent-package
     sudo sh <<SCRIPT
     cat > /etc/yum.repos.d/fluent-package-lts.repo <<'EOF';
 [fluent-package]
