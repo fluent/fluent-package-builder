@@ -24,7 +24,7 @@ test_filenames=(
     update-to-next-version-with-backward-compat-for-v4.sh
 )
 
-for yum_repo_type in local v5 lts do
+for yum_repo_type in local v5 lts; do
     echo -e "\nRun test: $yum_repo_type\n"
     vagrant up $vm
     vagrant ssh $vm -- $dir/install-newly.sh $yum_repo_type
