@@ -28,7 +28,7 @@ for apt_repo_type in local v5 lts; do
     echo -e "\nRun test: $apt_repo_type\n"
     vagrant up $vm
     vagrant ssh $vm -- $dir/setup.sh
-    vagrant ssh $vm -- $dir/install_newly.sh $apt_repo_type
+    vagrant ssh $vm -- $dir/install-newly.sh $apt_repo_type
     vagrant destroy -f $vm
 done
 
