@@ -19,7 +19,7 @@ case $1 in
     cat > /etc/yum.repos.d/fluent-package.repo <<'EOF';
 [fluent-package]
 name=Fluentd Project
-baseurl=https://packages.treasuredata.com/lts/5/${DISTRIBUTION}/${DISTRIBUTION_VERSION}/\$basearch
+baseurl=https://packages.treasuredata.com/5/${DISTRIBUTION}/${DISTRIBUTION_VERSION}/\$basearch
 gpgcheck=1
 gpgkey=https://packages.treasuredata.com/GPG-KEY-td-agent
        https://packages.treasuredata.com/GPG-KEY-fluent-package
