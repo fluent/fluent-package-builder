@@ -113,21 +113,23 @@ EOF
 		exit 1
 	    fi
 	done
+	# Allow connection to kafka server
+        echo "listeners=PLAINTEXT://localhost:9092" | tee -a /etc/kafka/server.properties
 	/usr/bin/kafka-server-start /etc/kafka/server.properties &
 	n=1
 	while true ; do
 	    sleep 1
-	    status=$(/usr/bin/zookeeper-shell localhost:2181 ls /brokers/ids | sed -n 6p)
-	    if [ "$status" = "[0]" ]; then
+	    status=$(/usr/bin/kafka-topics --bootstrap-server localhost:9092 --list)
+	    if [ "$status" = "" ]; then
 		break
 	    fi
             n=$((n + 1))
 	    if [ $n -ge $N_POLLING ]; then
-		echo "failed to get response from kafka-server"
+		echo "failed to get list of topics from kafka-server"
 		exit 1
 	    fi
 	done
-	/usr/bin/kafka-topics --create --bootstrap-server localhost:2181 --replication-factor 1 --partitions 1 --topic test
+	/usr/bin/kafka-topics --bootstrap-server localhost:9092 --topic test --create --replication-factor 1 --partitions 1
 	/usr/sbin/fluentd -c /fluentd/serverspec/test.conf &
     fi
     export PATH=/opt/fluent/bin:$PATH
