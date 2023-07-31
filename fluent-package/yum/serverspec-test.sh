@@ -92,7 +92,7 @@ enabled=1
 
 [Confluent-Clients]
 name=Confluent Clients repository
-baseurl=https://packages.confluent.io/clients/rpm/centos/$releasever/$basearch
+baseurl=https://packages.confluent.io/clients/rpm/centos/\$releasever/\$basearch
 gpgcheck=1
 gpgkey=https://packages.confluent.io/clients/rpm/archive.key
 enabled=1
