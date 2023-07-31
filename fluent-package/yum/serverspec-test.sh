@@ -57,6 +57,8 @@ case ${distribution} in
     DNF=dnf
     DISTRIBUTION_VERSION=$(echo ${version} | cut -d. -f1)
     version=$DISTRIBUTION_VERSION
+    # Use newer JDK to avoid FileNotFoundException about tzdb.dat
+    JAVA_JRE=java-17-openjdk
     case ${version} in
       9)
         # FIXME: Enable it when the package is released
@@ -79,21 +81,20 @@ if [ $ENABLE_SERVERSPEC_TEST -eq 1 ]; then
 
     /usr/sbin/fluent-gem install --no-document serverspec
     if [ $ENABLE_KAFKA_TEST -eq 1 ]; then
-        rpm --import https://packages.confluent.io/rpm/6.0/archive.key
-
+        rpm --import https://packages.confluent.io/rpm/7.4/archive.key
         cat >/etc/yum.repos.d/confluent.repo <<EOF;
-[Confluent.dist]
-name=Confluent repository (dist)
-baseurl=https://packages.confluent.io/rpm/6.0/${version}
-gpgcheck=1
-gpgkey=https://packages.confluent.io/rpm/6.0/archive.key
-enabled=1
-
 [Confluent]
 name=Confluent repository
-baseurl=https://packages.confluent.io/rpm/6.0
+baseurl=https://packages.confluent.io/rpm/7.4
 gpgcheck=1
-gpgkey=https://packages.confluent.io/rpm/6.0/archive.key
+gpgkey=https://packages.confluent.io/rpm/7.4/archive.key
+enabled=1
+
+[Confluent-Clients]
+name=Confluent Clients repository
+baseurl=https://packages.confluent.io/clients/rpm/centos/\$releasever/\$basearch
+gpgcheck=1
+gpgkey=https://packages.confluent.io/clients/rpm/archive.key
 enabled=1
 EOF
 	yum update -y && yum install -y confluent-community-2.13 ${JAVA_JRE} nc
@@ -112,21 +113,23 @@ EOF
 		exit 1
 	    fi
 	done
+	# Allow connection to kafka server
+        echo "listeners=PLAINTEXT://localhost:9092" | tee -a /etc/kafka/server.properties
 	/usr/bin/kafka-server-start /etc/kafka/server.properties &
 	n=1
 	while true ; do
 	    sleep 1
-	    status=$(/usr/bin/zookeeper-shell localhost:2181 ls /brokers/ids | sed -n 6p)
-	    if [ "$status" = "[0]" ]; then
+	    status=$(/usr/bin/kafka-topics --bootstrap-server localhost:9092 --list)
+	    if [ "$status" = "" ]; then
 		break
 	    fi
             n=$((n + 1))
 	    if [ $n -ge $N_POLLING ]; then
-		echo "failed to get response from kafka-server"
+		echo "failed to get list of topics from kafka-server"
 		exit 1
 	    fi
 	done
-	/usr/bin/kafka-topics --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic test
+	/usr/bin/kafka-topics --bootstrap-server localhost:9092 --topic test --create --replication-factor 1 --partitions 1
 	/usr/sbin/fluentd -c /fluentd/serverspec/test.conf &
     fi
     export PATH=/opt/fluent/bin:$PATH
