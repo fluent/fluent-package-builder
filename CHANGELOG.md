@@ -6,6 +6,8 @@ About the past changelog entries, see [old CHANGELOG](CHANGELOG-v4.md) instead.
 
 ### News
 
+**fluent-package v5.0.0 is a RC (release Candidate) version of fluent-package v5 series. We are planning to publish GA (general availability) version of v5 series at the end of Aug 2023.**
+
 * `td-agent` is renamed to `fluent-package`. (#448,#449,#463,#518)
   * This represents current community-oriented development styles well.
 * Debian 12 (bookworm) has been supported. (#462,#509)
