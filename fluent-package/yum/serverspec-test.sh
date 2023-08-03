@@ -61,8 +61,8 @@ case ${distribution} in
     JAVA_JRE=java-17-openjdk
     case ${version} in
       9)
-        # FIXME: Enable it when the package is released
-        ENABLE_KAFKA_TEST=0
+        # FIXME: Accept SHA-1 signed confluent packages.
+        update-crypto-policies --set LEGACY
         ;;
     esac
     ;;
