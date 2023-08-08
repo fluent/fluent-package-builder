@@ -10,18 +10,10 @@ case $1 in
       /vagrant/${distribution}/pool/${code_name}/${channel}/*/*/fluent-package_*_${architecture}.deb
     ;;
   v5)
-    curl -o fluent-apt-source.deb \
-      https://packages.treasuredata.com/5/${distribution}/${code_name}/pool/contrib/f/fluent-apt-source/fluent-apt-source_2023.6.29-1_all.deb
-    sudo apt install -V -y ./fluent-apt-source.deb
-    sudo apt update
-    sudo apt install -y fluent-package
+    curl --fail --silent --show-error --location https://toolbelt.treasuredata.com/sh/install-${distribution}-${code_name}-fluent-package5.sh | sh
     ;;
   lts)
-    curl -o fluent-lts-apt-source.deb \
-      https://packages.treasuredata.com/lts/5/${distribution}/${code_name}/pool/contrib/f/fluent-lts-apt-source/fluent-lts-apt-source_2023.7.29-1_all.deb
-    sudo apt install -V -y ./fluent-lts-apt-source.deb
-    sudo apt update
-    sudo apt install -y fluent-package
+    curl --fail --silent --show-error --location https://toolbelt.treasuredata.com/sh/install-${distribution}-${code_name}-fluent-package5-lts.sh | sh
     ;;
 esac
 
