@@ -23,7 +23,7 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    addressable (2.8.4)
+    addressable (2.8.5)
       public_suffix (>= 2.0.2, < 6.0)
     async (1.31.0)
       console (~> 1.10)
@@ -65,10 +65,11 @@ GEM
     cmetrics (0.3.3)
       mini_portile2 (~> 2.7)
     concurrent-ruby (1.2.2)
-    console (1.16.2)
+    console (1.21.0)
+      fiber-annotation
       fiber-local
     cool.io (1.7.1)
-    digest-crc (0.6.4)
+    digest-crc (0.6.5)
       rake (>= 12.0.0, < 14.0.0)
     digest-murmurhash (1.1.1)
     elastic-transport (8.2.2)
@@ -79,8 +80,8 @@ GEM
       elasticsearch-api (= 8.8.0)
     elasticsearch-api (8.8.0)
       multi_json
-    excon (0.99.0)
-    faraday (2.7.4)
+    excon (0.100.0)
+    faraday (2.7.10)
       faraday-net_http (>= 2.0, < 3.1)
       ruby2_keywords (>= 0.0.4)
     faraday-excon (2.1.0)
@@ -93,6 +94,7 @@ GEM
     ffi (1.15.5)
     ffi-win32-extensions (1.0.4)
       ffi
+    fiber-annotation (0.2.0)
     fiber-local (1.0.0)
     fileutils (1.7.1)
     fluent-config-regexp-type (1.0.0)
@@ -194,20 +196,20 @@ GEM
     parallel (1.20.1)
     prometheus-client (2.1.0)
     protocol-hpack (1.4.2)
-    protocol-http (0.24.4)
-    protocol-http1 (0.15.0)
+    protocol-http (0.24.7)
+    protocol-http1 (0.15.1)
       protocol-http (~> 0.22)
     protocol-http2 (0.15.1)
       protocol-hpack (~> 1.4)
       protocol-http (~> 0.18)
-    public_suffix (5.0.1)
-    racc (1.6.2)
+    public_suffix (5.0.3)
+    racc (1.7.1)
     rake (13.0.6)
     rdkafka (0.12.0)
       ffi (~> 1.15)
       mini_portile2 (~> 2.6)
       rake (> 12)
-    rexml (3.2.5)
+    rexml (3.2.6)
     ruby-kafka (1.5.0)
       digest-crc
     ruby-progressbar (1.13.0)
