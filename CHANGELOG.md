@@ -184,7 +184,7 @@ It is just modified to be a minimally buildable state, it is for testing purpose
 On Windows
 
 * fluent-plugin-parser-winevt_xml v0.2.6 (update)
-* fluent-plugin-windows-eventlog v0.8.3 (update)
+* fluent-plugin-windows-eventlog v0.8.3
 * fluent-plugin-windows-exporter v1.0.0
 * winevt_c v0.10.1
 * nokogiri v1.15.3 (update)
