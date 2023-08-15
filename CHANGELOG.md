@@ -129,7 +129,8 @@ It is just modified to be a minimally buildable state, it is for testing purpose
 
 * ruby v3.2.2 (update)
 * jemalloc v3.6.0
-* OpenSSL 3.0.8 Windows & macOS
+* OpenSSL 3.1.0 Windows (update)
+* OpenSSL 3.0.8 macOS (update)
 * fluentd v1.16.2
 
 ### Core gems
