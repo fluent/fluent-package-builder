@@ -4,7 +4,7 @@ set -e
 
 . /usr/share/debconf/confmodule
 
-if [ "$1" = "purge" ]; then
+purge_conf_files() {
 	rm -f /etc/default/<%= compat_service_name %>
 	rm -f /etc/default/<%= service_name %>
 	for target_dir in /etc/<%= compat_package_dir %> /etc/<%= package_dir %>; do
@@ -17,10 +17,20 @@ if [ "$1" = "purge" ]; then
 	    fi
 	    rm -rf $target_dir
 	done
+}
+
+purge_var_run() {
 	dpkg-statoverride --list /var/run/<%= package_dir %> > /dev/null && \
 		dpkg-statoverride --remove /var/run/<%= package_dir %>
+	dpkg-statoverride --list /var/run/<%= compat_package_dir %> > /dev/null && \
+		dpkg-statoverride --remove /var/run/<%= compat_package_dir %>
 	rm -f /var/run/<%= package_dir %>/*
 	rm -rf /var/run/<%= package_dir %>
+	rm -f /var/run/<%= compat_package_dir %>/*
+	rm -rf /var/run/<%= compat_package_dir %>
+}
+
+purge_var_log() {
 	for target_dir in /var/log/<%= compat_package_dir %> /var/log/<%= package_dir %>; do
   	    dpkg-statoverride --list $target_dir > /dev/null && \
 		dpkg-statoverride --remove $target_dir
@@ -30,21 +40,41 @@ if [ "$1" = "purge" ]; then
 		rm -rf $target_dir
 	    fi
 	done
+}
 
+purge_users() {
 	if getent passwd _<%= service_name %>; then
 	    userdel --remove --force _<%= service_name %>
 	fi
 	if getent passwd <%= compat_service_name %>; then
 	    userdel --remove --force <%= compat_service_name %>
 	fi
-fi
-if [ ! "$1" = "upgrade" ]; then
+}
+
+purge_bin_symlinks() {
 	if [ -h /usr/sbin/<%= compat_service_name %> ]; then
 	    rm -f /usr/sbin/<%= compat_service_name %>
 	fi
 	if [ -h /usr/sbin/<%= compat_service_name %>-gem ]; then
 	    rm -f /usr/sbin/<%= compat_service_name %>-gem
 	fi
-fi
+}
+
+case $1 in
+    remove)
+	purge_var_run
+	purge_bin_symlinks
+	;;
+    purge)
+	purge_conf_files
+	purge_var_run
+	purge_var_log
+	purge_users
+	purge_bin_symlinks
+	;;
+    *)
+	# nothing to do for upgrade, failed-upgrade, abort-install, abort-upgrade
+	;;
+esac
 
 #DEBHELPER#
