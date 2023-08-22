@@ -1,0 +1,59 @@
+#!<%= install_path %>/bin/ruby
+ENV["GEM_HOME"]="<%= gem_install_path %>/"
+ENV["GEM_PATH"]="<%= gem_install_path %>/"
+
+require "bundler"
+require "open3"
+require "etc"
+
+def installed_plugins
+  stdout, stderr, status = Open3.capture3("<%= install_path %>/bin/fluent-gem list | grep fluent-plugin")
+  gem_list = []
+  if status.success?
+    lines = stdout.split(/\n/)
+    lines.each do |line|
+      gem_list << line.split.first
+    end
+  end
+  gem_list
+end
+
+begin
+  if Process.uid != 0
+    puts(<<EOS)
+Failed to execute #{__FILE__}.
+You must execute this script with administrator privileges.
+
+Usage: sudo #{__FILE__}
+EOS
+    exit 1
+  end
+  gemfile_path = "<%= install_path %>/share/Gemfile"
+  lockfile_path = "<%= install_path %>/share/Gemfile.lock"
+  bundler_def = Bundler::Definition.build(gemfile_path, lockfile_path, nil)
+
+  bundled_plugins = bundler_def.locked_gems.dependencies.keys.select do |gem_name|
+    gem_name.start_with?("fluent-plugin-")
+  end
+
+  puts(<<EOS)
+Preinstalled plugins: (bundled by default)
+
+ * #{bundled_plugins.sort.join("\n * ")}
+
+Currently Installed Plugins:
+
+ * #{installed_plugins.sort.join("\n * ")}
+
+EOS
+  unless (installed_plugins - bundled_plugins).empty?
+puts(<<EOS)
+Manually Installed Plugins:
+
+ * #{(installed_plugins - bundled_plugins).sort.join("\n * ")}
+
+EOS
+  end
+rescue Bundler::Dsl::DSLError
+  puts("failed to collect supplemental gem list")
+end

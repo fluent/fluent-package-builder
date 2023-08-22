@@ -518,6 +518,7 @@ class BuildTask
           "usr/bin/td",
           "usr/sbin/#{SERVICE_NAME}",
           "usr/sbin/#{PACKAGE_DIR}-gem",
+          "usr/sbin/#{PACKAGE_DIR}-gem-supplemental-list",
         ]
         scripts.each do |script|
           src = template_path("#{script}.erb")
