@@ -1,3 +1,9 @@
+fluent-package (5.0.1-1) unstable; urgency=medium
+
+  * Non-maintainer upload.
+
+ -- Kentaro Hayashi <hayashi@clear-code.com>  Tue, 29 Aug 2023 17:45:28 +0900
+
 fluent-package (5.0.0-1) unstable; urgency=low
 
   * New upstream release.
