@@ -2,6 +2,19 @@
 
 About the past changelog entries, see [old CHANGELOG](CHANGELOG-v4.md) instead.
 
+## Release v5.0.1 - 2023/08/29
+
+### News
+
+**fluent-package v5.0.1 is a GA (General Availability) version of fluent-package v5 series.**
+
+In v5.0.1, minor bug and security related issue was fixed.
+
+* deb: cleanup /var/run correctly when removing `fluent-package`.
+* Update bundled protocol-http1 to 0.15.1 to reduce attack vector (HTTP
+  Request/Response smuggling vulnerability). See [CVE-2023-38697](https://nvd.nist.gov/vuln/detail/CVE-2023-38697).
+  GitHub advisory was also published as [GHSA-6jwc-qr2q-7xwj](https://github.com/advisories/GHSA-6jwc-qr2q-7xwj).
+
 ## Release v5.0.0 - 2023/07/28
 
 ### News
