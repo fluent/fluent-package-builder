@@ -1,5 +1,12 @@
 # Treasure Agent 4 changelog
 
+## Release v4.5.1 - 2023/08/31
+
+### News
+
+* Update fluentd to 1.16.2
+* Update gems
+
 ## Release v4.5.0 - 2023/05/08
 
 ### News
