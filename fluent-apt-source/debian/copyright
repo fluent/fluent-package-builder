@@ -24,7 +24,7 @@ License: Apache-2.0
  .
  Note that td-agent package bundles many third-party software under
  /opt/td-agent/embedded not to affect already installed packages.
- See /opt/td-agent/LICENSE/* for embedded software.
+ See /opt/fluent/LICENSES/* for embedded software.
 
 License: BSD-2-clause
  Redistribution and use in source and binary forms, with or without
