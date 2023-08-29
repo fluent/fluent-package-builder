@@ -1,6 +1,6 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: Fluentd Project
-Upstream-Contact: Fluentd developers <fluentd@googlegroups.com>
+Upstream-Contact: https://github.com/fluent/fluentd
 
 Files: *
 Copyright: 2020 Kentaro Hayashi <hayashi@clear-code.com>

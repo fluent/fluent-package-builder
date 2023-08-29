@@ -1,5 +1,6 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: Fluentd Project
+Upstream-Contact: https://github.com/fluent/fluentd
 
 Files: *
 Copyright: 2019-2020 Treasure Data, Inc.
