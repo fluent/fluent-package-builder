@@ -1,5 +1,5 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: Treasure Data Agent
+Upstream-Name: Fluentd Project
 Upstream-Contact: Fluentd developers <fluentd@googlegroups.com>
 
 Files: *
