@@ -1,5 +1,5 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: Treasure Data Agent
+Upstream-Name: Fluentd Project
 Upstream-Contact: Fluentd developers <fluentd@googlegroups.com>
 
 Files: *
@@ -24,7 +24,7 @@ License: Apache-2.0
  .
  Note that td-agent package bundles many third-party software under
  /opt/td-agent/embedded not to affect already installed packages.
- See /opt/td-agent/LICENSE/* for embedded software.
+ See /opt/fluent/LICENSES/* for embedded software.
 
 License: BSD-2-clause
  Redistribution and use in source and binary forms, with or without
