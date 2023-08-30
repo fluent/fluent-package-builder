@@ -1,7 +1,9 @@
 name: macOS
 on:
   push:
-    branches: [master]
+    branches:
+      - master
+      - fluent-package-lts-v5
   pull_request:
 jobs:
   build:
