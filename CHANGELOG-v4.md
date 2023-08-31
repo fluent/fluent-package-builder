@@ -1,5 +1,70 @@
 # Treasure Agent 4 changelog
 
+## Release v4.5.1 - 2023/08/31
+
+### News
+
+* Update fluentd to 1.16.2
+* Update gems
+* Windows: Fix failure to launch Fluentd manually by td-agent command
+
+### Core component
+
+* ruby v2.7.8
+* jemalloc v3.6.0
+* OpenSSL 1.1.1t Windows & macOS
+* fluentd v1.16.2 (update)
+
+### Core gems
+
+* bundler v2.3.26
+* msgpack v1.7.1 (update)
+* cool.io v1.7.1
+* serverengine v2.3.2
+* oj v3.15.0 (update)
+* async-http v0.60.2 (update)
+* http_parser.rb v0.8.0
+* yajl-ruby v1.4.3
+* sigdump v0.2.5 (update)
+* tzinfo v2.0.6
+* tzinfo-data v1.2023.3
+
+### Bundled plugins and gems
+
+* td-client v1.0.8
+* fluent-plugin-td v1.2.0
+* aws-sdk-core v3.178.0 (update)
+* aws-sdk-s3 v1.129.0 (update)
+* fluent-plugin-s3 v1.7.2
+* webhdfs v0.10.2
+* fluent-plugin-webhdfs v1.5.0
+* ruby-kafka v1.5.0
+* rdkafka v0.11.1
+* fluent-plugin-kafka v0.19.0
+* elasticsearch v8.8.0 (update)
+* fluent-plugin-elasticsearch v5.3.0
+* prometheus-client v2.1.0
+* fluent-plugin-prometheus v2.1.0 (update)
+* fluent-plugin-prometheus_pushgateway v0.1.1 (update)
+* systemd-journal v1.4.2
+* fluent-plugin-systemd v1.0.5
+* fluent-plugin-record-modifier v2.1.1
+* fluent-plugin-rewrite-tag-filter v2.4.0
+* fluent-plugin-sd-dns 0.1.0
+* fluent-plugin-flowcounter-simple 0.1.0
+* fluent-diagtool v1.0.1
+* fluent-plugin-utmpx v0.5.0
+* fluent-plugin-opensearch v1.1.3 (update)
+* fluent-plugin-metrics-cmetrics v0.1.2
+* fluent-plugin-calyptia-monitoring v0.1.3
+
+On Windows
+
+* winevt_c v0.10.1
+* fluent-plugin-parser-winevt_xml v0.2.6 (update)
+* fluent-plugin-windows-eventlog v0.8.3
+* fluent-plugin-windows-exporter v1.0.0
+
 ## Release v4.5.0 - 2023/05/08
 
 ### News
