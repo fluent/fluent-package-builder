@@ -29,7 +29,7 @@ EOF
         ;;
 esac
 sudo $DNF update -y
-sudo $DNF install -y td-agent-4.5.0-1.*.x86_64
+sudo $DNF install -y td-agent-${td_agent_version}-1.*.x86_64
 
 sudo systemctl enable --now td-agent
 systemctl status --no-pager td-agent

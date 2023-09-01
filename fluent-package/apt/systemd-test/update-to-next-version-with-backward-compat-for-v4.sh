@@ -15,7 +15,7 @@ sudo apt clean all
 #apt_source_package=/vagrant/${distribution}/pool/${code_name}/${channel}/*/*/fluent-apt-source*_all.deb
 #sudo apt install -V -y ${apt_source_package} ca-certificates
 sudo apt update
-sudo apt install -V -y td-agent=4.5.0-1
+sudo apt install -V -y td-agent=${td_agent_version}-1
 
 systemctl status --no-pager td-agent
 
