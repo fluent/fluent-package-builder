@@ -4,7 +4,21 @@
 
 fluent-package-builder (formerly known as td-agent-builder, it was renamed at Aug, 2021) is a new build system for [td-agent](https://docs.treasuredata.com/display/public/PD/About+Treasure+Data%27s+Server-Side+Agent) which aims to replace the traditional build system [omnibus-td-agent](https://github.com/treasure-data/omnibus-td-agent) since it has several problems due to [Omnibus](https://github.com/chef/omnibus)'s limitations.
 
-NOTE: Discussed why re-branding is required [Rebranding td-agent-builder](https://github.com/fluent-plugins-nursery/fluent-package-builder/issues/311)
+NOTE: Discussed why re-branding is required [Rebranding td-agent-builder](https://github.com/fluent/fluent-package-builder/issues/311)
+
+### Changes from Treasure Agent 4
+
+* `td-agent` was renamed to `fluent-package`
+  * The content of `fluent-package` was changed to install under `/opt/fluent`
+  * `/usr/sbin/td-agent` and `/usr/sbin/td-agent-gem` was changed to
+  `/usr/sbin/fluentd` and `/usr/sbin/fluent-gem`
+  * Changed the path of example default configuration file to `/opt/fluent/share/fluentd.conf`
+* Debian 12 (bookworm) has been supported
+* Removed Ubuntu 16.04 (xenial), Ubuntu 18.04 (bionic) support
+* Amazon Linux 2023 has been supported
+* Introduced new package signing key. The new key will be used in the future
+  release. we still use using old signing key for a while
+* `fluentd-apt-source` was renamed to `fluent-apt-source` deb package for maintaining apt-line and keyring
 
 ### Changes from Treasure Agent 3
 
@@ -64,26 +78,28 @@ Then restart Windows.
 % rake yum:build
 ```
 
-By default, yum repositories for following platforms will be built under td-agent/yum/repositories/ directory:
+By default, yum repositories for following platforms will be built under fluent-package/yum/repositories/ directory:
 
-  * CentOS 6 (x86_64)
-  * CentOS 7 (x86_64)
-  * CentOS 8 (x86_64)
+  * RHEL/CentOS 7 (x86_64)
+  * RHEL/CentOS 8 (x86_64) - Built on Rocky Linux 8
+  * RHEL/CentOS 9 (x86_64) - Built on Alma Linux 9
+  * AmazonLinux 2 (x86_64)
+  * AmazonLinux 2023 (x86_64)
 
 You can choose target platforms by `YUM_TARGETS` environment variable like this:
 
 ```console
-% rake yum:build YUM_TARGETS="centos-6,centos-7,centos-8"
+% rake yum:build YUM_TARGETS="centos-7,rockylinux-8,almalinux-9"
 ```
 
-You can find other supported platforms under td-agent/yum directory.
+You can find other supported platforms under fluent-package/yum directory.
 
 ### Note for AArch64 platforms
 
 You can also build packages for AArch64 platforms like this:
 
 ```console
-% rake yum:build YUM_TARGETS="centos-8-aarch64"
+% rake yum:build YUM_TARGETS="amazonlinux-2023-aarch64"
 ```
 
 But if you use older GNU/Linux platforms (e.g. Ubuntu 18.04 or before) as your host OS, you need to copy qemnu-aarch64-static into the base directory of the target:
@@ -92,7 +108,7 @@ But if you use older GNU/Linux platforms (e.g. Ubuntu 18.04 or before) as your h
 % export TARGET_BASE="centos-8"
 % sudo apt install qemu-user-static
 % cd /path/to/fluent-package-builder
-% cp /usr/bin/qemu-aarch64-static td-agent/yum/${TARGET_BASE}
+% cp /usr/bin/qemu-aarch64-static fluent-package/yum/${TARGET_BASE}
 % rake yum:build YUM_TARGETS="${TARGET_BASE}-aarch64"
 ```
 
@@ -110,7 +126,7 @@ But if you use older GNU/Linux platforms (e.g. Ubuntu 18.04 or before) as your h
 % export TARGET_BASE="centos-8"
 % sudo apt install qemu-user-static
 % cd /path/to/fluent-package-builder
-% cp /usr/bin/qemu-ppc64le-static td-agent/yum/${TARGET_BASE}
+% cp /usr/bin/qemu-ppc64le-static fluent-package/yum/${TARGET_BASE}
 % rake yum:build YUM_TARGETS="${TARGET_BASE}-ppc64le"
 ```
 
@@ -120,27 +136,27 @@ But if you use older GNU/Linux platforms (e.g. Ubuntu 18.04 or before) as your h
 % rake apt:build
 ```
 
-By default, apt repositories for following platforms will be built under td-agent/apt/repositories/ directory:
+By default, apt repositories for following platforms will be built under fluent-package/apt/repositories/ directory:
 
-  * Debian 10 "Buster" (x86_64)
+  * Debian 11 "Bullseye" (x86_64)
+  * Debian 12 "Bookworm" (x86_64)
   * Ubuntu 20.04 LTS "Focal Fossa" (x86_64)
-  * Ubuntu 18.04 LTS "Bionic Beaver" (x86_64)
-  * Ubuntu 16.04 LTS "Xenial Xerus" (x86_64)
+  * Ubuntu 22.04 LTS "Jammy Jellyfish" (x86_64)
 
 You can choose target platforms by `APT_TARGETS` environment variable like this:
 
 ```console
-% rake apt:build APT_TARGETS="debian-buster,ubuntu-bionic"
+% rake apt:build APT_TARGETS="debian-bookworm,ubuntu-jammy"
 ```
 
-You can find other supported platforms under td-agent/apt directory.
+You can find other supported platforms under fluent-package/apt directory.
 
 ### Note for AArch64 platforms
 
 You can also built packages for AArch64 platforms like this:
 
 ```console
-% rake apt:build APT_TARGETS="ubuntu-bionic-arm64"
+% rake apt:build APT_TARGETS="ubuntu-jammy-arm64"
 ```
 
 But if you use older GNU/Linux platforms (e.g. Ubuntu 18.04 or before) as your host OS, you need to copy qemnu-aarch64-static into the base directory of the target:
@@ -149,7 +165,7 @@ But if you use older GNU/Linux platforms (e.g. Ubuntu 18.04 or before) as your h
 % export TARGET_BASE="ubuntu-bionic"
 % sudo apt install qemu-user-static
 % cd /path/to/fluent-package-builder
-% cp /usr/bin/qemu-aarch64-static td-agent/apt/${TARGET_BASE}
+% cp /usr/bin/qemu-aarch64-static fluent-package/apt/${TARGET_BASE}
 % rake apt:build APT_TARGETS="${TARGET_BASE}-arm64"
 ```
 
@@ -159,7 +175,7 @@ But if you use older GNU/Linux platforms (e.g. Ubuntu 18.04 or before) as your h
 % rake msi:build
 ```
 
-A td-agent-${version}-x64.msi package will be built under td-agent/msi directory.
+A fluent-package-${version}-x64.msi package will be built under fluent-package/msi directory.
 
 ### Note for Windows package
 
@@ -178,21 +194,21 @@ cmd> ridk install 2
 cmd> ridk install 3
 ```
 
-Install gem via `ridk exec td-agent-gem install`:
+Install gem via `ridk exec fluent-gem install`:
 
 ```console
-cmd> ridk exec td-agent-gem install winevt_c
+cmd> ridk exec fluent-gem install winevt_c
 ```
 
 ## How to build .dmg package
 
 ```console
-% sudo mkdir /opt/td-agent
-% sudo chown $(whoami) /opt/td-agent
+% sudo mkdir /opt/fluent
+% sudo chown $(whoami) /opt/fluent
 % rake dmg:selfbuild
 ```
 
-A td-agent-${version}.dmg package will be built under td-agent/dmg directory.
+A fluent-package-${version}.dmg package will be built under fluent-package/dmg directory.
 
 ### Note for macOS package
 
@@ -205,12 +221,12 @@ In System Preferences > Security & Privacy > Privacy > Accessibility, you should
 
 ## How to bump up the package version
 
-* Edit td-agent/config.rb to choose Ruby & Fluentd versions
+* Edit fluent-package/config.rb to choose Ruby & Fluentd versions
 * Edit Gemfile and update .lock files
-  * `cd td-agent && rake lockfile:update`
+  * `cd fluent-package && rake lockfile:update`
 * Bump up the versions of rpm & deb packages by the following command:
 ```
-% cd td-agent
+% cd fluent-package
 % rake version:update
 % git diff  # Check the change log
 % git commit -a
