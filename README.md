@@ -214,7 +214,7 @@ A fluent-package-${version}.dmg package will be built under fluent-package/dmg d
 
 GitHub Actions' built package is ready to run on macOS 10.15 (Catalina).
 
-Be sure to permit to be authrized for for assistive access.
+Be sure to permit to be authorized for for assistive access.
 In System Preferences > Security & Privacy > Privacy > Accessibility, you should permit Terminal.app there.
 
 **NOTE:** Since authorization is at the application level on Terminal.app, it allows any script run from Terminal.app to perform GUI scripting.
