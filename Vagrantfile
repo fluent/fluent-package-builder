@@ -11,6 +11,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       :box => "bento/debian-11",
     },
     {
+      :id => "debian-bookworm",
+      :box => "bento/debian-12",
+    },
+    {
       :id => "ubuntu-focal",
       :box => "bento/ubuntu-20.04",
     },
