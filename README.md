@@ -102,7 +102,7 @@ You can also build packages for AArch64 platforms like this:
 % rake yum:build YUM_TARGETS="amazonlinux-2023-aarch64"
 ```
 
-But if you use older GNU/Linux platforms (e.g. Ubuntu 18.04 or before) as your host OS, you need to copy qemnu-aarch64-static into the base directory of the target:
+But if you use older GNU/Linux platforms (e.g. Ubuntu 18.04 or before) as your host OS, you need to copy qemu-aarch64-static into the base directory of the target:
 
 ```console
 % export TARGET_BASE="centos-8"
@@ -120,7 +120,7 @@ You can also build packages for ppc64le platform like this:
 % rake yum:build YUM_TARGETS="centos-8-ppc64le"
 ```
 
-But if you use older GNU/Linux platforms (e.g. Ubuntu 18.04 or before) as your host OS, you need to copy qemnu-ppc64le-static into the base directory of the target:
+But if you use older GNU/Linux platforms (e.g. Ubuntu 18.04 or before) as your host OS, you need to copy qemu-ppc64le-static into the base directory of the target:
 
 ```console
 % export TARGET_BASE="centos-8"
@@ -159,7 +159,7 @@ You can also built packages for AArch64 platforms like this:
 % rake apt:build APT_TARGETS="ubuntu-jammy-arm64"
 ```
 
-But if you use older GNU/Linux platforms (e.g. Ubuntu 18.04 or before) as your host OS, you need to copy qemnu-aarch64-static into the base directory of the target:
+But if you use older GNU/Linux platforms (e.g. Ubuntu 18.04 or before) as your host OS, you need to copy qemu-aarch64-static into the base directory of the target:
 
 ```console
 % export TARGET_BASE="ubuntu-bionic"
