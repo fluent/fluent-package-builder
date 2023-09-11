@@ -9,12 +9,16 @@ jobs:
       matrix:
         label:
           - Debian GNU/Linux bullseye arm64
+          - Debian GNU/Linux bookworm arm64
           - Ubuntu Focal arm64
           - Ubuntu Jammy arm64
         include:
           - label: Debian GNU/Linux bullseye arm64
             rake-job: debian-bullseye
             test-docker-image: arm64v8/debian:bullseye
+          - label: Debian GNU/Linux bookworm arm64
+            rake-job: debian-bookworm
+            test-docker-image: arm64v8/debian:bookworm
           - label: Ubuntu Focal arm64
             rake-job: ubuntu-focal
             rake-options: LINTIAN=no
