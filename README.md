@@ -82,9 +82,9 @@ By default, yum repositories for following platforms will be built under fluent-
 
   * RHEL/CentOS 7 (x86_64)
   * RHEL/CentOS 8 (x86_64) - Built on Rocky Linux 8
-  * RHEL/CentOS 9 (x86_64) - Built on Alma Linux 9
-  * AmazonLinux 2 (x86_64)
-  * AmazonLinux 2023 (x86_64)
+  * RHEL/CentOS 9 (x86_64) - Built on AlmaLinux 9
+  * Amazon Linux 2 (x86_64)
+  * Amazon Linux 2023 (x86_64)
 
 You can choose target platforms by `YUM_TARGETS` environment variable like this:
 
