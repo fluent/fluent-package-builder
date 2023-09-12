@@ -32,11 +32,11 @@ done
 
 case ${DISTRIBUTION} in
     debian)
-	BASE_URI=http://packages.treasuredata.com.s3.amazonaws.com/4/debian/${CODE_NAME}
+	BASE_URI=https://packages.treasuredata.com/5/debian/${CODE_NAME}
 	CHANNEL=main
 	for v in "${PREVIOUS_VERSIONS[@]}"; do
-	    BASE_NAME=td-agent_${v}-1_${ARCH}.deb
-	    PREVIOUS_DEB=${BASE_URI}/pool/contrib/t/td-agent/${BASE_NAME}
+	    BASE_NAME=fluent-package_${v}-1_${ARCH}.deb
+	    PREVIOUS_DEB=${BASE_URI}/pool/contrib/f/fluent-package/${BASE_NAME}
 	    set +e
 	    wget ${PREVIOUS_DEB}
 	    if [ $? -eq 0 ]; then
@@ -45,11 +45,11 @@ case ${DISTRIBUTION} in
 	done
 	;;
     ubuntu)
-	BASE_URI=http://packages.treasuredata.com.s3.amazonaws.com/4/ubuntu/${CODE_NAME}
+	BASE_URI=https://packages.treasuredata.com/5/ubuntu/${CODE_NAME}
 	CHANNEL=universe
 	for v in "${PREVIOUS_VERSIONS[@]}"; do
-	    BASE_NAME=td-agent_${v}-1_${ARCH}.deb
-	    PREVIOUS_DEB=${BASE_URI}/pool/contrib/t/td-agent/${BASE_NAME}
+	    BASE_NAME=fluent-package_${v}-1_${ARCH}.deb
+	    PREVIOUS_DEB=${BASE_URI}/pool/contrib/f/fluent-package/${BASE_NAME}
 	    set +e
 	    wget ${PREVIOUS_DEB}
 	    if [ $? -eq 0 ]; then
