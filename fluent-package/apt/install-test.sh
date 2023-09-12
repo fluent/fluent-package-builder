@@ -37,6 +37,10 @@ for conf_path in /etc/td-agent/td-agent.conf /etc/fluent/fluentd.conf; do
     fi
 done
 
+if [ "${code_name}" == "bookworm" ]; then
+    echo "As bookworm is not published for v4, so package upgrade install check for ${code_name} is disabled"
+    exit 0
+fi
 # TODO: Remove it when v5 repository was deployed
 apt install -y curl
 curl -O https://packages.treasuredata.com/4/${distribution}/${code_name}/pool/contrib/f/fluentd-apt-source/fluentd-apt-source_2020.8.25-1_all.deb
