@@ -24,7 +24,7 @@ Example:
   $ $0 upload release-td-agent /tmp/td-agent-release
   $ $0 deb /tmp/td-agent-release 4.2.0
   $ $0 rpm /tmp/td-agent-release 4.2.0
-  $ $0 download-artifacts https://github.com/fluent/fluent-package-builder/pull/587
+  $ $0 download-artifacts pull/587
 EOF
 }
 
@@ -46,6 +46,8 @@ case $COMMAND in
 	fi
 	;;
     download-artifacts)
+	# Given URL will not be used. Just use the number of pull request.
+	# Allow copying the URL from browser's URL bar.
 	PULL_REQUEST_URL=$2
 	PULL_NUMBER=${PULL_REQUEST_URL##*/}
 	;;
