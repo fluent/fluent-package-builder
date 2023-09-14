@@ -19,10 +19,16 @@ fi
 set -eu
 
 test_filenames=(
-    update-from-v4.sh
     update-to-next-version.sh
-    update-to-next-version-with-backward-compat-for-v4.sh
 )
+
+if [ ! $vm = "debian-bookworm" ]; then
+    # As no bookworm package for v4, so execute upgrade test for other code name.
+    test_filenames+=(
+        update-from-v4.sh
+        update-to-next-version-with-backward-compat-for-v4.sh
+    )
+fi
 
 for apt_repo_type in local v5 lts; do
     echo -e "\nRun test: $apt_repo_type\n"

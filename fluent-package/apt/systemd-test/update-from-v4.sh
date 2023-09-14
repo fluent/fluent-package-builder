@@ -72,4 +72,8 @@ sudo apt remove -y fluent-package
 (! systemctl status --no-pager fluentd)
 
 test -h /etc/systemd/system/td-agent.service
+(! test -s /etc/systemd/system/td-agent.service)
 test -h /etc/systemd/system/fluentd.service
+(! test -s /etc/systemd/system/fluentd.service)
+test -h /etc/systemd/system/multi-user.target.wants/fluentd.service
+(! test -s /etc/systemd/system/multi-user.target.wants/fluentd.service)

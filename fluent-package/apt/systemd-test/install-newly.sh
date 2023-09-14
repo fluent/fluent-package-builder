@@ -25,5 +25,21 @@ test -e /var/log/fluent/fluentd.log
 
 sudo apt remove -y fluent-package
 
-test -h /etc/systemd/system/fluentd.service
+case ${code_name} in
+  bookworm)
+    # no dead fluentd.service symlink in /etc/systemd/system
+    (! test -h /etc/systemd/system/fluentd.service)
+    test -h /etc/systemd/system/multi-user.target.wants/fluentd.service
+    (! test -s /etc/systemd/system/multi-user.target.wants/fluentd.service)
+    ;;
+  *)
+    # dead fluentd.service symlink in /etc/systemd/system
+    test -h /etc/systemd/system/fluentd.service
+    (! test -s /etc/systemd/system/fluentd.service)
+    test -h /etc/systemd/system/multi-user.target.wants/fluentd.service
+    (! test -s /etc/systemd/system/multi-user.target.wants/fluentd.service)
+    ;;
+esac
+test -h /etc/systemd/system/td-agent.service
+(! test -s /etc/systemd/system/td-agent.service)
 (! systemctl status fluentd)
