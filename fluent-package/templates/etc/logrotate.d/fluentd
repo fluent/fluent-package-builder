@@ -4,7 +4,11 @@
   compress
   delaycompress
   notifempty
+<% if pkg_type == 'deb' %>
+  create 640 _<%= service_name %> _<%= service_name %>
+<% else %>
   create 640 <%= service_name %> <%= service_name %>
+<% end %>
   sharedscripts
   postrotate
     pid=/var/run/<%= package_dir %>/<%= service_name %>.pid

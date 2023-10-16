@@ -475,25 +475,14 @@ class BuildTask
         end
       end
 
-      desc "Create fluent-package configuration files from template"
-      task :fluent_package_config do
-        fluentd_conf = "etc/#{PACKAGE_DIR}/#{SERVICE_NAME}.conf"
-        fluentd_conf_default = "opt/#{PACKAGE_DIR}/share/#{SERVICE_NAME}.conf"
-        configs = [fluentd_conf]
-        configs.concat([
-          "etc/logrotate.d/#{SERVICE_NAME}",
-          fluentd_conf_default,
-        ]) unless windows? || macos?
-        configs.each do |config|
-          src =
-            if config == fluentd_conf_default
-              template_path(fluentd_conf)
-            else
-              template_path(config)
-            end
-          dest = File.join(STAGING_DIR, config)
-          render_template(dest, src, template_params)
-        end
+      desc "Create debian fluent-package configuration files from template"
+      task :deb_fluent_package_config do
+        render_fluent_package_config('deb')
+      end
+
+      desc "Create RPM fluent-package configuration files from template"
+      task :rpm_fluent_package_config do
+        render_fluent_package_config('rpm')
       end
 
       desc "Create systemd-tmpfiles configuration files from template"
@@ -596,16 +585,16 @@ class BuildTask
       end
 
       desc "Create configuration files for Red Hat like systems with systemd"
-      task :rpm_config => [:fluent_package_config, :systemd_tmpfiles_config, :bin_scripts, :rpm_systemd]
+      task :rpm_config => [:rpm_fluent_package_config, :systemd_tmpfiles_config, :bin_scripts, :rpm_systemd]
 
       desc "Create configuration files for Debian like systems"
-      task :deb_config => [:fluent_package_config, :systemd_tmpfiles_config, :bin_scripts, :deb_systemd, :deb_scripts]
+      task :deb_config => [:deb_fluent_package_config, :systemd_tmpfiles_config, :bin_scripts, :deb_systemd, :deb_scripts]
 
       desc "Create configuration files for Windows"
-      task :msi_config => [:fluent_package_config, :wix_config, :win_batch_files]
+      task :msi_config => [:rpm_fluent_package_config, :wix_config, :win_batch_files]
 
       desc "Create configuration files for macOS"
-      task :dmg_config => [:fluent_package_config, :pkgbuild_scripts, :pkgbuild_config, :bin_scripts, :launchctl_config]
+      task :dmg_config => [:rpm_fluent_package_config, :pkgbuild_scripts, :pkgbuild_config, :bin_scripts, :launchctl_config]
     end
   end
 
@@ -1099,6 +1088,27 @@ class BuildTask
     end
     Dir.glob("#{fluent_package_staging_dir}/**/.git").each do |git_dir|
       remove_files(git_dir, true)
+    end
+  end
+
+  def render_fluent_package_config(package_type)
+    # package_type must be 'deb' or 'rpm'
+    fluentd_conf = "etc/#{PACKAGE_DIR}/#{SERVICE_NAME}.conf"
+    fluentd_conf_default = "opt/#{PACKAGE_DIR}/share/#{SERVICE_NAME}.conf"
+    configs = [fluentd_conf]
+    configs.concat([
+                     "etc/logrotate.d/#{SERVICE_NAME}",
+                     fluentd_conf_default,
+                   ]) unless windows? || macos?
+    configs.each do |config|
+      src =
+        if config == fluentd_conf_default
+          template_path(fluentd_conf)
+        else
+          template_path(config)
+        end
+      dest = File.join(STAGING_DIR, config)
+      render_template(dest, src, template_params({ pkg_type: package_type }))
     end
   end
 end
