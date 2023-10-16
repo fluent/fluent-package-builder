@@ -4,7 +4,7 @@
   compress
   delaycompress
   notifempty
-  create 640 _<%= service_name %> _<%= service_name %>
+  create 640 <%= service_name %> <%= service_name %>
   sharedscripts
   postrotate
     pid=/var/run/<%= package_dir %>/<%= service_name %>.pid
