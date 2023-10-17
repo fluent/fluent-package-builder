@@ -9,6 +9,9 @@ fi
 vm=$1
 dir="/vagrant/fluent-package/apt/systemd-test"
 
+VBoxManage -v
+vagrant version
+
 vagrant status $vm | grep -E "^${vm}\s+not created (.*)$"
 if [ $? -ne 0 ]; then
     echo "Error: The VM already exists. Need to destroy it in advance with the following command."
