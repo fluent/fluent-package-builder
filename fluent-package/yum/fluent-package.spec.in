@@ -175,7 +175,7 @@ else
         echo "Add user @SERVICE_NAME@ (same UID/GID with @COMPAT_SERVICE_NAME@)..."
         TD_UID=$(id --user @COMPAT_SERVICE_NAME@)
         TD_GID=$(getent group @COMPAT_SERVICE_NAME@ | cut -d':' -f3)
-        /usr/sbin/useradd -u $TD_UID -g $TD_GID -d %{_localstatedir}/lib/@PACKAGE_DIR@ -s /sbin/nologin -o @SERVICE_NAME@
+        /usr/sbin/useradd --system -u $TD_UID -g $TD_GID -d %{_localstatedir}/lib/@PACKAGE_DIR@ -s /sbin/nologin -o @SERVICE_NAME@
     fi
 fi
 
