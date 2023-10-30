@@ -16,12 +16,12 @@ add_system_user() {
 	    # create _<%= service_name %> user/group with same uid/gid for compatibility easily.
 	    if getent group <%= compat_service_name %> >/dev/null; then
 		TD_GID=$(getent group <%= compat_service_name %> | cut -d':' -f3)
-		groupadd -g $TD_GID -o _<%= service_name %>
+		groupadd --gid $TD_GID --non-unique _<%= service_name %>
 	    fi
 	    if getent passwd <%= compat_service_name %> >/dev/null; then
 		TD_UID=$(id --user <%= compat_service_name %>)
 		TD_GID=$(getent group <%= compat_service_name %> | cut -d':' -f3)
-		useradd --system -u $TD_UID -g $TD_GID -o -d /var/lib/<%= package_dir %> -s /usr/sbin/nologin _<%= service_name %>
+		useradd --system --uid $TD_UID --gid $TD_GID --non-unique --home-dir /var/lib/<%= package_dir %> --shell /usr/sbin/nologin _<%= service_name %>
 	    fi
 	fi
     fi

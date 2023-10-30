@@ -153,21 +153,21 @@ mkdir -p %{buildroot}/tmp/@PACKAGE_DIR@
 %pre
 if ! getent group @COMPAT_SERVICE_NAME@ >/dev/null; then
     if ! getent group @SERVICE_NAME@ >/dev/null; then
-        /usr/sbin/groupadd -r @SERVICE_NAME@
+        /usr/sbin/groupadd --system @SERVICE_NAME@
     fi
 else
     if ! getent group @SERVICE_NAME@ >/dev/null; then
         echo "Add group @SERVICE_NAME@ (same GID with @COMPAT_SERVICE_NAME@)..."
         TD_GID=$(getent group @COMPAT_SERVICE_NAME@ | cut -d':' -f3)
-        /usr/sbin/groupadd -g $TD_GID -o @SERVICE_NAME@
+        /usr/sbin/groupadd --gid $TD_GID --non-unique @SERVICE_NAME@
     fi
 fi
 if ! getent passwd @COMPAT_SERVICE_NAME@ >/dev/null; then
     if ! getent passwd @SERVICE_NAME@ >/dev/null; then
 %if %{use_suse}
-        /usr/sbin/useradd -r -g @SERVICE_NAME@ -d %{_localstatedir}/lib/@PACKAGE_DIR@ -s /sbin/nologin -c '@SERVICE_NAME@' @SERVICE_NAME@
+        /usr/sbin/useradd --system --gid @SERVICE_NAME@ --home-dir %{_localstatedir}/lib/@PACKAGE_DIR@ --shell /sbin/nologin --comment '@SERVICE_NAME@' @SERVICE_NAME@
 %else
-        /usr/sbin/adduser -r -g @SERVICE_NAME@ -d %{_localstatedir}/lib/@PACKAGE_DIR@ -s /sbin/nologin -c '@SERVICE_NAME@' @SERVICE_NAME@
+        /usr/sbin/adduser --system --gid @SERVICE_NAME@ --home-dir %{_localstatedir}/lib/@PACKAGE_DIR@ --shell /sbin/nologin --comment '@SERVICE_NAME@' @SERVICE_NAME@
 %endif
     fi
 else
@@ -175,7 +175,7 @@ else
         echo "Add user @SERVICE_NAME@ (same UID/GID with @COMPAT_SERVICE_NAME@)..."
         TD_UID=$(id --user @COMPAT_SERVICE_NAME@)
         TD_GID=$(getent group @COMPAT_SERVICE_NAME@ | cut -d':' -f3)
-        /usr/sbin/useradd --system -u $TD_UID -g $TD_GID -d %{_localstatedir}/lib/@PACKAGE_DIR@ -s /sbin/nologin -o @SERVICE_NAME@
+        /usr/sbin/useradd --system --uid $TD_UID --gid $TD_GID --home-dir %{_localstatedir}/lib/@PACKAGE_DIR@ --shell /sbin/nologin --non-unique @SERVICE_NAME@
     fi
 fi
 
