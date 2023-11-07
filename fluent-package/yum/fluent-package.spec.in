@@ -284,26 +284,6 @@ if [ $1 -eq 0 ]; then
   fi
 fi
 
-if [ $1 -eq 0 ]; then
-   # Removing
-   if getent passwd @SERVICE_NAME@ >/dev/null; then
-       echo "Removing @SERVICE_NAME@ user..."
-       /usr/sbin/userdel --remove @SERVICE_NAME@
-   fi
-   if getent group @SERVICE_NAME@ >/dev/null; then
-       echo "Removing @SERVICE_NAME@ group..."
-       /usr/sbin/groupdel @SERVICE_NAME@
-   fi
-   if getent passwd @COMPAT_SERVICE_NAME@ >/dev/null; then
-       echo "Removing @COMPAT_SERVICE_NAME@ user..."
-       /usr/sbin/userdel --remove @COMPAT_SERVICE_NAME@
-   fi
-   if getent group @COMPAT_SERVICE_NAME@ >/dev/null; then
-       echo "Removing @COMPAT_SERVICE_NAME@ group..."
-       /usr/sbin/groupdel @COMPAT_SERVICE_NAME@
-   fi
-fi
-
 %posttrans
 if [ -f %{v4migration} ]; then
   if [ ! -f /usr/sbin/@COMPAT_SERVICE_NAME@ ]; then
