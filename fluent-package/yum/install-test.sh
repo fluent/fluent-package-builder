@@ -83,8 +83,8 @@ for conf_path in /etc/td-agent/td-agent.conf /etc/fluent/fluentd.conf; do
     fi
 done
 
-(! getent passwd fluentd >/dev/null)
-(! getent group fluentd >/dev/null)
+getent passwd fluentd >/dev/null
+getent group fluentd >/dev/null
 
 if [ $ENABLE_UPGRADE_TEST -eq 1 ]; then
     echo "UPGRADE TEST from v4"
