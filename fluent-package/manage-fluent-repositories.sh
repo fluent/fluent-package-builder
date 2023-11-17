@@ -24,6 +24,7 @@ Example:
   $ $0 upload release-td-agent /tmp/td-agent-release
   $ $0 deb /tmp/td-agent-release 4.2.0
   $ $0 rpm /tmp/td-agent-release 4.2.0
+  $ $0 download-artifacts pull/587
 EOF
 }
 
@@ -43,6 +44,14 @@ case $COMMAND in
 	    echo "ERROR: No package version for releasing fluentd packages, (e.g export FLUENT_PACKAGE_VERSION=4.2.0)"
 	    exit 1
 	fi
+	;;
+    download-artifacts)
+	# Given URL will not be used. Just use the number of pull request.
+	# Allow copying the URL from browser's URL bar.
+	PULL_REQUEST_URL=$2
+	PULL_NUMBER=${PULL_REQUEST_URL##*/}
+	read -rsp "Please enter your GitHub personal access token: " GITHUB_ACCESS_TOKEN
+	echo
 	;;
     *)
 	FLUENT_RELEASE_PROFILE=$2
@@ -176,6 +185,48 @@ EOF
 		rm -f "${repofile}.asc"
 	    fi
 	    gpg --verbose --detach-sign --armor --local-user $SIGNING_KEY "${repofile}"
+	done
+	;;
+    download-artifacts)
+	response=$(curl --silent --location \
+	     -H "Accept: application/vnd.github+json" \
+	     -H "Authorization: Bearer $GITHUB_ACCESS_TOKEN" \
+	     -H "X-GitHub-Api-Version: 2022-11-28" \
+	     https://api.github.com/repos/fluent/fluent-package-builder/pulls/$PULL_NUMBER | jq --raw-output '.head | .ref + " " + .sha')
+	head_branch=$(echo $response | cut -d' ' -f1)
+	head_sha=$(echo $response | cut -d' ' -f2)
+	curl --silent --location \
+	     -H "Accept: application/vnd.github+json" \
+	     -H "Authorization: Bearer $GITHUB_ACCESS_TOKEN" \
+	     -H "X-GitHub-Api-Version: 2022-11-28" \
+	     "https://api.github.com/repos/fluent/fluent-package-builder/actions/artifacts?per_page=100&page=$d" | \
+	    jq --raw-output '.artifacts[] | select(.workflow_run.head_branch == "'$head_branch'" and .workflow_run.head_sha == "'$head_sha'") | .name + " " + .archive_download_url' | while read line
+	do
+	    package=$(echo $line | cut -d' ' -f1)
+	    download_url=$(echo $line | cut -d' ' -f2)
+	    echo "Downloading $package.zip from $download_url"
+	    case $package in
+		*debian*|*ubuntu*)
+		    mkdir -p apt/repositories
+		    (cd apt/repositories &&
+			 rm -f $package.zip &&
+			 curl --silent --location --output $package.zip \
+			      -H "Authorization: Bearer $GITHUB_ACCESS_TOKEN" $download_url &&
+			 unzip -u $package.zip)
+		    ;;
+		*centos*|*rockylinux*|*almalinux*|*amazonlinux*)
+		    mkdir -p yum/repositories
+		    (cd yum/repositories &&
+			 rm -f $package.zip &&
+			 curl --silent --location --output $package.zip \
+			      -H "Authorization: Bearer $GITHUB_ACCESS_TOKEN" $download_url &&
+			 unzip -u $package.zip)
+		    ;;
+		*)
+		    curl --silent --location --output $package.zip \
+			 -H "Authorization: Bearer $GITHUB_ACCESS_TOKEN" $download_url
+		    ;;
+	    esac
 	done
 	;;
     *)
