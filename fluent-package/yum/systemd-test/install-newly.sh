@@ -46,9 +46,18 @@ test -e /var/log/fluent/fluentd.log
 sudo $DNF remove -y fluent-package
 sudo systemctl daemon-reload
 
-getent passwd fluentd >/dev/null
-getent group fluentd >/dev/null
-
+case $1 in
+  local)
+    getent passwd fluentd >/dev/null
+    getent group fluentd >/dev/null
+    ;;
+  *)
+    # TODO: Remove this branch after the following fix is applied to the latest release.
+    # https://github.com/fluent/fluent-package-builder/pull/598
+    (! getent passwd fluentd >/dev/null)
+    (! getent group fluentd >/dev/null)
+    ;;
+esac
 # `sudo systemctl daemon-reload` clears the service completely.
 #   (The result of `systemctl status` will be `unfound`)
 # Note: RPM does not leave links like `@/etc/systemd/system/fluentd.service`.
