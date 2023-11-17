@@ -78,6 +78,11 @@ test -e /var/log/fluent/fluentd.log
 sudo $DNF remove -y fluent-package
 sudo systemctl daemon-reload
 
+getent passwd td-agent >/dev/null
+getent group td-agent >/dev/null
+getent passwd fluentd >/dev/null
+getent group fluentd >/dev/null
+
 # `sudo systemctl daemon-reload` clears the service completely.
 #   (The result of `systemctl status` will be `unfound`)
 # Note: RPM does not leave links like `@/etc/systemd/system/fluentd.service`.

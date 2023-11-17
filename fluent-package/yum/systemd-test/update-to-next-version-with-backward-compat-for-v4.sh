@@ -97,3 +97,9 @@ test -e /var/log/fluent/fluentd.log
 sudo $DNF remove -y fluent-package
 (! systemctl status --no-pager td-agent)
 (! systemctl status --no-pager fluentd)
+
+getent passwd td-agent >/dev/null
+getent group td-agent >/dev/null
+getent passwd fluentd >/dev/null
+getent group fluentd >/dev/null
+
