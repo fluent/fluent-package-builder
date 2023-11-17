@@ -50,6 +50,8 @@ case $COMMAND in
 	# Allow copying the URL from browser's URL bar.
 	PULL_REQUEST_URL=$2
 	PULL_NUMBER=${PULL_REQUEST_URL##*/}
+	read -rsp "Please enter your GitHub personal access token: " GITHUB_ACCESS_TOKEN
+	echo
 	;;
     *)
 	FLUENT_RELEASE_PROFILE=$2
