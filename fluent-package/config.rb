@@ -1,5 +1,5 @@
 PACKAGE_NAME = "fluent-package"
-PACKAGE_VERSION = "5.0.1"
+PACKAGE_VERSION = "5.0.2"
 
 # Keep internal path (/opt/td-agent) for package name migration
 SERVICE_NAME = "fluentd"
@@ -7,7 +7,7 @@ COMPAT_SERVICE_NAME = "td-agent"
 PACKAGE_DIR = "fluent"
 COMPAT_PACKAGE_DIR = COMPAT_SERVICE_NAME
 
-FLUENTD_REVISION = 'd5685ada81ac89a35a79965f1e94bbe5952a5d3a' # v1.16.2
+FLUENTD_REVISION = 'd3cf2e0f95a0ad88b9897197db6c5152310f114f' # v1.16.3
 FLUENTD_LOCAL_GEM_REPO = "file://" + File.expand_path(File.join(__dir__, "local_gem_repo"))
 
 # https://github.com/jemalloc/jemalloc/releases
