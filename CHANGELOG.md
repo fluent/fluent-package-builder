@@ -1,5 +1,12 @@
 # Treasure Agent 4 changelog
 
+## Release v4.5.2 - 2023/11/29
+
+### News
+
+* Update fluentd to 1.16.3
+* Update fluent-plugin-kafka to 0.19.2
+
 ## Release v4.5.1 - 2023/08/31
 
 ### News
