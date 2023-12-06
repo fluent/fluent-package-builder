@@ -92,20 +92,30 @@ jobs:
   test:
     name: Test
     needs: build
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        distribution:
-          - centos-7
-          - rockylinux-8
-          - almalinux-9
-          - amazonlinux-2
-          # - amazonlinux-2023
+        label:
+          # CGroup V1 is not supported
+          # - CentOS 7 x86_64
+          - RockyLinux 8 x86_64
+          - AlmaLinux 9 x86_64
+        include:
+          # - label: CentOS 7 x86_64
+          #   rake-job: centos-7
+          #   test-lxc-image: images:centos/7
+          - label: RockyLinux 8 x86_64
+            rake-job: rockylinux-8
+            test-lxc-image: images:rockylinux/8
+          - label: AlmaLinux 9 x86_64
+            rake-job: almalinux-9
+            test-lxc-image: images:almalinux/9
     steps:
       - uses: actions/checkout@master
       - uses: actions/download-artifact@master
         with:
-          name: packages-${{ matrix.distribution }}
+          name: packages-${{ matrix.rake-job }}
+      - uses: canonical/setup-lxd@v0.1.1
       - name: Run Test
-        run: fluent-package/yum/systemd-test/test.sh ${{ matrix.distribution }}
+        run: fluent-package/yum/systemd-test/test.sh ${{ matrix.test-lxc-image }}

@@ -7,7 +7,7 @@ set -exu
 case $1 in
   local)
     sudo $DNF install -y \
-      /vagrant/${distribution}/${DISTRIBUTION_VERSION}/x86_64/Packages/fluent-package-[0-9]*.rpm
+      /host/${distribution}/${DISTRIBUTION_VERSION}/x86_64/Packages/fluent-package-[0-9]*.rpm
     ;;
   v5)
     case $DISTRIBUTION in

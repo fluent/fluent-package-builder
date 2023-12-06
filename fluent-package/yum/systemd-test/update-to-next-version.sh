@@ -5,7 +5,7 @@ set -exu
 . $(dirname $0)/commonvar.sh
 
 # Install the current
-package="/vagrant/${distribution}/${DISTRIBUTION_VERSION}/x86_64/Packages/fluent-package-[0-9]*.rpm"
+package="/host/${distribution}/${DISTRIBUTION_VERSION}/x86_64/Packages/fluent-package-[0-9]*.rpm"
 sudo $DNF install -y $package
 sudo systemctl enable --now fluentd
 systemctl status --no-pager fluentd

@@ -95,22 +95,36 @@ jobs:
   test:
     name: Test
     needs: build
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        distribution:
-          - debian-bullseye
-          - debian-bookworm
-          - ubuntu-focal
-          - ubuntu-jammy
+        label:
+          - Debian GNU/Linux bullseye amd64
+          - Debian GNU/Linux bookworm amd64
+          - Ubuntu Focal amd64
+          - Ubuntu Jammy amd64
+        include:
+          - label: Debian GNU/Linux bullseye amd64
+            rake-job: debian-bullseye
+            test-lxc-image: images:debian/11
+          - label: Debian GNU/Linux bookworm amd64
+            rake-job: debian-bookworm
+            test-lxc-image: images:debian/12
+          - label: Ubuntu Focal amd64
+            rake-job: ubuntu-focal
+            test-lxc-image: ubuntu:20.04
+          - label: Ubuntu Jammy amd64
+            rake-job: ubuntu-jammy
+            test-lxc-image: ubuntu:22.04
     steps:
       - uses: actions/checkout@master
       - uses: actions/download-artifact@master
         with:
-          name: packages-${{ matrix.distribution }}
+          name: packages-${{ matrix.rake-job }}
       - uses: actions/download-artifact@master
         with:
-          name: packages-apt-source-${{ matrix.distribution }}
-      - name: Run Test
-        run: fluent-package/apt/systemd-test/test.sh ${{ matrix.distribution }}
+          name: packages-apt-source-${{ matrix.rake-job }}
+      - uses: canonical/setup-lxd@v0.1.1
+      - name: Run Test 
+        run: fluent-package/apt/systemd-test/test.sh ${{ matrix.test-lxc-image }}

@@ -12,7 +12,7 @@ sudo apt install -y ./fluentd-apt-source_2020.8.25-1_all.deb
 # Install v4
 sudo apt clean all
 # Uncomment when v5 repository was deployed
-#apt_source_package=/vagrant/${distribution}/pool/${code_name}/${channel}/*/*/fluent-apt-source*_all.deb
+#apt_source_package=/host/${distribution}/pool/${code_name}/${channel}/*/*/fluent-apt-source*_all.deb
 #sudo apt install -V -y ${apt_source_package} ca-certificates
 sudo apt update
 sudo apt install -V -y td-agent=${td_agent_version}-1
@@ -21,7 +21,7 @@ systemctl status --no-pager td-agent
 
 # Install the current
 sudo apt install -V -y \
-    /vagrant/${distribution}/pool/${code_name}/${channel}/*/*/fluent-package_*_${architecture}.deb
+    /host/${distribution}/pool/${code_name}/${channel}/*/*/fluent-package_*_${architecture}.deb
 
 # Test: service status
 systemctl status --no-pager fluentd
