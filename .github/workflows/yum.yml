@@ -89,23 +89,58 @@ jobs:
           --env CENTOS_STREAM=${{ matrix.centos-stream }} \
           ${{ matrix.test-docker-image }} \
           /fluentd/fluent-package/yum/binstubs-test.sh
-  test:
-    name: Test
+  v1test:
+    name: Test with CGroup V1
     needs: build
-    runs-on: macos-latest
+    runs-on: ubuntu-20.04
     strategy:
       fail-fast: false
       matrix:
-        distribution:
-          - centos-7
-          - rockylinux-8
-          - almalinux-9
-          - amazonlinux-2
-          # - amazonlinux-2023
+        label:
+          - CentOS 7 x86_64
+          - AmazonLinux 2 x86_64
+          - AmazonLinux 2023 x86_64
+        include:
+          - label: CentOS 7 x86_64
+            rake-job: centos-7
+            test-lxc-image: images:centos/7
+          - label: AmazonLinux 2 x86_64
+            rake-job: amazonlinux-2
+            test-lxc-image: images:amazonlinux/2
+          - label: AmazonLinux 2023 x86_64
+            rake-job: amazonlinux-2023
+            test-lxc-image: images:amazonlinux/2023
     steps:
       - uses: actions/checkout@master
       - uses: actions/download-artifact@master
         with:
-          name: packages-${{ matrix.distribution }}
+          name: packages-${{ matrix.rake-job }}
+      - uses: canonical/setup-lxd@v0.1.1
       - name: Run Test
-        run: fluent-package/yum/systemd-test/test.sh ${{ matrix.distribution }}
+        run: fluent-package/yum/systemd-test/test.sh ${{ matrix.test-lxc-image }}
+
+  v2test:
+    name: Test with CGroup V2
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        label:
+          - RockyLinux 8 x86_64
+          - AlmaLinux 9 x86_64
+        include:
+          - label: RockyLinux 8 x86_64
+            rake-job: rockylinux-8
+            test-lxc-image: images:rockylinux/8
+          - label: AlmaLinux 9 x86_64
+            rake-job: almalinux-9
+            test-lxc-image: images:almalinux/9
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/download-artifact@master
+        with:
+          name: packages-${{ matrix.rake-job }}
+      - uses: canonical/setup-lxd@v0.1.1
+      - name: Run Test
+        run: fluent-package/yum/systemd-test/test.sh ${{ matrix.test-lxc-image }}

@@ -12,7 +12,7 @@ sudo apt install -y ./fluentd-apt-source_2020.8.25-1_all.deb
 # Install v4
 sudo apt clean all
 # Uncomment when v5 repository was deployed
-#apt_source_package=/vagrant/${distribution}/pool/${code_name}/${channel}/*/*/fluent-apt-source*_all.deb
+#apt_source_package=/host/${distribution}/pool/${code_name}/${channel}/*/*/fluent-apt-source*_all.deb
 #sudo apt install -V -y ${apt_source_package} ca-certificates
 sudo apt update
 sudo apt install -V -y td-agent=${td_agent_version}-1
@@ -21,7 +21,7 @@ systemctl status --no-pager td-agent
 
 # Install the current
 sudo apt install -V -y \
-    /vagrant/${distribution}/pool/${code_name}/${channel}/*/*/fluent-package_*_${architecture}.deb
+    /host/${distribution}/pool/${code_name}/${channel}/*/*/fluent-package_*_${architecture}.deb
 systemctl status --no-pager fluentd
 
 sudo systemctl stop fluentd
@@ -32,7 +32,7 @@ systemctl status --no-pager fluentd
 systemctl status --no-pager td-agent
 
 # Make a dummy pacakge for the next version
-dpkg-deb -R /vagrant/${distribution}/pool/${code_name}/${channel}/*/*/fluent-package_*_${architecture}.deb tmp
+dpkg-deb -R /host/${distribution}/pool/${code_name}/${channel}/*/*/fluent-package_*_${architecture}.deb tmp
 last_ver=$(cat tmp/DEBIAN/control | grep "Version: " | sed -E "s/Version: ([0-9.]+)-([0-9]+)/\2/g")
 sed -i -E "s/Version: ([0-9.]+)-([0-9]+)/Version: \1-$(($last_ver+1))/g" tmp/DEBIAN/control
 dpkg-deb --build tmp next_version.deb

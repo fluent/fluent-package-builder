@@ -36,7 +36,7 @@ systemctl status --no-pager td-agent
 
 # Install the current
 sudo $DNF install -y \
-    /vagrant/${distribution}/${DISTRIBUTION_VERSION}/x86_64/Packages/fluent-package-[0-9]*.rpm
+    /host/${distribution}/${DISTRIBUTION_VERSION}/x86_64/Packages/fluent-package-[0-9]*.rpm
 
 # Test: service status
 systemctl status --no-pager fluentd # Migration process starts the service automatically
