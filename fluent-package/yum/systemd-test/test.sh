@@ -12,10 +12,16 @@ dir="/host/fluent-package/yum/systemd-test"
 set -eux
 
 test_filenames=(
-    update-from-v4.sh
     update-to-next-version.sh
-    update-to-next-version-with-backward-compat-for-v4.sh
 )
+
+if [ ! $image = "images:amazonlinux/2023" ]; then
+    # As no AmazonLinux/2023 package for v4, so execute upgrade test for other images.
+    test_filenames+=(
+        update-from-v4.sh
+        update-to-next-version-with-backward-compat-for-v4.sh
+    )
+fi
 
 for yum_repo_type in local v5 lts; do
     echo -e "\nRun test: $yum_repo_type\n"
