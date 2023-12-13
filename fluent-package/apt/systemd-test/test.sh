@@ -20,6 +20,7 @@ if [ ! $image = "images:debian/12" ]; then
     test_filenames+=(
         update-from-v4.sh
         update-to-next-version-with-backward-compat-for-v4.sh
+        downgrade-to-v4.sh
     )
 fi
 
