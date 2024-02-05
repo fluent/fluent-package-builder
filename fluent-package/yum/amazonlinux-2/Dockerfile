@@ -50,7 +50,7 @@ RUN \
   amazon-linux-extras install ruby2.6 && \
   # raise IPv4 priority
   echo "precedence ::ffff:0:0/96 100" > /etc/gai.conf && \
-  # enable multiplatform feature
-  gem install --no-document bundler builder && \
+  # enable multiplatform feature (bundler 2.4.22 is the latest version which supports ruby 2.6)
+  gem install --no-document bundler:2.4.22 builder && \
   yum clean ${quiet} all && \
   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
