@@ -34,6 +34,14 @@ sudo $DNF install -y td-agent-${td_agent_version}-1.*.x86_64
 sudo systemctl enable --now td-agent
 systemctl status --no-pager td-agent
 
+# Generate garbage files
+touch /etc/td-agent/a\ b\ c
+touch /var/log/td-agent/a\ b\ c.log
+touch /etc/td-agent/plugin/in_fake.rb
+for d in $(seq 1 10); do
+    touch /var/log/td-agent/$d.log
+done
+
 # Install the current
 sudo $DNF install -y \
     /host/${distribution}/${DISTRIBUTION_VERSION}/x86_64/Packages/fluent-package-[0-9]*.rpm
@@ -51,10 +59,16 @@ test -h /etc/td-agent
 test -h /etc/fluent/fluentd.conf
 test $(readlink "/etc/fluent/fluentd.conf") = "/etc/fluent/td-agent.conf"
 test -e /etc/td-agent/td-agent.conf
+test -e /etc/fluent/a\ b\ c
+test -e /etc/fluent/plugin/in_fake.rb
 
 # Test: log file migration
 test -h /var/log/td-agent
 test -e /var/log/td-agent/td-agent.log
+test -e /var/log/fluent/a\ b\ c.log
+for d in $(seq 1 10); do
+    test -e /var/log/fluent/$d.log
+done
 
 # Test: bin file migration
 test -h /usr/sbin/td-agent
