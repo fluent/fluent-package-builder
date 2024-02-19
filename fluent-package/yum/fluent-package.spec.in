@@ -31,6 +31,7 @@
 %define v4migration /tmp/@PACKAGE_DIR@/.v4migration
 %define v4migration_with_restart /tmp/@PACKAGE_DIR@/.v4migration_with_restart
 %define v4migration_old_rotate_config_saved /tmp/@PACKAGE_DIR@/.old_rotate_config
+%define v4migration_enabled_service /tmp/@PACKAGE_DIR@/.v4migration_enabled_service
 
 %global __provides_exclude_from ^/opt/%{name}/.*\\.so.*
 %global __requires_exclude libjemalloc.*|libruby.*|/opt/%{name}/.*
@@ -207,6 +208,11 @@ if [ $1 -eq 1 ]; then
       ln -sf /etc/@PACKAGE_DIR@/@COMPAT_SERVICE_NAME@.conf /etc/@PACKAGE_DIR@/@SERVICE_NAME@.conf
     fi
   fi
+  if systemctl is-enabled @COMPAT_SERVICE_NAME@; then
+    # It is not enough to systemctl enable fluentd here for taking over enabled service status
+    # because td-agent %preun disables td-agent so fluentd is also disabled.
+    touch %{v4migration_enabled_service}
+  fi
   if systemctl is-active @COMPAT_SERVICE_NAME@; then
     if getent passwd @COMPAT_SERVICE_NAME@ >/dev/null; then
       if ! getent passwd @SERVICE_NAME@ >/dev/null; then
@@ -313,6 +319,12 @@ if [ -f %{v4migration} ]; then
     # When the file is not edited:
     echo "Restores logrotate config from backup"
     mv -f %{v4migration_old_rotate_config_saved} /etc/logrotate.d/@COMPAT_SERVICE_NAME@
+  fi
+  if [ -f %{v4migration_enabled_service} ]; then
+    # Explicitly enable service here not to be disabled during td-agent's %preun scriptlet.
+    echo "@COMPAT_SERVICE_NAME@ was enabled. Take over enabled service status ..."
+    systemctl enable @SERVICE_NAME@
+    rm -f %{v4migration_enabled_service}
   fi
   rm -f %{v4migration}
   if [ -f %{v4migration_with_restart} ]; then

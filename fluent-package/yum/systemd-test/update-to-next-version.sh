@@ -40,7 +40,8 @@ next_package=$(find rpmbuild -name "*.rpm")
 
 # Install the dummy package of the next version
 sudo $DNF install -y ./$next_package
-sudo systemctl enable --now fluentd
+# Test: take over enabled state
+systemctl is-enabled fluentd
 systemctl status --no-pager fluentd
 
 # Test: migration process from v4 must not be done

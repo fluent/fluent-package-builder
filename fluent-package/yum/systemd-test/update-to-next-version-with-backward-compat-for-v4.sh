@@ -38,7 +38,11 @@ systemctl status --no-pager td-agent
 package="/host/${distribution}/${DISTRIBUTION_VERSION}/x86_64/Packages/fluent-package-[0-9]*.rpm"
 sudo $DNF install -y $package
 systemctl status --no-pager fluentd # Migration process starts the service automatically
-sudo systemctl enable --now fluentd
+
+# Test: take over enabled state
+systemctl is-enabled fluentd
+
+sudo systemctl enable fluentd # Enable the unit name alias
 systemctl status --no-pager td-agent
 
 # Make a dummy pacakge for the next version
