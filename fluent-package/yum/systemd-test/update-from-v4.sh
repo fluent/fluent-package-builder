@@ -43,7 +43,7 @@ systemctl is-enabled fluentd
 
 # Test: service status
 systemctl status --no-pager fluentd # Migration process starts the service automatically
-sudo systemctl enable --now fluentd
+sudo systemctl enable fluentd # Enable the unit name alias
 systemctl status --no-pager td-agent
 
 # Test: config migration
