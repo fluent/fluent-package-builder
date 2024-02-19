@@ -42,7 +42,6 @@ next_package=$(find rpmbuild -name "*.rpm")
 sudo $DNF install -y ./$next_package
 # Test: take over enabled state
 systemctl is-enabled fluentd
-sudo systemctl enable --now fluentd
 systemctl status --no-pager fluentd
 
 # Test: migration process from v4 must not be done
