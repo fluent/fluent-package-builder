@@ -19,6 +19,14 @@ sudo apt install -V -y td-agent=${td_agent_version}-1
 
 systemctl status --no-pager td-agent
 
+# Generate garbage files
+touch /etc/td-agent/a\ b\ c
+touch /var/log/td-agent/a\ b\ c.log
+touch /etc/td-agent/plugin/in_fake.rb
+for d in $(seq 1 10); do
+    touch /var/log/td-agent/$d.log
+done
+
 # Install the current
 sudo apt install -V -y \
     /host/${distribution}/pool/${code_name}/${channel}/*/*/fluent-package_*_${architecture}.deb
@@ -40,10 +48,15 @@ test -h /etc/td-agent
 test -h /etc/fluent/fluentd.conf
 test $(readlink "/etc/fluent/fluentd.conf") = "/etc/fluent/td-agent.conf"
 test -e /etc/td-agent/td-agent.conf
+test -e /etc/fluent/a\ b\ c
+test -e /etc/fluent/plugin/in_fake.rb
 
 # Test: log file migration
 test -h /var/log/td-agent
 test -e /var/log/td-agent/td-agent.log
+for d in $(seq 1 10); do
+    test -e /var/log/fluent/$d.log
+done
 
 # Test: bin file migration
 test -h /usr/sbin/td-agent

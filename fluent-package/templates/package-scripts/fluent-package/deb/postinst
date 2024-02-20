@@ -74,13 +74,16 @@ migration_from_v4_main_process() {
             echo "Migrating from /etc/<%= compat_package_dir %>/<%= compat_service_name %>.conf to /etc/<%= package_dir %>/<%= compat_service_name %>.conf"
             cp -f /etc/<%= compat_package_dir %>/<%= compat_service_name %>.conf /etc/<%= package_dir %>/<%= compat_service_name %>.conf
         fi
-        for d in $(ls /etc/<%= compat_package_dir %>); do
-            if [ ! "$d" = "plugin" -a ! "$d" = "<%= compat_service_name %>.conf" ]; then
-                # except managed under deb files must be migrated
-                mv -f /etc/<%= compat_package_dir %>/$d /etc/<%= package_dir %>/
-            fi
-        done
-        if [ $create_link_for_config = "y" ]; then
+	if [ -n "$(ls /etc/<%= compat_package_dir %>/)" ]; then
+	    for d in /etc/<%= compat_package_dir %>/*; do
+		if [ ! "$d" = "/etc/<%= compat_package_dir %>/plugin" -a ! "$d" = "/etc/<%= compat_package_dir %>/<%= compat_service_name %>.conf" ]; then
+                    # except managed under deb files must be migrated
+		    echo "Migrating from /etc/<%= compat_package_dir %>/$d to /etc/<%= package_dir %>/..."
+                    mv -f "$d" /etc/<%= package_dir %>/
+		fi
+	    done
+        fi
+	if [ $create_link_for_config = "y" ]; then
             rm -f /etc/<%= package_dir %>/<%= service_name %>.conf
             ln -sf /etc/<%= package_dir %>/<%= compat_service_name %>.conf /etc/<%= package_dir %>/<%= service_name %>.conf
         fi
@@ -103,12 +106,16 @@ migration_from_v4_main_process() {
                 mv -f /var/log/<%= compat_package_dir %>/buffer/* /var/log/<%= package_dir %>/buffer/
             fi
         fi
-        for d in $(ls /var/log/<%= compat_package_dir %>); do
-            if [ ! "$d" = "buffer" ]; then
-                # except /var/log/<%= compat_package_dir %>/buffer must be migrated
-                mv -f /var/log/<%= compat_package_dir %>/$d /var/log/<%= package_dir %>/
-            fi
-        done
+        # except /var/log/<%= compat_package_dir %>/buffer must be migrated
+	if [ -n "$(ls /var/log/<%= compat_package_dir %>/)" ]; then
+	    for d in /var/log/<%= compat_package_dir %>/*; do
+		if [ ! "$d" = "/var/log/<%= compat_package_dir %>/buffer" ]; then
+                    # except /var/log/<%= compat_package_dir %>/buffer must be migrated
+		    echo "Migrating from /var/log/<%= compat_package_dir %>/$d to /var/log/<%= package_dir %>/..."
+                    mv -f "$d" /var/log/<%= package_dir %>/
+		fi
+            done
+	fi
     fi
 }
 

@@ -197,12 +197,15 @@ if [ $1 -eq 1 ]; then
     if [ -f /etc/@COMPAT_PACKAGE_DIR@/@COMPAT_SERVICE_NAME@.conf -a ! -e /etc/@COMPAT_PACKAGE_DIR@/@SERVICE_NAME@.conf ]; then
       create_link_for_config=y
     fi
-    for d in /etc/@COMPAT_PACKAGE_DIR@/*; do
-      if [ ! "$d" == "/etc/@COMPAT_PACKAGE_DIR@/plugin" ]; then
-        echo "Migrating from $d to /etc/@PACKAGE_DIR@/..."
-        mv -f $d /etc/@PACKAGE_DIR@/
-      fi
-    done
+    if [ -n "$(ls /etc/@COMPAT_PACKAGE_DIR@/)" ]; then
+	for d in /etc/@COMPAT_PACKAGE_DIR@/*; do
+            if [ ! "$d" = "/etc/@COMPAT_PACKAGE_DIR@/plugin" ]; then
+		# except managed under deb files must be migrated
+		echo "Migrating from /etc/@COMPAT_PACKAGE_DIR@/$d to /etc/<%= package_dir %>/..."
+		mv -f "$d" /etc/@PACKAGE_DIR@/
+            fi
+	done
+    fi
     if [ $create_link_for_config = "y" ]; then
       rm -f /etc/@PACKAGE_DIR@/@SERVICE_NAME@.conf
       ln -sf /etc/@PACKAGE_DIR@/@COMPAT_SERVICE_NAME@.conf /etc/@PACKAGE_DIR@/@SERVICE_NAME@.conf
@@ -236,12 +239,15 @@ if [ $1 -eq 1 ]; then
     if [ -d /var/log/@COMPAT_PACKAGE_DIR@/buffer -a -n "$(ls /var/log/@COMPAT_PACKAGE_DIR@/buffer)" ]; then
       mv -f /var/log/@COMPAT_PACKAGE_DIR@/buffer/* /var/log/@PACKAGE_DIR@/buffer/
     fi
-    for d in /var/log/@COMPAT_PACKAGE_DIR@/*; do
-      if [ ! "$d" == "/var/log/@COMPAT_PACKAGE_DIR@/buffer" ]; then
-        # /var/log/@COMPAT_PACKAGE_DIR@/buffer will be removed from td-agent
-        mv -f $d /var/log/@PACKAGE_DIR@/
-      fi
-    done
+    # migrate log files except owned buffer
+    if [ -n "$(ls /var/log/@COMPAT_PACKAGE_DIR@/)" ]; then
+	for d in /var/log/@COMPAT_PACKAGE_DIR@/*; do
+	    if [ ! "$d" == "/var/log/@COMPAT_PACKAGE_DIR@/buffer" ]; then
+		# /var/log/@COMPAT_PACKAGE_DIR@/buffer will be removed from td-agent
+		mv -f "$d" /var/log/@PACKAGE_DIR@/
+	    fi
+	done
+    fi
     if [ -f /var/log/@PACKAGE_DIR@/@COMPAT_SERVICE_NAME@.log ]; then
       # Backup the config since RPM removes the file if it is not edited.
       if [ -f /etc/logrotate.d/@COMPAT_SERVICE_NAME@ ]; then
