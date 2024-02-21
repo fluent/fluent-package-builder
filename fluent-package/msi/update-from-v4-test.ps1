@@ -3,8 +3,8 @@ $ProgressPreference = 'SilentlyContinue'
 Set-PSDebug -Trace 1
 
 # Install v4
-Invoke-WebRequest "https://s3.amazonaws.com/packages.treasuredata.com/4/windows/td-agent-4.5.1-x64.msi" -OutFile "td-agent-4.5.1-x64.msi"
-Start-Process msiexec -ArgumentList "/i", "td-agent-4.5.1-x64.msi", "/quiet" -Wait -NoNewWindow
+Invoke-WebRequest "https://s3.amazonaws.com/packages.treasuredata.com/4/windows/td-agent-4.5.2-x64.msi" -OutFile "td-agent-4.5.2-x64.msi"
+Start-Process msiexec -ArgumentList "/i", "td-agent-4.5.2-x64.msi", "/quiet" -Wait -NoNewWindow
 Start-Sleep 30 # Must wait until all processes are surely started.
 $test_setting = @'
 <source>

@@ -2,7 +2,7 @@ code_name=$(lsb_release --codename --short)
 architecture=$(dpkg --print-architecture)
 repositories_dir=/fluentd/fluent-package/apt/repositories
 java_jdk=openjdk-11-jre
-td_agent_version=4.5.1
+td_agent_version=4.5.2
 case ${code_name} in
   xenial)
     distribution=ubuntu
