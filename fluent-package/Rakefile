@@ -791,8 +791,17 @@ class BuildTask
       dependency = Gem::Dependency.new('', version_condition)
       if dependency.match?('', ruby_version)
         patch_path = File.join(__dir__, "patches", patch_name)
-        cd(ruby_lib_dir) do
-          sh("ridk", "exec", "patch", "-p2", "--input=#{patch_path}")
+        if patch_name.start_with?("rubyinstaller/")
+          # Patches for RubyInstaller's binary package
+          base_dir = fluent_package_staging_dir
+          strip_level = 1
+        else
+          # patches for Ruby source tree
+          base_dir = ruby_lib_dir
+          strip_level = 2
+        end
+        cd(base_dir) do
+          sh("ridk", "exec", "patch", "-p#{strip_level}", "--input=#{patch_path}")
         end
       end
     end
