@@ -51,7 +51,7 @@ jobs:
         run: |
           rake yum:build YUM_TARGETS=${{ matrix.rake-job }}
       - name: Upload fluent-package rpm
-        uses: actions/upload-artifact@master
+        uses: actions/upload-artifact@v4
         with:
           name: packages-${{ matrix.rake-job }}
           path: fluent-package/yum/repositories
@@ -112,7 +112,7 @@ jobs:
             test-lxc-image: images:amazonlinux/2023
     steps:
       - uses: actions/checkout@master
-      - uses: actions/download-artifact@master
+      - uses: actions/download-artifact@v4
         with:
           name: packages-${{ matrix.rake-job }}
       - uses: canonical/setup-lxd@v0.1.1
@@ -138,7 +138,7 @@ jobs:
             test-lxc-image: images:almalinux/9
     steps:
       - uses: actions/checkout@master
-      - uses: actions/download-artifact@master
+      - uses: actions/download-artifact@v4
         with:
           name: packages-${{ matrix.rake-job }}
       - uses: canonical/setup-lxd@v0.1.1

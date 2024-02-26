@@ -39,7 +39,7 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@master
-      - uses: actions/download-artifact@master
+      - uses: actions/download-artifact@v4
         with:
           name: packages-macos
       - name: Run test
