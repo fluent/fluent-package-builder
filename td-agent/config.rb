@@ -41,10 +41,10 @@ BUNDLED_RUBY_INSTALLER_X64_SHA256SUM = "6958f62524da23d5956851a4e4488a5184c605e9
 #BUNDLED_RUBY_INSTALLER_X64_VERSION = "3.1.4-1"
 #BUNDLED_RUBY_INSTALLER_X64_SHA256SUM = "6701088607ea4b587a31af76d75cb3fe9f7bcd75fc175cffcca22369ebb6331d"
 
-# Patch files are assumed to be for Ruby's source tree, then applied to
-# lib/ruby/x.y.0 in RubyInstaller. So that "-p2" options will be passed
-# to patch command.
+# Files under rubyinstaller/ are patches for RubyInstaller's binary package.
+# Other patches are for Ruby's source tree which can be shared with BUNDLED_RUBY_PATCHES.
 BUNDLED_RUBY_INSTALLER_PATCHES = [
   ["ruby-3.0/0001-ruby-resolv-Fix-confusion-of-received-response-messa.patch", ["= 2.7.3"]],
   ["ruby-3.0/0001-ruby-resolv-Fix-confusion-of-received-response-messa.patch", ["= 3.0.1"]],
+  ["rubyinstaller/0001-Avoid-crash-on-invalid-registry-key-while-detecting-.patch", [">= 2.7.8"]],
 ]
