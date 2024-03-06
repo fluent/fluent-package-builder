@@ -12,4 +12,57 @@ if ARGV.include?("--version")
   puts "fluent-package #{PACKAGE_VERSION} fluentd #{Fluent::VERSION} (#{FLUENTD_REVISION})"
   exit 0
 end
+
+class DuplicateInstanceChecker
+  def initialize
+    @pids = {}
+    collect_fluentd_pids
+  end
+
+  def collect_fluentd_pids
+    IO.popen(["/usr/bin/ps", "-e", "-o", "pid,ppid,cmd"]) do |_io|
+      _io.readlines.each do |line|
+        pid, ppid, cmd = line.split(' ', 3)
+        # skip current running process
+        if cmd and cmd.include?("fluentd") and not cmd.include?("--under-supervisor")
+          # does not record worker because it is enough to check supervisor only.
+          @pids[pid.to_i] = ppid.to_i
+        end
+      end
+    end
+  end
+
+  def running_fluentd?
+    IO.popen(["systemctl", "is-active", "fluentd"]) do |_io|
+      return true if _io.readlines.last.chomp == "active"
+    end
+    false
+  end
+
+  def under_systemd?(pid)
+    @pids[pid] == 1
+  end
+
+  def supervisor?(pid)
+    # if it is worker, parent pid is not recorded in @pids.
+    @pids[pid] and @pids[pid] != 1
+  end
+
+  def conflicted?
+    # check whether non-systemd, main process or not.
+    # e.g. directly spawned from shell
+    not under_systemd?(Process.pid) and supervisor?(Process.pid)
+  end
+end
+
+if /linux/ === RUBY_PLATFORM
+  checker = DuplicateInstanceChecker.new
+  if checker.conflicted?
+    unless ARGV.include?("--force-running-multiple-instance")
+      puts "Error: can't start duplicate Fluentd instance. Use --force-running-multiple-instance option explicitly."
+      exit 2
+    end
+  end
+  ARGV.delete("--force-running-multiple-instance")
+end
 load "<%= install_path %>/bin/fluentd"

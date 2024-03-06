@@ -66,7 +66,14 @@ test $(eval $env_vars && echo $FLUENT_SOCKET) = "/var/run/fluent/fluentd.sock"
 # Test: logs
 sleep 3
 test -e /var/log/fluent/fluentd.log
+cat /var/log/fluent/fluentd.log
 (! grep -q -e '\[warn\]' -e '\[error\]' -e '\[fatal\]' /var/log/fluent/fluentd.log)
+
+# Test: Guard duplicated instance
+(! sudo /usr/sbin/fluentd)
+(! sudo /usr/sbin/td-agent)
+(! sudo /usr/sbin/fluentd -c /etc/fluent/fluentd.conf)
+(! sudo /opt/fluent/bin/fluentd -c /etc/fluent/fluentd.conf)
 
 # Uninstall
 sudo $DNF remove -y fluent-package

@@ -107,6 +107,7 @@ Requires(pre): /usr/sbin/useradd
 %else
 Requires(pre): /usr/sbin/adduser
 %endif
+Requires: procps-ng
 
 %description
 The stable distribution of Fluentd, formerly known as td-agent.
