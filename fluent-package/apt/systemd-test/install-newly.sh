@@ -23,6 +23,14 @@ sleep 3
 test -e /var/log/fluent/fluentd.log
 (! grep -q -e '\[warn\]' -e '\[error\]' -e '\[fatal\]' /var/log/fluent/fluentd.log)
 
+# Test: Guard duplicated instance
+if [ "$1" = "local" ]; then
+    # FIXME: until v5.0.3 was released, skip v5 and lts.
+    (! sudo /usr/sbin/fluentd)
+    (! sudo /usr/sbin/fluentd -c /etc/fluent/fluentd.conf)
+    (! sudo /opt/fluent/bin/fluentd -c /etc/fluent/fluentd.conf)
+fi
+
 sudo apt remove -y fluent-package
 
 case ${code_name} in

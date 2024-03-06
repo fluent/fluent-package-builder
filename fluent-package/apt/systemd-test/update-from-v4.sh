@@ -79,6 +79,12 @@ sleep 3
 test -e /var/log/fluent/fluentd.log
 (! grep -e '\[error\]' -e '\[fatal\]' /var/log/fluent/fluentd.log)
 
+# Test: Guard duplicated instance
+(! sudo /usr/sbin/fluentd)
+(! sudo /usr/sbin/td-agent)
+(! sudo /usr/sbin/fluentd -c /etc/fluent/fluentd.conf)
+(! sudo /opt/fluent/bin/fluentd -c /etc/fluent/fluentd.conf)
+
 # Uninstall
 sudo apt remove -y fluent-package
 (! systemctl status --no-pager td-agent)

@@ -25,6 +25,7 @@ Pre-Depends: adduser
 Depends:
   ${misc:Depends},
   ${shlibs:Depends},
+  procps
 Description: All in one package of Fluentd
  Fluent Package is all in one package which contains Fluentd and
  related gem packages. This package was formerly known as
