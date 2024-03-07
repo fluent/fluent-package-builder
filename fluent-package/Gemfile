@@ -31,11 +31,19 @@ if ENV["INSTALL_GEM_FROM_LOCAL_REPO"]
   # into managed Gemfile.lock
   source FLUENTD_LOCAL_GEM_REPO do
     gem "fluentd"
+    # Bundle forked version of win32-service until
+    # https://github.com/chef/win32-service/pull/85 is merged.
+    # This workaround should be applied to fluent-package not to block starting
+    # fluentdwinsvc service on Windows. See
+    # https://github.com/fluent/fluent-package-builder/issues/618
+    # NOTE: platforms: does not work in source ... do block
+    gem "win32-service" if RUBY_PLATFORM =~ /mswin|mingw/
   end
 else
   # Lock to specific revision
   git_source(:github) {|repo_name| "https://github.com/#{repo_name}" }
   gem "fluentd", github: "fluent/fluentd", ref: FLUENTD_REVISION
+  gem "win32-service", github: "fluent-plugins-nursery/win32-service", branch: "fluent-package", platforms: [:mingw, :x64_mingw]
 end
 
 # plugin gems
@@ -81,7 +89,8 @@ gem "ffi-win32-extensions", "1.0.4", platforms: windows_platforms
 gem "nokogiri", "1.15.5", platforms: windows_platforms
 gem "win32-event", "0.6.3", platforms: windows_platforms
 gem "win32-ipc", "0.7.0", platforms: windows_platforms
-gem "win32-service", "2.3.2", platforms: windows_platforms
+# Use officially released version when PR was merged and released.
+#gem "win32-service", "2.3.2", platforms: windows_platforms
 gem "winevt_c", "0.10.1", platforms: windows_platforms
 gem "win32-eventlog", "0.6.7", platforms: windows_platforms
 gem "fluent-plugin-parser-winevt_xml", "0.2.6", platforms: windows_platforms
