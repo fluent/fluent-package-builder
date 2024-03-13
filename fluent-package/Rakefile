@@ -177,6 +177,7 @@ class DownloadTask
   attr_reader :file_jemalloc_source
   attr_reader :file_ruby_source, :file_ruby_installer_x64
   attr_reader :file_fluentd_archive
+  attr_reader :file_win32_service_archive
   attr_reader :files_ruby_gems
   attr_reader :file_openssl_source
 
@@ -199,6 +200,7 @@ class DownloadTask
     define_jemalloc_file
     define_ruby_files
     define_fluentd_archive
+    define_win32_service_archive if windows?
     define_gem_files
     define_openssl_file
 
@@ -210,7 +212,10 @@ class DownloadTask
       task :ruby => [@file_ruby_source, @file_ruby_installer_x64]
 
       desc "Clone fluentd repository and create a tarball"
-      task :fluentd => @file_fluentd_archive
+      task :fluentd => [@file_fluentd_archive]
+
+      desc "Clone win32-service repository and create a tarball"
+      task :win32_service => [@file_win32_service_archive]
 
       desc "Download ruby gems"
       task :ruby_gems => @files_ruby_gems
@@ -318,6 +323,21 @@ class DownloadTask
     end
   end
 
+  def define_win32_service_archive
+    @file_win32_service_archive = File.join(DOWNLOADS_DIR, "win32-service.tar.gz")
+    file @file_win32_service_archive do
+      ensure_directory(DOWNLOADS_DIR) do
+        dirname = "win32-service"
+        rm_rf(dirname) if File.exist?(dirname)
+        sh("git", "clone", "https://github.com/fluent-plugins-nursery/win32-service.git")
+        cd("win32-service") do
+          sh("git", "checkout", "fluent-package")
+        end
+        sh(*tar_command, "cvfz", "#{dirname}.tar.gz", dirname)
+      end
+    end
+  end
+
   def define_gem_files
     paths = []
     Dir.glob("#{DOWNLOADS_DIR}/*.gem") do |path|
@@ -407,7 +427,7 @@ class BuildTask
       end
 
       desc "Install ruby gems"
-      task :ruby_gems => [:"download:ruby_gems", :fluentd] do
+      task :ruby_gems => windows? ? [:"download:ruby_gems", :fluentd, :win32_service] : [:"download:ruby_gems", :fluentd] do
         gem_install("bundler", BUNDLER_VERSION)
 
         gem_home = ENV["GEM_HOME"]
@@ -435,6 +455,19 @@ class BuildTask
             sh("rake", "build")
             setup_local_gem_repo
             install_gemfiles
+          end
+        end
+      end
+
+      desc "Install win32-service"
+      task :win32_service => [:"download:win32_service"] do
+        cd(DOWNLOADS_DIR) do
+          tar_options = ["--no-same-owner", "--force-local"]
+          archive_path = @download_task.file_win32_service_archive
+          sh(*tar_command, "xvf", archive_path, *tar_options) unless File.exist?("win32-service")
+          cd("win32-service") do
+            sh("rake", "build")
+            setup_local_gem_repo
           end
         end
       end

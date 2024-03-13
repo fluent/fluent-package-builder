@@ -3,6 +3,8 @@ set :backend, :cmd
 set :os, :family => 'windows'
 require "bundler"
 require "win32/service"
+require "find"
+require "digest/md5"
 
 config_path = File.join(File.dirname(File.dirname(File.dirname(__FILE__))),
                         "fluent-package/config.rb")
@@ -32,5 +34,15 @@ end
 describe "win32-service" do
   it "fluentdwinsvc" do
     expect(Win32::Service.services.collect(&:service_name).include?('fluentdwinsvc')).to eq true
+  end
+
+  it "forked version" do
+    Find.find("c:/opt/fluent/lib/ruby/gems") do |f|
+      if f.end_with?("win32-service-2.3.2/lib/win32/daemon.rb")
+        expect(Digest::MD5.file(f).to_s).to eq "3cb1461c18ab2fd1e39d61c3169ac671".force_encoding("US-ASCII")
+      elsif f.end_with?("win32-service-2.3.2/lib/win32/windows/functions.rb")
+        expect(Digest::MD5.file(f).to_s).to eq "c40427a92dc1a7b6ba7808410535dd00".force_encoding("US-ASCII")
+      end
+    end
   end
 end

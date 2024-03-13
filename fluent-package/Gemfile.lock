@@ -1,4 +1,13 @@
 GIT
+  remote: https://github.com/fluent-plugins-nursery/win32-service
+  revision: cfcc2007b3843127329d6a7307a62a927a714327
+  branch: fluent-package
+  specs:
+    win32-service (2.3.2)
+      ffi
+      ffi-win32-extensions
+
+GIT
   remote: https://github.com/fluent/fluentd
   revision: d3cf2e0f95a0ad88b9897197db6c5152310f114f
   ref: d3cf2e0f95a0ad88b9897197db6c5152310f114f
@@ -257,9 +266,6 @@ GEM
       ffi
     win32-ipc (0.7.0)
       ffi
-    win32-service (2.3.2)
-      ffi
-      ffi-win32-extensions
     winevt_c (0.10.1)
     yajl-ruby (1.4.3)
     zip-zip (0.3)
@@ -333,7 +339,7 @@ DEPENDENCIES
   win32-event (= 0.6.3)
   win32-eventlog (= 0.6.7)
   win32-ipc (= 0.7.0)
-  win32-service (= 2.3.2)
+  win32-service!
   winevt_c (= 0.10.1)
   yajl-ruby (= 1.4.3)
 
