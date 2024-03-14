@@ -19,3 +19,13 @@ $exitcode = $LASTEXITCODE
 if ($exitcode -ne 0) {
     [Environment]::Exit($exitcode)
 }
+
+fluent-gem install --no-document fluent-plugin-concat
+mkdir -p tmp
+fluent-diagtool -t fluentd -o tmp
+$plugins = (Get-ChldItem -Path tmp -Recurse -Filter gem_local_list.output) | Get-Content)
+if ($plugins -ne "fluent-plugin-concat") {
+    Write-Host "Failed to list manually installed plugins: ${plugins}"
+    [Environment]::Exit(1)
+}
+

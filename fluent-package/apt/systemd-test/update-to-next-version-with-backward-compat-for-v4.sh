@@ -69,6 +69,11 @@ done
 test -h /usr/sbin/td-agent
 test -h /usr/sbin/td-agent-gem
 
+# Test: fluent-diagtool
+sudo fluent-gem install fluent-plugin-concat
+/opt/fluent/bin/fluent-diagtool -t fluentd -o /tmp
+test $(find /tmp/ -name gem_local_list.output | xargs cat) = "fluent-plugin-concat"
+
 # Test: No error logs
 # (v4 default config outputs 'warn' log, so we should check only 'error' and 'fatal' logs)
 sleep 3

@@ -43,6 +43,11 @@ sleep 3
 test -e /var/log/fluent/fluentd.log
 (! grep -q -e '\[warn\]' -e '\[error\]' -e '\[fatal\]' /var/log/fluent/fluentd.log)
 
+# Test: fluent-diagtool
+sudo fluent-gem install fluent-plugin-concat
+/opt/fluent/bin/fluent-diagtool -t fluentd -o /tmp
+test $(find /tmp/ -name gem_local_list.output | xargs cat) = "fluent-plugin-concat"
+
 sudo $DNF remove -y fluent-package
 sudo systemctl daemon-reload
 
@@ -54,3 +59,4 @@ getent group fluentd >/dev/null
 #   (Different from deb)
 
 (! systemctl status --no-pager fluentd)
+
