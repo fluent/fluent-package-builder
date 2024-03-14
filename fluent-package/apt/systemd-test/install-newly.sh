@@ -23,6 +23,11 @@ sleep 3
 test -e /var/log/fluent/fluentd.log
 (! grep -q -e '\[warn\]' -e '\[error\]' -e '\[fatal\]' /var/log/fluent/fluentd.log)
 
+# Test: fluent-diagtool
+sudo fluent-gem install fluent-plugin-concat
+/opt/fluent/bin/fluent-diagtool -t fluentd -o /tmp
+test $(find /tmp/ -name gem_local_list.output | xargs cat) = "fluent-plugin-concat"
+
 sudo apt remove -y fluent-package
 
 case ${code_name} in
@@ -43,3 +48,4 @@ esac
 test -h /etc/systemd/system/td-agent.service
 (! test -s /etc/systemd/system/td-agent.service)
 (! systemctl status fluentd)
+
