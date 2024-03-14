@@ -9,10 +9,10 @@ GIT
 
 GIT
   remote: https://github.com/fluent/fluentd
-  revision: d3cf2e0f95a0ad88b9897197db6c5152310f114f
-  ref: d3cf2e0f95a0ad88b9897197db6c5152310f114f
+  revision: 95d130aaa44fc09b14a4e9686ee8018253185fc5
+  ref: 95d130aaa44fc09b14a4e9686ee8018253185fc5
   specs:
-    fluentd (1.16.3)
+    fluentd (1.16.5)
       bundler
       certstore_c (~> 0.1.7)
       cool.io (>= 1.4.5, < 2.0.0)
@@ -79,6 +79,7 @@ GEM
       fiber-annotation
       fiber-local
     cool.io (1.8.0)
+    csv (3.3.0)
     digest-crc (0.6.5)
       rake (>= 12.0.0, < 14.0.0)
     digest-murmurhash (1.1.1)
@@ -110,10 +111,10 @@ GEM
     fileutils (1.7.2)
     fluent-config-regexp-type (1.0.0)
       fluentd (> 1.0.0, < 2)
-    fluent-diagtool (1.0.3)
+    fluent-diagtool (1.0.5)
       fileutils
       json
-    fluent-logger (0.9.0)
+    fluent-logger (0.9.1)
       msgpack (>= 1.0.0, < 2)
     fluent-plugin-calyptia-monitoring (0.1.3)
       fluent-plugin-metrics-cmetrics (>= 0.1.1)
@@ -141,9 +142,11 @@ GEM
       faraday_middleware-aws-sigv4 (~> 1.0.1)
       fluentd (>= 0.14.22)
       opensearch-ruby
-    fluent-plugin-parser-winevt_xml (0.2.6)
+    fluent-plugin-parser-winevt_xml (0.2.7)
+      base64 (~> 0.2)
+      csv (~> 3.2)
       fluentd (>= 0.14.12, < 2)
-      nokogiri (>= 1.12.5, < 1.16)
+      nokogiri (>= 1.12.5, < 1.17)
     fluent-plugin-prometheus (2.1.0)
       fluentd (>= 1.9.1, < 2)
       prometheus-client (>= 2.1.0)
@@ -184,7 +187,7 @@ GEM
     http_parser.rb (0.8.0)
     httpclient (2.8.3)
     jmespath (1.6.2)
-    json (2.6.3)
+    json (2.7.1)
     linux-utmpx (0.3.0)
       bindata (~> 2.4.8)
     ltsv (0.1.2)
@@ -192,7 +195,7 @@ GEM
     msgpack (1.7.2)
     multi_json (1.15.0)
     nio4r (2.6.1)
-    nokogiri (1.15.5)
+    nokogiri (1.16.2)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     oj (3.16.1)
@@ -254,9 +257,8 @@ GEM
     traces (0.11.1)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
-    tzinfo-data (1.2023.3)
+    tzinfo-data (1.2024.1)
       tzinfo (>= 1.0.0)
-    uri (0.12.2)
     webhdfs (0.10.2)
       addressable
     webrick (1.8.1)
@@ -286,21 +288,21 @@ DEPENDENCIES
   aws-sdk-s3 (= 1.129.0)
   aws-sdk-sqs (= 1.61.0)
   aws-sigv4 (= 1.6.0)
-  bundler (= 2.3.26)
+  bundler (= 2.3.27)
   cmetrics (= 0.3.3)
   cool.io (= 1.8.0)
   digest-murmurhash (= 1.1.1)
   elasticsearch (= 8.8.0)
   ffi (= 1.15.5)
   ffi-win32-extensions (= 1.0.4)
-  fluent-diagtool (= 1.0.3)
+  fluent-diagtool (= 1.0.5)
   fluent-plugin-calyptia-monitoring (= 0.1.3)
   fluent-plugin-elasticsearch (= 5.4.0)
   fluent-plugin-flowcounter-simple (= 0.1.0)
   fluent-plugin-kafka (= 0.19.2)
   fluent-plugin-metrics-cmetrics (= 0.1.2)
   fluent-plugin-opensearch (= 1.1.4)
-  fluent-plugin-parser-winevt_xml (= 0.2.6)
+  fluent-plugin-parser-winevt_xml (= 0.2.7)
   fluent-plugin-prometheus (= 2.1.0)
   fluent-plugin-prometheus_pushgateway (= 0.1.1)
   fluent-plugin-record-modifier (= 2.1.1)
@@ -319,7 +321,7 @@ DEPENDENCIES
   jmespath (= 1.6.2)
   mini_portile2 (= 2.8.2)
   msgpack (= 1.7.2)
-  nokogiri (= 1.15.5)
+  nokogiri (= 1.16.2)
   oj (= 3.16.1)
   opensearch-ruby (= 2.1.0)
   prometheus-client (= 2.1.0)
@@ -332,8 +334,7 @@ DEPENDENCIES
   td (= 0.17.1)
   td-client (= 1.0.8)
   tzinfo (= 2.0.6)
-  tzinfo-data (= 1.2023.3)
-  uri (~> 0.12.2)
+  tzinfo-data (= 1.2024.1)
   webhdfs (= 0.10.2)
   webrick (= 1.8.1)
   win32-event (= 0.6.3)
@@ -344,4 +345,4 @@ DEPENDENCIES
   yajl-ruby (= 1.4.3)
 
 BUNDLED WITH
-   2.3.26
+   2.3.27
