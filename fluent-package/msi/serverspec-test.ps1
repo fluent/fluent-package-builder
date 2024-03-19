@@ -20,6 +20,7 @@ if ($exitcode -ne 0) {
     [Environment]::Exit($exitcode)
 }
 
+$ENV:FLUENT_PACKAGE_TOPDIR="C:\\opt\\fluent"
 fluent-gem install --no-document fluent-plugin-concat
 fluent-diagtool -t fluentd -o $env:TEMP
 $plugins = (Get-ChildItem -Path $env:TEMP -Recurse -Filter gem_local_list.output) | Get-Content
