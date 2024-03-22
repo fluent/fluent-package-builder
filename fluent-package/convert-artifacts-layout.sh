@@ -39,7 +39,7 @@ case $1 in
 			 -exec cp {} $ARTIFACTS_DIR/5/debian/$d/pool/contrib/f/fluent-package \;
 		    if [ "$2" = "lts" ]; then
 			mkdir -p $ARTIFACTS_DIR/5/debian/$d/pool/contrib/f/fluent-lts-apt-source
-			find $REPOSITORY_PATH/debian/pool/$d -name 'fluent*-apt-source*.deb' -not -name '*dbgsym*' \
+			find $REPOSITORY_PATH/debian/pool/$d -name 'fluent-lts-apt-source*.deb' -not -name '*dbgsym*' \
 			     -exec cp {} $ARTIFACTS_DIR/5/debian/$d/pool/contrib/f/fluent-lts-apt-source \;
 		    else
 			mkdir -p $ARTIFACTS_DIR/5/debian/$d/pool/contrib/f/fluent-apt-source
@@ -57,7 +57,7 @@ case $1 in
 			 -exec cp {} $ARTIFACTS_DIR/5/ubuntu/$d/pool/contrib/f/fluent-package \;
 		    if [ "$2" = "lts" ]; then
 			mkdir -p $ARTIFACTS_DIR/5/ubuntu/$d/pool/contrib/f/fluent-lts-apt-source
-			find $REPOSITORY_PATH/ubuntu/pool/$d -name 'fluent*-apt-source*.deb' \
+			find $REPOSITORY_PATH/ubuntu/pool/$d -name 'fluent-lts-apt-source*.deb' \
 			     -exec cp {} $ARTIFACTS_DIR/5/ubuntu/$d/pool/contrib/f/fluent-lts-apt-source \;
 		    else
 			mkdir -p $ARTIFACTS_DIR/5/ubuntu/$d/pool/contrib/f/fluent-apt-source
