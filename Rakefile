@@ -20,7 +20,8 @@ PACKAGES = [
 ]
 
 APT_SOURCE_PACKAGES = [
-  "fluent-apt-source"
+  "fluent-apt-source",
+  "fluent-lts-apt-source",
 ]
 
 ALL_PACKAGE = [
