@@ -109,6 +109,13 @@ jobs:
           - Debian GNU/Linux bookworm amd64
           - Ubuntu Focal amd64
           - Ubuntu Jammy amd64
+        test-file:
+          - "update-from-v4.sh"
+          - "update-to-next-version-with-backward-compat-for-v4.sh"
+          - "downgrade-to-v4.sh"
+          - "install-newly.sh local"
+          - "install-newly.sh v5"
+          - "install-newly.sh lts"
         include:
           - label: Debian GNU/Linux bullseye amd64
             rake-job: debian-bullseye
@@ -122,6 +129,13 @@ jobs:
           - label: Ubuntu Jammy amd64
             rake-job: ubuntu-jammy
             test-lxc-image: ubuntu:22.04
+        exclude:
+          - label: Debian GNU/Linux bookworm amd64
+            test-file: update-from-v4.sh
+          - label: Debian GNU/Linux bookworm amd64
+            test-file: update-to-next-version-with-backward-compat-for-v4.sh
+          - label: Debian GNU/Linux bookworm amd64
+            test-file: downgrade-to-v4.sh
     steps:
       - uses: actions/checkout@master
       - uses: actions/download-artifact@v4
@@ -131,5 +145,5 @@ jobs:
         with:
           name: packages-apt-source-${{ matrix.rake-job }}
       - uses: canonical/setup-lxd@v0.1.1
-      - name: Run Test 
-        run: fluent-package/apt/systemd-test/test.sh ${{ matrix.test-lxc-image }}
+      - name: Run Test  ${{ matrix.test-file }} on ${{ matrix.test-lxc-image }}
+        run: fluent-package/apt/systemd-test/test.sh ${{ matrix.test-lxc-image }} ${{ matrix.test-file }}
