@@ -43,7 +43,9 @@ case $1 in
 			     -exec cp {} $ARTIFACTS_DIR/5/debian/$d/pool/contrib/f/fluent-lts-apt-source \;
 		    else
 			mkdir -p $ARTIFACTS_DIR/5/debian/$d/pool/contrib/f/fluent-apt-source
-			find $REPOSITORY_PATH/debian/pool/$d -name 'fluent*-apt-source*.deb' -not -name '*dbgsym*' \
+			find $REPOSITORY_PATH/debian/pool/$d -name 'fluent*-apt-source*.deb' \
+			     -not -name '*dbgsym*' \
+			     -not -name 'fluent-lts*' \
 			     -exec cp {} $ARTIFACTS_DIR/5/debian/$d/pool/contrib/f/fluent-apt-source \;
 		    fi
 		    ;;
@@ -62,6 +64,7 @@ case $1 in
 		    else
 			mkdir -p $ARTIFACTS_DIR/5/ubuntu/$d/pool/contrib/f/fluent-apt-source
 			find $REPOSITORY_PATH/ubuntu/pool/$d -name 'fluent*-apt-source*.deb' \
+			     -not -name 'fluent-lts*' \
 			     -exec cp {} $ARTIFACTS_DIR/5/ubuntu/$d/pool/contrib/f/fluent-apt-source \;
 		    fi
 		    ;;
