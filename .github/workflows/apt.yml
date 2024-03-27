@@ -16,6 +16,7 @@ jobs:
           - Debian GNU/Linux bookworm amd64
           - Ubuntu Focal amd64
           - Ubuntu Jammy amd64
+          - Ubuntu Noble amd64
         include:
           - label: Debian GNU/Linux bullseye amd64
             rake-job: debian-bullseye
@@ -29,6 +30,9 @@ jobs:
           - label: Ubuntu Jammy amd64
             rake-job: ubuntu-jammy
             test-docker-image: ubuntu:jammy
+          - label: Ubuntu Noble amd64
+            rake-job: ubuntu-noble
+            test-docker-image: ubuntu:noble
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
@@ -109,6 +113,7 @@ jobs:
           - Debian GNU/Linux bookworm amd64
           - Ubuntu Focal amd64
           - Ubuntu Jammy amd64
+          - Ubuntu Noble amd64
         test-file:
           - "update-from-v4.sh"
           - "update-to-next-version-with-backward-compat-for-v4.sh"
@@ -129,6 +134,9 @@ jobs:
           - label: Ubuntu Jammy amd64
             rake-job: ubuntu-jammy
             test-lxc-image: ubuntu:22.04
+          - label: Ubuntu Noble amd64
+            rake-job: ubuntu-noble
+            test-lxc-image: ubuntu:24.04
         exclude:
           - label: Debian GNU/Linux bookworm amd64
             test-file: update-from-v4.sh

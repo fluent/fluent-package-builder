@@ -49,7 +49,7 @@ case $1 in
 			     -exec cp {} $ARTIFACTS_DIR/5/debian/$d/pool/contrib/f/fluent-apt-source \;
 		    fi
 		    ;;
-		focal|jammy)
+		focal|jammy|noble)
 		    # e.g. mapping ubuntu/pool/.../main/t/td-agent/ => 5/ubuntu/.../pool/contrib/t/td-agent
 		    #      mapping ubuntu/pool/.../main/f/fluent-package/ => 5/ubuntu/.../pool/contrib/f/fluent-package
 		    mkdir -p $ARTIFACTS_DIR/5/ubuntu/$d/pool/contrib/f/fluent-package
