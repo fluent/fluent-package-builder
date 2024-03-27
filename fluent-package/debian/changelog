@@ -1,3 +1,9 @@
+fluent-package (5.0.3-1) unstable; urgency=medium
+
+  * New upstream release.
+
+ -- Kentaro Hayashi <kenhys@xdump.org>  Fri, 29 Mar 2024 18:50:33 +0900
+
 fluent-package (5.0.2-1) unstable; urgency=medium
 
   * New upstream release.

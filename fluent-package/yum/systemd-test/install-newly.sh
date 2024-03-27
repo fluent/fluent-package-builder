@@ -43,6 +43,16 @@ sleep 3
 test -e /var/log/fluent/fluentd.log
 (! grep -q -e '\[warn\]' -e '\[error\]' -e '\[fatal\]' /var/log/fluent/fluentd.log)
 
+# Test: fluent-diagtool
+if [ $1 = "local" ]; then
+    # Test v5 and lts too after v5.0.3 has been released.
+    sudo fluent-gem install fluent-plugin-concat
+    # v5.0.2 or older version doesn't depends on missing tar explicitly
+    sudo $DNF install -y tar findutils
+    sudo /opt/fluent/bin/fluent-diagtool -t fluentd -o /tmp
+    test $(find /tmp/ -name gem_local_list.output | xargs cat) = "fluent-plugin-concat"
+fi
+
 sudo $DNF remove -y fluent-package
 sudo systemctl daemon-reload
 
@@ -54,3 +64,4 @@ getent group fluentd >/dev/null
 #   (Different from deb)
 
 (! systemctl status --no-pager fluentd)
+
