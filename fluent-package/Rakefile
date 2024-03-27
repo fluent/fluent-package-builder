@@ -1326,6 +1326,7 @@ EOS
       "debian-bookworm",
       "ubuntu-focal",
       "ubuntu-jammy",
+      "ubuntu-noble",
     ]
   end
 
