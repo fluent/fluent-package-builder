@@ -7,6 +7,12 @@ apt install -V -y lsb-release
 
 . $(dirname $0)/commonvar.sh
 
+if [ -z "$(apt-cache show piuparts 2>/dev/null)" ]; then
+	# No piuparts package for noble and oracular. See https://packages.ubuntu.com/search?suite=noble&searchon=names&keywords=piuparts
+	echo "As ${code_name} does not support piuparts, so piuparts test for ${code_name} is disabled"
+	exit 0
+fi
+
 find ${repositories_dir}
 DEBIAN_FRONTEND=noninteractive apt install -V -y piuparts mount gnupg curl eatmydata
 gpg_command=gpg
