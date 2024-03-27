@@ -31,7 +31,7 @@ test $(find /tmp/ -name gem_local_list.output | xargs cat) = "fluent-plugin-conc
 sudo apt remove -y fluent-package
 
 case ${code_name} in
-  bookworm)
+  bookworm|noble)
     # no dead fluentd.service symlink in /etc/systemd/system
     (! test -h /etc/systemd/system/fluentd.service)
     test -h /etc/systemd/system/multi-user.target.wants/fluentd.service

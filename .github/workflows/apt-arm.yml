@@ -12,6 +12,7 @@ jobs:
           - Debian GNU/Linux bookworm arm64
           - Ubuntu Focal arm64
           - Ubuntu Jammy arm64
+          - Ubuntu Noble arm64
         include:
           - label: Debian GNU/Linux bullseye arm64
             rake-job: debian-bullseye
@@ -27,6 +28,10 @@ jobs:
             rake-job: ubuntu-jammy
             rake-options: LINTIAN=no
             test-docker-image: arm64v8/ubuntu:jammy
+          - label: Ubuntu Noble arm64
+            rake-job: ubuntu-noble
+            rake-options: LINTIAN=no
+            test-docker-image: arm64v8/ubuntu:noble
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
