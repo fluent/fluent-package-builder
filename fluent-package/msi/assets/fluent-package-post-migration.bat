@@ -1,7 +1,17 @@
 @echo on
 title Fluent-package post migration script
 
-if exist "%~dp0..\..\td-agent" (
+if not exist "%~dp0..\..\td-agent" (
+  exit
+)
+
+@rem Make sure that this migration process has never been executed, and prevent repeated execution.
+@rem Check if \opt\td-agent\etc\td-agent\ exists and it is a symlink.
+dir /AL /B "%~dp0..\..\td-agent\etc" | findstr /X td-agent
+if %ERRORLEVEL% equ 0 (
+  exit
+)
+
   setlocal enabledelayedexpansion
   sc query state=inactive | findstr fluentdwinsvc
   if !ERRORLEVEL! == 1 (
@@ -48,4 +58,3 @@ if exist "%~dp0..\..\td-agent" (
   )
   echo "Create symlink c:\opt\td-agent\etc\td-agent to c:\opt\fluent\etc\fluent"
   mklink /D %~dp0..\..\td-agent\etc\td-agent %~dp0..\..\fluent\etc\fluent
-)
