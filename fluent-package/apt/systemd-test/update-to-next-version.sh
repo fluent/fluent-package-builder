@@ -39,6 +39,11 @@ test $(eval $env_vars && echo $FLUENT_PACKAGE_LOG_FILE) = "/var/log/fluent/fluen
 test $(eval $env_vars && echo $FLUENT_PLUGIN) = "/etc/fluent/plugin"
 test $(eval $env_vars && echo $FLUENT_SOCKET) = "/var/run/fluent/fluentd.sock"
 
+# Test: fluent-diagtool
+sudo fluent-gem install fluent-plugin-concat
+/opt/fluent/bin/fluent-diagtool -t fluentd -o /tmp
+test $(find /tmp/ -name gem_local_list.output | xargs cat) = "fluent-plugin-concat"
+
 # Test: logs
 sleep 3
 test -e /var/log/fluent/fluentd.log

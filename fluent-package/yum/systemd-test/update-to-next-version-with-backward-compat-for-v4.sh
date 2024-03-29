@@ -110,6 +110,11 @@ sleep 3
 test -e /var/log/fluent/fluentd.log
 (! grep -e '\[error\]' -e '\[fatal\]' /var/log/fluent/fluentd.log)
 
+# Test: fluent-diagtool
+sudo fluent-gem install fluent-plugin-concat
+sudo /opt/fluent/bin/fluent-diagtool -t fluentd -o /tmp
+test $(find /tmp/ -name gem_local_list.output | xargs cat) = "fluent-plugin-concat"
+
 # Uninstall
 sudo $DNF remove -y fluent-package
 (! systemctl status --no-pager td-agent)

@@ -17,13 +17,10 @@ gem "serverengine", '2.3.2'
 gem "msgpack", "1.7.2"
 gem "oj", "3.16.1"
 gem "tzinfo", "2.0.6"
-gem "tzinfo-data", "1.2023.3"
+gem "tzinfo-data", "1.2024.1"
 gem "async", "1.31.0"
 gem "async-http", "0.61.0"
 gem "webrick", "1.8.1"
-
-# CVE-2023-36617: should be removed after we update Ruby to 3.2.3 or later
-gem "uri", "~> 0.12.2"
 
 if ENV["INSTALL_GEM_FROM_LOCAL_REPO"]
   # During build process, pre-built fluentd gem will be installed
@@ -66,7 +63,7 @@ gem "aws-sigv4", "1.6.0"
 gem "aws-sdk-s3", "1.129.0"
 gem "fluent-plugin-s3", "1.7.2"
 gem "httpclient", "2.8.3"
-gem "fluent-diagtool", "1.0.3"
+gem "fluent-diagtool", "1.0.5"
 gem "td", "0.17.1"
 gem "td-client", "1.0.8"
 gem "fluent-plugin-td", "1.2.0"
@@ -86,14 +83,14 @@ gem "fluent-plugin-opensearch", "1.1.4"
 windows_platforms = [:mingw, :x64_mingw] # :mswin
 gem "ffi", "1.15.5", platforms: windows_platforms
 gem "ffi-win32-extensions", "1.0.4", platforms: windows_platforms
-gem "nokogiri", "1.15.5", platforms: windows_platforms
+gem "nokogiri", "1.16.2", platforms: windows_platforms
 gem "win32-event", "0.6.3", platforms: windows_platforms
 gem "win32-ipc", "0.7.0", platforms: windows_platforms
 # Use officially released version when PR was merged and released.
 #gem "win32-service", "2.3.2", platforms: windows_platforms
 gem "winevt_c", "0.10.1", platforms: windows_platforms
 gem "win32-eventlog", "0.6.7", platforms: windows_platforms
-gem "fluent-plugin-parser-winevt_xml", "0.2.6", platforms: windows_platforms
+gem "fluent-plugin-parser-winevt_xml", "0.2.7", platforms: windows_platforms
 gem "fluent-plugin-windows-eventlog", "0.8.3", platforms: windows_platforms
 gem "fluent-plugin-windows-exporter", "1.0.0", platforms: windows_platforms
 

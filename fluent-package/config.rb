@@ -1,5 +1,5 @@
 PACKAGE_NAME = "fluent-package"
-PACKAGE_VERSION = "5.0.2"
+PACKAGE_VERSION = "5.0.3"
 
 # Keep internal path (/opt/td-agent) for package name migration
 SERVICE_NAME = "fluentd"
@@ -7,7 +7,7 @@ COMPAT_SERVICE_NAME = "td-agent"
 PACKAGE_DIR = "fluent"
 COMPAT_PACKAGE_DIR = COMPAT_SERVICE_NAME
 
-FLUENTD_REVISION = 'd3cf2e0f95a0ad88b9897197db6c5152310f114f' # v1.16.3
+FLUENTD_REVISION = '95d130aaa44fc09b14a4e9686ee8018253185fc5' # v1.16.5
 FLUENTD_LOCAL_GEM_REPO = "file://" + File.expand_path(File.join(__dir__, "local_gem_repo"))
 
 # https://github.com/jemalloc/jemalloc/releases
@@ -20,7 +20,7 @@ JEMALLOC_VERSION = "3.6.0"
 OPENSSL_FOR_MACOS_VERSION = "3.0.8"
 OPENSSL_FOR_MACOS_SHA256SUM = "6c13d2bf38fdf31eac3ce2a347073673f5d63263398f1f69d0df4a41253e4b3e"
 
-BUNDLER_VERSION= "2.3.26"
+BUNDLER_VERSION= "2.3.27"
 
 # https://www.ruby-lang.org/en/downloads/ (tar.gz)
 BUNDLED_RUBY_VERSION = "3.2.3"

@@ -107,6 +107,8 @@ Requires(pre): /usr/sbin/useradd
 %else
 Requires(pre): /usr/sbin/adduser
 %endif
+# for fluent-diagtool
+Requires: tar
 
 %description
 The stable distribution of Fluentd, formerly known as td-agent.
@@ -369,6 +371,9 @@ fi
 # NOTE: %{_tmpfilesdir} is available since CentOS 7
 %attr(0755,fluentd,fluentd) %dir /tmp/@PACKAGE_DIR@
 %changelog
+* Fri Mar 29 2024 Kentaro Hayashi <hayashi@clear-code.com> - 5.0.3-1
+- New upstream release.
+
 * Wed Nov 29 2023 Kentaro Hayashi <hayashi@clear-code.com> - 5.0.2-1
 - New upstream release.
 
