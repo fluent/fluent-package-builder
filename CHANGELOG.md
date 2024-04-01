@@ -19,6 +19,9 @@ About the past changelog entries, see [old CHANGELOG](CHANGELOG-v4.md) instead.
 * Update fluent-diagtool to v1.0.5
   * Supports to collect list of plugins on Windows.
   * Fixed not to raise an exception when sysctl is missing on Linux.
+* msi: changed to stop running migration process on every update (#641)
+  In the previous versions, this will copy the old `td-agent.conf` file to `fluentd.conf` again.
+  This results in the loss of the current config.
 
 ### Core component
 
