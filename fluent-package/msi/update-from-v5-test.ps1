@@ -47,7 +47,7 @@ $outputFiles = Get-ChildItem "C:\\opt\\td-agent\\output"
 Start-Sleep 5
 $outputFilesAfterSleep = Get-ChildItem "C:\\opt\\td-agent\\output"
 if ($outputFilesAfterSleep.Count -le $outputFiles.Count) {
-    Write-Error "The previous config does not work. Output file num: ${$outputFiles.Count} to ${$outputFilesAfterSleep.Count}."
+    Write-Error ("The previous config does not work. Output file num: {0} to {1}." -f $outputFiles.Count, $outputFilesAfterSleep.Count)
 }
 
 # TODO: Add tests here when it becomes able to take over the fluentdopt and autostart configuration.
