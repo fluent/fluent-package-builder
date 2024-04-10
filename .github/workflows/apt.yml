@@ -88,6 +88,15 @@ jobs:
           --volume ${PWD}:/fluentd:ro \
           ${{ matrix.test-docker-image }} \
           /fluentd/fluent-package/apt/serverspec-test.sh
+      - name: Confluent Test
+        run: |
+          mkdir -p .bundle
+          docker run \
+          --rm \
+          --tty \
+          --volume ${PWD}:/fluentd:ro \
+          ${{ matrix.test-docker-image }} \
+          /fluentd/fluent-package/apt/confluent-test.sh
       - name: Binstubs Test
         run: |
           mkdir -p .bundle

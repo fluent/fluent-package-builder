@@ -75,5 +75,10 @@ if ENV["INSTALLATION_TEST"]
     RSpec::Core::RakeTask.new(:windows)  do |t|
       t.pattern = "serverspec/windows/*.rb"
     end
+
+    desc "Run serverspec for kafka"
+    RSpec::Core::RakeTask.new(:kafka)  do |t|
+      t.pattern = "serverspec/kafka/*.rb"
+    end
   end
 end
