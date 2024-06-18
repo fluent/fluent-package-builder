@@ -23,8 +23,8 @@ OPENSSL_FOR_MACOS_SHA256SUM = "6c13d2bf38fdf31eac3ce2a347073673f5d63263398f1f69d
 BUNDLER_VERSION= "2.3.27"
 
 # https://www.ruby-lang.org/en/downloads/ (tar.gz)
-BUNDLED_RUBY_VERSION = "3.2.3"
-BUNDLED_RUBY_SOURCE_SHA256SUM = "af7f1757d9ddb630345988139211f1fd570ff5ba830def1cc7c468ae9b65c9ba"
+BUNDLED_RUBY_VERSION = "3.2.4"
+BUNDLED_RUBY_SOURCE_SHA256SUM = "c72b3c5c30482dca18b0f868c9075f3f47d8168eaf626d4e682ce5b59c858692"
 
 BUNDLED_RUBY_PATCHES = [
   # An example entry:
@@ -32,11 +32,10 @@ BUNDLED_RUBY_PATCHES = [
 ]
 
 # https://rubyinstaller.org/downloads/ (7-ZIP ARCHIVES)
-BUNDLED_RUBY_INSTALLER_X64_VERSION = "3.2.3-1"
-BUNDLED_RUBY_INSTALLER_X64_SHA256SUM = "cf106d718499125a55dff82daee40e7744ed224694c96036765b84a3ac4f654c"
+BUNDLED_RUBY_INSTALLER_X64_VERSION = "3.2.4-1"
+BUNDLED_RUBY_INSTALLER_X64_SHA256SUM = "20f4c87fea871cadb3286da6c46cd018c12b9d444f0c40b3332b3f2939ce31b9"
 
 # Files under rubyinstaller/ are patches for RubyInstaller's binary package.
 # Other patches for Ruby's source tree which can be shared with BUNDLED_RUBY_PATCHES.
 BUNDLED_RUBY_INSTALLER_PATCHES = [
-  ["rubyinstaller/0001-Avoid-crash-on-invalid-registry-key-while-detecting-.patch", [">= 0"]],
 ]
