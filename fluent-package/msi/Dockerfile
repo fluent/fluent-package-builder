@@ -31,7 +31,7 @@ RUN \
   choco install -y git wixtoolset 7zip && \
   choco install -y cmake --installargs 'ADD_CMAKE_TO_PATH=System' && \
   choco install -y msys2 --params /NoUpdate --version=20230718.0.0 && \
-  choco install ruby -y --version=3.1.3.1 && \
+  choco install ruby -y --version=3.2.4.1 && \
   refreshenv && \
   ridk install 3 && \
   gem install --no-document --force bundler builder
