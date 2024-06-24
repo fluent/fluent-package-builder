@@ -27,7 +27,7 @@ case $1 in
     apt|deb)
 	REPOSITORY_TYPE=apt
 	REPOSITORY_PATH=$FLUENT_PACKAGE_DIR/$REPOSITORY_TYPE/repositories
-	for d in bullseye bookworm focal jammy; do
+	for d in bullseye bookworm focal jammy noble; do
 	    case $d in
 		bullseye|bookworm)
 		    # e.g. mapping debian/pool/buster/main/t/td-agent/ => 5/debian/buster/pool/contrib/t/td-agent

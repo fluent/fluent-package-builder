@@ -43,7 +43,7 @@ fi
 VERSION=$1
 
 if [ -z "$DEB_TARGETS" ]; then
-    DEB_TARGETS="debian:bullseye debian:bookworm ubuntu:focal ubuntu:jammy"
+    DEB_TARGETS="debian:bullseye debian:bookworm ubuntu:focal ubuntu:jammy ubuntu:noble"
 fi
 if [ -z "$RPM_TARGETS" ]; then
     RPM_TARGETS="centos:7 almalinux:8 rockylinux:9 amazonlinux:2 amazonlinux:2023"

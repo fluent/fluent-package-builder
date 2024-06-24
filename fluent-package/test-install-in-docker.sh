@@ -84,7 +84,7 @@ case $ID in
     debian|ubuntu)
 	CODENAME=$(cat /etc/os-release | grep VERSION_CODENAME | cut -d'=' -f2)
 	case $CODENAME in
-	    bullseye|bookworm|focal|jammy)
+	    bullseye|bookworm|focal|jammy|noble)
 		setup_apt_user
 		case $REPO in
 		    exp/5)
