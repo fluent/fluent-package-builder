@@ -12,4 +12,38 @@ if ARGV.include?("--version")
   puts "fluent-package #{PACKAGE_VERSION} fluentd #{Fluent::VERSION} (#{FLUENTD_REVISION})"
   exit 0
 end
+
+class DuplicateInstanceChecker
+  def running_fluentd?
+    `systemctl is-active fluentd`
+    return true if $?.exitstatus == 0
+    false
+  end
+
+  def prevent_duplicate_launch?
+    unless running_fluentd?
+      return false
+    end
+    true
+  end
+end
+
+if RUBY_PLATFORM =~ /linux/
+  checker = DuplicateInstanceChecker.new
+  if checker.prevent_duplicate_launch?
+    unless ARGV.include?("-c") or ARGV.include?("--config") or ARGV.include?("--dry-run")
+      puts("Error: Can't start duplicate Fluentd instance with the default config.")
+      if ARGV.include?("-v")
+	puts("To take the version, please use '--version', not '-v' ('--verbose').")
+      end
+      puts <<EOS
+To start Fluentd, please do one of the following:
+(Caution: Please be careful not to start multiple instances with the same config.)
+- Stop the Fluentd service 'fluentd'.
+- Specify the config path explicitly by '-c' ('--config').
+EOS
+      exit 2
+    end
+  end
+end
 load "<%= install_path %>/bin/fluentd"

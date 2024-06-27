@@ -28,6 +28,14 @@ sudo fluent-gem install fluent-plugin-concat
 /opt/fluent/bin/fluent-diagtool -t fluentd -o /tmp
 test $(find /tmp/ -name gem_local_list.output | xargs cat) = "fluent-plugin-concat"
 
+# Test: Guard duplicated instance
+if [ "$1" = "local" ]; then
+    # FIXME: until guard feature was released, skip v5 and lts.
+    (! sudo /usr/sbin/fluentd)
+    (! sudo /usr/sbin/fluentd -v)
+    sudo /usr/sbin/fluentd --dry-run
+fi
+
 sudo apt remove -y fluent-package
 
 case ${code_name} in

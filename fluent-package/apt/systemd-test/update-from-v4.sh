@@ -84,6 +84,12 @@ sudo fluent-gem install fluent-plugin-concat
 /opt/fluent/bin/fluent-diagtool -t fluentd -o /tmp
 test $(find /tmp/ -name gem_local_list.output | xargs cat) = "fluent-plugin-concat"
 
+# Test: Guard duplicated instance
+(! sudo /usr/sbin/fluentd)
+(! sudo /usr/sbin/td-agent)
+(! sudo /usr/sbin/fluentd -v)
+sudo /usr/sbin/fluentd --dry-run
+
 # Uninstall
 sudo apt remove -y fluent-package
 (! systemctl status --no-pager td-agent)
