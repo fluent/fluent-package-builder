@@ -41,6 +41,41 @@ Get-ChildItem "C:\\opt\\fluent\\*.log" | %{
     }
 }
 
+# Test: fluentd.bat
+Start-Service fluentdwinsvc
+
+$proc = Start-Process "C:\\opt\\fluent\\fluentd.bat" -Wait -NoNewWindow -PassThru
+if ($proc.ExitCode -ne 2) {
+    Write-Host "Failed to abort when already fluentdwinsvc service is running"
+    [Environment]::Exit(1)
+}
+Write-Host "Succeeded to abort when already fluentdwinsvc service is running"
+
+$proc = Start-Process "C:\\opt\\fluent\\fluentd.bat" -ArgumentList "--version" -Wait -NoNewWindow -PassThru
+if ($proc.ExitCode -ne 0) {
+    Write-Host "Failed to take the version"
+    [Environment]::Exit(1)
+}
+Write-Host "Succeeded to take the version"
+
+$proc = Start-Process "C:\\opt\\fluent\\fluentd.bat" -ArgumentList "--dry-run" -Wait -NoNewWindow -PassThru
+if ($proc.ExitCode -ne 0) {
+    Write-Host "Failed to dry-run"
+    [Environment]::Exit(1)
+}
+Write-Host "Succeeded to dry-run"
+
+$fluentdopt = "-c 'C:\opt\fluent\etc\fluent\fluentd.conf' -o 'C:\opt\fluent\fluentd.log' -v"
+$proc = Start-Process "C:\\opt\\fluent\\fluentd.bat" -ArgumentList "--reg-winsvc-fluentdopt ""$fluentdopt""" -Wait -NoNewWindow -PassThru
+$fluentdoptResult = Get-ItemPropertyValue -Path HKLM:\SYSTEM\CurrentControlSet\Services\fluentdwinsvc -Name fluentdopt
+if ($proc.ExitCode -ne 0 -or $fluentdopt -ne $fluentdoptResult) {
+    Write-Host "Failed to register fluentdopt"
+    [Environment]::Exit(1)
+}
+Write-Host "Succeeded to register fluentdopt"
+
+# Test: Uninstall
+Stop-Service fluentdwinsvc
 $msi -Match "fluent-package-([0-9\.]+)-.+\.msi"
 $name = "Fluent Package v" + $matches[1]
 Write-Host "Uninstalling ...${name}"
