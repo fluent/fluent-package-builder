@@ -32,8 +32,8 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    addressable (2.8.5)
-      public_suffix (>= 2.0.2, < 6.0)
+    addressable (2.8.7)
+      public_suffix (>= 2.0.2, < 7.0)
     async (1.31.0)
       console (~> 1.10)
       nio4r (~> 2.3)
@@ -46,7 +46,7 @@ GEM
       protocol-http1 (~> 0.16.0)
       protocol-http2 (~> 0.15.0)
       traces (>= 0.10.0)
-    async-io (1.38.0)
+    async-io (1.38.1)
       async
     async-pool (0.4.0)
       async (>= 1.25)
@@ -74,16 +74,17 @@ GEM
     certstore_c (0.1.7)
     cmetrics (0.3.3)
       mini_portile2 (~> 2.7)
-    concurrent-ruby (1.2.2)
-    console (1.23.2)
+    concurrent-ruby (1.2.3)
+    console (1.23.7)
       fiber-annotation
       fiber-local
+      json
     cool.io (1.8.0)
     csv (3.3.0)
     digest-crc (0.6.5)
       rake (>= 12.0.0, < 14.0.0)
     digest-murmurhash (1.1.1)
-    elastic-transport (8.3.0)
+    elastic-transport (8.3.2)
       faraday (< 3)
       multi_json
     elasticsearch (8.8.0)
@@ -187,7 +188,7 @@ GEM
     http_parser.rb (0.8.0)
     httpclient (2.8.3)
     jmespath (1.6.2)
-    json (2.7.1)
+    json (2.7.2)
     linux-utmpx (0.3.0)
       bindata (~> 2.4.8)
     ltsv (0.1.2)
@@ -209,21 +210,22 @@ GEM
       multi_json
     parallel (1.20.1)
     prometheus-client (2.1.0)
-    protocol-hpack (1.4.2)
+    protocol-hpack (1.4.3)
     protocol-http (0.25.0)
-    protocol-http1 (0.16.0)
+    protocol-http1 (0.16.1)
       protocol-http (~> 0.22)
     protocol-http2 (0.15.1)
       protocol-hpack (~> 1.4)
       protocol-http (~> 0.18)
-    public_suffix (5.0.4)
+    public_suffix (5.0.5)
     racc (1.7.3)
     rake (13.1.0)
     rdkafka (0.12.0)
       ffi (~> 1.15)
       mini_portile2 (~> 2.6)
       rake (> 12)
-    rexml (3.2.6)
+    rexml (3.2.9)
+      strscan
     ruby-kafka (1.5.0)
       digest-crc
     ruby-progressbar (1.13.0)
@@ -233,6 +235,7 @@ GEM
       sigdump (~> 0.2.2)
     sigdump (0.2.5)
     strptime (0.2.5)
+    strscan (1.0.3)
     systemd-journal (1.4.2)
       ffi (~> 1.9)
     td (0.17.1)
