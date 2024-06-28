@@ -8,6 +8,7 @@ on:
 jobs:
   build:
     name: Build
+    timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
@@ -114,6 +115,7 @@ jobs:
     name: Test
     needs: build
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
