@@ -8,6 +8,7 @@ on:
 jobs:
   build:
     name: Build
+    timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
@@ -93,6 +94,7 @@ jobs:
     name: Test (CGroup V1)
     needs: build
     runs-on: ubuntu-20.04
+    timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
@@ -141,6 +143,7 @@ jobs:
     name: Test (CGroup V2)
     needs: build
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:

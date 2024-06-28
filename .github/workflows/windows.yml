@@ -8,6 +8,7 @@ on:
 jobs:
   build:
     name: Build
+    timeout-minutes: 90
     strategy:
       fail-fast: false
     runs-on: windows-2019
