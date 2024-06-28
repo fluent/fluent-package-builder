@@ -19,7 +19,7 @@ if RUBY_PLATFORM =~ /linux/
     unless ARGV.include?("-c") or ARGV.include?("--config") or ARGV.include?("--dry-run")
       puts("Error: Can't start duplicate Fluentd instance with the default config.")
       if ARGV.include?("-v")
-	puts("To take the version, please use '--version', not '-v' ('--verbose').")
+        puts("To take the version, please use '--version', not '-v' ('--verbose').")
       end
       puts <<EOS
 To start Fluentd, please do one of the following:
