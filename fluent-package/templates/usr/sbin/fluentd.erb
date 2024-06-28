@@ -13,24 +13,9 @@ if ARGV.include?("--version")
   exit 0
 end
 
-class DuplicateInstanceChecker
-  def running_fluentd?
-    `systemctl is-active fluentd`
-    return true if $?.exitstatus == 0
-    false
-  end
-
-  def prevent_duplicate_launch?
-    unless running_fluentd?
-      return false
-    end
-    true
-  end
-end
-
 if RUBY_PLATFORM =~ /linux/
-  checker = DuplicateInstanceChecker.new
-  if checker.prevent_duplicate_launch?
+  prevent_duplicate_launch = system("systemctl", "is-active", "fluentd", out: IO::NULL)
+  if prevent_duplicate_launch
     unless ARGV.include?("-c") or ARGV.include?("--config") or ARGV.include?("--dry-run")
       puts("Error: Can't start duplicate Fluentd instance with the default config.")
       if ARGV.include?("-v")
