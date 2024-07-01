@@ -34,6 +34,13 @@ exit 0
 
 function setup_dnf_user()
 {
+    case $ID in
+	*centos*)
+	    sed -i -e 's,^mirrorlist=,#mirrorlist,' /etc/yum.repos.d/CentOS-Base.repo
+	    sed -i -e 's,^#baseurl=http://mirror.centos.org/centos/\$releasever/,baseurl=http://ftp.iij.ad.jp/pub/linux/centos/7.9.2009/,' /etc/yum.repos.d/CentOS-Base.repo
+	    cat /etc/yum.repos.d/CentOS-Base.repo
+	    ;;
+    esac
     $DNF update -y
     case $VERSION_ID in
 	*2023*|*9\.*)
