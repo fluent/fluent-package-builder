@@ -212,7 +212,7 @@ EOF
 			 rm -f $package.zip &&
 			 curl --silent --location --output $package.zip \
 			      -H "Authorization: Bearer $GITHUB_ACCESS_TOKEN" $download_url &&
-			 unzip -u $package.zip)
+			 unzip -u -o $package.zip)
 		    ;;
 		*centos*|*rockylinux*|*almalinux*|*amazonlinux*)
 		    mkdir -p yum/repositories
@@ -220,7 +220,7 @@ EOF
 			 rm -f $package.zip &&
 			 curl --silent --location --output $package.zip \
 			      -H "Authorization: Bearer $GITHUB_ACCESS_TOKEN" $download_url &&
-			 unzip -u $package.zip)
+			 unzip -u -o $package.zip)
 		    ;;
 		*)
 		    curl --silent --location --output $package.zip \
