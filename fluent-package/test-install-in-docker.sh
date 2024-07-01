@@ -82,6 +82,7 @@ DNF=dnf
 ID=$(cat /etc/os-release | grep "^ID=" | cut -d'=' -f2)
 case $ID in
     debian|ubuntu)
+	export DEBIAN_FRONTEND=noninteractive
 	CODENAME=$(cat /etc/os-release | grep VERSION_CODENAME | cut -d'=' -f2)
 	case $CODENAME in
 	    bullseye|bookworm|focal|jammy|noble)
