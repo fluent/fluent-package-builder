@@ -17,7 +17,7 @@ function setup_apt_user()
     apt update
     apt upgrade -y
     apt install -y sudo expect curl
-    useradd -m -s /bin/bash -u 1000 $USER
+    useradd -m -s /bin/bash $USER
     expect -c "
 set timeout 5
 spawn env LANG=C passwd $USER
