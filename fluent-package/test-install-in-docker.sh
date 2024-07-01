@@ -14,6 +14,7 @@ set -e
 
 function setup_apt_user()
 {
+    export DEBIAN_FRONTEND=noninteractive
     apt update
     apt upgrade -y
     apt install -y sudo expect curl
