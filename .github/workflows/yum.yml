@@ -13,16 +13,11 @@ jobs:
       fail-fast: false
       matrix:
         label:
-          - CentOS 7 x86_64
           - RockyLinux 8 x86_64
           - AlmaLinux 9 x86_64
           - Amazon Linux 2 x86_64
           - Amazon Linux 2023 x86_64
         include:
-          - label: CentOS 7 x86_64
-            rake-job: centos-7
-            test-docker-image: centos:7
-            centos-stream: false
           - label: RockyLinux 8 x86_64
             rake-job: rockylinux-8
             test-docker-image: rockylinux/rockylinux:8
@@ -99,7 +94,6 @@ jobs:
       fail-fast: false
       matrix:
         label:
-          - CentOS 7 x86_64
           - AmazonLinux 2 x86_64
           - AmazonLinux 2023 x86_64
         test-file:
@@ -110,9 +104,6 @@ jobs:
           - "install-newly.sh v5"
           - "install-newly.sh lts"
         include:
-          - label: CentOS 7 x86_64
-            rake-job: centos-7
-            test-lxc-image: images:centos/7
           - label: AmazonLinux 2 x86_64
             rake-job: amazonlinux-2
             test-lxc-image: images:amazonlinux/2
