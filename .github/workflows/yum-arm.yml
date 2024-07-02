@@ -8,16 +8,12 @@ jobs:
       fail-fast: false
       matrix:
         label:
-          - CentOS 7 aarch64
           - RockyLinux 8 aarch64
           - AlmaLinux 9 aarch64
           - Amazon Linux 2 aarch64
           # It takes too long time on GitHub Actions.
           #- Amazon Linux 2023 aarch64
         include:
-          - label: CentOS 7 aarch64
-            rake-job: centos-7
-            test-docker-image: centos:7
           - label: RockyLinux 8 aarch64
             rake-job: rockylinux-8
             test-docker-image: rockylinux:8
