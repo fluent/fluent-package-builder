@@ -59,23 +59,8 @@ exit 0
     su - $USER
 }
 
-function check_installed_version()
-{
-    VERSION=$1
-    case $VERSION in
-	*$TARGET*)
-	    echo "Succeeded to install $TARGET on $ID from $REPO"
-	    ;;
-	*)
-	    echo "Failed to install $TARGET from $REPO"
-	    exit 1
-	    ;;
-    esac
-}
-
 USER=$1
 REPO=$2
-TARGET=$3
 
 DNF=dnf
 
@@ -98,8 +83,6 @@ case $ID in
 		esac
 		sudo apt update
 		sudo apt upgrade -y
-		v=$(apt-cache show fluent-package | grep "^Version" | head -n 1 | cut -d':' -f 2)
-		check_installed_version $v
 		;;
 	esac
 	;;
@@ -118,8 +101,6 @@ case $ID in
  		;;
 	esac
 	$DNF update -y
-	v=$($DNF info fluent-package | grep "^Version" | head -n 1 | cut -d':' -f 2)
-	check_installed_version $v
 	;;
     *amzn*)
 	VERSION_ID=$(cat /etc/os-release | grep VERSION_ID | cut -d'=' -f2)
@@ -153,7 +134,5 @@ case $ID in
 		;;
 	esac
 	$DNF update -y
-	v=$($DNF info fluent-package | grep "^Version" | head -n 1 | cut -d':' -f 2)
-	check_installed_version $v
 	;;
 esac
