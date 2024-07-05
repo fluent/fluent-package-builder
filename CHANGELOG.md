@@ -11,6 +11,7 @@ About the past changelog entries, see [old CHANGELOG](CHANGELOG-v4.md) instead.
 * Ubuntu 24.04 LTS (Noble Numbat) has been supported (#639)
 * Fixed to prevent launching Fluentd wrongly if the service is already running (#648,#649)
 * msi: fixed not to override `PATH` environment variable accidentally (#647)
+* CentOS 7 was dropped (#651,#654)
 
 ### Core component
 
@@ -73,7 +74,7 @@ On Windows
 * fluent-plugin-parser-winevt_xml v0.2.7
 * fluent-plugin-windows-exporter v1.0.0
 * winevt_c v0.10.1
-* nokogiri v1.16.2
+* nokogiri v1.16.6 (update)
 
 ## Release v5.0.3 - 2024/03/29
 
