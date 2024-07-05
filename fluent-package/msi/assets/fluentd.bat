@@ -30,6 +30,9 @@ for %%p in (%*) do (
     if "%%p"=="--dry-run" set PREVENT_DUPLICATE_LAUNCH=0
     if "%%p"=="--reg-winsvc" set PREVENT_DUPLICATE_LAUNCH=0
     if "%%p"=="--reg-winsvc-fluentdopt" set PREVENT_DUPLICATE_LAUNCH=0
+    if "%%p"=="-h" set PREVENT_DUPLICATE_LAUNCH=0
+    if "%%p"=="--help" set PREVENT_DUPLICATE_LAUNCH=0
+    if "%%p"=="--show-plugin-config" set PREVENT_DUPLICATE_LAUNCH=0
     if "%%p"=="-v" set HAS_SHORT_VERBOSE_OPTION=1
 )
 
