@@ -7,7 +7,7 @@ COMPAT_SERVICE_NAME = "td-agent"
 PACKAGE_DIR = "fluent"
 COMPAT_PACKAGE_DIR = COMPAT_SERVICE_NAME
 
-FLUENTD_REVISION = '95d130aaa44fc09b14a4e9686ee8018253185fc5' # v1.16.5
+FLUENTD_REVISION = 'e763c0761c44d9734b6aa374371387a2e8406522' # v1.17.0
 FLUENTD_LOCAL_GEM_REPO = "file://" + File.expand_path(File.join(__dir__, "local_gem_repo"))
 
 # https://github.com/jemalloc/jemalloc/releases
