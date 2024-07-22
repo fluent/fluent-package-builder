@@ -1125,6 +1125,12 @@ class BuildTask
       remove_files("*.gem")
       remove_files("bundler", true)
     end
+    Dir.glob("#{gem_staging_dir}/extensions/*").each do |extension_dir|
+      cd(extension_dir) do
+        remove_files("**/mkmf.log")
+        remove_files("**/gem_make.out")
+      end
+    end
     Dir.glob("#{gem_staging_dir}/gems/*").each do |gem_dir|
       cd(gem_dir) do
         rm_rf(["test", "tests", "spec"])
