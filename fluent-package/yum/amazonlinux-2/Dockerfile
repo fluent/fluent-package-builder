@@ -47,7 +47,7 @@ RUN \
     cmake3 \
     # install which for building librdkafka 1.9.0 or later
     which && \
-  amazon-linux-extras install ruby2.6 && \
+  amazon-linux-extras install ruby3.0 && \
   # raise IPv4 priority
   echo "precedence ::ffff:0:0/96 100" > /etc/gai.conf && \
   # enable multiplatform feature (bundler 2.4.22 is the latest version which supports ruby 2.6)
