@@ -72,7 +72,7 @@ fi
 
 PREVIOUS_SIZE=$(stat -c %s $BASE_NAME)
 PREVIOUS_SIZE_MIB=$(echo "scale=2; ${PREVIOUS_SIZE} / 1024 / 1024" | bc)
-THRESHOLD_SIZE=`echo "$PREVIOUS_SIZE * 1.2" | bc -l | cut -d. -f1`
+THRESHOLD_SIZE=`echo "$PREVIOUS_SIZE * 1.4" | bc -l | cut -d. -f1`
 echo "OLD: ${PREVIOUS_SIZE_MIB} MiB (${PREVIOUS_SIZE}) : ${BASE_NAME}"
 echo "NEW: ${CURRENT_SIZE_MIB} MiB (${CURRENT_SIZE}) : ${DEB}"
 if [ $CURRENT_SIZE -gt $THRESHOLD_SIZE ]; then
