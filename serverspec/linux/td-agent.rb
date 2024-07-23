@@ -6,7 +6,7 @@ describe package("fluent-package") do
   it { should be_installed }
 end
 
-if os[:family] == 'redhat'
+if ["redhat", "amazon"].include?(os[:family])
   describe user("fluentd") do
     it { should exist }
     it { should belong_to_group "fluentd" }
