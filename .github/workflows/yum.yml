@@ -77,6 +77,16 @@ jobs:
           --env CENTOS_STREAM=${{ matrix.centos-stream }} \
           ${{ matrix.test-docker-image }} \
           /fluentd/fluent-package/yum/serverspec-test.sh
+      - name: Confluent Test
+        run: |
+          mkdir -p .bundle
+          docker run \
+          --rm \
+          --tty \
+          --env CI=true \
+          --volume ${PWD}:/fluentd:ro \
+          ${{ matrix.test-docker-image }} \
+          /fluentd/fluent-package/yum/confluent-test.sh
       - name: Binstubs Test
         run: |
           mkdir -p .bundle
