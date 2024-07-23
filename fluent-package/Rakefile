@@ -445,6 +445,7 @@ class BuildTask
 
       desc "Install fluentd"
       task :fluentd => [:"download:fluentd", windows? ? :rubyinstaller : :ruby] do
+        puts "ENV['CI']" + ENV["CI"]
         puts "::group::Install fluentd" if ENV["CI"]
         cd(DOWNLOADS_DIR) do
           archive_path = @download_task.file_fluentd_archive
