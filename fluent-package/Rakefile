@@ -445,18 +445,22 @@ class BuildTask
 
       desc "Install fluentd"
       task :fluentd => [:"download:fluentd", windows? ? :rubyinstaller : :ruby] do
+        puts "::group::Install fluentd" if ENV["CI"]
         cd(DOWNLOADS_DIR) do
           archive_path = @download_task.file_fluentd_archive
           fluentd_dir = archive_path.sub(/\.tar\.gz$/, '')
           tar_options = ["--no-same-owner"]
           tar_options << "--force-local" if windows?
+          puts "::group::Extract archive: #{archive_path}" if ENV["CI"]
           sh(*tar_command, "xvf", archive_path, *tar_options) unless File.exist?(fluentd_dir)
+          puts "::endgroup::" if ENV["CI"]
           cd("fluentd-#{FLUENTD_REVISION}") do
             sh("rake", "build")
             setup_local_gem_repo
             install_gemfiles
           end
         end
+        puts "::endgroup::" if ENV["CI"]
       end
 
       desc "Install win32-service"
@@ -662,6 +666,7 @@ class BuildTask
   end
 
   def build_jemalloc
+    puts "::group::Build jemalloc from source" if ENV["CI"]
     tarball = @download_task.file_jemalloc_source
     source_dir = tarball.sub(/\.tar\.bz2$/, '')
 
@@ -693,6 +698,7 @@ class BuildTask
       sh("./configure", *configure_opts)
       sh("make", "install", "-j#{Etc.nprocessors}", "DESTDIR=#{STAGING_DIR}")
     end
+    puts "::endgroup::" if ENV["CI"]
   end
 
   def openssldir
@@ -771,6 +777,7 @@ class BuildTask
   end
 
   def build_ruby_from_source
+    puts "::group::Build ruby from source" if ENV["CI"]
     tarball = @download_task.file_ruby_source
     ruby_source_dir = tarball.sub(/\.tar\.gz$/, '')
 
@@ -797,6 +804,7 @@ class BuildTask
       # For building gems. The built ruby & gem command cannot use without install.
       sh("make", "install")
     end
+    puts "::endgroup::" if ENV["CI"]
   end
 
   def extract_ruby_installer
@@ -1321,7 +1329,9 @@ EOS
       cp(File.join(__dir__, "debian", "copyright"), File.join(@archive_base_name, File.basename(__dir__), "debian", "copyright"))
       tar_options = []
       tar_options << "--force-local" if windows?
+      puts "::group::Create archive: #{@full_archive_name}"
       sh(*tar_command, "cvfz", @full_archive_name, @archive_base_name, *tar_options)
+      puts "::endgroup::"
       rm_rf(@archive_base_name)
     end
   end
