@@ -20,20 +20,20 @@ version=$(cat /etc/system-release-cpe | awk '{print substr($0, index($1, "o"))}'
 
 ENABLE_SERVERSPEC_TEST=1
 ENABLE_KAFKA_TEST=1
-JAVA_JRE=java-11-openjdk
+JAVA_JRE=java-21-openjdk-headless
 N_POLLING=30
 case ${distribution} in
   amazon)
     case ${version} in
       2)
         DNF=yum
-        ENABLE_SERVERSPEC_TEST=0
         DISTRIBUTION_VERSION=${version}
+        JAVA_JRE=java-17-amazon-corretto-headless
         ;;
       2023)
-        ENABLE_SERVERSPEC_TEST=0
         DNF=dnf
         DISTRIBUTION_VERSION=${version}
+        JAVA_JRE=java-21-amazon-corretto-headless
         ;;
     esac
     ;;
@@ -61,8 +61,6 @@ case ${distribution} in
     DNF=dnf
     DISTRIBUTION_VERSION=$(echo ${version} | cut -d. -f1)
     version=$DISTRIBUTION_VERSION
-    # Use newer JDK to avoid FileNotFoundException about tzdb.dat
-    JAVA_JRE=java-17-openjdk
     case ${version} in
       9)
         # FIXME: Accept SHA-1 signed confluent packages.
@@ -89,16 +87,9 @@ if [ $ENABLE_SERVERSPEC_TEST -eq 1 ]; then
         cat >/etc/yum.repos.d/confluent.repo <<EOF;
 [Confluent]
 name=Confluent repository
-baseurl=https://packages.confluent.io/rpm/7.4
+baseurl=https://packages.confluent.io/rpm/7.6
 gpgcheck=1
-gpgkey=https://packages.confluent.io/rpm/7.4/archive.key
-enabled=1
-
-[Confluent-Clients]
-name=Confluent Clients repository
-baseurl=https://packages.confluent.io/clients/rpm/centos/\$releasever/\$basearch
-gpgcheck=1
-gpgkey=https://packages.confluent.io/clients/rpm/archive.key
+gpgkey=https://packages.confluent.io/rpm/7.6/archive.key
 enabled=1
 EOF
 	yum update -y && yum install -y confluent-community-2.13 ${JAVA_JRE} nc
