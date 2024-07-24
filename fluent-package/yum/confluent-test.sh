@@ -69,4 +69,4 @@ fi
 export PATH=/opt/fluent/bin:$PATH
 export INSTALLATION_TEST=true
 /usr/sbin/fluentd -c /fluentd/serverspec/test.conf &
-cd /fluentd && rake serverspec:kafka
+cd /fluentd && rake -T && rake serverspec:kafka
