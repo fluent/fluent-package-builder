@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-ARG FROM=rockylinux/rockylinux:8
+ARG FROM=rockylinux:8
 FROM ${FROM}
 
 COPY qemu-* /usr/bin/
