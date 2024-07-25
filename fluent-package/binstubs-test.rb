@@ -17,7 +17,9 @@ end
 Dir.chdir(STUB_DIR) do
   # Install all stub files which is described in Gemfile
   gem_command = File.join(FLUENT_PACKAGE_DIR, "bin/gem")
+  puts "::group::Create stub files" if ENV["CI"]
   system(gem_command, "pristine", "--all", "--only-executables", "--bindir", "#{STUB_DIR}/bin")
+  puts "::endgroup::" if ENV["CI"]
 
   required_stub_paths = Dir.glob("#{STUB_DIR}/bin/*").each do |stub|
     basename = File.basename(stub)

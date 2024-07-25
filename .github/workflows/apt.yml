@@ -71,6 +71,7 @@ jobs:
           docker run \
           --rm \
           --tty \
+          --env CI=true \
           --volume ${PWD}:/fluentd:ro \
           ${{ matrix.test-docker-image }} \
           /fluentd/fluent-package/apt/install-test.sh
@@ -81,6 +82,7 @@ jobs:
           --privileged \
           --rm \
           --tty \
+          --env CI=true \
           --volume ${PWD}:/fluentd:ro \
           ${{ matrix.test-docker-image }} \
           /fluentd/fluent-package/apt/piuparts-test.sh
@@ -90,6 +92,7 @@ jobs:
           docker run \
           --rm \
           --tty \
+          --env CI=true \
           --volume ${PWD}:/fluentd:ro \
           ${{ matrix.test-docker-image }} \
           /fluentd/fluent-package/apt/serverspec-test.sh
@@ -99,6 +102,7 @@ jobs:
           docker run \
           --rm \
           --tty \
+          --env CI=true \
           --volume ${PWD}:/fluentd:ro \
           ${{ matrix.test-docker-image }} \
           /fluentd/fluent-package/apt/confluent-test.sh
@@ -108,6 +112,7 @@ jobs:
           docker run \
           --rm \
           --tty \
+          --env CI=true \
           --volume ${PWD}:/fluentd:ro \
           ${{ matrix.test-docker-image }} \
           /fluentd/fluent-package/apt/binstubs-test.sh

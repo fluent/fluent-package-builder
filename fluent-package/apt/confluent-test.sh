@@ -2,6 +2,10 @@
 
 set -exu
 
+if [ "$CI" = "true" ]; then
+   echo "::group::Setup confluent test"
+fi
+
 export DEBIAN_FRONTEND=noninteractive
 
 apt update
@@ -60,6 +64,9 @@ while true ; do
 	exit 1
     fi
 done
+if [ "$CI" = "true" ]; then
+   echo "::endgroup::"
+fi
 /usr/bin/kafka-topics --create --bootstrap-server localhost:9092 --replication-factor 1 --partitions 1 --topic test
 export PATH=/opt/fluent/bin:$PATH
 export INSTALLATION_TEST=true

@@ -9,6 +9,11 @@ set -exu
 # This means that column glitch exists.
 # So, we should remove before "o" character.
 
+echo "BINSTUBS TEST"
+if [ "$CI" = "true" ]; then
+   echo "::group::Setup binstubs test"
+fi
+
 distribution=$(cat /etc/system-release-cpe | awk '{print substr($0, index($1, "o"))}' | cut -d: -f2)
 version=$(cat /etc/system-release-cpe | awk '{print substr($0, index($1, "o"))}' | cut -d: -f4)
 
@@ -58,7 +63,10 @@ ARCH=$(rpm --eval "%{_arch}")
 ${DNF} install -y \
   ${repositories_dir}/${distribution}/${DISTRIBUTION_VERSION}/${ARCH}/Packages/*.rpm
 
-echo "BINSTUBS TEST"
+if [ "$CI" = "true" ]; then
+   echo "::endgroup::"
+fi
+
 /opt/fluent/bin/ruby /fluentd/fluent-package/binstubs-test.rb
 if [ $? -eq 0 ]; then
     echo "Checking existence of binstubs: OK"

@@ -11,6 +11,10 @@ set -exu
 # This means that column glitch exists.
 # So, we should remove before "o" character.
 
+if [ "$CI" = "true" ]; then
+   echo "::group::Setup serverspec test"
+fi
+
 distribution=$(cat /etc/system-release-cpe | awk '{print substr($0, index($1, "o"))}' | cut -d: -f2)
 version=$(cat /etc/system-release-cpe | awk '{print substr($0, index($1, "o"))}' | cut -d: -f4)
 
@@ -131,6 +135,9 @@ EOF
 	done
 	/usr/bin/kafka-topics --bootstrap-server localhost:9092 --topic test --create --replication-factor 1 --partitions 1
 	/usr/sbin/fluentd -c /fluentd/serverspec/test.conf &
+    fi
+    if [ "$CI" = "true" ]; then
+	echo "::endgroup::"
     fi
     export PATH=/opt/fluent/bin:$PATH
     export INSTALLATION_TEST=true

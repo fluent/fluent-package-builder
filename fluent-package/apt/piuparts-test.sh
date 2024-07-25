@@ -2,6 +2,10 @@
 
 set -exu
 
+if [ "$CI" = "true" ]; then
+   echo "::group::Setup piuparts test"
+fi
+
 apt update
 apt install -V -y lsb-release
 
@@ -29,6 +33,9 @@ package=${repositories_dir}/${distribution}/pool/${code_name}/${channel}/*/*/*_$
 cp ${package} /tmp
 echo "deb [signed-by=/usr/share/keyrings/td-agent-archive-keyring.gpg] https://packages.treasuredata.com/5/${distribution}/${code_name}/ ${code_name} contrib" | tee $CHROOT/etc/apt/sources.list.d/td.list
 rm -rf $CHROOT/opt
+if [ "$CI" = "true" ]; then
+   echo "::endgroup::"
+fi
 piuparts --distribution=${code_name} \
 	 --existing-chroot=${CHROOT} \
 	 --skip-logrotatefiles-test \

@@ -4,6 +4,10 @@ set -exu
 
 echo "CHECK PACKAGE SIZE"
 
+if [ "$CI" = "true" ]; then
+   echo "::group::Setup package size check"
+fi
+
 #
 # Usage: $0 centos:8 aarch64
 #
@@ -67,6 +71,10 @@ for v in "${PREVIOUS_VERSIONS[@]}"; do
 	break
     fi
 done
+
+if [ "$CI" = "true" ]; then
+   echo "::endgroup::"
+fi
 
 PREVIOUS_SIZE=$(stat -c %s $BASE_NAME)
 THRESHOLD_SIZE=`echo "$PREVIOUS_SIZE * 1.3" | bc -l | cut -d. -f1`
