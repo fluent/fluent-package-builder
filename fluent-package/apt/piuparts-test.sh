@@ -6,8 +6,8 @@ if [ "$CI" = "true" ]; then
    echo "::group::Setup piuparts test"
 fi
 
-apt update
-apt install -V -y lsb-release
+apt update --quiet
+apt install -V -y --quiet lsb-release
 
 . $(dirname $0)/commonvar.sh
 
@@ -28,7 +28,7 @@ mkdir -p $CHROOT
 debootstrap --include=ca-certificates ${code_name} $CHROOT ${mirror}
 cp $TD_AGENT_KEYRING $CHROOT/usr/share/keyrings/
 chmod 644 $CHROOT/usr/share/keyrings/td-agent-archive-keyring.gpg
-chroot $CHROOT apt install -V -y libyaml-0-2
+chroot $CHROOT apt install -V -y --quiet libyaml-0-2
 package=${repositories_dir}/${distribution}/pool/${code_name}/${channel}/*/*/*_${architecture}.deb
 cp ${package} /tmp
 echo "deb [signed-by=/usr/share/keyrings/td-agent-archive-keyring.gpg] https://packages.treasuredata.com/5/${distribution}/${code_name}/ ${code_name} contrib" | tee $CHROOT/etc/apt/sources.list.d/td.list
