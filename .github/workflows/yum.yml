@@ -20,7 +20,7 @@ jobs:
         include:
           - label: RockyLinux 8 x86_64
             rake-job: rockylinux-8
-            test-docker-image: rockylinux/rockylinux:8
+            test-docker-image: rockylinux:8
             centos-stream: false
           - label: AlmaLinux 9 x86_64
             rake-job: almalinux-9
