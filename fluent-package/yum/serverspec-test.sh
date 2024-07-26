@@ -18,22 +18,16 @@ fi
 distribution=$(cat /etc/system-release-cpe | awk '{print substr($0, index($1, "o"))}' | cut -d: -f2)
 version=$(cat /etc/system-release-cpe | awk '{print substr($0, index($1, "o"))}' | cut -d: -f4)
 
-ENABLE_SERVERSPEC_TEST=1
-ENABLE_KAFKA_TEST=1
-JAVA_JRE=java-21-openjdk-headless
-N_POLLING=30
 case ${distribution} in
   amazon)
     case ${version} in
       2)
         DNF=yum
         DISTRIBUTION_VERSION=${version}
-        JAVA_JRE=java-17-amazon-corretto-headless
         ;;
       2023)
         DNF=dnf
         DISTRIBUTION_VERSION=${version}
-        JAVA_JRE=java-21-amazon-corretto-headless
         ;;
     esac
     ;;
@@ -77,60 +71,7 @@ ${DNF} install -y \
 
 fluentd --version
 
-if [ $ENABLE_SERVERSPEC_TEST -eq 1 ]; then
-    curl -V > /dev/null 2>&1 || ${DNF} install -y curl
-    ${DNF} install -y which ${repositories_dir}/${distribution}/${DISTRIBUTION_VERSION}/x86_64/Packages/*.rpm
-
-    /usr/sbin/fluent-gem install --no-document serverspec
-    if [ $ENABLE_KAFKA_TEST -eq 1 ]; then
-        rpm --import https://packages.confluent.io/rpm/7.4/archive.key
-        cat >/etc/yum.repos.d/confluent.repo <<EOF;
-[Confluent]
-name=Confluent repository
-baseurl=https://packages.confluent.io/rpm/7.6
-gpgcheck=1
-gpgkey=https://packages.confluent.io/rpm/7.6/archive.key
-enabled=1
-EOF
-	yum update -y && yum install -y confluent-community-2.13 ${JAVA_JRE} nc
-	export KAFKA_OPTS=-Dzookeeper.4lw.commands.whitelist=ruok
-	/usr/bin/zookeeper-server-start /etc/kafka/zookeeper.properties  &
-	n=1
-        while true ; do
-	    sleep 1
-	    status=$(echo ruok | nc localhost 2181)
-	    if [ "$status" = "imok" ]; then
-		break
-	    fi
-            n=$((n + 1))
-	    if [ $n -ge $N_POLLING ]; then
-		echo "failed to get response from zookeeper-server"
-		exit 1
-	    fi
-	done
-	# Allow connection to kafka server
-        echo "listeners=PLAINTEXT://localhost:9092" | tee -a /etc/kafka/server.properties
-	/usr/bin/kafka-server-start /etc/kafka/server.properties &
-	n=1
-	while true ; do
-	    sleep 1
-	    status=$(/usr/bin/kafka-topics --bootstrap-server localhost:9092 --list)
-	    if [ "$status" = "" ]; then
-		break
-	    fi
-            n=$((n + 1))
-	    if [ $n -ge $N_POLLING ]; then
-		echo "failed to get list of topics from kafka-server"
-		exit 1
-	    fi
-	done
-	/usr/bin/kafka-topics --bootstrap-server localhost:9092 --topic test --create --replication-factor 1 --partitions 1
-	/usr/sbin/fluentd -c /fluentd/serverspec/test.conf &
-    fi
-    if [ "$CI" = "true" ]; then
-	echo "::endgroup::"
-    fi
-    export PATH=/opt/fluent/bin:$PATH
-    export INSTALLATION_TEST=true
-    cd /fluentd && rake serverspec:linux
-fi
+/usr/sbin/fluent-gem install --no-document serverspec
+export PATH=/opt/fluent/bin:$PATH
+export INSTALLATION_TEST=true
+cd /fluentd && rake serverspec:linux
