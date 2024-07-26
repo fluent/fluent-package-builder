@@ -133,6 +133,10 @@ class PackageTask
     if skip_lintian?
       run_command_line.concat(["--env", "LINTIAN=no"])
     end
+    if ENV["CI"]
+      build_command_line.concat(["--build-arg", "CI=yes"])
+      run_command_line.concat(["--env", "CI=true"])
+    end
     if File.exist?(File.join(id, "Dockerfile"))
       docker_context = id
     else

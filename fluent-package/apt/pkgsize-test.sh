@@ -4,6 +4,10 @@ set -exu
 
 echo "CHECK PACKAGE SIZE"
 
+if [ "$CI" = "true" ]; then
+   echo "::group::Setup package size check"
+fi
+
 #
 # Usage: $0 ubuntu:focal aarch64
 #
@@ -57,6 +61,10 @@ case ${DISTRIBUTION} in
 	exit 1
 	;;
 esac
+
+if [ "$CI" = "true" ]; then
+   echo "::endgroup::"
+fi
 
 set -e
 

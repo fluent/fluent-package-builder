@@ -2,6 +2,11 @@
 
 set -exu
 
+echo "BINSTUBS TEST"
+if [ "$CI" = "true" ]; then
+   echo "::group::Setup binstubs test"
+fi
+
 apt update
 apt install -V -y lsb-release
 
@@ -10,7 +15,9 @@ apt install -V -y lsb-release
 apt install -V -y \
   ${repositories_dir}/${distribution}/pool/${code_name}/${channel}/*/*/*_${architecture}.deb
 
-echo "BINSTUBS TEST"
+if [ "$CI" = "true" ]; then
+   echo "::endgroup::"
+fi
 /opt/fluent/bin/ruby /fluentd/fluent-package/binstubs-test.rb
 if [ $? -eq 0 ]; then
     echo "Checking existence of binstubs: OK"

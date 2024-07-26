@@ -2,12 +2,12 @@
 
 set -exu
 
-apt update
-apt install -V -y lsb-release
+apt update --quiet
+apt install -V -y --quiet lsb-release
 
 . $(dirname $0)/commonvar.sh
 
-apt install -V -y \
+apt install -V -y --quiet \
   ${repositories_dir}/${distribution}/pool/${code_name}/${channel}/*/*/*_${architecture}.deb
 
 fluentd --version
@@ -44,18 +44,18 @@ case $code_name in
 	;;
 esac
 # TODO: Remove it when v5 repository was deployed
-apt install -y curl
+apt install -y --quiet curl
 curl -O https://packages.treasuredata.com/4/${distribution}/${code_name}/pool/contrib/f/fluentd-apt-source/fluentd-apt-source_2020.8.25-1_all.deb
-apt install -y ./fluentd-apt-source_2020.8.25-1_all.deb
+apt install -y --quiet ./fluentd-apt-source_2020.8.25-1_all.deb
 
 apt clean all
 # Uncomment when v5 repository was deployed
 #apt_source_package=${apt_source_repositories_dir}/${distribution}/pool/${code_name}/${channel}/*/*/fluent-apt-source*_all.deb
 #apt install -V -y ${apt_source_package} ca-certificates
-apt update
-apt install -V -y td-agent
+apt update --quiet
+apt install -V -y --quiet td-agent
 
-apt install -V -y \
+apt install -V -y --quiet \
   ${repositories_dir}/${distribution}/pool/${code_name}/${channel}/*/*/*_${architecture}.deb
 
 getent passwd td-agent >/dev/null

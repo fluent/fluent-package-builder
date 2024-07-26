@@ -13,7 +13,7 @@ override_dh_builddeb:
 
 override_dh_auto_install:
 	rake build:deb_config FLUENT_PACKAGE_STAGING_PATH="$(CURDIR)/debian/tmp" NO_VAR_RUN=1
-	rake build:all        FLUENT_PACKAGE_STAGING_PATH="$(CURDIR)/debian/tmp" PATH="$(HOME)/.cargo/bin:$(PATH)"
+	CI=$CI rake build:all        FLUENT_PACKAGE_STAGING_PATH="$(CURDIR)/debian/tmp" PATH="$(HOME)/.cargo/bin:$(PATH)"
 	dh_installman
 
 override_dh_auto_clean:
