@@ -38,6 +38,10 @@ CONFLUENT_SCRIPT=$(dirname $(realpath $0))/../run-confluent.sh
 echo ${CONFLUENT_SCRIPT}
 bash ${CONFLUENT_SCRIPT}
 
+if [ "$CI" = "true" ]; then
+   echo "::endgroup::"
+fi
+
 export PATH=/opt/fluent/bin:$PATH
 export INSTALLATION_TEST=true
 /usr/sbin/fluentd -c /fluentd/serverspec/test.conf &
