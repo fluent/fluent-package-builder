@@ -1,7 +1,7 @@
 require_relative "../spec_helper"
 require "rdkafka"
 
-if ["redhat", "amazon"].include?(os[:family])
+if ["redhat", "amazon", "debian"].include?(os[:family])
 describe "rdkafka" do
   it "can receive message via Rdkafka client" do
     config = {
