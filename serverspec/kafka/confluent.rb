@@ -1,7 +1,8 @@
 require_relative "../spec_helper"
 require "rdkafka"
 
-describe "rdkafka", :if => !centos8?(os) do
+if ["redhat", "amazon"].include?(os[:family])
+describe "rdkafka" do
   it "can receive message via Rdkafka client" do
     config = {
       "bootstrap.servers": "localhost:9092",
@@ -19,7 +20,7 @@ describe "rdkafka", :if => !centos8?(os) do
   end
 end
 
-describe "fluent-plugin-kafka", :if => !centos8?(os) do
+describe "fluent-plugin-kafka" do
   it "can receive message via fluent-plugin-kafka" do
     `echo "Hello, fluent-plugin-kafka" | /usr/bin/kafka-console-producer --broker-list localhost:9092 --topic test`
     Dir.glob("/tmp/log/td-agent/*.log") do |path|
@@ -28,4 +29,5 @@ describe "fluent-plugin-kafka", :if => !centos8?(os) do
       end
     end
   end
+end
 end
