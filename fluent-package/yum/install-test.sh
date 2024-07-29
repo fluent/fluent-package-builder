@@ -11,8 +11,8 @@ set -exu
 # This means that column glitch exists.
 # So, we should remove before "o" character.
 
-distribution=$(cat /etc/system-release-cpe | awk '{print substr($0, index($1, "o"))}' | cut -d: -f2)
-version=$(cat /etc/system-release-cpe | awk '{print substr($0, index($1, "o"))}' | cut -d: -f4)
+distribution=$(cat /etc/system-release-cpe | awk '{print substr($0, index($0, "o"))}' | cut -d: -f2)
+version=$(cat /etc/system-release-cpe | awk '{print substr($0, index($0, "o"))}' | cut -d: -f4)
 
 ENABLE_UPGRADE_TEST=1
 case ${distribution} in
