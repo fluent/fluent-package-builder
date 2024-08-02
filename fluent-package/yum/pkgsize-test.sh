@@ -27,11 +27,11 @@ for v in `git tag | grep "^v" | sort -r`; do
 done
 
 SKIP_SIZE_COMPARISON=0
-BASE_URI=http://packages.treasuredata.com.s3.amazonaws.com/4/redhat/${DISTRO_VERSION}
+BASE_URI=http://packages.treasuredata.com.s3.amazonaws.com/5/redhat/${DISTRO_VERSION}
 DISTRO_VERSION_PREFIX=el
 case ${DISTRIBUTION} in
     amazonlinux)
-	BASE_URI=http://packages.treasuredata.com.s3.amazonaws.com/4/amazon/${DISTRO_VERSION}
+	BASE_URI=http://packages.treasuredata.com.s3.amazonaws.com/5/amazon/${DISTRO_VERSION}
 	DISTRIBUTION=amazon
 	DISTRO_VERSION_PREFIX=amzn
 	if [ $DISTRO_VERSION -eq 2023 ]; then

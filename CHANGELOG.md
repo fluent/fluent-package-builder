@@ -2,6 +2,80 @@
 
 About the past changelog entries, see [old CHANGELOG](CHANGELOG-v4.md) instead.
 
+## Release v5.1.0 - 2024/07/29
+
+### News
+
+* Update bundled Ruby to 3.2.5
+* Update bundled Fluentd to v1.17.0
+* Update bundled gems
+
+This is standard version of Fluentd distribution package.
+If you want LTS version, stick to use v5.0.x.
+
+### Core component
+
+* ruby v3.2.5 (update)
+* jemalloc v3.6.0
+* OpenSSL 3.1.0 Windows
+* OpenSSL 3.0.8 macOS
+* fluentd v1.17.0
+
+### Core gems
+
+* async-http v0.64.2 (update)
+* bundler v2.3.26
+* cool.io v1.8.1 (update)
+* http_parser.rb v0.8.0
+* msgpack v1.7.2
+* oj v3.16.4 (update)
+* serverengine v2.3.2
+* sigdump v0.2.5
+* tzinfo v2.0.6
+* tzinfo-data v1.2024.1
+* yajl-ruby v1.4.3
+
+### Bundled plugins and gems
+
+* aws-partitions v1.957.0 (update)
+* aws-sdk-core v3.201.2 (update)
+* aws-sdk-kms v1.88.0 (update)
+* aws-sdk-s3 v1.156.0 (update)
+* aws-sdk-sqs v1.80.0 (update)
+* aws-sigv4 v1.8.0 (update)
+* elasticsearch v8.14.0 (update)
+* fluent-diagtool v1.0.5
+* fluent-plugin-calyptia-monitoring v0.1.3
+* fluent-plugin-elasticsearch v5.4.3
+* fluent-plugin-flowcounter-simple 0.1.0
+* fluent-plugin-kafka v0.19.3 (update)
+* fluent-plugin-metrics-cmetrics v0.1.2
+* fluent-plugin-opensearch v1.1.4
+* fluent-plugin-prometheus v2.1.0
+* fluent-plugin-prometheus_pushgateway v0.1.1
+* fluent-plugin-record-modifier v2.2.0 (update)
+* fluent-plugin-rewrite-tag-filter v2.4.0
+* fluent-plugin-s3 v1.7.2
+* fluent-plugin-sd-dns 0.1.0
+* fluent-plugin-systemd v1.0.5
+* fluent-plugin-td v1.2.0
+* fluent-plugin-utmpx v0.5.0
+* fluent-plugin-webhdfs v1.6.0 (update)
+* mini_portile2 v2.8.2
+* prometheus-client v4.1.0
+* rdkafka v0.16.1 (update)
+* ruby-kafka v1.5.0
+* systemd-journal v1.4.2
+* td-client v1.0.8
+* webhdfs v0.11.0 (update)
+
+On Windows
+
+* fluent-plugin-parser-winevt_xml v0.2.7
+* fluent-plugin-windows-exporter v1.0.0
+* winevt_c v0.11.0 (update)
+* nokogiri v1.16.7 (update)
+
 ## Release v5.0.4 - 2024/06/29
 
 ### News
