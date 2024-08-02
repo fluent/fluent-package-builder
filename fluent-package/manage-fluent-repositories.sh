@@ -34,7 +34,8 @@ if [ $# -eq 0 ]; then
 fi
 
 COMMAND=$1
-SIGNING_KEY=BEE682289B2217F45AF4CC3F901F9177AB97ACBE
+# Fluentd developers (Fluent Package Official Signing Key
+SIGNING_KEY=B40948B6A3B80E90F40E841F977D7A0943FA320E
 
 case $COMMAND in
     deb|rpm)
