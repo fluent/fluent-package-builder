@@ -171,7 +171,7 @@ EOF
 	echo "Ready to type signing passphrase? (process starts in 10 seconds, Ctrl+C to abort)"
 	sleep 10
 	export GPG_TTY=$(tty)
-	find $FLUENT_RELEASE_DIR/5 -name "*$FLUENT_PACKAGE_VERSION*.rpm" | xargs rpm --resign --define "_gpg_name support@treasure-data.com"
+	find $FLUENT_RELEASE_DIR/5 -name "*$FLUENT_PACKAGE_VERSION*.rpm" | xargs rpm --resign --define "_gpg_name $SIGNING_KEY"
 	# check whether packages are signed correctly.
 	find $FLUENT_RELEASE_DIR/5 -name "*$FLUENT_PACKAGE_VERSION*.rpm" | xargs rpm -K || \
 	    (echo "Import public key to verify: rpm --import https://s3.amazonaws.com/packages.treasuredata.com/GPG-KEY-td-agent" && exit 1)
