@@ -80,7 +80,6 @@ Then restart Windows.
 
 By default, yum repositories for following platforms will be built under fluent-package/yum/repositories/ directory:
 
-  * RHEL/CentOS 7 (x86_64)
   * RHEL/CentOS 8 (x86_64) - Built on Rocky Linux 8
   * RHEL/CentOS 9 (x86_64) - Built on AlmaLinux 9
   * Amazon Linux 2 (x86_64)
@@ -89,7 +88,7 @@ By default, yum repositories for following platforms will be built under fluent-
 You can choose target platforms by `YUM_TARGETS` environment variable like this:
 
 ```console
-% rake yum:build YUM_TARGETS="centos-7,rockylinux-8,almalinux-9"
+% rake yum:build YUM_TARGETS="rockylinux-8,almalinux-9"
 ```
 
 You can find other supported platforms under fluent-package/yum directory.
@@ -142,6 +141,7 @@ By default, apt repositories for following platforms will be built under fluent-
   * Debian 12 "Bookworm" (x86_64)
   * Ubuntu 20.04 LTS "Focal Fossa" (x86_64)
   * Ubuntu 22.04 LTS "Jammy Jellyfish" (x86_64)
+  * Ubuntu 24.04 LTS "Noble Numbat" (x86_64)
 
 You can choose target platforms by `APT_TARGETS` environment variable like this:
 
