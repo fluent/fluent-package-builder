@@ -136,10 +136,6 @@ jobs:
         with:
           name: packages-${{ matrix.rake-job }}
       - uses: canonical/setup-lxd@v0.1.1
-      - name: Update image server
-        run: |
-          lxc remote remove images
-          lxc remote add images https://images.lxd.canonical.com --protocol=simplestreams
       - name: Run Test ${{ matrix.test-file }} on ${{ matrix.test-lxc-image }}
         run: fluent-package/yum/systemd-test/test.sh ${{ matrix.test-lxc-image }} ${{ matrix.test-file }}
 
