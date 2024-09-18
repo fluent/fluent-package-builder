@@ -1,5 +1,12 @@
 # Treasure Agent 4 changelog
 
+## Release v4.5.3 for Windows - 2024/02/29
+
+### News
+
+* This release is only for Windows, to fix failure launching worker process when
+  non-ASCII registry key exists (#616).
+
 ## Release v4.5.2 - 2023/11/29
 
 ### News
