@@ -10,9 +10,9 @@ options = {
 }
 
 opt = OptionParser.new
-opt.on("-s", "--site URL") { |v| options[:site] = v }
-opt.on("-v", "--verbose") { options[:verbose] = true }
-opt.on("-c", "--channel TARGET_CHANNEL") { |v| options[:channel] = v.split(',') }
+opt.on("-s", "--site URL", "Specify distribution site (e.g. https://fluentd.cdn.cncf.io)") { |v| options[:site] = v }
+opt.on("-v", "--verbose", "Enable verbose logging") { options[:verbose] = true }
+opt.on("-c", "--channel TARGET_CHANNEL", "Specify channel with comma separated (e.g. --channel 5,lts)") { |v| options[:channel] = v }
 top_dir = opt.parse!(ARGV).first
 
 unless File.exist?(top_dir)
