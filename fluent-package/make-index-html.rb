@@ -5,12 +5,14 @@ require 'optparse'
 
 options = {
   site: "https://fluentd.cdn.cncf.io",
-  verbose: false
+  verbose: false,
+  channel: %w(5 lts test)
 }
 
 opt = OptionParser.new
 opt.on("-s", "--site URL") { |v| options[:site] = v }
 opt.on("-v", "--verbose") { options[:verbose] = true }
+opt.on("-c", "--channel TARGET_CHANNEL") { |v| options[:channel] = v.split(',') }
 top_dir = opt.parse!(ARGV).first
 
 unless File.exist?(top_dir)
@@ -20,7 +22,7 @@ end
 
 template_path = File.expand_path("#{File.basename(__FILE__, ".rb")}.erb")
 puts "Template path: #{template_path}"
-%w(5 lts test).each do |channel|
+options[:channel].each do |channel|
   search_path = Pathname.new("#{top_dir}/#{channel}")
   Find.find(search_path).each do |path|
     Find.prune unless FileTest.directory?(path)
