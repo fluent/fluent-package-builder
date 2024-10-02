@@ -112,6 +112,7 @@ jobs:
         test-file:
           - "update-from-v4.sh"
           - "update-to-next-version-with-backward-compat-for-v4.sh"
+          - "update-to-next-version.sh"
           - "downgrade-to-v4.sh"
           - "install-newly.sh local"
           - "install-newly.sh v5"
@@ -153,6 +154,7 @@ jobs:
         test-file:
           - "update-from-v4.sh"
           - "update-to-next-version-with-backward-compat-for-v4.sh"
+          - "update-to-next-version.sh"
           - "downgrade-to-v4.sh"
           - "install-newly.sh local"
           - "install-newly.sh v5"

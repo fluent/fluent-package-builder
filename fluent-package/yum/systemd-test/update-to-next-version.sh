@@ -35,8 +35,11 @@ release=$(rpmquery --queryformat="%{Release}" -p $package)
 release_ver=$(echo $release | cut -d . -f1)
 # Example: "2.el9"
 next_release=$(($release_ver+1)).$(echo $release | cut -d. -f2)
-rpmrebuild --release=$next_release --package $package
+rpmrebuild --release=$next_release --modify="find $HOME -name fluentd.service | xargs sed -i -E 's/FLUENT_PACKAGE_VERSION=([0-9.]+)/FLUENT_PACKAGE_VERSION=\1.1/g'" --package $package
 next_package=$(find rpmbuild -name "*.rpm")
+rpm2cpio $next_package | cpio -id ./usr/lib/systemd/system/fluentd.service
+next_package_ver=$(cat ./usr/lib/systemd/system/fluentd.service | grep "FLUENT_PACKAGE_VERSION" | sed -E "s/Environment=FLUENT_PACKAGE_VERSION=(.+)/\1/")
+echo "repacked next fluent-package version: $next_package_ver"
 
 # Install the dummy package of the next version
 sudo $DNF install -y ./$next_package
@@ -62,6 +65,18 @@ test $(eval $env_vars && echo $FLUENT_CONF) = "/etc/fluent/fluentd.conf"
 test $(eval $env_vars && echo $FLUENT_PACKAGE_LOG_FILE) = "/var/log/fluent/fluentd.log"
 test $(eval $env_vars && echo $FLUENT_PLUGIN) = "/etc/fluent/plugin"
 test $(eval $env_vars && echo $FLUENT_SOCKET) = "/var/run/fluent/fluentd.sock"
+cpe_name=$(grep CPE_NAME /etc/os-release | cut -d'=' -f2)
+case $cpe_name in
+    *rocky:8*)
+	# RHEL8 %systemd_postun_with_restart doesn't restart when already service is running
+	# thus, FLUENT_PACKAGE_VERSION will be kept.
+	release=$(rpmquery --queryformat="%{Version}" -p $package)
+	test $(eval $env_vars && echo $FLUENT_PACKAGE_VERSION) = "$release"
+    ;;
+    *)
+	test $(eval $env_vars && echo $FLUENT_PACKAGE_VERSION) = "$next_package_ver"
+	;;
+esac
 
 # Test: logs
 sleep 3
