@@ -191,7 +191,6 @@ fi
 %systemd_preun @SERVICE_NAME@.service
 
 %post
-%systemd_post @SERVICE_NAME@.service
 if [ $1 -eq 1 ]; then
   if [ -d /etc/@COMPAT_PACKAGE_DIR@ -a ! -h /etc/@COMPAT_PACKAGE_DIR@ ]; then
     touch %{v4migration}
@@ -284,7 +283,6 @@ if [ -f "%{_sysconfdir}/prelink.conf" ]; then
 fi
 
 %postun
-%systemd_postun_with_restart @SERVICE_NAME@.service
 if [ $1 -eq 0 ]; then
   # Uninstall
   # Without this uninstall conditional guard block ($1 -eq 0), symlink

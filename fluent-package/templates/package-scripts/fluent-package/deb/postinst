@@ -28,7 +28,6 @@ add_system_user() {
 }
 
 v4migration=n
-v4migration_with_restart=n
 
 add_directories() {
     mkdir -p /var/run/<%= package_dir %>
@@ -88,17 +87,6 @@ migration_from_v4_main_process() {
             ln -sf /etc/<%= package_dir %>/<%= compat_service_name %>.conf /etc/<%= package_dir %>/<%= service_name %>.conf
         fi
     fi
-    if [ -h /etc/systemd/system/td-agent.service ]; then
-        if [ -n "$(command -v systemctl)" ]; then
-            if systemctl is-active <%= compat_service_name %> >/dev/null; then
-                # Want to restart with new user/group here,
-                # but to avoid holding file descriptor under /var/log/<%= compat_package_dir %>/,
-                # delay restarting <%= service_name %> service.
-                systemctl stop <%= compat_service_name %>
-                v4migration_with_restart=y
-           fi
-        fi
-    fi
     if [ -d /var/log/<%= compat_package_dir %> -a ! -h /var/log/<%= compat_package_dir %> ]; then
         # /var/log/<%= compat_package_dir %> migration from v4
         if [ -d /var/log/<%= compat_package_dir %>/buffer ]; then
@@ -137,12 +125,6 @@ migration_from_v4_post_process() {
         rm -fr /var/log/<%= compat_package_dir %>
         ln -sf /var/log/<%= package_dir %> /var/log/<%= compat_package_dir %>
     fi
-    if [ "$v4migration_with_restart" = "y" ]; then
-        if [ -n "$(command -v systemctl)" ]; then
-            systemctl daemon-reload
-            systemctl restart <%= service_name %>
-        fi
-    fi
 }
 
 case "$1" in
@@ -168,4 +150,3 @@ if [ "$1" = "configure" ]; then
 fi
 <% end %>
 
-#DEBHELPER#
