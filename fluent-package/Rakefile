@@ -158,7 +158,7 @@ def render_template(dest, src, config, opts={})
   logger.info("Generate #{dest}")
   ensure_directory(directory)
   File.open(dest, 'w', mode) do |f|
-    template = ERB.new(File.read(src), nil, '<>')
+    template = ERB.new(File.read(src), trim_mode: '<>')
     f.write(template.result(erb_binding))
   end
 end
