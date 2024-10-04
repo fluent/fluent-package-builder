@@ -86,7 +86,7 @@ jobs:
           ${{ matrix.test-docker-image }} \
           /fluentd/fluent-package/yum/binstubs-test.sh
   v1test:
-    name: Test (CGroup V1)
+    name: Test ${{ matrix.label }} ${{ matrix.test-file }} (CGroup V1)
     needs: build
     runs-on: ubuntu-20.04
     timeout-minutes: 15
@@ -131,7 +131,7 @@ jobs:
         run: fluent-package/yum/systemd-test/test.sh ${{ matrix.test-lxc-image }} ${{ matrix.test-file }}
 
   v2test:
-    name: Test (CGroup V2)
+    name: Test ${{ matrix.label }} ${{ matrix.test-file }} (CGroup V2)
     needs: build
     runs-on: ubuntu-latest
     timeout-minutes: 15

@@ -13,16 +13,16 @@ jobs:
       fail-fast: false
       matrix:
         label:
-          - Debian GNU/Linux bullseye amd64
-          - Debian GNU/Linux bookworm amd64
+          - Debian bullseye amd64
+          - Debian bookworm amd64
           - Ubuntu Focal amd64
           - Ubuntu Jammy amd64
           - Ubuntu Noble amd64
         include:
-          - label: Debian GNU/Linux bullseye amd64
+          - label: Debian bullseye amd64
             rake-job: debian-bullseye
             test-docker-image: debian:bullseye
-          - label: Debian GNU/Linux bookworm amd64
+          - label: Debian bookworm amd64
             rake-job: debian-bookworm
             test-docker-image: debian:bookworm
           - label: Ubuntu Focal amd64
@@ -112,7 +112,7 @@ jobs:
           ${{ matrix.test-docker-image }} \
           /fluentd/fluent-package/apt/binstubs-test.sh
   test:
-    name: Test
+    name: Test ${{ matrix.label }} ${{ matrix.test-file }}
     needs: build
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -120,8 +120,8 @@ jobs:
       fail-fast: false
       matrix:
         label:
-          - Debian GNU/Linux bullseye amd64
-          - Debian GNU/Linux bookworm amd64
+          - Debian bullseye amd64
+          - Debian bookworm amd64
           - Ubuntu Focal amd64
           - Ubuntu Jammy amd64
           - Ubuntu Noble amd64
@@ -133,10 +133,10 @@ jobs:
           - "install-newly.sh v5"
           - "install-newly.sh lts"
         include:
-          - label: Debian GNU/Linux bullseye amd64
+          - label: Debian bullseye amd64
             rake-job: debian-bullseye
             test-lxc-image: images:debian/11
-          - label: Debian GNU/Linux bookworm amd64
+          - label: Debian bookworm amd64
             rake-job: debian-bookworm
             test-lxc-image: images:debian/12
           - label: Ubuntu Focal amd64
@@ -149,11 +149,11 @@ jobs:
             rake-job: ubuntu-noble
             test-lxc-image: ubuntu:24.04
         exclude:
-          - label: Debian GNU/Linux bookworm amd64
+          - label: Debian bookworm amd64
             test-file: update-from-v4.sh
-          - label: Debian GNU/Linux bookworm amd64
+          - label: Debian bookworm amd64
             test-file: update-to-next-version-with-backward-compat-for-v4.sh
-          - label: Debian GNU/Linux bookworm amd64
+          - label: Debian bookworm amd64
             test-file: downgrade-to-v4.sh
           - label: Ubuntu Noble amd64
             test-file: update-from-v4.sh
