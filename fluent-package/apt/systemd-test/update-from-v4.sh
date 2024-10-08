@@ -32,7 +32,7 @@ sudo apt install -V -y \
     /host/${distribution}/pool/${code_name}/${channel}/*/*/fluent-package_*_${architecture}.deb
 
 # Test: service status
-systemctl status --no-pager fluentd
+(! systemctl status --no-pager fluentd)
 (! systemctl status --no-pager td-agent)
 
 # Test: restoring td-agent service alias

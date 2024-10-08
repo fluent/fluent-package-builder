@@ -14,17 +14,15 @@ last_ver=$(cat tmp/DEBIAN/control | grep "Version: " | sed -E "s/Version: ([0-9.
 sed -i -E "s/Version: ([0-9.]+)-([0-9]+)/Version: \1-$(($last_ver+1))/g" tmp/DEBIAN/control
 dpkg-deb --build tmp next_version.deb
 
-# The service should start automatically
-systemctl is-active fluentd
-# The service should be enabled by default
-systemctl is-enabled fluentd
-
-# Stop the service
-sudo systemctl stop fluentd
+# The service should NOT start automatically
+(! systemctl is-active fluentd)
+# The service should be DISabled by default
+(! systemctl is-enabled fluentd)
 
 # Install the dummy package
 sudo apt install -V -y ./next_version.deb
 
-# The service should restart automatically after update
-systemctl is-active fluentd
-systemctl is-enabled fluentd
+# The service should NOT restart automatically after update
+(! systemctl is-active fluentd)
+# The service should take over the state
+(! systemctl is-enabled fluentd)

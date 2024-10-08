@@ -50,9 +50,9 @@ next_package=$(find rpmbuild -name "*.rpm")
 # Install the dummy package of the next version
 sudo $DNF install -y ./$next_package
 
-# The service should restart automatically after update
+# The service should NOT restart automatically after update
 systemctl is-active fluentd
-test $main_pid -ne $(eval $(systemctl show fluentd --property=MainPID) && echo $MainPID)
+test $main_pid -eq $(eval $(systemctl show fluentd --property=MainPID) && echo $MainPID)
 
 # The service should take over the state
 (! systemctl is-enabled fluentd)

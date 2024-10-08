@@ -7,6 +7,10 @@ set -exu
 # Install the current
 sudo apt install -V -y \
     /host/${distribution}/pool/${code_name}/${channel}/*/*/fluent-package_*_${architecture}.deb
+# The service should NOT start automatically
+(! systemctl is-active fluentd)
+# The service should be DISabled by default
+(! systemctl is-enabled fluentd)
 
 # Make a dummy pacakge for the next version
 dpkg-deb -R /host/${distribution}/pool/${code_name}/${channel}/*/*/fluent-package_*_${architecture}.deb tmp
@@ -21,7 +25,8 @@ dpkg-deb --build tmp next_version.deb
 # Install the dummy package
 sudo apt install -V -y ./next_version.deb
 
-# Test: service
+# Enable and start the service
+sudo systemctl enable --now fluentd
 systemctl status --no-pager fluentd
 
 # Test: migration process from v4 must not be done

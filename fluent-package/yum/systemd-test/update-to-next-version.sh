@@ -7,8 +7,10 @@ set -exu
 # Install the current
 package="/host/${distribution}/${DISTRIBUTION_VERSION}/x86_64/Packages/fluent-package-[0-9]*.rpm"
 sudo $DNF install -y $package
-sudo systemctl enable --now fluentd
-systemctl status --no-pager fluentd
+# The service should NOT start automatically
+(! systemctl is-active fluentd)
+# The service should be DISabled by default
+(! systemctl is-enabled fluentd)
 
 # Make a dummy pacakge for the next version
 case $distribution in
@@ -43,8 +45,9 @@ echo "repacked next fluent-package version: $next_package_ver"
 
 # Install the dummy package of the next version
 sudo $DNF install -y ./$next_package
-# Test: take over enabled state
-systemctl is-enabled fluentd
+
+# Enable and start the service
+sudo systemctl enable --now fluentd
 systemctl status --no-pager fluentd
 
 # Test: migration process from v4 must not be done
@@ -65,18 +68,7 @@ test $(eval $env_vars && echo $FLUENT_CONF) = "/etc/fluent/fluentd.conf"
 test $(eval $env_vars && echo $FLUENT_PACKAGE_LOG_FILE) = "/var/log/fluent/fluentd.log"
 test $(eval $env_vars && echo $FLUENT_PLUGIN) = "/etc/fluent/plugin"
 test $(eval $env_vars && echo $FLUENT_SOCKET) = "/var/run/fluent/fluentd.sock"
-cpe_name=$(grep CPE_NAME /etc/os-release | cut -d'=' -f2)
-case $cpe_name in
-    *rocky:8*)
-	# RHEL8 %systemd_postun_with_restart doesn't restart when already service is running
-	# thus, FLUENT_PACKAGE_VERSION will be kept.
-	release=$(rpmquery --queryformat="%{Version}" -p $package)
-	test $(eval $env_vars && echo $FLUENT_PACKAGE_VERSION) = "$release"
-    ;;
-    *)
-	test $(eval $env_vars && echo $FLUENT_PACKAGE_VERSION) = "$next_package_ver"
-	;;
-esac
+test $(eval $env_vars && echo $FLUENT_PACKAGE_VERSION) = "$next_package_ver"
 
 # Test: logs
 sleep 3

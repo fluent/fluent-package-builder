@@ -8,6 +8,8 @@ case $1 in
   local)
     sudo apt install -V -y \
       /host/${distribution}/pool/${code_name}/${channel}/*/*/fluent-package_*_${architecture}.deb
+    (! systemctl status fluentd)
+    sudo systemctl enable --now fluentd
     ;;
   v5)
     curl --fail --silent --show-error --location https://toolbelt.treasuredata.com/sh/install-${distribution}-${code_name}-fluent-package5.sh | sh
