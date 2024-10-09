@@ -4,6 +4,9 @@ set -exu
 
 . $(dirname $0)/../commonvar.sh
 
+# Remove needrestart package to avoid auto restart outside our contorol
+sudo apt autoremove -y needrestart --purge
+
 # Install the current
 sudo apt install -V -y \
     /host/${distribution}/pool/${code_name}/${channel}/*/*/fluent-package_*_${architecture}.deb
