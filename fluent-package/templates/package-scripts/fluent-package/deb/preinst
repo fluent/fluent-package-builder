@@ -23,8 +23,6 @@ migrate_local_plugins() {
     fi
 }
 
-echo "preinst v6: $1"
-
 case "$1" in
     upgrade)
         migrate_local_plugins
