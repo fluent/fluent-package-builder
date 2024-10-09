@@ -16,6 +16,12 @@ override_dh_auto_install:
 	CI=$CI rake build:all        FLUENT_PACKAGE_STAGING_PATH="$(CURDIR)/debian/tmp" PATH="$(HOME)/.cargo/bin:$(PATH)"
 	dh_installman
 
+# Suppress forcing service start/restart in postinst by omitting
+# related start/restart hook script embedding. It does not omit
+# deb-systemd-helper enable/update-state fluentd.service
+override_dh_installsystemd:
+	dh_installsystemd --no-stop-on-upgrade
+
 override_dh_auto_clean:
 	rake clean
 	dh_auto_clean
