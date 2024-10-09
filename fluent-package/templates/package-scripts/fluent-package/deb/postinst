@@ -145,6 +145,32 @@ migration_from_v4_post_process() {
     fi
 }
 
+local_plugin_migration=/tmp/<%= package_dir %>/.local_plugin_migration
+local_base_plugins=/tmp/<%= package_dir %>/.local_base_plugins
+local_missing_plugins=/tmp/<%= package_dir %>/.local_missing_plugins
+install_missing_plugins() {
+    if [ -f $local_plugin_migration ]; then
+        echo "Checking network connectivity..."
+	if ! curl --fail --silent -O https://rubygems.org/specs.4.8.gz; then
+	    echo "Can't install missing plugins automatically, please install the following plugins manually."
+	    cat $local_plugin_migration
+	else
+	    echo "Install missing plugins automatically..."
+	    /usr/sbin/fluent-gem list | grep fluent-plugin | cut -d' ' -f1 > $local_base_plugins
+	    # NOTE: Do not install already bundled plugins
+	    diff -u $local_base_plugins $local_plugin_migration | grep '^+fluent' | sed -e 's/\+//' > $local_missing_plugins
+	    if [ -s $local_missing_plugins ]; then
+		cat $local_missing_plugins | xargs sudo /usr/sbin/fluent-gem install --no-document
+	    else
+		echo "No need to install missing plugins..."
+	    fi
+	    rm -f $local_base_plugins
+	    rm -f $local_missing_plugins
+	fi
+	rm -f $local_plugin_migration
+    fi
+}
+
 case "$1" in
     configure)
         add_system_user
@@ -152,7 +178,8 @@ case "$1" in
         migration_from_v4_main_process
         fixperms
         migration_from_v4_post_process
-	;;
+        install_missing_plugins
+        ;;
     abort-upgrade|abort-deconfigure|abort-remove)
         :
         ;;
