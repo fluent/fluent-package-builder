@@ -1,6 +1,6 @@
 #! /bin/sh
 
-set -e
+set -ex
 
 . /usr/share/debconf/confmodule
 
@@ -59,6 +59,9 @@ purge_bin_symlinks() {
 	    rm -f /usr/sbin/<%= compat_service_name %>-gem
 	fi
 }
+
+echo "postrm v6: $1"
+echo "postrm v6 prevver: $2"
 
 case $1 in
     remove)

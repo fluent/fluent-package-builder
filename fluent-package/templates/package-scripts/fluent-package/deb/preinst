@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -e
+set -ex
 
 # Summary of how this script can be called:
 #        * <new-preinst> 'install'
@@ -22,6 +22,9 @@ migrate_local_plugins() {
 	fi
     fi
 }
+
+echo "preinst v6: $1"
+echo "preinst v6 prevver: $2"
 
 case "$1" in
     upgrade)

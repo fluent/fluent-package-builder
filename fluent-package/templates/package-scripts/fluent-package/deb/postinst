@@ -1,6 +1,6 @@
 #! /bin/sh
 
-set -e
+set -ex
 
 . /usr/share/debconf/confmodule
 
@@ -171,6 +171,8 @@ install_missing_plugins() {
     fi
 }
 
+echo "postinst v6: $1"
+echo "postinst v6 prevver: $2"
 case "$1" in
     configure)
         add_system_user
