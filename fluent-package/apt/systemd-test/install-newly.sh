@@ -38,6 +38,7 @@ if [ "$1" = "local" ]; then
     sudo /usr/sbin/fluentd --dry-run
 fi
 
+sudo systemctl stop fluentd
 sudo apt remove -y fluent-package
 
 case ${code_name} in

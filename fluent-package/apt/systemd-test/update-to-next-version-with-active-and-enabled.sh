@@ -19,8 +19,8 @@ dpkg-deb --build tmp next_version.deb
 
 # The service should NOT start automatically
 (! systemctl is-active fluentd)
-# The service should be DISabled by default
-(! systemctl is-enabled fluentd)
+# The service should be enabled by default
+systemctl is-enabled fluentd
 
 # Enable and start the service
 sudo systemctl enable --now fluentd

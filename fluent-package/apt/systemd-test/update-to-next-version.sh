@@ -9,8 +9,8 @@ sudo apt install -V -y \
     /host/${distribution}/pool/${code_name}/${channel}/*/*/fluent-package_*_${architecture}.deb
 # The service should NOT start automatically
 (! systemctl is-active fluentd)
-# The service should be DISabled by default
-(! systemctl is-enabled fluentd)
+# The service should be enabled by default
+systemctl is-enabled fluentd
 
 # Make a dummy pacakge for the next version
 dpkg-deb -R /host/${distribution}/pool/${code_name}/${channel}/*/*/fluent-package_*_${architecture}.deb tmp
@@ -66,6 +66,7 @@ test -e /var/log/fluent/fluentd.log
 sudo /usr/sbin/fluentd --dry-run
 
 # Uninstall
+sudo systemctl stop fluentd
 sudo apt remove -y fluent-package
 (! systemctl status --no-pager td-agent)
 (! systemctl status --no-pager fluentd)
