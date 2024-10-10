@@ -86,6 +86,8 @@ test -e /var/log/fluent/fluentd.log
 (! sudo /usr/sbin/fluentd -v)
 sudo /usr/sbin/fluentd --dry-run
 
+sudo systemctl stop fluentd
+
 # Uninstall
 sudo apt remove -y fluent-package
 (! systemctl status --no-pager td-agent)

@@ -90,6 +90,8 @@ test $(find /tmp/ -name gem_local_list.output | xargs cat) = "fluent-plugin-conc
 (! sudo /usr/sbin/fluentd -v)
 sudo /usr/sbin/fluentd --dry-run
 
+sudo systemctl stop fluentd
+
 # Uninstall
 sudo apt remove -y fluent-package
 (! systemctl status --no-pager td-agent)

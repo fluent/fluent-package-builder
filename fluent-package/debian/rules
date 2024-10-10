@@ -21,4 +21,4 @@ override_dh_auto_clean:
 	dh_auto_clean
 
 override_dh_installsystemd:
-	dh_installsystemd --no-stop-on-upgrade --no-start
+	dh_installsystemd --no-restart-after-upgrade --no-stop-on-upgrade --no-start
