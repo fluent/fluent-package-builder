@@ -78,3 +78,23 @@ case $1 in
 esac
 
 #DEBHELPER#
+
+pid=$(systemctl show <%= service_name %> --property=MainPID --value)
+if [ $pid -ne 0 ]; then
+    env_vars=$(sudo sed -e 's/\x0/\n/g' /proc/$pid/environ)
+    action=$(eval $env_vars && echo $FLUENT_PACKAGE_SERVICE_RESTART)
+    case "$action" in
+	auto)
+	    if [ "$1" = "upgrade" ]; then
+		echo "Kick auto service upgrade mode to MainPID:$pid"
+		kill -USR2 $pid
+	    fi
+	    ;;
+	manual)
+	    echo "No need to restart service in manual mode..."
+	    ;;
+	*)
+	    echo "Nothing to be done..."
+	    ;;
+    esac
+fi
