@@ -209,10 +209,29 @@ if [ $1 -eq 2 ]; then
 fi
 
 %preun
-%systemd_preun @SERVICE_NAME@.service
+. %{_sysconfdir}/sysconfig/@SERVICE_NAME@
+echo "preun FLUENT_PACKAGE_SERVICE_RESTART: $FLUENT_PACKAGE_SERVICE_RESTART"
+if [ $1 -eq 0 ]; then
+  if [ "$FLUENT_PACKAGE_SERVICE_RESTART" = "manual" ]; then
+    # When rollback to previous version, there is a case that user want to
+    # restart manually to reduce downtime.
+    :
+  else
+    # disable service here
+    %systemd_preun @SERVICE_NAME@.service
+  fi
+fi
 
 %post
-%systemd_post @SERVICE_NAME@.service
+. %{_sysconfdir}/sysconfig/@SERVICE_NAME@
+echo "post FLUENT_PACKAGE_SERVICE_RESTART: $FLUENT_PACKAGE_SERVICE_RESTART"
+if [ "$FLUENT_PACKAGE_SERVICE_RESTART" = "auto" ]; then
+  echo "Suppress auto restart in auto mode..."
+elif [ "$FLUENT_PACKAGE_SERVICE_RESTART" = "manual" ]; then
+  echo "Suppress auto restart in manual mode ..."
+else
+  %systemd_post @SERVICE_NAME@.service
+fi
 if [ $1 -eq 1 ]; then
   if [ -d /etc/@COMPAT_PACKAGE_DIR@ -a ! -h /etc/@COMPAT_PACKAGE_DIR@ ]; then
     touch %{v4migration}
@@ -329,7 +348,26 @@ if [ $1 -eq 2 ]; then
 fi
 
 %postun
-%systemd_postun_with_restart @SERVICE_NAME@.service
+if [ $1 -eq 1 ]; then
+  # Control service during upgrading
+  . %{_sysconfdir}/sysconfig/@SERVICE_NAME@
+  echo "postun FLUENT_PACKAGE_SERVICE_RESTART: $FLUENT_PACKAGE_SERVICE_RESTART"
+  if [ "$FLUENT_PACKAGE_SERVICE_RESTART" = "auto" ]; then
+    pid=$(systemctl show fluentd --property=MainPID --value)
+    if [ $pid -gt 0 ]; then
+      echo "Kick auto service upgrade mode to MainPID:$pid"
+      kill -USR2 $pid
+    else
+      # no running fluentd service
+      echo "Suppress auto service upgrade mode to MainPID:$pid"
+    fi
+  elif [ "$FLUENT_PACKAGE_SERVICE_RESTART" = "manual" ]; then
+    echo "No need to restart service in manual mode..."
+  else
+    # no support for upgrading without downtime
+    %systemd_postun_with_restart @SERVICE_NAME@.service
+  fi
+fi
 if [ $1 -eq 0 ]; then
   # Uninstall
   # Without this uninstall conditional guard block ($1 -eq 0), symlink

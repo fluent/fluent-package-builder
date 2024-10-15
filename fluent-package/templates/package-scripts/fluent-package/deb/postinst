@@ -196,3 +196,13 @@ fi
 <% end %>
 
 #DEBHELPER#
+
+. /etc/default/<%= service_name %>
+echo "FLUENT_PACKAGE_SERVICE_RESTART: $FLUENT_PACKAGE_SERVICE_RESTART"
+case "$FLUENT_PACKAGE_SERVICE_RESTART" in
+    auto|manual)
+	echo "FLUENT_PACKAGE_SERVICE_RESTART: $FLUENT_PACKAGE_SERVICE_RESTART"
+	;;
+    *)
+	;;
+esac
