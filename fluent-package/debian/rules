@@ -20,7 +20,7 @@ override_dh_auto_install:
 # related start/restart hook script embedding. It does not omit
 # deb-systemd-helper enable/update-state fluentd.service
 override_dh_installsystemd:
-	dh_installsystemd --no-stop-on-upgrade
+	dh_installsystemd --no-restart-after-upgrade --no-stop-on-upgrade
 
 override_dh_auto_clean:
 	rake clean
