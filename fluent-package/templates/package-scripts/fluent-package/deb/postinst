@@ -179,10 +179,8 @@ fluentd_auto_restart() {
 	    action=$(eval $env_vars && echo $FLUENT_PACKAGE_SERVICE_RESTART)
 	    case "$action" in
 		auto)
-		    if [ "$1" = "upgrade" ]; then
-			echo "Kick auto service upgrade mode to MainPID:$pid"
-			kill -USR2 $pid
-		    fi
+		    echo "Kick auto service upgrade mode to MainPID:$pid"
+		    kill -USR2 $pid
 		    ;;
 		manual)
 		    echo "No need to restart service in manual mode..."
