@@ -171,6 +171,30 @@ install_missing_plugins() {
     fi
 }
 
+fluentd_auto_restart() {
+    if [ -d /run/systemd/system ]; then
+	pid=$(systemctl show <%= service_name %> --property=MainPID --value)
+	if [ $pid -ne 0 ]; then
+	    env_vars=$(sudo sed -e 's/\x0/\n/g' /proc/$pid/environ)
+	    action=$(eval $env_vars && echo $FLUENT_PACKAGE_SERVICE_RESTART)
+	    case "$action" in
+		auto)
+		    if [ "$1" = "upgrade" ]; then
+			echo "Kick auto service upgrade mode to MainPID:$pid"
+			kill -USR2 $pid
+		    fi
+		    ;;
+		manual)
+		    echo "No need to restart service in manual mode..."
+		    ;;
+		*)
+		    echo "Nothing to be done..."
+		    ;;
+	    esac
+	fi
+    fi
+}
+
 case "$1" in
     configure)
         add_system_user
@@ -179,7 +203,8 @@ case "$1" in
         fixperms
         migration_from_v4_post_process
         install_missing_plugins
-        ;;
+        fluentd_auto_restart
+	;;
     abort-upgrade|abort-deconfigure|abort-remove)
         :
         ;;
