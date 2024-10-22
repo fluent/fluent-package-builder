@@ -1,15 +1,15 @@
 #!/bin/bash
 
-if [ -z $1 ]; then
-    echo "Error: Need to specify lxc image name."
-    echo "Ex.) $ ./test.sh ubuntu:20.04 "
+if [ $# -lt 2 ]; then
+    echo "Error: Need to specify lxc image name and filename."
     echo "Ex. CI) $ ./test.sh ubuntu:20.04 install-newly.sh local"
     exit 1
 fi
 
 image=$1
 test_file=$2
-apt_repo_type=$3
+shift 2
+other_args="$@"
 dir="/host/fluent-package/apt/systemd-test"
 
 set -eux
@@ -25,8 +25,8 @@ echo "::endgroup::"
 echo "::group::Run test: setup $image"
 lxc exec target -- $dir/setup.sh
 echo "::endgroup::"
-echo "::group::Run test: $test_file $apt_repo_type on $image"
-lxc exec target -- $dir/$test_file $apt_repo_type
+echo "::group::Run test: $test_file $other_args on $image"
+lxc exec target -- $dir/$test_file $other_args
 echo "::endgroup::"
 echo "::group::Run test: cleanup $image"
 lxc stop target

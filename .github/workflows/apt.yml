@@ -117,7 +117,7 @@ jobs:
           ${{ matrix.test-docker-image }} \
           /fluentd/fluent-package/apt/binstubs-test.sh
   test:
-    name: Test ${{ matrix.label }} ${{ matrix.test-file }}
+    name: Test ${{ matrix.label }} ${{ matrix.test }}
     needs: build
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -130,47 +130,51 @@ jobs:
           - Ubuntu Focal amd64
           - Ubuntu Jammy amd64
           - Ubuntu Noble amd64
-        test-file:
+        test:
           - "update-from-v4.sh"
-          - "update-to-next-version-with-backward-compat-for-v4.sh"
-          - "update-to-next-version.sh"
           - "downgrade-to-v4.sh"
           - "install-newly.sh local"
           - "install-newly.sh v5"
           - "install-newly.sh lts"
+          - "update-to-next-version.sh"
+          - "update-to-next-version-with-backward-compat-for-v4.sh"
+          - "update-to-next-version-service-status.sh enabled active"
+          - "update-to-next-version-service-status.sh enabled inactive"
+          - "update-to-next-version-service-status.sh disabled active"
+          - "update-to-next-version-service-status.sh disabled inactive"
         include:
           - label: Debian bullseye amd64
             rake-job: debian-bullseye
-            test-lxc-image: images:debian/11
+            lxc-image: images:debian/11
           - label: Debian bookworm amd64
             rake-job: debian-bookworm
-            test-lxc-image: images:debian/12
+            lxc-image: images:debian/12
           - label: Ubuntu Focal amd64
             rake-job: ubuntu-focal
-            test-lxc-image: ubuntu:20.04
+            lxc-image: ubuntu:20.04
           - label: Ubuntu Jammy amd64
             rake-job: ubuntu-jammy
-            test-lxc-image: ubuntu:22.04
+            lxc-image: ubuntu:22.04
           - label: Ubuntu Noble amd64
             rake-job: ubuntu-noble
-            test-lxc-image: ubuntu:24.04
+            lxc-image: ubuntu:24.04
         exclude:
           - label: Debian bookworm amd64
-            test-file: update-from-v4.sh
+            test: update-from-v4.sh
           - label: Debian bookworm amd64
-            test-file: update-to-next-version-with-backward-compat-for-v4.sh
+            test: update-to-next-version-with-backward-compat-for-v4.sh
           - label: Debian bookworm amd64
-            test-file: downgrade-to-v4.sh
+            test: downgrade-to-v4.sh
           - label: Ubuntu Noble amd64
-            test-file: update-from-v4.sh
+            test: update-from-v4.sh
           - label: Ubuntu Noble amd64
-            test-file: update-to-next-version-with-backward-compat-for-v4.sh
+            test: update-to-next-version-with-backward-compat-for-v4.sh
           - label: Ubuntu Noble amd64
-            test-file: downgrade-to-v4.sh
+            test: downgrade-to-v4.sh
           - label: Ubuntu Noble amd64
-            test-file: install-newly.sh v5
+            test: install-newly.sh v5
           - label: Ubuntu Noble amd64
-            test-file: install-newly.sh lts
+            test: install-newly.sh lts
     steps:
       - uses: actions/checkout@master
       - uses: actions/download-artifact@v4
@@ -180,5 +184,5 @@ jobs:
         with:
           name: packages-apt-source-${{ matrix.rake-job }}
       - uses: canonical/setup-lxd@v0.1.1
-      - name: Run Test  ${{ matrix.test-file }} on ${{ matrix.test-lxc-image }}
-        run: fluent-package/apt/systemd-test/test.sh ${{ matrix.test-lxc-image }} ${{ matrix.test-file }}
+      - name: Run Test  ${{ matrix.test }} on ${{ matrix.lxc-image }}
+        run: fluent-package/apt/systemd-test/test.sh ${{ matrix.lxc-image }} ${{ matrix.test }}

@@ -99,7 +99,7 @@ jobs:
           ${{ matrix.test-docker-image }} \
           /fluentd/fluent-package/yum/binstubs-test.sh
   v1test:
-    name: Test ${{ matrix.label }} ${{ matrix.test-file }} (CGroup V1)
+    name: Test ${{ matrix.label }} ${{ matrix.test }} (CGroup V1)
     needs: build
     runs-on: ubuntu-20.04
     timeout-minutes: 15
@@ -109,39 +109,43 @@ jobs:
         label:
           - AmazonLinux 2 x86_64
           - AmazonLinux 2023 x86_64
-        test-file:
+        test:
           - "update-from-v4.sh"
-          - "update-to-next-version-with-backward-compat-for-v4.sh"
-          - "update-to-next-version.sh"
           - "downgrade-to-v4.sh"
           - "install-newly.sh local"
           - "install-newly.sh v5"
           - "install-newly.sh lts"
+          - "update-to-next-version.sh"
+          - "update-to-next-version-with-backward-compat-for-v4.sh"
+          - "update-to-next-version-service-status.sh enabled active"
+          - "update-to-next-version-service-status.sh enabled inactive"
+          - "update-to-next-version-service-status.sh disabled active"
+          - "update-to-next-version-service-status.sh disabled inactive"
         include:
           - label: AmazonLinux 2 x86_64
             rake-job: amazonlinux-2
-            test-lxc-image: images:amazonlinux/2
+            lxc-image: images:amazonlinux/2
           - label: AmazonLinux 2023 x86_64
             rake-job: amazonlinux-2023
-            test-lxc-image: images:amazonlinux/2023
+            lxc-image: images:amazonlinux/2023
         exclude:
           - label: AmazonLinux 2023 x86_64
-            test-file: update-from-v4.sh
+            test: update-from-v4.sh
           - label: AmazonLinux 2023 x86_64
-            test-file: update-to-next-version-with-backward-compat-for-v4.sh
+            test: update-to-next-version-with-backward-compat-for-v4.sh
           - label: AmazonLinux 2023 x86_64
-            test-file: downgrade-to-v4.sh
+            test: downgrade-to-v4.sh
     steps:
       - uses: actions/checkout@master
       - uses: actions/download-artifact@v4
         with:
           name: packages-${{ matrix.rake-job }}
       - uses: canonical/setup-lxd@v0.1.1
-      - name: Run Test ${{ matrix.test-file }} on ${{ matrix.test-lxc-image }}
-        run: fluent-package/yum/systemd-test/test.sh ${{ matrix.test-lxc-image }} ${{ matrix.test-file }}
+      - name: Run Test ${{ matrix.test }} on ${{ matrix.lxc-image }}
+        run: fluent-package/yum/systemd-test/test.sh ${{ matrix.lxc-image }} ${{ matrix.test }}
 
   v2test:
-    name: Test ${{ matrix.label }} ${{ matrix.test-file }} (CGroup V2)
+    name: Test ${{ matrix.label }} ${{ matrix.test }} (CGroup V2)
     needs: build
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -151,26 +155,30 @@ jobs:
         label:
           - RockyLinux 8 x86_64
           - AlmaLinux 9 x86_64
-        test-file:
+        test:
           - "update-from-v4.sh"
-          - "update-to-next-version-with-backward-compat-for-v4.sh"
-          - "update-to-next-version.sh"
           - "downgrade-to-v4.sh"
           - "install-newly.sh local"
           - "install-newly.sh v5"
           - "install-newly.sh lts"
+          - "update-to-next-version.sh"
+          - "update-to-next-version-with-backward-compat-for-v4.sh"
+          - "update-to-next-version-service-status.sh enabled active"
+          - "update-to-next-version-service-status.sh enabled inactive"
+          - "update-to-next-version-service-status.sh disabled active"
+          - "update-to-next-version-service-status.sh disabled inactive"
         include:
           - label: RockyLinux 8 x86_64
             rake-job: rockylinux-8
-            test-lxc-image: images:rockylinux/8
+            lxc-image: images:rockylinux/8
           - label: AlmaLinux 9 x86_64
             rake-job: almalinux-9
-            test-lxc-image: images:almalinux/9
+            lxc-image: images:almalinux/9
     steps:
       - uses: actions/checkout@master
       - uses: actions/download-artifact@v4
         with:
           name: packages-${{ matrix.rake-job }}
       - uses: canonical/setup-lxd@v0.1.1
-      - name: Run Test ${{ matrix.test-file }} on ${{ matrix.test-lxc-image }}
-        run: fluent-package/yum/systemd-test/test.sh ${{ matrix.test-lxc-image }} ${{ matrix.test-file }}
+      - name: Run Test ${{ matrix.test }} on ${{ matrix.lxc-image }}
+        run: fluent-package/yum/systemd-test/test.sh ${{ matrix.lxc-image }} ${{ matrix.test }}
