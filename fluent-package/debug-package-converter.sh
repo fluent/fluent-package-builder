@@ -16,6 +16,8 @@
 # fluent-package_6.0.0-2_amd64.deb.
 #
 
+set -e
+
 DEBUG=0
 CLEANUP=1
 PACKAGE=""
@@ -119,14 +121,12 @@ EOF
 	sed -i -E "s/FLUENT_PACKAGE_VERSION=([0-9.]+)/FLUENT_PACKAGE_VERSION=\1.1/g" tmp/lib/systemd/system/fluentd.service
 	next_release="$version-"$(($debian_version+1))
 	if [ $DEBUG -eq 1 ]; then
-            sed -i -e "s/^set -e/set -ex\necho \"#=> prerm $next_release: \$1 (\$2)\"/" tmp/DEBIAN/prerm
-            echo "echo \"#<= prerm $next_release: \$1 (\$2) END\"" >> tmp/DEBIAN/prerm
-            sed -i -e "s/^set -e/set -ex\necho \"#=> postrm $next_release: \$1 (\$2)\"/" tmp/DEBIAN/postrm
-            echo "echo \"#<= postrm $next_release: \$1 (\$2) END\"" >> tmp/DEBIAN/postrm
-            sed -i -e "s/^set -e/set -ex\necho \"#=> preinst $next_release: \$1 (\$2)\"/" tmp/DEBIAN/preinst
-            echo "echo \"#<= preinst $next_release: \$1 (\$2) END\"" >> tmp/DEBIAN/preinst
-            sed -i -e "s/^set -e/set -ex\necho \"#=> postinst $next_release: \$1 (\$2)\"/" tmp/DEBIAN/postinst
-            echo "echo \"#<= postinst $next_release: \$1 (\$2) END\"" >> tmp/DEBIAN/postinst
+            for d in prerm postrm preinst postinst; do
+		if [ -f tmp/DEBIAN/$d ]; then
+		    sed -i -e "s/^set -e/set -ex\necho \"#=> $d $next_release: \$1 (\$2)\"/" tmp/DEBIAN/$d
+		    echo "echo \"#<= $d $next_release: \$1 (\$2) END\"" >> tmp/DEBIAN/$d
+		fi
+	    done
 	fi
 	dpkg-deb --build tmp fluent-package_${next_release}_amd64.deb
 	if [ $CLEANUP -eq 1 ]; then
