@@ -217,29 +217,29 @@ if [ $1 -eq 1 ]; then
       rm -f /etc/@PACKAGE_DIR@/@SERVICE_NAME@.conf
       ln -sf /etc/@PACKAGE_DIR@/@COMPAT_SERVICE_NAME@.conf /etc/@PACKAGE_DIR@/@SERVICE_NAME@.conf
     fi
-  fi
-  if systemctl is-enabled @COMPAT_SERVICE_NAME@; then
-    # It is not enough to systemctl enable fluentd here for taking over enabled service status
-    # because td-agent %preun disables td-agent so fluentd is also disabled.
-    touch %{v4migration_enabled_service}
-  fi
-  if systemctl is-active @COMPAT_SERVICE_NAME@; then
-    if getent passwd @COMPAT_SERVICE_NAME@ >/dev/null; then
-      if ! getent passwd @SERVICE_NAME@ >/dev/null; then
-        # usermod fails when user process is active, so
-        # postpone username migration step here. (During %pre
-        # stage, mismatch of user/group configuration cause
-        # restarting service failure.)
-        systemctl stop @COMPAT_SERVICE_NAME@.service
-        TD_UID=$(id --user @COMPAT_SERVICE_NAME@)
-        TD_GID=$(getent group @COMPAT_SERVICE_NAME@ | cut -d':' -f3)
-        /usr/sbin/useradd -u $TD_UID -g $TD_GID -o @SERVICE_NAME@
-      fi
+    if systemctl is-enabled @COMPAT_SERVICE_NAME@; then
+      # It is not enough to systemctl enable fluentd here for taking over enabled service status
+      # because td-agent %preun disables td-agent so fluentd is also disabled.
+      touch %{v4migration_enabled_service}
     fi
-    # Want to restart with new user/group here,
-    # but to avoid holding file descriptor under /var/log/@COMPAT_PACKAGE_DIR@/,
-    # delay restarting @SERVICE_NAME@ service.
-    touch %{v4migration_with_restart}
+    if systemctl is-active @COMPAT_SERVICE_NAME@; then
+      if getent passwd @COMPAT_SERVICE_NAME@ >/dev/null; then
+	if ! getent passwd @SERVICE_NAME@ >/dev/null; then
+	  # usermod fails when user process is active, so
+	  # postpone username migration step here. (During %pre
+	  # stage, mismatch of user/group configuration cause
+	  # restarting service failure.)
+	  systemctl stop @COMPAT_SERVICE_NAME@.service
+	  TD_UID=$(id --user @COMPAT_SERVICE_NAME@)
+	  TD_GID=$(getent group @COMPAT_SERVICE_NAME@ | cut -d':' -f3)
+	  /usr/sbin/useradd -u $TD_UID -g $TD_GID -o @SERVICE_NAME@
+	fi
+      fi
+      # Want to restart with new user/group here,
+      # but to avoid holding file descriptor under /var/log/@COMPAT_PACKAGE_DIR@/,
+      # delay restarting @SERVICE_NAME@ service.
+      touch %{v4migration_with_restart}
+    fi
   fi
   if [ -d /var/log/@COMPAT_PACKAGE_DIR@ -a ! -h /var/log/@COMPAT_PACKAGE_DIR@ ]; then
     # /var/log/@COMPAT_PACKAGE_DIR@ migration from v4
