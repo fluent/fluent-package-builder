@@ -65,18 +65,8 @@ test $(eval $env_vars && echo $FLUENT_CONF) = "/etc/fluent/fluentd.conf"
 test $(eval $env_vars && echo $FLUENT_PACKAGE_LOG_FILE) = "/var/log/fluent/fluentd.log"
 test $(eval $env_vars && echo $FLUENT_PLUGIN) = "/etc/fluent/plugin"
 test $(eval $env_vars && echo $FLUENT_SOCKET) = "/var/run/fluent/fluentd.sock"
-cpe_name=$(grep CPE_NAME /etc/os-release | cut -d'=' -f2)
-case $cpe_name in
-    *rocky:8*)
-	# RHEL8 %systemd_postun_with_restart doesn't restart when already service is running
-	# thus, FLUENT_PACKAGE_VERSION will be kept.
-	release=$(rpmquery --queryformat="%{Version}" -p $package)
-	test $(eval $env_vars && echo $FLUENT_PACKAGE_VERSION) = "$release"
-    ;;
-    *)
-	test $(eval $env_vars && echo $FLUENT_PACKAGE_VERSION) = "$next_package_ver"
-	;;
-esac
+# FLUENT_PACKAGE_VERSION will be updated after the next restart
+(! test $(eval $env_vars && echo $FLUENT_PACKAGE_VERSION) = "$next_package_ver")
 
 # Test: logs
 sleep 3
