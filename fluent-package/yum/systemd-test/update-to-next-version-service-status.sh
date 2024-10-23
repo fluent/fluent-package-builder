@@ -65,9 +65,9 @@ else
 fi
 
 if [ "$status_before_update" = active ]; then
-    # The service should restart automatically after update
+    # The service should NOT restart automatically after update
     systemctl is-active fluentd
-    test $main_pid -ne $(eval $(systemctl show fluentd --property=MainPID) && echo $MainPID)
+    test $main_pid -eq $(eval $(systemctl show fluentd --property=MainPID) && echo $MainPID)
 else
     # The service should NOT start automatically
     (! systemctl is-active fluentd)
