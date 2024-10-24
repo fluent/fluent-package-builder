@@ -43,6 +43,7 @@ test $(eval $env_vars && echo $FLUENT_PACKAGE_LOG_FILE) = "/var/log/fluent/fluen
 test $(eval $env_vars && echo $FLUENT_PLUGIN) = "/etc/fluent/plugin"
 test $(eval $env_vars && echo $FLUENT_SOCKET) = "/var/run/fluent/fluentd.sock"
 # FLUENT_PACKAGE_VERSION will be updated after the next restart
+# TODO: consider how to test the update of version info
 (! test $(eval $env_vars && echo $FLUENT_PACKAGE_VERSION) = "$next_package_ver")
 
 # Test: fluent-diagtool
