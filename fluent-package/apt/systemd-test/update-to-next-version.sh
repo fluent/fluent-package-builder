@@ -44,7 +44,20 @@ test $(eval $env_vars && echo $FLUENT_PLUGIN) = "/etc/fluent/plugin"
 test $(eval $env_vars && echo $FLUENT_SOCKET) = "/var/run/fluent/fluentd.sock"
 # FLUENT_PACKAGE_VERSION will be updated after the next restart
 # TODO: consider how to test the update of version info
-(! test $(eval $env_vars && echo $FLUENT_PACKAGE_VERSION) = "$next_package_ver")
+. /etc/os-release
+case $VERSION_CODENAME in
+    noble)
+	if dpkg-query --show --showformat '${Version}' needrestart; then
+	    # If needrestart is available, restart will be fired out of maintainer script
+	    test $(eval $env_vars && echo $FLUENT_PACKAGE_VERSION) = "$next_package_ver"
+	else
+	    (! test $(eval $env_vars && echo $FLUENT_PACKAGE_VERSION) = "$next_package_ver")
+	fi
+    ;;
+    *)
+	(! test $(eval $env_vars && echo $FLUENT_PACKAGE_VERSION) = "$next_package_ver")
+	;;
+esac
 
 # Test: fluent-diagtool
 sudo fluent-gem install fluent-plugin-concat

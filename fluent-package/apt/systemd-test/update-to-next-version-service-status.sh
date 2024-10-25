@@ -46,7 +46,20 @@ if [ "$status_before_update" = active ]; then
     # The service should NOT restart automatically after update
     # (The process before update should continue to run)
     systemctl is-active fluentd
-    test $main_pid -eq $(systemctl show --value --property=MainPID fluentd)
+    . /etc/os-release
+    case $VERSION_CODENAME in
+	noble)
+	    if dpkg-query --show --showformat '${Version}' needrestart; then
+		# If needrestart is available, restart will be fired out of maintainer script
+		(! test $main_pid -eq $(systemctl show --value --property=MainPID fluentd))
+	    else
+		test $main_pid -eq $(systemctl show --value --property=MainPID fluentd)
+	    fi
+	    ;;
+	*)
+	    test $main_pid -eq $(systemctl show --value --property=MainPID fluentd)
+	    ;;
+    esac
 elif [ "$enabled_before_update" = enabled ]; then
     # The service should start automatically
     systemctl is-active fluentd
