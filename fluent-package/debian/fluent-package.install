@@ -5,4 +5,5 @@ usr/lib/tmpfiles.d/*
 etc/logrotate.d/*
 etc/fluent/*
 etc/default/*
+etc/needrestart/conf.d/*
 lib/systemd/system/*
