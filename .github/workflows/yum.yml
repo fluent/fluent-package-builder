@@ -141,6 +141,13 @@ jobs:
         with:
           name: packages-${{ matrix.rake-job }}
       - uses: canonical/setup-lxd@v0.1.1
+      - name: Run diagnostic
+        run: |
+          uname -a
+          lxc ls
+          snap logs lxd
+          snap info lxd
+          grep level=error /var/snap/lxd/common/lxd/logs/lxd.log
       - name: Run Test ${{ matrix.test }} on ${{ matrix.lxc-image }}
         run: fluent-package/yum/systemd-test/test.sh ${{ matrix.lxc-image }} ${{ matrix.test }}
 
