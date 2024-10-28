@@ -1187,6 +1187,15 @@ class BuildTask
                      "etc/logrotate.d/#{SERVICE_NAME}",
                      fluentd_conf_default,
                    ]) unless windows? || macos?
+    File.readlines("/etc/os-release").each do |line|
+      if line.include?("ID=")
+        distribution = line.split(/=/).last.chomp
+        if ["debian", "ubuntu"].include?(distribution)
+          puts "Suppress needrestart on #{distribution}"
+          configs.concat(["etc/needrestart/conf.d/50-fluent-package.conf"])
+        end
+      end
+    end
     configs.each do |config|
       src =
         if config == fluentd_conf_default
