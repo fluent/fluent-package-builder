@@ -5,6 +5,9 @@ on:
       - master
       - fluent-package-lts-v5
   pull_request:
+concurrency:
+  group: ${{ github.head_ref || github.sha }}-${{ github.workflow }}
+  cancel-in-progress: true
 jobs:
   build:
     name: Build
