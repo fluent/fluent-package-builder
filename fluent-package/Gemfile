@@ -14,13 +14,13 @@ gem "sigdump", "0.2.5"
 gem "http_parser.rb", "0.8.0"
 gem "yajl-ruby", "1.4.3"
 gem "serverengine", '2.3.2'
-gem "msgpack", "1.7.2"
-gem "oj", "3.16.1"
+gem "msgpack", "1.7.3"
+gem "oj", "3.16.5"
 gem "tzinfo", "2.0.6"
-gem "tzinfo-data", "1.2024.1"
+gem "tzinfo-data", "1.2024.2"
 gem "async", "1.31.0"
 gem "async-http", "0.61.0"
-gem "webrick", "1.8.1"
+gem "webrick", "1.8.2"
 
 if ENV["INSTALL_GEM_FROM_LOCAL_REPO"]
   # During build process, pre-built fluentd gem will be installed
@@ -96,6 +96,6 @@ gem "fluent-plugin-windows-exporter", "1.0.0", platforms: windows_platforms
 
 not_windows_platforms = [:ruby]
 gem "rdkafka", "0.12.0", platforms: not_windows_platforms
-gem "systemd-journal", "1.4.2", platforms: not_windows_platforms
-gem "fluent-plugin-systemd", "1.0.5", platforms: not_windows_platforms
+gem "systemd-journal", "2.0.0", platforms: not_windows_platforms
+gem "fluent-plugin-systemd", "1.1.0", platforms: not_windows_platforms
 gem "fluent-plugin-utmpx", "0.5.0", platforms: not_windows_platforms
