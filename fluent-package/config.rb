@@ -7,7 +7,7 @@ COMPAT_SERVICE_NAME = "td-agent"
 PACKAGE_DIR = "fluent"
 COMPAT_PACKAGE_DIR = COMPAT_SERVICE_NAME
 
-FLUENTD_REVISION = '95d130aaa44fc09b14a4e9686ee8018253185fc5' # v1.16.5
+FLUENTD_REVISION = 'fa1cfbb0335e7751a2fd5547897ab611484ee000' # v1.16.6
 FLUENTD_LOCAL_GEM_REPO = "file://" + File.expand_path(File.join(__dir__, "local_gem_repo"))
 
 # https://github.com/jemalloc/jemalloc/releases
@@ -23,8 +23,8 @@ OPENSSL_FOR_MACOS_SHA256SUM = "6c13d2bf38fdf31eac3ce2a347073673f5d63263398f1f69d
 BUNDLER_VERSION= "2.3.27"
 
 # https://www.ruby-lang.org/en/downloads/ (tar.gz)
-BUNDLED_RUBY_VERSION = "3.2.4"
-BUNDLED_RUBY_SOURCE_SHA256SUM = "c72b3c5c30482dca18b0f868c9075f3f47d8168eaf626d4e682ce5b59c858692"
+BUNDLED_RUBY_VERSION = "3.2.5"
+BUNDLED_RUBY_SOURCE_SHA256SUM = "ef0610b498f60fb5cfd77b51adb3c10f4ca8ed9a17cb87c61e5bea314ac34a16"
 
 BUNDLED_RUBY_PATCHES = [
   # An example entry:
