@@ -1,6 +1,9 @@
 name: Yum based Linux (AArch64)
 on:
   workflow_dispatch:
+concurrency:
+  group: ${{ github.head_ref || github.sha }}-${{ github.workflow }}
+  cancel-in-progress: true
 jobs:
   build:
     name: Build
