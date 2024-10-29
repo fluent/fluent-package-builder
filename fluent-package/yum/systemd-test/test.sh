@@ -14,7 +14,7 @@ dir="/host/fluent-package/yum/systemd-test"
 set -eux
 
 echo "::group::Run test: launch $image"
-lxc launch $image target
+lxc launch $image target --debug
 sleep 5
 echo "::endgroup::"
 echo "::group::Run test: configure $image"
