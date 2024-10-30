@@ -28,8 +28,18 @@ for d in $(seq 1 10); do
 done
 
 # Install the current
-sudo apt install -V -y \
-    /host/${distribution}/pool/${code_name}/${channel}/*/*/fluent-package_*_${architecture}.deb
+case $1 in
+  local)
+    sudo apt install -V -y \
+      /host/${distribution}/pool/${code_name}/${channel}/*/*/fluent-package_*_${architecture}.deb
+    ;;
+  v5)
+    curl --fail --silent --show-error --location https://toolbelt.treasuredata.com/sh/install-${distribution}-${code_name}-fluent-package5.sh | sh
+    ;;
+  lts)
+    curl --fail --silent --show-error --location https://toolbelt.treasuredata.com/sh/install-${distribution}-${code_name}-fluent-package5-lts.sh | sh
+    ;;
+esac
 
 # Test: service status
 systemctl status --no-pager fluentd
