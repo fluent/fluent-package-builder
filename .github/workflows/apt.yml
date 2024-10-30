@@ -203,5 +203,23 @@ jobs:
         with:
           name: packages-apt-source-${{ matrix.rake-job }}
       - uses: canonical/setup-lxd@v0.1.2
+      - name: Run diagnostic
+        run: |
+          uname -a
+          echo "::group::snap info lxd"
+          snap info lxd
+          echo "::endgroup::"
+          echo "::group::snap services lxd"
+          snap services lxd
+          echo "::endgroup::"
+          echo "::group::snap logs lxd"
+          sudo snap logs lxd
+          echo "::endgroup::"
+          echo "::group::lxc remote list"
+          lxc remote list
+          echo "::endgroup::"
+          echo "::group::lxc list images:"
+          lxc image list images:
+          echo "::endgroup::"
       - name: Run Test  ${{ matrix.test }} on ${{ matrix.lxc-image }}
         run: fluent-package/apt/systemd-test/test.sh ${{ matrix.lxc-image }} ${{ matrix.test }}
