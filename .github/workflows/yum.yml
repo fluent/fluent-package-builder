@@ -156,6 +156,12 @@ jobs:
           echo "::group::snap logs lxd"
           sudo snap logs lxd
           echo "::endgroup::"
+          echo "::group::lxc remote list"
+          lxc remote list
+          echo "::endgroup::"
+          echo "::group::lxc list images:"
+          lxc image list images:
+          echo "::endgroup::"
       - name: Run Test ${{ matrix.test }} on ${{ matrix.lxc-image }}
         run: fluent-package/yum/systemd-test/test.sh ${{ matrix.lxc-image }} ${{ matrix.test }}
 
