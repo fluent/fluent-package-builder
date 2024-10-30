@@ -81,7 +81,7 @@ esac
 # Test: logs
 sleep 3
 test -e /var/log/fluent/fluentd.log
-(! grep -q -e '\[warn\]' -e '\[error\]' -e '\[fatal\]' /var/log/fluent/fluentd.log)
+(! grep -e '\[warn\]' -e '\[error\]' -e '\[fatal\]' /var/log/fluent/fluentd.log)
 
 # Test: fluent-diagtool
 sudo fluent-gem install fluent-plugin-concat

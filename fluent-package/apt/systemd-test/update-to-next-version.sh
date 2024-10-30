@@ -52,7 +52,7 @@ test $(find /tmp/ -name gem_local_list.output | xargs cat) = "fluent-plugin-conc
 # Test: logs
 sleep 3
 test -e /var/log/fluent/fluentd.log
-(! grep -q -e '\[warn\]' -e '\[error\]' -e '\[fatal\]' /var/log/fluent/fluentd.log)
+(! grep -e '\[warn\]' -e '\[error\]' -e '\[fatal\]' /var/log/fluent/fluentd.log)
 
 # Test: Guard duplicated instance
 (! sudo /usr/sbin/fluentd)
