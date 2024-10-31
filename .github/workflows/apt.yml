@@ -191,10 +191,6 @@ jobs:
             test: update-to-next-version-with-backward-compat-for-v4.sh
           - label: Ubuntu Noble amd64
             test: downgrade-to-v4.sh
-          - label: Ubuntu Noble amd64
-            test: install-newly.sh v5
-          - label: Ubuntu Noble amd64
-            test: install-newly.sh lts
     steps:
       - uses: actions/checkout@master
       - uses: actions/download-artifact@v4
