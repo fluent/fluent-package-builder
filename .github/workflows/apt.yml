@@ -157,6 +157,7 @@ jobs:
           - "update-to-next-version-service-status.sh enabled inactive"
           - "update-to-next-version-service-status.sh disabled active"
           - "update-to-next-version-service-status.sh disabled inactive"
+          - "update-to-next-version-without-data-lost.sh"
         include:
           - label: Debian bullseye amd64
             rake-job: debian-bullseye
