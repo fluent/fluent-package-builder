@@ -157,7 +157,7 @@ def extract_fluentd_version(archive_path)
                           File.basename(archive_path, ".tar.gz"))
   Dir.chdir(archive_dir) do
     IO.popen("git tag --contains #{FLUENTD_REVISION}") do |tags|
-      fluentd_version = tags.readlines.last.chomp.delete_prefix("v")
+      fluentd_version = tags.readlines.last&.chomp&.delete_prefix("v") || ""
     end
   end
   puts "::endgroup::" if ENV["CI"]
