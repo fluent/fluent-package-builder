@@ -48,7 +48,7 @@ jobs:
         id: cache-rpm
         with:
           path: fluent-package/yum/repositories
-          key: ${{ runner.os }}-cache-${{ matrix.rake-job }}-${{ hashFiles('**/config.rb', '**/Rakefile', '**/Gemfile*', '**/*.spec.in') }}
+          key: ${{ runner.os }}-cache-${{ matrix.rake-job }}-${{ hashFiles('**/config.rb', '**/Rakefile', '**/Gemfile*', '**/*.spec.in', 'fluent-package/templates/**', 'fluent-package/yum/**/Dockerfile') }}
       - name: Build rpm with Docker
         if: ${{ ! steps.cache-rpm.outputs.cache-hit }}
         run: |
