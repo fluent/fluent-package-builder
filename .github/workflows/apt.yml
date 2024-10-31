@@ -176,6 +176,7 @@ jobs:
           - "update-to-next-version-service-status.sh disabled active"
           - "update-to-next-version-service-status.sh disabled inactive"
           - "update-to-next-version-without-data-lost.sh"
+          - "update-to-next-version-with-auto-and-manual.sh"
           - "update-to-next-major-version.sh"
         include:
           - label: Debian bullseye amd64
