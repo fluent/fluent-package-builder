@@ -1187,6 +1187,10 @@ class BuildTask
                      "etc/logrotate.d/#{SERVICE_NAME}",
                      fluentd_conf_default,
                    ]) unless windows? || macos?
+    if File.read("/etc/os-release") =~ /VERSION_CODENAME=noble/
+      puts "Suppress needrestart on Ubuntu 24.04 (Noble)"
+      configs.concat(["etc/needrestart/conf.d/50-fluent-package.conf"])
+    end
     configs.each do |config|
       src =
         if config == fluentd_conf_default
