@@ -50,17 +50,36 @@ jobs:
         uses: actions/cache@v4
         id: cache-rpm
         with:
-          path: fluent-package/yum/repositories
+          path: |
+            fluent-package/yum/repositories
+            v6-test/fluent-package/yum/repositories
           key: ${{ runner.os }}-cache-${{ matrix.rake-job }}-${{ hashFiles('**/config.rb', '**/Rakefile', '**/Gemfile*', '**/*.spec.in', 'fluent-package/templates/**', 'fluent-package/yum/**/Dockerfile') }}
       - name: Build rpm with Docker
         if: ${{ ! steps.cache-rpm.outputs.cache-hit }}
         run: |
+          rake yum:build YUM_TARGETS=${{ matrix.rake-job }}
+      - uses: actions/checkout@master
+        if: ${{ ! steps.cache-rpm.outputs.cache-hit }}
+        with:
+          path: v6-test
+      - name: Build v6 rpm with Docker
+        if: ${{ ! steps.cache-rpm.outputs.cache-hit }}
+        run: |
+          cd v6-test
+          git config user.email "fluentd@googlegroups.com"
+          git config user.name "Fluentd developers"
+          git am fluent-package/bump-version-v6.patch
           rake yum:build YUM_TARGETS=${{ matrix.rake-job }}
       - name: Upload fluent-package rpm
         uses: actions/upload-artifact@v4
         with:
           name: packages-${{ matrix.rake-job }}
           path: fluent-package/yum/repositories
+      - name: Upload v6 fluent-package rpm
+        uses: actions/upload-artifact@v4
+        with:
+          name: v6-packages-${{ matrix.rake-job }}
+          path: v6-test/fluent-package/yum/repositories
       # TODO move the following steps to "Test" job
       - name: Check Package Size
         run: |
@@ -132,6 +151,7 @@ jobs:
           - "update-to-next-version-service-status.sh disabled active"
           - "update-to-next-version-service-status.sh disabled inactive"
           - "update-to-next-version-without-data-lost.sh"
+          - "update-to-next-major-version.sh"
         include:
           - label: AmazonLinux 2 x86_64
             rake-job: amazonlinux-2
@@ -151,6 +171,10 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: packages-${{ matrix.rake-job }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: v6-packages-${{ matrix.rake-job }}
+          path: v6-test
       - uses: canonical/setup-lxd@v0.1.2
       - name: Run diagnostic
         run: |
@@ -197,6 +221,7 @@ jobs:
           - "update-to-next-version-service-status.sh disabled active"
           - "update-to-next-version-service-status.sh disabled inactive"
           - "update-to-next-version-without-data-lost.sh"
+          - "update-to-next-major-version.sh"
         include:
           - label: RockyLinux 8 x86_64
             rake-job: rockylinux-8
@@ -209,6 +234,10 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: packages-${{ matrix.rake-job }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: v6-packages-${{ matrix.rake-job }}
+          path: v6-test
       - uses: canonical/setup-lxd@v0.1.2
       - name: Run Test ${{ matrix.test }} on ${{ matrix.lxc-image }}
         run: fluent-package/yum/systemd-test/test.sh ${{ matrix.lxc-image }} ${{ matrix.test }}
