@@ -31,7 +31,8 @@ done
 case $1 in
   local)
     sudo apt install -V -y \
-      /host/${distribution}/pool/${code_name}/${channel}/*/*/fluent-package_*_${architecture}.deb
+      /host/${distribution}/pool/${code_name}/${channel}/*/*/fluent-package_*_${architecture}.deb \
+      /host/${distribution}/pool/${code_name}/${channel}/*/*/td-agent_*_all.deb
     ;;
   v5)
     curl --fail --silent --show-error --location https://toolbelt.treasuredata.com/sh/install-${distribution}-${code_name}-fluent-package5.sh | sh
