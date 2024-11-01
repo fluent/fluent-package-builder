@@ -10,17 +10,15 @@ set -e
 # for details, see https://www.debian.org/doc/debian-policy/ or
 # the debian-policy package.
 
-local_plugin_migration=/tmp/<%= package_dir %>/.local_plugin_migration
+local_base_plugins=/tmp/<%= package_dir %>/.local_base_plugins
 migrate_local_plugins() {
-    # collect manually installed plugins
-    archive_path=$(sudo /opt/fluent/bin/fluent-diagtool -t fluentd -o /tmp | tail -n 1 | cut -d' ' -f10)
-    local_gem_output=$(echo $archive_path | sed -e 's/diagout-//' -e 's/.tar.gz//')/output/gem_local_list.output
-    if [ -f $local_gem_output ]; then
-        if [ -s $local_gem_output ]; then
-	    # If there are missing plugins, mark path to it
-	    cp $local_gem_output $local_plugin_migration
-	fi
+    if [ ! -d /run/systemd/system ]; then
+        # tmpfiles.d owns /tmp/<%= package_dir %>, but not created without systemd
+        mkdir -p /tmp/<%= package_dir %>
     fi
+    # collect list of gems
+    # We don't use fluent-diagtool here because it depends on systemd and piuparts fails
+    /opt/fluent/bin/fluent-gem list '^fluent-plugin-' --no-version --no-verbose > $local_base_plugins
 }
 
 case "$1" in

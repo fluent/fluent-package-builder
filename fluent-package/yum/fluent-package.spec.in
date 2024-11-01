@@ -32,8 +32,7 @@
 %define v4migration_with_restart /tmp/@PACKAGE_DIR@/.v4migration_with_restart
 %define v4migration_old_rotate_config_saved /tmp/@PACKAGE_DIR@/.old_rotate_config
 %define v4migration_enabled_service /tmp/@PACKAGE_DIR@/.v4migration_enabled_service
-%define local_plugin_migration /tmp/@PACKAGE_DIR@/.local_plugin_migration
-%define local_base_plugins /tmp/@PACKAGE_DIR@/.base-plugins
+%define local_base_plugins /tmp/@PACKAGE_DIR@/.local_base_plugins
 
 # Omit the brp-python-bytecompile automagic because post hook for ffi fails on AmazonLinux 2.
 %if %{_amazon_ver} == 2
@@ -189,23 +188,8 @@ else
     fi
 fi
 if [ $1 -eq 2 ]; then
-  # collect manually installed plugins during upgrading
-  archive_path=$(sudo /opt/fluent/bin/fluent-diagtool -t fluentd -o /tmp  | tail -n 1 | cut -d' ' -f10)
-  local_gem_output=$(echo $archive_path | sed -e 's/diagout-//' -e 's/.tar.gz//')/output/gem_local_list.output
-  if [ -f $local_gem_output ]; then
-      if [ -s $local_gem_output ]; then
-	  # If there are missing plugins, mark path to it
-	  echo "Detected missing plugins..."
-	  cp $local_gem_output %{local_plugin_migration}
-      else
-	  echo "Missing $local_gem_output"
-      fi
-  else
-      echo "Missing $local_gem_output to check locally installed plugins."
-  fi
-  rm -f $archive_path
-  archive_dir=$(echo $archive_path | sed -e 's/diagout-//' -e 's/.tar.gz//')
-  rm -rf $archive_dir
+  # collect installed gems during upgrading
+  /opt/fluent/bin/fluent-gem list '^fluent-plugin-' --no-versions --no-verbose > %{local_base_plugins}
 fi
 
 %preun
@@ -324,26 +308,23 @@ if [ -f "%{_sysconfdir}/prelink.conf" ]; then
 fi
 if [ $1 -eq 2 ]; then
   # install missing plugins during upgrading package
-  if [ -f %{local_plugin_migration} ]; then
-    echo "Checking network connectivity..."
-    curl --fail --silent -O https://rubygems.org/specs.4.8.gz
-    if [ $? -eq 0 ]; then
-      echo "Install missing plugins automatically..."
-      /usr/sbin/fluent-gem list | grep fluent-plugin | cut -d' ' -f1 > %{local_base_plugins}
-      # NOTE: Do not install already bundled plugins
-      diff -u %{local_base_plugins} %{local_plugin_migration} | grep '^+fluent' | sed -e 's/\+//' > %{local_missing_plugins}
-      if [ -s %{local_missing_plugins} ]; then
-        cat %{local_missing_plugins} | xargs sudo /usr/sbin/fluent-gem install --no-document
-      else
-         echo "No need to install missing plugins..."
-      fi
-      rm -f %{local_base_plugins}
-      rm -f %{local_missing_plugins}
+  if [ -f %{local_base_plugins} ]; then
+    local_current_plugins=$(/usr/sbin/fluent-gem list '^fluent-plugin-' --no-versions --no-verbose)
+    if ! grep --fixed-strings --line-regexp --invert-match "$local_current_plugins" %{local_base_plugins}; then
+      echo "No missing plugins to install"
     else
-      echo "Can't install missing plugins automatically, please install the following plugins manually."
-      cat %{local_plugin_migration}
+      if ! curl --fail --silent -O https://rubygems.org/specs.4.8.gz; then
+        echo "No network connectivity..."
+      else
+        grep --fixed-strings --line-regexp --invert-match "$local_current_plugins" %{local_base_plugins} | while read missing_gem
+        do
+          if ! /usr/sbin/fluent-gem install --no-document $missing_gem; then
+            echo "Can't install missing plugin automatically: please install $missing_gem manually."
+          fi
+        done
+      fi
     fi
-    rm -f %{local_plugin_migration}
+    rm -f %{local_base_plugins}
   fi
 fi
 
@@ -353,7 +334,9 @@ if [ $1 -eq 1 ]; then
   . %{_sysconfdir}/sysconfig/@SERVICE_NAME@
   echo "postun FLUENT_PACKAGE_SERVICE_RESTART: $FLUENT_PACKAGE_SERVICE_RESTART"
   if [ "$FLUENT_PACKAGE_SERVICE_RESTART" = "auto" ]; then
-    pid=$(systemctl show fluentd --property=MainPID --value)
+    # systemctl ... --property=MainPID --value is available since systemd 230 or later.
+    # thus for amazonlinux:2, it can not be used.
+    pid=$(systemctl show fluentd --property=MainPID | cut -d'=' -f2)
     if [ $pid -gt 0 ]; then
       echo "Kick auto service upgrade mode to MainPID:$pid"
       kill -USR2 $pid
