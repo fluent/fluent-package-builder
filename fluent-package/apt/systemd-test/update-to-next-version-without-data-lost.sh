@@ -10,12 +10,6 @@ sudo apt install -V -y rsyslog
 sudo apt install -V -y \
     /host/${distribution}/pool/${code_name}/${channel}/*/*/fluent-package_*_${architecture}.deb
 
-# Make a dummy pacakge for the next version
-dpkg-deb -R /host/${distribution}/pool/${code_name}/${channel}/*/*/fluent-package_*_${architecture}.deb tmp
-last_ver=$(cat tmp/DEBIAN/control | grep "Version: " | sed -E "s/Version: ([0-9.]+)-([0-9]+)/\2/g")
-sed -i -E "s/Version: ([0-9.]+)-([0-9]+)/Version: \1-$(($last_ver+1))/g" tmp/DEBIAN/control
-dpkg-deb --build tmp next_version.deb
-
 # Set up configuration
 cat < $(dirname $0)/../../test-tools/rsyslog.conf >> /etc/rsyslog.conf
 cp $(dirname $0)/../../test-tools/fluentd.conf /etc/fluent/fluentd.conf
@@ -36,8 +30,9 @@ sleep 1
 
 sleep 1
 
-# Update to the next version
-sudo apt install -V -y ./next_version.deb
+# Update to the next major version
+sudo apt install -V -y \
+    /host/v6-test/${distribution}/pool/${code_name}/${channel}/*/*/fluent-package_*_${architecture}.deb
 test $main_pid -eq $(systemctl show --value --property=MainPID fluentd)
 
 sleep 3
