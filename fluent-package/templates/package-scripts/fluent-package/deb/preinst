@@ -18,7 +18,7 @@ migrate_local_plugins() {
     fi
     # collect list of gems
     # We don't use fluent-diagtool here because it depends on systemd and piuparts fails
-    /opt/fluent/bin/fluent-gem list '^fluent-plugin-' --no-version --no-verbose > $local_base_plugins
+    /usr/sbin/fluent-gem list '^fluent-plugin-' --no-version --no-verbose > $local_base_plugins
 }
 
 case "$1" in
