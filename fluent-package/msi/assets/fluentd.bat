@@ -10,8 +10,12 @@ if "%~nx0" == "td-agent.bat" (
 @rem Convert path separator from backslash to forwardslash
 set FLUENT_PACKAGE_TOPDIR=%FLUENT_PACKAGE_TOPDIR:\=/%
 
-set PATH=%FLUENT_PACKAGE_TOPDIR%bin;%PATH%
+set "FLUENT_PACKAGE_BINDIR=%FLUENT_PACKAGE_TOPDIR%bin"
+set PATH=%FLUENT_PACKAGE_BINDIR%;%PATH%
 set PATH=%FLUENT_PACKAGE_TOPDIR%;%PATH%
+for /f "usebackq" %%i in (`^""%FLUENT_PACKAGE_BINDIR%\ruby.exe" -rrbconfig -e "print RbConfig::CONFIG['ruby_version']"^"`) do set RUBY_VERSION=%%i
+set "GEM_HOME=%FLUENT_PACKAGE_TOPDIR%lib/ruby/gems/%RUBY_VERSION%"
+set "GEM_PATH=%FLUENT_PACKAGE_TOPDIR%lib/ruby/gems/%RUBY_VERSION%"
 set "FLUENT_CONF=%FLUENT_PACKAGE_TOPDIR%etc/fluent/fluentd.conf"
 set "FLUENT_PLUGIN=%FLUENT_PACKAGE_TOPDIR%etc/fluent/plugin"
 
