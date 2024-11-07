@@ -189,7 +189,7 @@ else
 fi
 if [ $1 -eq 2 ]; then
   # collect installed gems during upgrading
-  /opt/fluent/bin/fluent-gem list '^fluent-plugin-' --no-versions --no-verbose > %{local_base_plugins}
+  /usr/sbin/fluent-gem list '^fluent-plugin-' --no-versions --no-verbose > %{local_base_plugins}
 fi
 
 %preun
