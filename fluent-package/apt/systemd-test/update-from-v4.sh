@@ -32,7 +32,19 @@ case $1 in
   local)
     sudo apt install -V -y \
       /host/${distribution}/pool/${code_name}/${channel}/*/*/fluent-package_*_${architecture}.deb \
-      /host/${distribution}/pool/${code_name}/${channel}/*/*/td-agent_*_all.deb
+      /host/${distribution}/pool/${code_name}/${channel}/*/*/td-agent_*_all.deb 2>&1 | tee upgrade.log
+    # Test: needrestart was suppressed
+    if dpkg-query --show --showformat='${Version}' needrestart ; then
+      case $code_name in
+        focal)
+          # dpkg-query succeeds even though needrestart is not installed.
+          (! grep "No services need to be restarted." upgrade.log)
+          ;;
+        *)
+          grep "No services need to be restarted." upgrade.log
+          ;;
+      esac
+    fi
     ;;
   v5)
     curl --fail --silent --show-error --location https://toolbelt.treasuredata.com/sh/install-${distribution}-${code_name}-fluent-package5.sh | sh
