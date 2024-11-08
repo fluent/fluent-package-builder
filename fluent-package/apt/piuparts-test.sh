@@ -17,17 +17,19 @@ find ${repositories_dir}
 DEBIAN_FRONTEND=noninteractive apt install -V -y piuparts mount gnupg curl eatmydata
 gpg_command=gpg
 curl https://packages.treasuredata.com/GPG-KEY-td-agent > td-agent.gpg
-TD_AGENT_KEYRING=/usr/share/keyrings/td-agent-archive-keyring.gpg
-${gpg_command} --no-default-keyring --keyring $TD_AGENT_KEYRING --import td-agent.gpg
+curl https://packages.treasuredata.com/GPG-KEY-fluent-package > fluent-package.gpg
+FLUENT_PACKAGE_KEYRING=/usr/share/keyrings/fluent-package-archive-keyring.gpg
+${gpg_command} --no-default-keyring --keyring $FLUENT_PACKAGE_KEYRING --import td-agent.gpg
+${gpg_command} --no-default-keyring --keyring $FLUENT_PACKAGE_KEYRING --import fluent-package.gpg
 CHROOT=/var/lib/chroot/${code_name}-root
 mkdir -p $CHROOT
 debootstrap --include=ca-certificates ${code_name} $CHROOT ${mirror}
-cp $TD_AGENT_KEYRING $CHROOT/usr/share/keyrings/
-chmod 644 $CHROOT/usr/share/keyrings/td-agent-archive-keyring.gpg
+cp $FLUENT_PACKAGE_KEYRING $CHROOT/usr/share/keyrings/
+chmod 644 $CHROOT/usr/share/keyrings/fluent-package-archive-keyring.gpg
 chroot $CHROOT apt install -V -y libyaml-0-2
 package=${repositories_dir}/${distribution}/pool/${code_name}/${channel}/*/*/*_${architecture}.deb
 cp ${package} /tmp
-echo "deb [signed-by=/usr/share/keyrings/td-agent-archive-keyring.gpg] https://packages.treasuredata.com/5/${distribution}/${code_name}/ ${code_name} contrib" | tee $CHROOT/etc/apt/sources.list.d/td.list
+echo "deb [signed-by=/usr/share/keyrings/fluent-package-archive-keyring.gpg] https://packages.treasuredata.com/lts/5/${distribution}/${code_name}/ ${code_name} contrib" | tee $CHROOT/etc/apt/sources.list.d/fluent-package.list
 rm -rf $CHROOT/opt
 piuparts --distribution=${code_name} \
 	 --existing-chroot=${CHROOT} \
