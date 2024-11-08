@@ -433,7 +433,7 @@ class BuildTask
         gem_home = ENV["GEM_HOME"]
         ENV["GEM_HOME"] = gem_staging_dir
         ENV["INSTALL_GEM_FROM_LOCAL_REPO"] = "yes"
-        sh(bundle_command, "_#{BUNDLER_VERSION}_", "install")
+        sh(bundle_command, "_#{BUNDLER_VERSION}_", "install", "-j#{Etc.nprocessors}")
         # Ensure to install binstubs under /opt/td-agent/bin
         sh(gem_command, "pristine", "--only-executables", "--all", "--bindir", staging_bindir)
         ENV["GEM_HOME"] = gem_home
