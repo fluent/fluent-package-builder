@@ -1183,16 +1183,18 @@ class BuildTask
     fluentd_conf = "etc/#{PACKAGE_DIR}/#{SERVICE_NAME}.conf"
     fluentd_conf_default = "opt/#{PACKAGE_DIR}/share/#{SERVICE_NAME}.conf"
     configs = [fluentd_conf]
-    configs.concat([
-                     "etc/logrotate.d/#{SERVICE_NAME}",
-                     fluentd_conf_default,
-                   ]) unless windows? || macos?
-    File.readlines("/etc/os-release").each do |line|
-      if line.include?("ID=")
-        distribution = line.split(/=/).last.chomp
-        if ["debian", "ubuntu"].include?(distribution)
-          puts "Suppress needrestart on #{distribution}"
-          configs.concat(["etc/needrestart/conf.d/50-fluent-package.conf"])
+    unless windows? || macos?
+      configs.concat([
+                      "etc/logrotate.d/#{SERVICE_NAME}",
+                      fluentd_conf_default,
+                    ])
+      File.readlines("/etc/os-release").each do |line|
+        if line.include?("ID=")
+          distribution = line.split(/=/).last.chomp
+          if ["debian", "ubuntu"].include?(distribution)
+            puts "Suppress needrestart on #{distribution}"
+            configs.concat(["etc/needrestart/conf.d/50-fluent-package.conf"])
+          end
         end
       end
     end
