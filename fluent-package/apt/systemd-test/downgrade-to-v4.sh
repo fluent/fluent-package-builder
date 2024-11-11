@@ -17,13 +17,14 @@ systemctl status --no-pager td-agent
 
 # Ensure to install the current
 sudo apt install -V -y \
-    /host/${distribution}/pool/${code_name}/${channel}/*/*/fluent-package_*_${architecture}.deb
+    /host/${distribution}/pool/${code_name}/${channel}/*/*/fluent-package_*_${architecture}.deb \
+    /host/${distribution}/pool/${code_name}/${channel}/*/*/td-agent_*_all.deb
 
 # td-agent.service is already masked (link to /dev/null), and remove td-agent.service alias not to conflict with v4
 sudo systemctl unmask td-agent
 
 # Even though removing fluent-package, log and .conf are kept. dpkg reports "rc fluent-package" and "rc td-agent" status.
-sudo apt remove -y fluent-package
+sudo apt remove -y fluent-package td-agent
 
 # fluentd.service is already masked (link to /dev/null), then remove it.
 sudo systemctl unmask fluentd
