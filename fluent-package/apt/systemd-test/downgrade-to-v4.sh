@@ -24,7 +24,7 @@ sudo apt install -V -y \
 sudo systemctl unmask td-agent
 
 # Even though removing fluent-package, log and .conf are kept. dpkg reports "rc fluent-package" and "rc td-agent" status.
-sudo apt remove -y fluent-package
+sudo apt remove -y fluent-package td-agent
 
 # fluentd.service is already masked (link to /dev/null), then remove it.
 sudo systemctl unmask fluentd
