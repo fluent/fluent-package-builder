@@ -4,10 +4,40 @@ set -exu
 
 . $(dirname $0)/commonvar.sh
 
+v5_package="/host/${distribution}/${DISTRIBUTION_VERSION}/x86_64/Packages/fluent-package-*.rpm"
+v6_package="/host/v6-test/${distribution}/${DISTRIBUTION_VERSION}/x86_64/Packages/fluent-package-*.rpm"
+
+case "$1" in
+    v5)
+        package=$v5_package
+        ;;
+    v6)
+        package=$v6_package
+        ;;
+    *)
+        echo "Invalid argument: $1"
+        exit 1
+        ;;
+esac
+
+command="install"
+case "$2" in
+    v5)
+        next_package=$v5_package
+        command="downgrade" # Avoid error in AmazonLinux2
+        ;;
+    v6)
+        next_package=$v6_package
+        ;;
+    *)
+        echo "Invalid argument: $2"
+        exit 1
+        ;;
+esac
+
 sudo $DNF install -y rsyslog
 
 # Install the current
-package="/host/${distribution}/${DISTRIBUTION_VERSION}/x86_64/Packages/fluent-package-[0-9]*.rpm"
 sudo $DNF install -y $package
 
 # Set up configuration
@@ -30,9 +60,8 @@ sleep 1
 
 sleep 1
 
-# Update to the next major version
-next_package="/host/v6-test/${distribution}/${DISTRIBUTION_VERSION}/x86_64/Packages/fluent-package-*.rpm"
-sudo $DNF install -y $next_package
+# Update to the next version
+sudo $DNF $command -y $next_package
 test $main_pid -eq $(eval $(systemctl show fluentd --property=MainPID) && echo $MainPID)
 
 # Main process should be replaced by USR2 signal
