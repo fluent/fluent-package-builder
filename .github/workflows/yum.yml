@@ -150,9 +150,9 @@ jobs:
           - "update-to-next-version-service-status.sh enabled inactive"
           - "update-to-next-version-service-status.sh disabled active"
           - "update-to-next-version-service-status.sh disabled inactive"
-          - "update-to-next-version-without-data-lost.sh"
           - "update-to-next-version-with-auto-and-manual.sh"
           - "update-to-next-major-version.sh"
+          - "update-without-data-lost.sh"
         include:
           - label: AmazonLinux 2 x86_64
             rake-job: amazonlinux-2
@@ -221,9 +221,9 @@ jobs:
           - "update-to-next-version-service-status.sh enabled inactive"
           - "update-to-next-version-service-status.sh disabled active"
           - "update-to-next-version-service-status.sh disabled inactive"
-          - "update-to-next-version-without-data-lost.sh"
           - "update-to-next-version-with-auto-and-manual.sh"
           - "update-to-next-major-version.sh"
+          - "update-without-data-lost.sh"
         include:
           - label: RockyLinux 8 x86_64
             rake-job: rockylinux-8
