@@ -4,11 +4,39 @@ set -exu
 
 . $(dirname $0)/../commonvar.sh
 
+v5_package="/host/${distribution}/pool/${code_name}/${channel}/*/*/fluent-package_*_${architecture}.deb"
+v6_package="/host/v6-test/${distribution}/pool/${code_name}/${channel}/*/*/fluent-package_*_${architecture}.deb"
+
+case "$1" in
+    v5)
+        package=$v5_package
+        ;;
+    v6)
+        package=$v6_package
+        ;;
+    *)
+        echo "Invalid argument: $1"
+        exit 1
+        ;;
+esac
+
+case "$2" in
+    v5)
+        next_package=$v5_package
+        ;;
+    v6)
+        next_package=$v6_package
+        ;;
+    *)
+        echo "Invalid argument: $2"
+        exit 1
+        ;;
+esac
+
 sudo apt install -V -y rsyslog
 
 # Install the current
-sudo apt install -V -y \
-    /host/${distribution}/pool/${code_name}/${channel}/*/*/fluent-package_*_${architecture}.deb
+sudo apt install -V -y $package
 
 # Set up configuration
 cat < $(dirname $0)/../../test-tools/rsyslog.conf >> /etc/rsyslog.conf
@@ -30,9 +58,8 @@ sleep 1
 
 sleep 1
 
-# Update to the next major version
-sudo apt install -V -y \
-    /host/v6-test/${distribution}/pool/${code_name}/${channel}/*/*/fluent-package_*_${architecture}.deb
+# Update to the next version
+sudo apt install -V -y --allow-downgrades $next_package
 test $main_pid -eq $(systemctl show --value --property=MainPID fluentd)
 
 # Main process should be replaced by USR2 signal
