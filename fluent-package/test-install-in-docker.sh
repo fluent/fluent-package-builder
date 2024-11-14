@@ -74,7 +74,7 @@ function check_installed_version()
 	    echo "Succeeded to install $TARGET on $ID from $REPO"
 	    ;;
 	*)
-	    echo "Failed to install $TARGET from $REPO"
+	    echo "Failed to install $TARGET on $ID from $REPO"
 	    exit 1
 	    ;;
     esac
