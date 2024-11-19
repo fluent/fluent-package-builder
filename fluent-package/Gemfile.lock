@@ -9,10 +9,10 @@ GIT
 
 GIT
   remote: https://github.com/fluent/fluentd
-  revision: f8755d09b747d054302c0e12a3b0962a11f1045e
-  ref: f8755d09b747d054302c0e12a3b0962a11f1045e
+  revision: 759bb582a1d4a1b1d163197870669f7bee0aa148
+  ref: 759bb582a1d4a1b1d163197870669f7bee0aa148
   specs:
-    fluentd (1.17.1)
+    fluentd (1.18.0)
       base64 (~> 0.2)
       bundler
       certstore_c (~> 0.1.7)
