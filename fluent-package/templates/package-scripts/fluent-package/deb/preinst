@@ -24,7 +24,7 @@ migrate_local_plugins() {
 zero_downtime_restart_supported_version="1.18.0"
 zero_downtime_restart_supported=/tmp/<%= package_dir %>/.zero_downtime_restart_supported
 check_version() {
-    printf '%s\n' "$zero_downtime_restart_supported_version" "$1" | sort -C -V
+    printf '%s\n' "$zero_downtime_restart_supported_version" "$1" | sort --check=quiet --version-sort
 }
 check_whether_zero_downtime_restart_supported() {
     current_version=$(/usr/sbin/fluentd --version | cut -d' ' -f 4)
