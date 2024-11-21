@@ -27,9 +27,8 @@ sudo apt purge -y fluent-package
 
 # Upgrade package with manual feature
 sudo apt install -V -y $package
+sudo systemctl enable --now fluentd
 sed -i 's/=auto/=manual/' /etc/default/fluentd
-# TODO: Clarify the specification of FLUENT_PACKAGE_SERVICE_RESTART environment variable
-sudo systemctl restart fluentd
 main_pid=$(eval $(systemctl show fluentd --property=MainPID) && echo $MainPID)
 
 sudo apt install -V -y ./next_version.deb

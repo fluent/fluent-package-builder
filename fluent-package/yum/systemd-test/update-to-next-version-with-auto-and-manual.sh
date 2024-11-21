@@ -55,9 +55,8 @@ sudo $DNF remove -y fluent-package
 
 # Upgrade package with manual feature
 sudo $DNF install -y $package
-sed -i 's/=auto/=manual/' /etc/sysconfig/fluentd
-# TODO: Clarify the specification of FLUENT_PACKAGE_SERVICE_RESTART environment variable
 sudo systemctl enable --now fluentd
+sed -i 's/=auto/=manual/' /etc/sysconfig/fluentd
 main_pid=$(eval $(systemctl show fluentd --property=MainPID) && echo $MainPID)
 
 sudo $DNF install -y ./$next_package

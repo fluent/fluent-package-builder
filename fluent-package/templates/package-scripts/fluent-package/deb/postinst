@@ -168,13 +168,17 @@ install_missing_plugins() {
     fi
 }
 
+zero_downtime_restart_supported=/tmp/<%= package_dir %>/.zero_downtime_restart_supported
 fluentd_auto_restart() {
+    if [ ! -e "$zero_downtime_restart_supported" ]; then
+        return
+    fi
+
     if [ -d /run/systemd/system ]; then
 	pid=$(systemctl show <%= service_name %> --property=MainPID --value)
 	if [ $pid -ne 0 ]; then
-	    env_vars=$(sed -e 's/\x0/\n/g' /proc/$pid/environ)
-	    action=$(eval $env_vars && echo $FLUENT_PACKAGE_SERVICE_RESTART)
-	    case "$action" in
+	    . /etc/default/<%= service_name %>
+	    case "$FLUENT_PACKAGE_SERVICE_RESTART" in
 		auto)
 		    echo "Kick auto service upgrade mode to MainPID:$pid"
 		    kill -USR2 $pid
@@ -188,6 +192,7 @@ fluentd_auto_restart() {
 	    esac
 	fi
     fi
+    rm -rf $zero_downtime_restart_supported
 }
 
 case "$1" in
