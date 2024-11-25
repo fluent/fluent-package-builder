@@ -51,11 +51,12 @@ if [ $1 = "local" ]; then
     sudo $DNF install -y tar findutils
     sudo /opt/fluent/bin/fluent-diagtool -t fluentd -o /tmp
     test $(find /tmp/ -name gem_local_list.output | xargs cat) = "fluent-plugin-concat"
-    # FIXME: until guard feature was released, skip v5 and lts.
-    (! sudo /usr/sbin/fluentd)
-    (! sudo /usr/sbin/fluentd -v)
-    sudo /usr/sbin/fluentd --dry-run
 fi
+
+# Test: Guard duplicated instance
+(! sudo /usr/sbin/fluentd)
+(! sudo /usr/sbin/fluentd -v)
+sudo /usr/sbin/fluentd --dry-run
 
 sudo $DNF remove -y fluent-package
 sudo systemctl daemon-reload
