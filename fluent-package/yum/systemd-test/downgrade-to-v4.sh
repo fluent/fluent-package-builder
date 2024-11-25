@@ -80,22 +80,7 @@ test -x /usr/sbin/td-agent
 test -x /usr/sbin/td-agent-gem
 
 # Test: environmental variables
-case ${distribution} in
-    centos|amazon)
-	# --value is not supported yet
-	pid=$(systemctl show td-agent --property=MainPID | cut -d'=' -f2)
-	;;
-    amazon)
-        if [ ! "$DISTRIBUTION_VERSION" = "2023" ]; then
-	    pid=$(systemctl show td-agent --property=MainPID | cut -d'=' -f2)
-	else
-	    pid=$(systemctl show td-agent --property=MainPID --value)
-	fi
-	;;
-    *)
-	pid=$(systemctl show td-agent --property=MainPID --value)
-	;;
-esac
+pid=$(eval $(systemctl show td-agent --property=MainPID) && echo $MainPID)
 env_vars=$(sudo sed -e 's/\x0/\n/g' /proc/$pid/environ)
 test $(eval $env_vars && echo $HOME) = "/var/lib/td-agent"
 test $(eval $env_vars && echo $LOGNAME) = "td-agent"
