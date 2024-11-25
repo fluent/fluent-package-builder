@@ -9,8 +9,8 @@ GIT
 
 GIT
   remote: https://github.com/fluent/fluentd
-  revision: 759bb582a1d4a1b1d163197870669f7bee0aa148
-  ref: 759bb582a1d4a1b1d163197870669f7bee0aa148
+  revision: 4285c165b1c94d5622475564c4ab269a0cc125e1
+  ref: 4285c165b1c94d5622475564c4ab269a0cc125e1
   specs:
     fluentd (1.18.0)
       base64 (~> 0.2)
