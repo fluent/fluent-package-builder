@@ -8,24 +8,10 @@ set -exu
 sudo rpm --import https://packages.treasuredata.com/GPG-KEY-td-agent
 case ${distribution} in
     amazon)
-        cat > td.repo <<'EOF';
-[treasuredata]
-name=TreasureData
-baseurl=https://packages.treasuredata.com/4/amazon/$releasever/$basearch
-gpgcheck=1
-gpgkey=https://packages.treasuredata.com/GPG-KEY-td-agent
-EOF
-        sudo mv td.repo /etc/yum.repos.d/
+        curl -fsSL https://toolbelt.treasuredata.com/sh/install-amazon2-td-agent4.sh | sh
         ;;
     *)
-        cat > td.repo <<'EOF';
-[treasuredata]
-name=TreasureData
-baseurl=https://packages.treasuredata.com/4/redhat/$releasever/$basearch
-gpgcheck=1
-gpgkey=https://packages.treasuredata.com/GPG-KEY-td-agent
-EOF
-        sudo mv td.repo /etc/yum.repos.d/
+    	curl -fsSL https://toolbelt.treasuredata.com/sh/install-redhat-td-agent4.sh | sh
         ;;
 esac
 sudo $DNF update -y

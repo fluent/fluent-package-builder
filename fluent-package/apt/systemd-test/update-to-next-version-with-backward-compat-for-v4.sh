@@ -4,18 +4,9 @@ set -exu
 
 . $(dirname $0)/../commonvar.sh
 
-# TODO: Remove it when v5 repository was deployed
-sudo apt install -y curl ca-certificates
-curl -O https://packages.treasuredata.com/4/${distribution}/${code_name}/pool/contrib/f/fluentd-apt-source/fluentd-apt-source_2020.8.25-1_all.deb
-sudo apt install -y ./fluentd-apt-source_2020.8.25-1_all.deb
-
 # Install v4
-sudo apt clean all
-# Uncomment when v5 repository was deployed
-#apt_source_package=/host/${distribution}/pool/${code_name}/${channel}/*/*/fluent-apt-source*_all.deb
-#sudo apt install -V -y ${apt_source_package} ca-certificates
-sudo apt update
-sudo apt install -V -y td-agent=${td_agent_version}-1
+sudo apt install -y curl ca-certificates
+curl -fsSL https://toolbelt.treasuredata.com/sh/install-${distribution}-${code_name}-td-agent4.sh | sh
 
 systemctl status --no-pager td-agent
 
