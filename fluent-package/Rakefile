@@ -135,33 +135,10 @@ def template_params(params = nil)
   end
 
   if params
-    if params[:fluentd_version]
-      config.merge!({fluentd_version: params[:fluentd_version],
-                     fluentd_revision: FLUENTD_REVISION})
-    end
     config.merge(params)
   else
     config
   end
-end
-
-def fluent_package_info(version)
-  "#{PACKAGE_NAME} #{PACKAGE_VERSION} fluentd #{version} (#{FLUENTD_REVISION})"
-end
-
-def extract_fluentd_version(archive_path)
-  puts "::group::Extract fluentd version from: #{archive_path}" if ENV["CI"]
-  fluentd_version = ""
-  sh("tar", "xvf", archive_path, "-C", File.dirname(archive_path), "--no-same-owner")
-  archive_dir = File.join(File.dirname(archive_path),
-                          File.basename(archive_path, ".tar.gz"))
-  Dir.chdir(archive_dir) do
-    IO.popen("git tag --contains #{FLUENTD_REVISION}") do |tags|
-      fluentd_version = tags.readlines.last.chomp.delete_prefix("v")
-    end
-  end
-  puts "::endgroup::" if ENV["CI"]
-  fluentd_version
 end
 
 def template_path(*path_parts)
@@ -609,8 +586,7 @@ class BuildTask
       desc "Create systemd unit file for Red Hat like systems"
       task :rpm_systemd do
         dest =  File.join(STAGING_DIR, 'usr', 'lib', 'systemd', 'system', SERVICE_NAME + ".service")
-        version = extract_fluentd_version(@download_task.file_fluentd_archive)
-        params = {pkg_type: "rpm", fluentd_version: version}
+        params = {pkg_type: "rpm"}
         render_systemd_unit_file(dest, template_params(params))
         render_systemd_environment_file(template_params(params))
       end
@@ -618,8 +594,7 @@ class BuildTask
       desc "Create systemd unit file for Debian like systems"
       task :deb_systemd do
         dest = File.join(STAGING_DIR, 'lib', 'systemd', 'system', SERVICE_NAME + ".service")
-        version = extract_fluentd_version(@download_task.file_fluentd_archive)
-        params = {pkg_type: "deb", fluentd_version: version}
+        params = {pkg_type: "deb"}
         render_systemd_unit_file(dest, template_params(params))
         render_systemd_environment_file(template_params(params))
       end
