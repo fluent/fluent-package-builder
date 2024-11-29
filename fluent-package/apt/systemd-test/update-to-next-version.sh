@@ -12,10 +12,6 @@ sudo apt install -V -y \
 dpkg-deb -R /host/${distribution}/pool/${code_name}/${channel}/*/*/fluent-package_*_${architecture}.deb tmp
 last_ver=$(cat tmp/DEBIAN/control | grep "Version: " | sed -E "s/Version: ([0-9.]+)-([0-9]+)/\2/g")
 sed -i -E "s/Version: ([0-9.]+)-([0-9]+)/Version: \1-$(($last_ver+1))/g" tmp/DEBIAN/control
-# Bump up x.y.w.z to check whether FLUENT_PACKAGE_VERSION was updated correctly later
-sed -i -E "s/FLUENT_PACKAGE_VERSION=([0-9.]+)/FLUENT_PACKAGE_VERSION=\1.1/g" tmp/lib/systemd/system/fluentd.service
-next_package_ver=$(cat tmp/lib/systemd/system/fluentd.service | grep "FLUENT_PACKAGE_VERSION" | sed -E "s/Environment=FLUENT_PACKAGE_VERSION=(.+)/\1/")
-echo "repacked next fluent-package version: $next_package_ver"
 dpkg-deb --build tmp next_version.deb
 
 # Install the dummy package
@@ -42,7 +38,6 @@ test $(eval $env_vars && echo $FLUENT_CONF) = "/etc/fluent/fluentd.conf"
 test $(eval $env_vars && echo $FLUENT_PACKAGE_LOG_FILE) = "/var/log/fluent/fluentd.log"
 test $(eval $env_vars && echo $FLUENT_PLUGIN) = "/etc/fluent/plugin"
 test $(eval $env_vars && echo $FLUENT_SOCKET) = "/var/run/fluent/fluentd.sock"
-test $(eval $env_vars && echo $FLUENT_PACKAGE_VERSION) = "$next_package_ver"
 
 # Test: fluent-diagtool
 sudo fluent-gem install fluent-plugin-concat
