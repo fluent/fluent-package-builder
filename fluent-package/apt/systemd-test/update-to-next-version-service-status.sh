@@ -33,7 +33,20 @@ fi
 main_pid=$(systemctl show --value --property=MainPID fluentd)
 
 # Install the dummy package
-sudo apt install -V -y ./next_version.deb
+sudo apt install -V -y ./next_version.deb 2>&1 | tee upgrade.log
+
+# Test: needrestart was suppressed
+if dpkg-query --show --showformat='${Version}' needrestart ; then
+  case $code_name in
+    focal)
+      # dpkg-query succeeds even though needrestart is not installed.
+      (! grep "No services need to be restarted." upgrade.log)
+      ;;
+    *)
+      grep "No services need to be restarted." upgrade.log
+      ;;
+  esac
+fi
 
 # The service should take over the state
 if [ "$enabled_before_update" = enabled ]; then
