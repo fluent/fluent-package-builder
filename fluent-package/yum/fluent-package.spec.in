@@ -188,8 +188,12 @@ else
     fi
 fi
 if [ $1 -eq 2 ]; then
-  # collect installed gems during upgrading
-  /usr/sbin/fluent-gem list '^fluent-plugin-' --no-versions --no-verbose > %{local_base_plugins}
+  . %{_sysconfdir}/sysconfig/@SERVICE_NAME@
+  echo "pre FLUENT_PACKAGE_SERVICE_RESTART: $FLUENT_PACKAGE_SERVICE_RESTART"
+  if [ "$FLUENT_PACKAGE_SERVICE_RESTART" = auto ]; then
+    # collect installed gems during upgrading
+    /usr/sbin/fluent-gem list '^fluent-plugin-' --no-versions --no-verbose > %{local_base_plugins}
+  fi
 fi
 
 %preun
