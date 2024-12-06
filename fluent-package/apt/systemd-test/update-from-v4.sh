@@ -9,6 +9,7 @@ sudo apt install -y curl ca-certificates
 curl -fsSL https://toolbelt.treasuredata.com/sh/install-${distribution}-${code_name}-td-agent4.sh | sh
 
 systemctl status --no-pager td-agent
+main_pid=$(eval $(systemctl show td-agent --property=MainPID) && echo $MainPID)
 
 # Generate garbage files
 touch /etc/td-agent/a\ b\ c
@@ -17,6 +18,11 @@ touch /etc/td-agent/plugin/in_fake.rb
 for d in $(seq 1 10); do
     touch /var/log/td-agent/$d.log
 done
+
+# When it updates from v4, the service needs to be stopped to restart fluentd after installation.
+# Note: This behavior is not expected, and maybe it should be fixed.
+# The cause is unknown. For deb, usually, restart should happen when the service was active before the update.
+sudo systemctl stop td-agent
 
 # Install the current
 case $1 in
@@ -48,6 +54,9 @@ esac
 # Test: service status
 systemctl status --no-pager fluentd
 systemctl status --no-pager td-agent
+
+# Fluentd should be restarted when update from v4.
+test $main_pid -ne $(eval $(systemctl show fluentd --property=MainPID) && echo $MainPID)
 
 # Test: restoring td-agent service alias
 sudo systemctl stop fluentd

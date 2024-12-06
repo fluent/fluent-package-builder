@@ -19,6 +19,7 @@ sudo $DNF install -y td-agent-${td_agent_version}-1.*.x86_64
 
 sudo systemctl enable --now td-agent
 systemctl status --no-pager td-agent
+main_pid=$(eval $(systemctl show td-agent --property=MainPID) && echo $MainPID)
 
 # Generate garbage files
 touch /etc/td-agent/a\ b\ c
@@ -39,6 +40,9 @@ systemctl is-enabled fluentd
 systemctl status --no-pager fluentd # Migration process starts the service automatically
 sudo systemctl enable fluentd # Enable the unit name alias
 systemctl status --no-pager td-agent
+
+# Fluentd should be restarted when update from v4.
+test $main_pid -ne $(eval $(systemctl show fluentd --property=MainPID) && echo $MainPID)
 
 # Test: config migration
 test -h /etc/td-agent
