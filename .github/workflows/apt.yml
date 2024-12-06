@@ -176,7 +176,9 @@ jobs:
           - "update-to-next-version-service-status.sh disabled active"
           - "update-to-next-version-service-status.sh disabled inactive"
           - "update-to-next-version-with-auto-and-manual.sh"
-          - "update-to-next-major-version.sh"
+          - "update-to-next-major-version.sh auto"
+          - "update-to-next-major-version.sh manual"
+          - "update-to-next-major-version.sh etc"
           - "update-without-data-lost.sh v5 v6"
           - "update-without-data-lost.sh v6 v5"
         include:
