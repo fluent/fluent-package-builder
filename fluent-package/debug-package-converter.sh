@@ -73,10 +73,6 @@ case $PLATFORM_ID in
         # Example: "2.el9"
         next_release=$next_release_ver.$(echo $release | cut -d. -f2)
         cat >/tmp/repack.sh<<'EOF';
-if find $HOME/.tmp -name fluentd.service ; then
-    find $HOME/.tmp -name fluentd.service | xargs sed -i -E 's/^Environment=FLUENT_PACKAGE_VERSION=([0-9.]+)$/Environment=FLUENT_PACKAGE_VERSION=\1.1/g'
-    find $HOME/.tmp -name fluentd.service | xargs cat
-fi
 find $HOME/.tmp -name pre.1 | xargs sed -i -e 's,%pre -p /bin/sh,%pre -p /bin/sh\necho "%%pre: ('$1'): $1"\nset -x,'
 find $HOME/.tmp -name pre.1 | xargs sed -i -e '$s|$|\necho "%%pre '$1': $1 END"|g'
 find $HOME/.tmp -name pre.1 | xargs cat
@@ -102,10 +98,6 @@ EOF
         version=$(cat tmp/DEBIAN/control | grep "Version: " | sed -E "s/Version: ([0-9.]+)-([0-9]+)/\1/")
         debian_version=$(cat tmp/DEBIAN/control | grep "Version: " | sed -E "s/Version: ([0-9.]+)-([0-9]+)/\2/")
         sed -i -E "s/Version: ([0-9.]+)-([0-9]+)/Version: \1-$(($debian_version+1))/g" tmp/DEBIAN/control
-        # Bump up x.y.w.z to distinguish newer package
-        if [ -f tmp/lib/systemd/system/fluentd.service ]; then
-            sed -i -E "s/FLUENT_PACKAGE_VERSION=([0-9.]+)/FLUENT_PACKAGE_VERSION=\1.1/g" tmp/lib/systemd/system/fluentd.service
-        fi
         next_release="$version-"$(($debian_version+1))
         for d in prerm postrm preinst postinst; do
             if [ -f tmp/DEBIAN/$d ]; then
