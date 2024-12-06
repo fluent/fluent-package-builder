@@ -20,6 +20,8 @@ for d in $(seq 1 10); do
 done
 
 # When it updates from v4, the service needs to be stopped to restart fluentd after installation.
+# Note: This behavior is not expected, and maybe it should be fixed.
+# The cause is unknown. For deb, usually, restart should happen when the service was active before the update.
 sudo systemctl stop td-agent
 
 # Install the current
