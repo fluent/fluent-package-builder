@@ -197,18 +197,7 @@ if [ $1 -eq 2 ]; then
 fi
 
 %preun
-. %{_sysconfdir}/sysconfig/@SERVICE_NAME@
-echo "preun FLUENT_PACKAGE_SERVICE_RESTART: $FLUENT_PACKAGE_SERVICE_RESTART"
-if [ $1 -eq 0 ]; then
-  if [ "$FLUENT_PACKAGE_SERVICE_RESTART" = "manual" ]; then
-    # When rollback to previous version, there is a case that user want to
-    # restart manually to reduce downtime.
-    :
-  else
-    # disable service here
-    %systemd_preun @SERVICE_NAME@.service
-  fi
-fi
+%systemd_preun @SERVICE_NAME@.service
 
 %post
 . %{_sysconfdir}/sysconfig/@SERVICE_NAME@
