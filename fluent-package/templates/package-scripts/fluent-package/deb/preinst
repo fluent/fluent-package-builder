@@ -12,6 +12,9 @@ set -e
 
 local_base_plugins=/tmp/<%= package_dir %>/.local_base_plugins
 migrate_local_plugins() {
+    if [ "$FLUENT_PACKAGE_SERVICE_RESTART" != auto ]; then
+        return
+    fi
     if [ ! -d /run/systemd/system ]; then
         # tmpfiles.d owns /tmp/<%= package_dir %>, but not created without systemd
         mkdir -p /tmp/<%= package_dir %>
@@ -37,6 +40,8 @@ check_whether_zero_downtime_restart_supported() {
 
 case "$1" in
     upgrade)
+        . /etc/default/<%= service_name %>
+        echo "preinst FLUENT_PACKAGE_SERVICE_RESTART: $FLUENT_PACKAGE_SERVICE_RESTART"
         migrate_local_plugins
         check_whether_zero_downtime_restart_supported
 	;;

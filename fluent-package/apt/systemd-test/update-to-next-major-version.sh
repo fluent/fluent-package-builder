@@ -4,9 +4,14 @@ set -exu
 
 . $(dirname $0)/../commonvar.sh
 
+service_restart=$1
+
 # Install the current
 sudo apt install -V -y \
     /host/${distribution}/pool/${code_name}/${channel}/*/*/fluent-package_*_${architecture}.deb
+
+# Set FLUENT_PACKAGE_SERVICE_RESTART
+sed -i "s/=auto/=$service_restart/" /etc/default/fluentd
 
 # Install plugin manually (plugin and gem)
 sudo /opt/fluent/bin/fluent-gem install --no-document fluent-plugin-concat
@@ -30,7 +35,13 @@ if dpkg-query --show --showformat='${Version}' needrestart ; then
 fi
 
 # Test: Check whether plugin/gem were installed during upgrading
-/opt/fluent/bin/fluent-gem list | grep fluent-plugin-concat
-# Non fluent-plugin- prefix gem should not be installed automatically
-(! /opt/fluent/bin/fluent-gem list | grep gqtp)
+if [ "$service_restart" = auto ]; then
+    # plugin gem should be installed automatically
+    /opt/fluent/bin/fluent-gem list | grep fluent-plugin-concat
+    # Non fluent-plugin- prefix gem should not be installed automatically
+    (! /opt/fluent/bin/fluent-gem list | grep gqtp)
+else
+    # plugin gem should not be installed automatically
+    (! /opt/fluent/bin/fluent-gem list | grep fluent-plugin-concat)
+fi
 
