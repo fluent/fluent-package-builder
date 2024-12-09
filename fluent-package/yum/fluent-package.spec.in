@@ -200,15 +200,7 @@ fi
 %systemd_preun @SERVICE_NAME@.service
 
 %post
-. %{_sysconfdir}/sysconfig/@SERVICE_NAME@
-echo "post FLUENT_PACKAGE_SERVICE_RESTART: $FLUENT_PACKAGE_SERVICE_RESTART"
-if [ "$FLUENT_PACKAGE_SERVICE_RESTART" = "auto" ]; then
-  echo "Suppress auto restart in auto mode..."
-elif [ "$FLUENT_PACKAGE_SERVICE_RESTART" = "manual" ]; then
-  echo "Suppress auto restart in manual mode ..."
-else
-  %systemd_post @SERVICE_NAME@.service
-fi
+%systemd_post @SERVICE_NAME@.service
 if [ $1 -eq 1 ]; then
   if [ -d /etc/@COMPAT_PACKAGE_DIR@ -a ! -h /etc/@COMPAT_PACKAGE_DIR@ ]; then
     touch %{v4migration}
