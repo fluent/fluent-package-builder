@@ -145,6 +145,56 @@ migration_from_v4_post_process() {
     fi
 }
 
+local_base_plugins=/tmp/<%= package_dir %>/.local_base_plugins
+install_missing_plugins() {
+    # Install missing gems (even though systemd is not available, it works)
+    if [ -f $local_base_plugins ]; then
+        local_current_plugins=$(/usr/sbin/fluent-gem list '^fluent-plugin-' --no-versions --no-verbose)
+        if ! grep --fixed-strings --line-regexp --invert-match "$local_current_plugins" $local_base_plugins; then
+            echo "No missing plugins to install"
+        else
+            if ! curl --fail --silent -O https://rubygems.org/specs.4.8.gz; then
+                echo "No network connectivity..."
+            else
+                grep --fixed-strings --line-regexp --invert-match "$local_current_plugins" $local_base_plugins | while read missing_gem
+                do
+                    if ! /usr/sbin/fluent-gem install --no-document $missing_gem; then
+                        echo "Can't install missing plugin automatically: please install $missing_gem manually."
+                    fi
+                done
+            fi
+        fi
+        rm -f $local_base_plugins
+    fi
+}
+
+zero_downtime_restart_supported=/tmp/<%= package_dir %>/.zero_downtime_restart_supported
+fluentd_auto_restart() {
+    if [ ! -e "$zero_downtime_restart_supported" ]; then
+        return
+    fi
+
+    if [ -d /run/systemd/system ]; then
+	pid=$(systemctl show <%= service_name %> --property=MainPID --value)
+	if [ $pid -ne 0 ]; then
+	    . /etc/default/<%= service_name %>
+	    case "$FLUENT_PACKAGE_SERVICE_RESTART" in
+		auto)
+		    echo "Kick auto service upgrade mode to MainPID:$pid"
+		    kill -USR2 $pid
+		    ;;
+		manual)
+		    echo "No need to restart service in manual mode..."
+		    ;;
+		*)
+		    echo "Nothing to be done..."
+		    ;;
+	    esac
+	fi
+    fi
+    rm -rf $zero_downtime_restart_supported
+}
+
 case "$1" in
     configure)
         add_system_user
@@ -152,6 +202,8 @@ case "$1" in
         migration_from_v4_main_process
         fixperms
         migration_from_v4_post_process
+        install_missing_plugins
+        fluentd_auto_restart
 	;;
     abort-upgrade|abort-deconfigure|abort-remove)
         :

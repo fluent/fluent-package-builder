@@ -3,6 +3,8 @@ architecture=$(dpkg --print-architecture)
 repositories_dir=/fluentd/fluent-package/apt/repositories
 java_jdk=openjdk-11-jre
 td_agent_version=4.5.2
+fluent_package_lts_version=5.0.5
+
 case ${code_name} in
   xenial)
     distribution=ubuntu
