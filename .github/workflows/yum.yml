@@ -140,7 +140,9 @@ jobs:
           - AmazonLinux 2023 x86_64
         test:
           - "update-from-v4.sh"
+          - "update-from-v5-lts.sh"
           - "downgrade-to-v4.sh"
+          - "downgrade-to-v5-lts.sh"
           - "install-newly.sh local"
           - "install-newly.sh v5"
           - "install-newly.sh lts"
@@ -214,7 +216,9 @@ jobs:
           - AlmaLinux 9 x86_64
         test:
           - "update-from-v4.sh"
+          - "update-from-v5-lts.sh"
           - "downgrade-to-v4.sh"
+          - "downgrade-to-v5-lts.sh"
           - "install-newly.sh local"
           - "install-newly.sh v5"
           - "install-newly.sh lts"
