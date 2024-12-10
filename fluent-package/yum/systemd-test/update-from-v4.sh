@@ -14,8 +14,6 @@ case ${distribution} in
     	curl -fsSL https://toolbelt.treasuredata.com/sh/install-redhat-td-agent4.sh | sh
         ;;
 esac
-sudo $DNF update -y
-sudo $DNF install -y td-agent-${td_agent_version}-1.*.x86_64
 
 sudo systemctl enable --now td-agent
 systemctl status --no-pager td-agent
