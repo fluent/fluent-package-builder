@@ -33,6 +33,8 @@
 %define v4migration_old_rotate_config_saved /tmp/@PACKAGE_DIR@/.old_rotate_config
 %define v4migration_enabled_service /tmp/@PACKAGE_DIR@/.v4migration_enabled_service
 %define local_base_plugins /tmp/@PACKAGE_DIR@/.local_base_plugins
+%define install_plugins /tmp/@PACKAGE_DIR@/.install_plugins
+%define pid_for_auto_restart /tmp/@PACKAGE_DIR@/.pid_for_auto_restart
 
 # Omit the brp-python-bytecompile automagic because post hook for ffi fails on AmazonLinux 2.
 %if %{_amazon_ver} == 2
@@ -160,6 +162,14 @@ mkdir -p %{buildroot}%{_sysconfdir}/@PACKAGE_DIR@/plugin
 mkdir -p %{buildroot}/tmp/@PACKAGE_DIR@
 
 %pre
+# Make sure the previous tmp files for auto restart does not remain.
+# Note:
+#   %preun (FROM-side) can create these files, but they will be removed in %posttrans (TO-side).
+#   This means that these files may not be removed depending on the version of TO-side.
+#   In the future, want to figure out a more secure way to manage tmp files...
+rm -f %{install_plugins}
+rm -f %{pid_for_auto_restart}
+
 if ! getent group @COMPAT_SERVICE_NAME@ >/dev/null; then
     if ! getent group @SERVICE_NAME@ >/dev/null; then
         /usr/sbin/groupadd --system @SERVICE_NAME@
@@ -188,16 +198,35 @@ else
     fi
 fi
 if [ $1 -eq 2 ]; then
-  . %{_sysconfdir}/sysconfig/@SERVICE_NAME@
-  echo "pre FLUENT_PACKAGE_SERVICE_RESTART: $FLUENT_PACKAGE_SERVICE_RESTART"
-  if [ "$FLUENT_PACKAGE_SERVICE_RESTART" = auto ]; then
-    # collect installed gems during upgrading
+  # Collect plugin-list.
+  # Note:
+  #   This should be done in %preun(1) of FROM-side, but we have no choice but to do this here.
+  #   %preun(1) of FROM-side is executed after TO-side installs the files and replaces embedded Ruby.
+  #   So, this needs to be done before it.
+  if [ -e /usr/sbin/fluent-gem ]; then
     /usr/sbin/fluent-gem list '^fluent-plugin-' --no-versions --no-verbose > %{local_base_plugins}
   fi
 fi
 
 %preun
 %systemd_preun @SERVICE_NAME@.service
+if [ $1 -eq 1 ]; then
+  # systemctl ... --property=MainPID --value is available since systemd 230 or later.
+  # thus for amazonlinux:2, it can not be used.
+  pid="$(systemctl show "@SERVICE_NAME@" --property=MainPID | cut -d'=' -f2)"
+  if [ "$pid" -eq 0 ]; then
+    echo "Do not use auto restart because the service is not active"
+  else
+    . %{_sysconfdir}/sysconfig/@SERVICE_NAME@
+    echo "FLUENT_PACKAGE_SERVICE_RESTART: $FLUENT_PACKAGE_SERVICE_RESTART"
+    if [ "$FLUENT_PACKAGE_SERVICE_RESTART" = auto ]; then
+      # Present that FROM-side wants auto installing plugins and restarting.
+      # Note: Wants to collect plugin-list here, but we need to do it in %pre (see comments in %pre).
+      touch %{install_plugins}
+      echo "$pid" > %{pid_for_auto_restart}
+    fi
+  fi
+fi
 
 %post
 %systemd_post @SERVICE_NAME@.service
@@ -291,51 +320,9 @@ if [ -f "%{_sysconfdir}/prelink.conf" ]; then
     %{__sed} -i"" %{_sysconfdir}/prelink.conf -e "/\/opt\/td-agent\/bin\/ruby/d"
   fi
 fi
-if [ $1 -eq 2 ]; then
-  # install missing plugins during upgrading package
-  if [ -f %{local_base_plugins} ]; then
-    local_current_plugins=$(/usr/sbin/fluent-gem list '^fluent-plugin-' --no-versions --no-verbose)
-    if ! grep --fixed-strings --line-regexp --invert-match "$local_current_plugins" %{local_base_plugins}; then
-      echo "No missing plugins to install"
-    else
-      if ! curl --fail --silent -O https://rubygems.org/specs.4.8.gz; then
-        echo "No network connectivity..."
-      else
-        grep --fixed-strings --line-regexp --invert-match "$local_current_plugins" %{local_base_plugins} | while read missing_gem
-        do
-          if ! /usr/sbin/fluent-gem install --no-document $missing_gem; then
-            echo "Can't install missing plugin automatically: please install $missing_gem manually."
-          fi
-        done
-      fi
-    fi
-    rm -f %{local_base_plugins}
-  fi
-fi
 
 %postun
-if [ $1 -eq 1 ]; then
-  # Control service during upgrading
-  . %{_sysconfdir}/sysconfig/@SERVICE_NAME@
-  echo "postun FLUENT_PACKAGE_SERVICE_RESTART: $FLUENT_PACKAGE_SERVICE_RESTART"
-  if [ "$FLUENT_PACKAGE_SERVICE_RESTART" = "auto" ]; then
-    # systemctl ... --property=MainPID --value is available since systemd 230 or later.
-    # thus for amazonlinux:2, it can not be used.
-    pid=$(systemctl show fluentd --property=MainPID | cut -d'=' -f2)
-    if [ $pid -gt 0 ]; then
-      echo "Kick auto service upgrade mode to MainPID:$pid"
-      kill -USR2 $pid
-    else
-      # no running fluentd service
-      echo "Suppress auto service upgrade mode to MainPID:$pid"
-    fi
-  elif [ "$FLUENT_PACKAGE_SERVICE_RESTART" = "manual" ]; then
-    echo "No need to restart service in manual mode..."
-  else
-    # no support for upgrading without downtime
-    %systemd_postun_with_restart @SERVICE_NAME@.service
-  fi
-fi
+# Disable systemd_postun_with_restart to manage restart on the package side.
 if [ $1 -eq 0 ]; then
   # Uninstall
   # Without this uninstall conditional guard block ($1 -eq 0), symlink
@@ -399,6 +386,31 @@ if [ -f %{v4migration} ]; then
     systemctl restart @SERVICE_NAME@.service
     rm -f %{v4migration_with_restart}
   fi
+fi
+if [ -f %{install_plugins} ] && [ -f %{local_base_plugins} ]; then
+  local_current_plugins=$(/usr/sbin/fluent-gem list '^fluent-plugin-' --no-versions --no-verbose)
+  if ! grep --fixed-strings --line-regexp --invert-match "$local_current_plugins" %{local_base_plugins}; then
+    echo "No missing plugins to install"
+  else
+    if ! curl --fail --silent -O https://rubygems.org/specs.4.8.gz; then
+      echo "No network connectivity..."
+    else
+      grep --fixed-strings --line-regexp --invert-match "$local_current_plugins" %{local_base_plugins} | while read missing_gem
+      do
+        if ! /usr/sbin/fluent-gem install --no-document $missing_gem; then
+          echo "Can't install missing plugin automatically: please install $missing_gem manually."
+        fi
+      done
+    fi
+  fi
+fi
+rm -f %{install_plugins}
+rm -f %{local_base_plugins}
+if [ -f %{pid_for_auto_restart} ]; then
+  pid=$(cat %{pid_for_auto_restart})
+  echo "Kick auto restart to MainPID:$pid"
+  kill -USR2 $pid
+  rm -f %{pid_for_auto_restart}
 fi
 
 %files
