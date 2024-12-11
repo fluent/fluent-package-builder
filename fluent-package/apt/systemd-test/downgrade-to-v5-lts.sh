@@ -25,4 +25,5 @@ systemctl status --no-pager fluentd
 systemctl status --no-pager td-agent
 
 # Fluentd should be restarted.
+# NOTE: Unlike RPM, the restart behavior depends on TO-side. So, it restarts.
 test $main_pid -ne $(eval $(systemctl show fluentd --property=MainPID) && echo $MainPID)

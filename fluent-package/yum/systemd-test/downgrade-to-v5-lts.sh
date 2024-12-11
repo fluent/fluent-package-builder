@@ -27,6 +27,10 @@ sudo $DNF remove -y fluent-package
 sudo $DNF install -y \
     /host/${distribution}/${DISTRIBUTION_VERSION}/x86_64/Packages/fluent-package-[0-9]*.rpm
 
+# Customize the env file to prevent replacing by downgrade.
+# Need this to test the case where some tmp files is left.
+echo "FOO=foo" >> /etc/sysconfig/fluentd
+
 sudo systemctl enable --now fluentd
 systemctl status --no-pager fluentd
 systemctl status --no-pager td-agent
@@ -42,5 +46,22 @@ systemctl is-enabled fluentd
 systemctl status --no-pager fluentd
 systemctl status --no-pager td-agent
 
-# Fluentd should be restarted.
-test $main_pid -ne $(eval $(systemctl show fluentd --property=MainPID) && echo $MainPID)
+# Fluentd should NOT be restarted.
+# NOTE: Unlike DEB, the restart behavior depends on FROM-side. So, it does not restart.
+#       (it should restarts only when triggering zerodowntime-restart).
+test $main_pid -eq $(eval $(systemctl show fluentd --property=MainPID) && echo $MainPID)
+
+# === Test: Remained tmp files should not affect to next upgrade ===
+# (This happens when env file was customized but the FLUENT_PACKAGE_SERVICE_RESTART was still `auto`)
+
+# Some tmp files remains, though it is not happy.
+test -e /tmp/fluent/.install_plugins
+test -e /tmp/fluent/.pid_for_auto_restart
+
+sudo $DNF install -y \
+    /host/${distribution}/${DISTRIBUTION_VERSION}/x86_64/Packages/fluent-package-[0-9]*.rpm | tee upgrade.log
+
+# zerodowntime-restart should NOT be triggered.
+(! grep "Kick auto restart" upgrade.log)
+
+# ======
