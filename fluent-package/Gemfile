@@ -14,14 +14,14 @@ gem "sigdump", "0.2.5"
 gem "http_parser.rb", "0.8.0"
 gem "yajl-ruby", "1.4.3"
 gem "serverengine", '2.4.0'
-gem "msgpack", "1.7.2"
-gem "oj", "3.16.4"
+gem "msgpack", "1.7.3"
+gem "oj", "3.16.7"
 gem "tzinfo", "2.0.6"
-gem "tzinfo-data", "1.2024.1"
+gem "tzinfo-data", "1.2024.2"
 gem "async", "1.32.1"
 # async-http 0.65.0 or later does not support async 1.x
 gem "async-http", "0.64.2"
-gem "webrick", "1.8.1"
+gem "webrick", "1.9.1"
 
 if ENV["INSTALL_GEM_FROM_LOCAL_REPO"]
   # During build process, pre-built fluentd gem will be installed
@@ -62,7 +62,7 @@ gem "aws-sdk-kms", "1.88.0"
 gem "aws-sdk-sqs", "1.80.0"
 gem "aws-sigv4", "1.8.0"
 gem "aws-sdk-s3", "1.156.0"
-gem "fluent-plugin-s3", "1.7.2"
+gem "fluent-plugin-s3", "1.8.1"
 gem "httpclient", "2.8.3"
 gem "fluent-diagtool", "1.0.5"
 # td doesn't support td-client 2.0.0 or later yet
@@ -85,12 +85,12 @@ gem "fluent-plugin-opensearch", "1.1.4"
 windows_platforms = [:mingw, :x64_mingw] # :mswin
 gem "ffi", "1.17.0", platforms: windows_platforms
 gem "ffi-win32-extensions", "1.0.4", platforms: windows_platforms
-gem "nokogiri", "1.16.7", platforms: windows_platforms
+gem "nokogiri", "1.16.8", platforms: windows_platforms
 gem "win32-event", "0.6.3", platforms: windows_platforms
 gem "win32-ipc", "0.7.0", platforms: windows_platforms
 # Use officially released version when PR was merged and released.
 #gem "win32-service", "2.3.2", platforms: windows_platforms
-gem "winevt_c", "0.11.0", platforms: windows_platforms
+gem "winevt_c", "0.11.1", platforms: windows_platforms
 gem "win32-eventlog", "0.6.7", platforms: windows_platforms
 gem "fluent-plugin-parser-winevt_xml", "0.2.7", platforms: windows_platforms
 gem "fluent-plugin-windows-eventlog", "0.9.0", platforms: windows_platforms
@@ -98,6 +98,6 @@ gem "fluent-plugin-windows-exporter", "1.0.0", platforms: windows_platforms
 
 not_windows_platforms = [:ruby]
 gem "rdkafka", "0.16.1", platforms: not_windows_platforms
-gem "systemd-journal", "1.4.2", platforms: not_windows_platforms
-gem "fluent-plugin-systemd", "1.0.5", platforms: not_windows_platforms
+gem "systemd-journal", "2.0.0", platforms: not_windows_platforms
+gem "fluent-plugin-systemd", "1.1.0", platforms: not_windows_platforms
 gem "fluent-plugin-utmpx", "0.5.0", platforms: not_windows_platforms
