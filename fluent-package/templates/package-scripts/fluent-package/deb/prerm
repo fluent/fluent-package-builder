@@ -16,18 +16,52 @@ set -e
 # for details, see https://www.debian.org/doc/debian-policy/ or
 # the debian-policy package.
 
+make_sure_working_dir_exists() {
+    # This func is for CI ONLY.
+    # Some CI cases don't provide env with systemd.
+    # tmpfiles.d owns /tmp/<%= package_dir %>, but not created without systemd
+    if [ -d /run/systemd/system ]; then
+        return
+    fi
+    mkdir -p "/tmp/<%= package_dir %>"
+}
+
+leave_info_for_auto_restart_if_need() {
+    # Some CI cases that don't provide env with systemd, so disable auto restart feature in those cases.
+    if [ ! -d /run/systemd/system ]; then
+        return
+    fi
+
+    pid="$(systemctl show "<%= service_name %>" --property=MainPID --value)"
+    if [ $pid -eq 0 ]; then
+        echo "Do not use auto restart because the service is not active"
+        return
+    fi
+
+    . "/etc/default/<%= service_name %>"
+    echo "FLUENT_PACKAGE_SERVICE_RESTART: $FLUENT_PACKAGE_SERVICE_RESTART"
+    if [ "$FLUENT_PACKAGE_SERVICE_RESTART" != auto ]; then
+        return
+    fi
+
+    /usr/sbin/fluent-gem list '^fluent-plugin-' --no-version --no-verbose > "/tmp/<%= package_dir %>/.plugin_list"
+
+    echo "$pid" > "/tmp/<%= package_dir %>/.main_pid"
+}
 
 case "$1" in
-    remove|upgrade|deconfigure)
-    ;;
-
+    upgrade)
+        make_sure_working_dir_exists
+        leave_info_for_auto_restart_if_need
+        ;;
+    remove|deconfigure)
+        ;;
     failed-upgrade)
-    ;;
-
+        ;;
     *)
         echo "prerm called with unknown argument '$1'" >&2
         exit 1
-    ;;
+        ;;
 esac
 
 # dh_installdeb will replace this with shell code automatically

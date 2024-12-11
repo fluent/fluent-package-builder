@@ -60,6 +60,11 @@ purge_bin_symlinks() {
 	fi
 }
 
+purge_tmp_files_for_upgrade() {
+    rm -f "/tmp/<%= package_dir %>/.plugin_list"
+    rm -f "/tmp/<%= package_dir %>/.main_pid"
+}
+
 case $1 in
     remove)
 	purge_var_run
@@ -72,6 +77,9 @@ case $1 in
 	purge_users
 	purge_bin_symlinks
 	;;
+    upgrade)
+        purge_tmp_files_for_upgrade
+        ;;
     *)
 	# nothing to do for upgrade, failed-upgrade, abort-install, abort-upgrade
 	;;

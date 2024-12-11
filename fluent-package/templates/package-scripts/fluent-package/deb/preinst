@@ -10,40 +10,25 @@ set -e
 # for details, see https://www.debian.org/doc/debian-policy/ or
 # the debian-policy package.
 
-local_base_plugins=/tmp/<%= package_dir %>/.local_base_plugins
-migrate_local_plugins() {
-    if [ "$FLUENT_PACKAGE_SERVICE_RESTART" != auto ]; then
-        return
+mark_auto_restart_ready() {
+    # Copy tmp files made by FROM-side because they should be cleaned postrm of FROM-side.
+    # (To ensure cleanup, tmp files should be cleaned by its own-side).
+    # The sequence of these tmp files is as follows:
+    #   1. FROM-prerm(upgrade): Leave tmp files if need.
+    #   2. TO-preinst(upgrade): Copy tmp files for TO-side.
+    #   3. FROM-postrm(upgrade): Clean tmp files of FROM-side(1.).
+    #   4. TO-postinst(configure): Use and clean tmp files of TO-side(2.).
+    if [ -f "/tmp/<%= package_dir %>/.plugin_list" ]; then
+        cp "/tmp/<%= package_dir %>/.plugin_list" "/tmp/<%= package_dir %>/.previous_plugin_list"
     fi
-    if [ ! -d /run/systemd/system ]; then
-        # tmpfiles.d owns /tmp/<%= package_dir %>, but not created without systemd
-        mkdir -p /tmp/<%= package_dir %>
-    fi
-    # collect list of gems
-    # We don't use fluent-diagtool here because it depends on systemd and piuparts fails
-    /usr/sbin/fluent-gem list '^fluent-plugin-' --no-version --no-verbose > $local_base_plugins
-}
-
-zero_downtime_restart_supported_version="1.18.0"
-zero_downtime_restart_supported=/tmp/<%= package_dir %>/.zero_downtime_restart_supported
-check_version() {
-    printf '%s\n' "$zero_downtime_restart_supported_version" "$1" | sort --check=quiet --version-sort
-}
-check_whether_zero_downtime_restart_supported() {
-    current_version=$(/usr/sbin/fluentd --version | cut -d' ' -f 4)
-    if check_version $current_version; then
-        echo "Fluentd $current_version supports zero downtime restart."
-        mkdir -p /tmp/<%= package_dir %>
-        touch $zero_downtime_restart_supported
+    if [ -f "/tmp/<%= package_dir %>/.main_pid" ]; then
+        cp "/tmp/<%= package_dir %>/.main_pid" "/tmp/<%= package_dir %>/.pid_for_auto_restart"
     fi
 }
 
 case "$1" in
     upgrade)
-        . /etc/default/<%= service_name %>
-        echo "preinst FLUENT_PACKAGE_SERVICE_RESTART: $FLUENT_PACKAGE_SERVICE_RESTART"
-        migrate_local_plugins
-        check_whether_zero_downtime_restart_supported
+        mark_auto_restart_ready
 	;;
     abort-upgrade)
         ;;
