@@ -219,7 +219,7 @@ if [ $1 -eq 1 ]; then
   else
     . %{_sysconfdir}/sysconfig/@SERVICE_NAME@
     echo "FLUENT_PACKAGE_SERVICE_RESTART: $FLUENT_PACKAGE_SERVICE_RESTART"
-    if [ "$FLUENT_PACKAGE_SERVICE_RESTART" = auto ]; then
+    if [ "$FLUENT_PACKAGE_SERVICE_RESTART" != manual ]; then
       # Present that FROM-side wants auto installing plugins and restarting.
       # Note: Wants to collect plugin-list here, but we need to do it in %pre (see comments in %pre).
       touch %{install_plugins}
