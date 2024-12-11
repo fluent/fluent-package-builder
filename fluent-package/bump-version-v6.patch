@@ -1,7 +1,7 @@
-From 887c36b60822995aa889fea6a181f00975cdfff7 Mon Sep 17 00:00:00 2001
+From 22ef9f8d96e796933b490bf1bf8c41425e6d621e Mon Sep 17 00:00:00 2001
 From: Kentaro Hayashi <hayashi@clear-code.com>
-Date: Thu, 17 Oct 2024 19:45:02 +0900
-Subject: [PATCH 1/2] bump version
+Date: Wed, 11 Dec 2024 22:55:30 +0900
+Subject: [PATCH] bump version to 6.0.0
 
 Signed-off-by: Kentaro Hayashi <hayashi@clear-code.com>
 ---
@@ -11,12 +11,12 @@ Signed-off-by: Kentaro Hayashi <hayashi@clear-code.com>
  3 files changed, 12 insertions(+), 3 deletions(-)
 
 diff --git a/fluent-package/config.rb b/fluent-package/config.rb
-index a9e13bc..e61bca4 100644
+index 8219301..7d4fec7 100644
 --- a/fluent-package/config.rb
 +++ b/fluent-package/config.rb
 @@ -1,5 +1,5 @@
  PACKAGE_NAME = "fluent-package"
--PACKAGE_VERSION = "5.1.0"
+-PACKAGE_VERSION = "5.2.0"
 +PACKAGE_VERSION = "6.0.0"
  
  # Keep internal path (/opt/td-agent) for package name migration
@@ -25,15 +25,15 @@ index a9e13bc..e61bca4 100644
  BUNDLER_VERSION= "2.3.27"
  
  # https://www.ruby-lang.org/en/downloads/ (tar.gz)
--BUNDLED_RUBY_VERSION = "3.2.5"
--BUNDLED_RUBY_SOURCE_SHA256SUM = "ef0610b498f60fb5cfd77b51adb3c10f4ca8ed9a17cb87c61e5bea314ac34a16"
-+BUNDLED_RUBY_VERSION = "3.3.5"
-+BUNDLED_RUBY_SOURCE_SHA256SUM = "3781a3504222c2f26cb4b9eb9c1a12dbf4944d366ce24a9ff8cf99ecbce75196"
+-BUNDLED_RUBY_VERSION = "3.2.6"
+-BUNDLED_RUBY_SOURCE_SHA256SUM = "d9cb65ecdf3f18669639f2638b63379ed6fbb17d93ae4e726d4eb2bf68a48370"
++BUNDLED_RUBY_VERSION = "3.3.6"
++BUNDLED_RUBY_SOURCE_SHA256SUM = "8dc48fffaf270f86f1019053f28e51e4da4cce32a36760a0603a9aee67d7fd8d"
  
  BUNDLED_RUBY_PATCHES = [
    # An example entry:
 diff --git a/fluent-package/debian/changelog b/fluent-package/debian/changelog
-index f24ec3e..0089f56 100644
+index 0a73dbb..2614fac 100644
 --- a/fluent-package/debian/changelog
 +++ b/fluent-package/debian/changelog
 @@ -1,3 +1,9 @@
@@ -41,23 +41,23 @@ index f24ec3e..0089f56 100644
 +
 +  * New upstream release.
 +
-+ -- Kentaro Hayashi <kenhys@xdump.org>  Tue, 8 Oct 2024 07:47:29 -0000
++ -- Kentaro Hayashi <hayashi@clear-code.com>  Fri, 29 Aug 2025 13:55:06 -0000
 +
- fluent-package (5.1.0-1) unstable; urgency=low
+ fluent-package (5.2.0-1) unstable; urgency=low
  
    * New upstream release.
 diff --git a/fluent-package/yum/fluent-package.spec.in b/fluent-package/yum/fluent-package.spec.in
-index 4833f8e..da9da8c 100644
+index 45f0519..240f30c 100644
 --- a/fluent-package/yum/fluent-package.spec.in
 +++ b/fluent-package/yum/fluent-package.spec.in
-@@ -478,6 +478,9 @@ fi
+@@ -439,6 +439,9 @@ fi
  # NOTE: %{_tmpfilesdir} is available since CentOS 7
  %attr(0755,fluentd,fluentd) %dir /tmp/@PACKAGE_DIR@
  %changelog
-+* Mon Oct 7 2024 Kentaro Hayashi <kenhys@xdump.org> - 6.0.0-1
-+- New upstream release. (Dummy)
++* Fri Aug 29 2025 Kentaro Hayashi <hayashi@clear-code.com> - 6.0.0-1
++- New upstream release.
 +
- * Mon Jul 29 2024 Kentaro Hayashi <kenhys@xdump.org> - 5.1.0-1
+ * Sat Dec 14 2024 Kentaro Hayashi <hayashi@clear-code.com> - 5.2.0-1
  - New upstream release.
  
 -- 
