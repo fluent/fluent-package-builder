@@ -145,7 +145,7 @@ migration_from_v4_post_process() {
     fi
 }
 
-local_base_plugins=/tmp/<%= package_dir %>/.local_base_plugins
+local_base_plugins="/tmp/<%= package_dir %>/.previous_plugin_list"
 install_missing_plugins() {
     # Install missing gems (even though systemd is not available, it works)
     if [ -f $local_base_plugins ]; then
@@ -168,31 +168,17 @@ install_missing_plugins() {
     fi
 }
 
-zero_downtime_restart_supported=/tmp/<%= package_dir %>/.zero_downtime_restart_supported
+pid_for_auto_restart="/tmp/<%= package_dir %>/.pid_for_auto_restart"
 fluentd_auto_restart() {
-    if [ ! -e "$zero_downtime_restart_supported" ]; then
+    if [ ! -f "$pid_for_auto_restart" ]; then
         return
     fi
 
-    if [ -d /run/systemd/system ]; then
-	pid=$(systemctl show <%= service_name %> --property=MainPID --value)
-	if [ $pid -ne 0 ]; then
-	    . /etc/default/<%= service_name %>
-	    case "$FLUENT_PACKAGE_SERVICE_RESTART" in
-		auto)
-		    echo "Kick auto service upgrade mode to MainPID:$pid"
-		    kill -USR2 $pid
-		    ;;
-		manual)
-		    echo "No need to restart service in manual mode..."
-		    ;;
-		*)
-		    echo "Nothing to be done..."
-		    ;;
-	    esac
-	fi
-    fi
-    rm -rf $zero_downtime_restart_supported
+    pid=$(cat "$pid_for_auto_restart")
+    echo "Kick auto restart to MainPID:$pid"
+    kill -USR2 $pid
+
+    rm -f "$pid_for_auto_restart"
 }
 
 case "$1" in
