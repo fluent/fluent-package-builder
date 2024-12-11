@@ -27,7 +27,7 @@ package="/host/v6-test/${distribution}/${DISTRIBUTION_VERSION}/x86_64/Packages/f
 sudo $DNF install -y $package
 
 # Test: Check whether plugin/gem were installed during upgrading
-if [ "$service_restart" = auto ] && [ "$status_before_update" = active ]; then
+if [ "$service_restart" != manual ] && [ "$status_before_update" = active ]; then
     # plugin gem should be installed automatically
     /opt/fluent/bin/fluent-gem list | grep fluent-plugin-concat
     # Non fluent-plugin- prefix gem should not be installed automatically
