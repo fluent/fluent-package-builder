@@ -11,7 +11,7 @@ About the past changelog entries, see [old CHANGELOG](CHANGELOG-v4.md) instead.
 * Update bundled gems
 * deb rpm: Fixed to not execute v4 restart migration process unexpectedly.
 * msi: set GEM_HOME/GEM_PATH in fluentd.bat
-* Support upgrade fluentd service without zero downtime.
+* Support upgrade fluentd service with zero downtime.
   Note that you can use this feature when upgrade to the next version of fluent-package.
 
 This is standard version of Fluentd distribution package.
