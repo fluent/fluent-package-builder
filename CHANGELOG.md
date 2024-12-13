@@ -13,7 +13,9 @@ About the past changelog entries, see [old CHANGELOG](CHANGELOG-v4.md) instead.
 * msi: set GEM_HOME/GEM_PATH in fluentd.bat
 * Support upgrade fluentd service with zero downtime.
   Note that you can use this feature when upgrade to the next version of fluent-package.
-
+* fluentd.service: Remove GEM_HOME/GEM_PATH env vars because they are unnecessary. 
+* deb: suppress service restart by needrestart.
+  The package places `/etc/needrestart/conf.d/50-fluent-package.conf`.
 This is standard version of Fluentd distribution package.
 If you want LTS version, stick to use v5.0.x.
 
