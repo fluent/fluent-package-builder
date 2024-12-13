@@ -195,15 +195,17 @@ EOF
 	     https://api.github.com/repos/fluent/fluent-package-builder/pulls/$PULL_NUMBER | jq --raw-output '.head | .ref + " " + .sha')
 	head_branch=$(echo $response | cut -d' ' -f1)
 	head_sha=$(echo $response | cut -d' ' -f2)
+	rm -f dl.list
 	curl --silent --location \
 	     -H "Accept: application/vnd.github+json" \
 	     -H "Authorization: Bearer $GITHUB_ACCESS_TOKEN" \
 	     -H "X-GitHub-Api-Version: 2022-11-28" \
 	     "https://api.github.com/repos/fluent/fluent-package-builder/actions/artifacts?per_page=100&page=$d" | \
-	    jq --raw-output '.artifacts[] | select(.workflow_run.head_branch == "'$head_branch'" and .workflow_run.head_sha == "'$head_sha'") | .name + " " + .archive_download_url' | while read line
+	    jq --raw-output '.artifacts[] | select(.workflow_run.head_branch == "'$head_branch'" and .workflow_run.head_sha == "'$head_sha'") | .name + " " + (.size_in_bytes|tostring) + " " + .archive_download_url' > dl.list
+	while read line
 	do
 	    package=$(echo $line | cut -d' ' -f1)
-	    download_url=$(echo $line | cut -d' ' -f2)
+	    download_url=$(echo $line | cut -d' ' -f3)
 	    echo "Downloading $package.zip from $download_url"
 	    case $package in
 		*debian*|*ubuntu*)
@@ -211,23 +213,52 @@ EOF
 		    (cd apt/repositories &&
 			 rm -f $package.zip &&
 			 curl --silent --location --output $package.zip \
-			      -H "Authorization: Bearer $GITHUB_ACCESS_TOKEN" $download_url &&
-			 unzip -u -o $package.zip)
+			      -H "Authorization: Bearer $GITHUB_ACCESS_TOKEN" $download_url ) &
 		    ;;
 		*centos*|*rockylinux*|*almalinux*|*amazonlinux*)
 		    mkdir -p yum/repositories
 		    (cd yum/repositories &&
 			 rm -f $package.zip &&
 			 curl --silent --location --output $package.zip \
-			      -H "Authorization: Bearer $GITHUB_ACCESS_TOKEN" $download_url &&
-			 unzip -u -o $package.zip)
+			      -H "Authorization: Bearer $GITHUB_ACCESS_TOKEN" $download_url ) &
 		    ;;
 		*)
 		    curl --silent --location --output $package.zip \
-			 -H "Authorization: Bearer $GITHUB_ACCESS_TOKEN" $download_url
+			 -H "Authorization: Bearer $GITHUB_ACCESS_TOKEN" $download_url &
 		    ;;
 	    esac
-	done
+	done < dl.list
+	wait
+
+	verified=1
+	while read line
+	do
+	    package=$(echo $line | cut -d' ' -f1)
+	    download_size=$(echo $line | cut -d' ' -f2)
+	    case $package in
+		*debian*|*ubuntu*)
+		    actual_size=$(stat --format="%s" apt/repositories/$package.zip)
+		    ;;
+		*rockylinux*|*almalinux*|*amazonlinux*)
+		    actual_size=$(stat --format="%s" yum/repositories/$package.zip)
+		    ;;
+		*)
+		    actual_size=$(stat --format="%s" $package.zip)
+		    ;;
+	    esac
+	    if [ $download_size = "$actual_size" ]; then
+		echo -e "[\e[32m\e[40mOK\e[0m] Verify apt/repositories/$package.zip"
+	    else
+		echo -e "[\e[31m\e[40mNG\e[0m] Verify apt/repositories/$package.zip (expected: $download_size actual: $actual_size)"
+		verified=0
+	    fi
+	done < dl.list
+	if [ $verified -eq 0 ]; then
+	    echo "Downloaded artifacts were corrupted! Check the downloaded artifacts."
+	    exit 1
+	fi
+	(cd apt/repositories && find . -name '*.zip' -exec unzip -u -o {} \;)
+	(cd yum/repositories && find . -name '*.zip' -exec unzip -u -o {} \;)
 	;;
     *)
 	usage
