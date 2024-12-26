@@ -29,3 +29,20 @@ case ${code_name} in
     java_jdk=openjdk-17-jre
     ;;
 esac
+
+function test_suppressed_needrestart()
+{
+    LOG_FILE=$1
+    # Test: needrestart was suppressed
+    if dpkg-query --show --showformat='${Version}' needrestart ; then
+        case $code_name in
+            focal)
+                # dpkg-query succeeds even though needrestart is not installed.
+                (! grep "No services need to be restarted." $LOG_FILE)
+                ;;
+            *)
+                grep "No services need to be restarted." $LOG_FILE
+                ;;
+        esac
+    fi
+}
