@@ -27,17 +27,7 @@ sudo apt install -V -y \
     /host/v6-test/${distribution}/pool/${code_name}/${channel}/*/*/fluent-package_*_${architecture}.deb 2>&1 | tee upgrade.log
 
 # Test: needrestart was suppressed
-if dpkg-query --show --showformat='${Version}' needrestart ; then
-  case $code_name in
-    focal)
-      # dpkg-query succeeds even though needrestart is not installed.
-      (! grep "No services need to be restarted." upgrade.log)
-      ;;
-    *)
-      grep "No services need to be restarted." upgrade.log
-      ;;
-  esac
-fi
+test_suppressed_needrestart upgrade.log
 
 # Test: Check whether plugin/gem were installed during upgrading
 if [ "$service_restart" != manual ] && [ "$status_before_update" = active ]; then
