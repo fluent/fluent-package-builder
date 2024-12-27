@@ -1,0 +1,181 @@
+<% if install_info[:distribution] == "redhat" %>
+echo "=============================="
+echo " <%= install_info[:package_name] %> Installation Script "
+echo "=============================="
+echo "This script requires superuser access to install rpm packages."
+echo "You will be prompted for your password by sudo."
+
+# clear any previous sudo permission
+sudo -k
+
+# run inside sudo
+sudo sh <<SCRIPT
+
+  # add GPG key
+  rpm --import <%= install_info[:base_url] %>/GPG-KEY-td-agent
+<% if install_info[:channel_version] >= 5 %>
+  rpm --import <%= install_info[:base_url] %>/GPG-KEY-fluent-package
+<% end %>
+
+<% if install_info[:channel_version] == 5 %>
+  # add <%= install_info[:package_name] %> repository to yum
+<% else %>
+  # add treasure data repository to yum
+<% end %>
+  cat >/etc/yum.repos.d/<%= install_info[:repo_file] %> <<'EOF';
+[<%= install_info[:repo_label] %>]
+name=<%= install_info[:repo_name] %>
+<% if install_info[:channel_version] >= 2 %>
+baseurl=<%= install_info[:base_url] %>/<% if install_info[:lts] %>lts/<% end %><%= install_info[:channel_version] %>/redhat/\$releasever/\$basearch
+<% else %>
+baseurl=<%= install_info[:base_url] %>/redhat/\$basearch
+<% end %>
+<% if install_info[:channel_version] >= 5 %>
+enabled=1
+<% end %>
+gpgcheck=1
+gpgkey=<%= install_info[:base_url] %>/GPG-KEY-td-agent<% if install_info[:old_sha1] %>-old-sha1<% end%>
+<% if install_info[:channel_version] > 4 %>
+       <%= install_info[:base_url] %>/GPG-KEY-fluent-package
+<% end %>
+EOF
+
+  # update your sources
+  yum check-update
+
+  # install the toolbelt
+  yes | yum install -y <%= install_info[:package_name] %>
+
+SCRIPT
+
+# message
+echo ""
+echo "Installation completed. Happy Logging!"
+echo ""
+<% elsif install_info[:distribution] == 'amazon' %>
+echo "=============================="
+echo " <%= install_info[:package_name] %> Installation Script "
+echo "=============================="
+echo "This script requires superuser access to install rpm packages."
+echo "You will be prompted for your password by sudo."
+
+# clear any previous sudo permission
+sudo -k
+
+# run inside sudo
+sudo sh <<SCRIPT
+
+  # add GPG key
+  rpm --import <%= install_info[:base_url] %>/GPG-KEY-td-agent
+<% if install_info[:channel_version] >= 5 %>
+  rpm --import <%= install_info[:base_url] %>/GPG-KEY-fluent-package
+<% end %>
+
+<% if install_info[:channel_version] == 5 %>
+  # add fluent package repository to yum
+<% else %>
+  # add treasure data repository to yum
+<% end %>
+  cat >/etc/yum.repos.d/<%= install_info[:repo_file] %> <<'EOF';
+[<%= install_info[:repo_label] %>]
+name=<%= install_info[:repo_name] %>
+<% if install_info[:channel_version] == 3 and install_info[:version] <= 2 %>
+baseurl=<%= install_info[:base_url] %>/<% if install_info[:lts] %>lts/<% end %><%= install_info[:channel_version] %>/<%= install_info[:distribution] %>/<%= install_info[:version] %>/\$releasever/\$basearch
+<% else %>
+baseurl=<%= install_info[:base_url] %>/<% if install_info[:lts] %>lts/<% end %><%= install_info[:channel_version] %>/<%= install_info[:distribution] %>/<%= install_info[:version] %>/\$basearch
+<% end %>
+<% if install_info[:channel_version] >= 5 %>
+enabled=1
+<% end %>
+gpgcheck=1
+gpgkey=<%= install_info[:base_url] %>/GPG-KEY-td-agent
+<% if install_info[:channel_version] >= 5 %>
+       <%= install_info[:base_url] %>/GPG-KEY-fluent-package
+<% end %>
+EOF
+
+  # update your sources
+  yum check-update
+
+  # install the toolbelt
+  yes | yum install -y <%= install_info[:package_name] %>
+
+SCRIPT
+
+# message
+echo ""
+echo "Installation completed. Happy Logging!"
+echo ""
+<% elsif ['debian', 'ubuntu'].include?(install_info[:distribution]) %>
+echo "=============================="
+echo " <%= install_info[:package_name] %> Installation Script "
+echo "=============================="
+echo "This script requires superuser access to install apt packages."
+echo "You will be prompted for your password by sudo."
+
+# clear any previous sudo permission
+sudo -k
+
+# run inside sudo
+sudo sh <<SCRIPT
+<% if install_info[:channel_version] >= 5 %>
+  # use apt-source package which contains keyring
+  curl -o fluent-apt-source.deb <%= install_info[:base_url] %>/<% if install_info[:lts] %>lts/<% end %><%= install_info[:channel_version] %>/<%= install_info[:distribution] %>/<%= install_info[:version] %>/pool/contrib/f/<%= install_info[:apt_source_deb] %>
+  apt install -y ./fluent-apt-source.deb
+<% elsif install_info[:channel_version] == 4 %>
+<% if install_info[:distribution] == 'ubuntu' and install_info[:version] == 'xenial' %>
+  
+    # Deprecated
+    curl <%= install_info[:base_url] %>/GPG-KEY-td-agent | apt-key add -
+    # add treasure data repository to apt
+    echo "deb <%= install_info[:base_url] %>/4/ubuntu/xenial/ xenial contrib" > /etc/apt/sources.list.d/treasure-data.list
+  
+<% else %>
+  
+    # use apt-source package which contains keyring
+    curl -o td-agent-apt-source.deb <%= install_info[:base_url] %>/<%= install_info[:channel_version] %>/<%= install_info[:distribution] %>/<%= install_info[:version] %>/pool/contrib/f/<%= install_info[:apt_source_deb] %>
+    apt install -y ./td-agent-apt-source.deb
+  
+<% end %>
+<% elsif install_info[:channel_version] >= 2 %>
+  curl <%= install_info[:base_url] %>/GPG-KEY-td-agent | apt-key add -
+
+  # add treasure data repository to apt
+  echo "deb <%= install_info[:base_url] %>/<%= install_info[:channel_version] %>/<%= install_info[:distribution] %>/<%= install_info[:version] %>/ <%= install_info[:version] %> contrib" > /etc/apt/sources.list.d/treasure-data.list
+
+<% elsif install_info[:channel_version] == 1 %>
+  curl <%= install_info[:base_url] %>/GPG-KEY-td-agent-old-sha1 | apt-key add -
+
+  # add treasure data repository to apt
+<% if install_info[:version] == 'lucid' %>
+  echo "deb <%= install_info[:base_url] %>/<%= install_info[:distribution] %>/ <%= install_info[:version] %> contrib" > /etc/apt/sources.list.d/treasure-data.list
+<% else %>
+  echo "deb <%= install_info[:base_url] %>/<%= install_info[:version] %>/ <%= install_info[:version] %> contrib" > /etc/apt/sources.list.d/treasure-data.list
+<% end %>
+
+<% end %>
+  # update your sources
+  <%= install_info[:apt] %> update
+
+  # install the toolbelt
+  <%= install_info[:apt] %> install -y <%= install_info[:package_name] %>
+
+SCRIPT
+
+# message
+<% if install_info[:channel_version] >= 2.5 %>
+if [ $? -eq 0 ]; then
+  echo ""
+  echo "Installation completed. Happy Logging!"
+  echo ""
+else
+  echo ""
+  echo "Installation incompleted. Check above messages."
+  echo ""
+fi
+<% else %>
+echo ""
+echo "Installation completed. Happy Logging!"
+echo ""
+<% end %>
+<% end %>
