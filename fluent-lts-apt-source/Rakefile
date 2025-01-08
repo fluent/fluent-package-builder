@@ -86,11 +86,8 @@ class FluentdAptLtsSourcePackageTask < PackageTask
 
   def apt_targets_default
     [
-      "debian-buster",
       "debian-bulleye",
       "debian-bookworm",
-      "ubuntu-xenial",
-      "ubuntu-bionic",
       "ubuntu-focal",
       "ubuntu-jammy",
       "ubuntu-noble"
