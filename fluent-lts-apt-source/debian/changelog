@@ -1,6 +1,13 @@
+fluent-lts-apt-source (2025.1.8-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Use armored keyring for APT repository to support newer apt.
+
+ -- Kentaro Hayashi <hayashi@clear-code.com>  Wed, 08 Jan 2025 16:31:51 +0900
+
 fluent-lts-apt-source (2023.7.29-1) unstable; urgency=medium
 
   * New upstream release.
   * Added new Fluent Package Official Signing Key.
 
- -- Kentaro Hayashi <kenhys@xdump.org>  Mon, 24 Jul 2023 17:02:55 +0900
+ -- Kentaro Hayashi <kenhys@xdump.org>  Wed, 08 Jan 2025 16:31:21 +0900
