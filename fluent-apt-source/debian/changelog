@@ -1,3 +1,10 @@
+fluent-apt-source (2025.1.8-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Use armored keyring for APT repository to support newer apt.
+
+ -- Kentaro Hayashi <hayashi@clear-code.com>  Wed, 08 Jan 2025 16:31:51 +0900
+
 fluent-apt-source (2023.6.29-1) unstable; urgency=medium
 
   * New upstream release.
