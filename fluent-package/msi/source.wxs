@@ -235,7 +235,43 @@
                   Return="check"
                   Impersonate="no" />
 
+    <Property Id="RemoveUnnecessaryRegistryValuesForBackup" Value=" "/>
+    <CustomAction Id="SetRemoveUnnecessaryRegistryValuesForBackupCommand"
+                  Property="RemoveUnnecessaryRegistryValuesForBackup"
+                  Value="&quot;cmd&quot; /c &quot;chcp 437 &amp;&amp; reg delete HKLM\SYSTEM\CurrentControlSet\Services\fluentdwinsvc /v ImagePath /f&quot;"/>
+    <CustomAction Id="RemoveUnnecessaryRegistryValuesForBackup"
+                  BinaryKey="WixCA"
+                  DllEntry="WixQuietExec64"
+                  Execute="deferred"
+                  Return="ignore"
+                  Impersonate="no" />
+    <Property Id="BackupRegistryValues" Value=" "/>
+    <CustomAction Id="SetBackupRegistryValuesCommand"
+                  Property="BackupRegistryValues"
+                  Value="&quot;cmd&quot; /c &quot;chcp 437 &amp;&amp; reg export HKLM\SYSTEM\CurrentControlSet\Services\fluentdwinsvc C:/fluentdwinsvc.reg&quot;"/>
+    <CustomAction Id="BackupRegistryValues"
+                  BinaryKey="WixCA"
+                  DllEntry="WixQuietExec64"
+                  Execute="deferred"
+                  Return="ignore"
+                  Impersonate="no" />
+    <Property Id="RestoreRegistryValues" Value=" "/>
+    <CustomAction Id="SetRestoreRegistryValuesCommand"
+                  Property="RestoreRegistryValues"
+                  Value="&quot;cmd&quot; /c &quot;reg import C:/fluentdwinsvc.reg&quot;"/>
+    <CustomAction Id="RestoreRegistryValues"
+                  BinaryKey="WixCA"
+                  DllEntry="WixQuietExec64"
+                  Execute="deferred"
+                  Return="ignore"
+                  Impersonate="no" />
+
     <InstallExecuteSequence>
+      <Custom Action="SetRemoveUnnecessaryRegistryValuesForBackupCommand" Before="RemoveUnnecessaryRegistryValuesForBackup">REMOVE="ALL"</Custom>
+      <Custom Action="RemoveUnnecessaryRegistryValuesForBackup" Before="SetBackupRegistryValuesCommand">REMOVE="ALL"</Custom>
+      <Custom Action="SetBackupRegistryValuesCommand" Before="BackupRegistryValues">REMOVE="ALL"</Custom>
+      <Custom Action="BackupRegistryValues" Before="StopServices">REMOVE="ALL"</Custom>
+
       <Custom Action="SetPostInstallCommand" After="InstallFiles">NOT Installed</Custom>
       <Custom Action="PostInstall" After="SetPostInstallCommand">NOT Installed</Custom>
 
@@ -244,6 +280,9 @@
 
       <Custom Action="SetInstallFluentdWinSvcCommand" After="InstallFiles">NOT Installed</Custom>
       <Custom Action="InstallFluentdWinSvc" After="SetInstallFluentdWinSvcCommand">NOT Installed</Custom>
+
+      <Custom Action="SetRestoreRegistryValuesCommand" After="InstallFluentdWinSvc">NOT Installed</Custom>
+      <Custom Action="RestoreRegistryValues" After="SetRestoreRegistryValuesCommand">NOT Installed</Custom>
 
       <Custom Action="SetCreateCompatTdAgentBat" Before="InstallFinalize">NOT Installed</Custom>
       <Custom Action="CreateCompatTdAgentBat" After="SetCreateCompatTdAgentBat">NOT Installed</Custom>
