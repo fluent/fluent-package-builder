@@ -136,8 +136,6 @@
       <ComponentRef Id="FluentConf" />
       <ComponentRef Id="FluentAcl" />
       <ComponentRef Id="FluentdBat" />
-    </Feature>
-    <Feature Id="KeepRegistryFeature" Title="!(loc.KeepRegistryFeatureName)" AllowAdvertise="no" Level="1">
       <ComponentGroupRef Id="KeepSomeRegistryValues" />
     </Feature>
 

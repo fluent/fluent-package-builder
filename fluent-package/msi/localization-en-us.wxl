@@ -16,7 +16,6 @@
   <String Id="VerifyReadyDlgInstallTitle">{\WixUI_Font_Title_White}Ready to install [ProductName]</String>
 
   <String Id="FeatureMainName">Fluent Package</String>
-  <String Id="KeepRegistryFeatureName">Feature to keep some registry values when updating</String>
 
   <String Id="MinimumOSVersionMessage">This package requires minimum OS version: Windows 7/Windows Server 2008 R2 or greater.</String>
   <String Id="DowngradeErrorMessage">A newer version of [ProductName] is already installed.</String>
