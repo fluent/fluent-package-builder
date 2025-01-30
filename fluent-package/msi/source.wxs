@@ -162,13 +162,13 @@
 
     <!-- Save old some registry values -->
     <Property Id="REGISTRY_START_OLD">
-        <RegistrySearch Id="RegistrySearchStart" Root="HKLM" Key="System\CurrentControlSet\Services\fluentdwinsvc" Name="Start" Type="raw" />
+      <RegistrySearch Id="RegistrySearchStart" Root="HKLM" Key="System\CurrentControlSet\Services\fluentdwinsvc" Name="Start" Type="raw" />
     </Property>
     <Property Id="REGISTRY_DELAYEDAUTOSTART_OLD">
-        <RegistrySearch Id="RegistrySearchDelayedAutostart" Root="HKLM" Key="System\CurrentControlSet\Services\fluentdwinsvc" Name="DelayedAutostart" Type="raw" />
+      <RegistrySearch Id="RegistrySearchDelayedAutostart" Root="HKLM" Key="System\CurrentControlSet\Services\fluentdwinsvc" Name="DelayedAutostart" Type="raw" />
     </Property>
     <Property Id="REGISTRY_FLUENTDOPT_OLD">
-        <RegistrySearch Id="RegistrySearchFluentdopt" Root="HKLM" Key="System\CurrentControlSet\Services\fluentdwinsvc" Name="fluentdopt" Type="raw" />
+      <RegistrySearch Id="RegistrySearchFluentdopt" Root="HKLM" Key="System\CurrentControlSet\Services\fluentdwinsvc" Name="fluentdopt" Type="raw" />
     </Property>
 
     <!-- Restore some registry values -->
