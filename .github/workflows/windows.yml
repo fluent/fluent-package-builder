@@ -26,7 +26,7 @@ jobs:
         id: cache-msi
         with:
           path: fluent-package/msi/repositories
-          key: ${{ runner.os }}-cache-windows-${{ hashFiles('**/config.rb', '**/Rakefile', '**/Gemfile*', '!**/*.ps1') }}
+          key: ${{ runner.os }}-cache-windows-${{ hashFiles('**/config.rb', '**/Rakefile', '**/Gemfile*', '!**/*.ps1', 'fluent-package/msi/source.wxs', 'fluent-package/msi/parameters.wxi.erb', 'fluent-package/msi/localization-en-us.wxl', 'fluent-package/msi/exclude-files.xslt', 'fluent-package/msi/Dockerfile') }}
       - name: Build
         if: ${{ ! steps.cache-msi.outputs.cache-hit }}
         run: |
