@@ -136,7 +136,7 @@
       <ComponentRef Id="FluentConf" />
       <ComponentRef Id="FluentAcl" />
       <ComponentRef Id="FluentdBat" />
-      <ComponentGroupRef Id="KeepSomeRegistryValues" />
+      <ComponentGroupRef Id="KeepUserRegistryConfiguration" />
     </Feature>
 
     <!-- UI Stuff -->
@@ -172,7 +172,7 @@
     </Property>
 
     <!-- Restore some registry values -->
-    <ComponentGroup Id="KeepSomeRegistryValues" Directory="FLUENTPROJECTLOCATION">
+    <ComponentGroup Id="KeepUserRegistryConfiguration" Directory="FLUENTPROJECTLOCATION">
       <!--
         CAUTION: We cannot use `integer` type for values being read by RegistrySearch. Use `string` instead.
         RegistrySearch reads a raw value, and it can have a prefix according to the data type.
