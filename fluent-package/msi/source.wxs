@@ -175,10 +175,14 @@
     <ComponentGroup Id="KeepUserRegistryConfiguration" Directory="FLUENTPROJECTLOCATION">
       <!--
         CAUTION: We cannot use `integer` type for values being read by RegistrySearch. Use `string` instead.
-        RegistrySearch reads a raw value, and it can have a prefix according to the data type.
+        DETAIL: RegistrySearch reads a raw value and the value could have a prefix according to the data type.
         For example, integer (DWORD) value has a `#` prefix.
-        It appears that RegistryValue can use `string` type to handle such raw values.
-        If using `integer` type, it appears that it is forced to be recognized as `REG_SZ` type after all, and it breaks the service.
+        If writing such a value (e.g., `#2`) by `RegistryValue` with `integer` type, it is forced to be recognized as `REG_SZ` type after all, and it breaks the service.
+        We want to remove the prefix before `RegistryValue`, but it is hard to do with WiX.
+        However, using `string` type can handle such raw values.
+        For example, if writing `#2` by `RegistryValue` with `string` type, it is written as `2` with `REG_DWORD` type.
+        (Though this is undocumented... https://wixtoolset.org/docs/v3/xsd/wix/registryvalue/)
+        Thus, it is better to use `string` type to handle such raw values in this context because of no need to care about '#' prefix.
        -->
 
       <!-- Start -->
