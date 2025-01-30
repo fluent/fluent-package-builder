@@ -173,36 +173,24 @@
 
     <!-- Restore some registry values -->
     <ComponentGroup Id="KeepSomeRegistryValues" Directory="FLUENTPROJECTLOCATION">
+      <!--
+        CAUTION: We cannot use `integer` type for values being read by RegistrySearch. Use `string` instead.
+        RegistrySearch reads a raw value, and it can have a prefix according to the data type.
+        For example, integer (DWORD) value has a `#` prefix.
+        It appears that RegistryValue can use `string` type to handle such raw values.
+        If using `integer` type, it appears that it is forced to be recognized as `REG_SZ` type after all, and it breaks the service.
+       -->
+
       <!-- Start -->
-      <Component Id="SetRegistryStartBoot" Guid="5759ebf0-a248-4e78-82be-9334421100b2">
-        <Condition><![CDATA[REGISTRY_START_OLD="#0"]]></Condition>
-        <RegistryValue Id="RegistryValueStartBoot" Root="HKLM" Key="System\CurrentControlSet\Services\fluentdwinsvc" Name="Start" Value="0" Type="integer" KeyPath="yes" />
-      </Component>
-      <Component Id="SetRegistryStartSystem" Guid="24ff3f6f-bf36-46d6-899e-ed83497a4a32">
-        <Condition><![CDATA[REGISTRY_START_OLD="#1"]]></Condition>
-        <RegistryValue Id="RegistryValueStartSystem" Root="HKLM" Key="System\CurrentControlSet\Services\fluentdwinsvc" Name="Start" Value="1" Type="integer" KeyPath="yes" />
-      </Component>
-      <Component Id="SetRegistryStartAutomatic" Guid="a2786a2d-1969-466a-91f3-aea32d193cab">
-        <Condition><![CDATA[REGISTRY_START_OLD="#2"]]></Condition>
-        <RegistryValue Id="RegistryValueStartAutomatic" Root="HKLM" Key="System\CurrentControlSet\Services\fluentdwinsvc" Name="Start" Value="2" Type="integer" KeyPath="yes" />
-      </Component>
-      <Component Id="SetRegistryStartDemand" Guid="f132040b-1126-4a2b-a9f5-224047f3d457">
-        <Condition><![CDATA[REGISTRY_START_OLD="#3"]]></Condition>
-        <RegistryValue Id="RegistryValueStartDemand" Root="HKLM" Key="System\CurrentControlSet\Services\fluentdwinsvc" Name="Start" Value="3" Type="integer" KeyPath="yes" />
-      </Component>
-      <Component Id="SetRegistryStartDisabled" Guid="048c744a-2f22-4e51-8203-a455a7009064">
-        <Condition><![CDATA[REGISTRY_START_OLD="#4"]]></Condition>
-        <RegistryValue Id="RegistryValueStartDisabled" Root="HKLM" Key="System\CurrentControlSet\Services\fluentdwinsvc" Name="Start" Value="4" Type="integer" KeyPath="yes" />
+      <Component Id="SetRegistryStart" Guid="5759ebf0-a248-4e78-82be-9334421100b2">
+        <Condition><![CDATA[REGISTRY_START_OLD<>""]]></Condition>
+        <RegistryValue Id="RegistryValueStart" Root="HKLM" Key="System\CurrentControlSet\Services\fluentdwinsvc" Name="Start" Value="[REGISTRY_START_OLD]" Type="string" KeyPath="yes" />
       </Component>
 
       <!-- DelayedAutostart -->
-      <Component Id="SetRegistryDelayedAutostartDisabled" Guid="8cb98306-8219-400f-b8b3-e5ffca828cd4">
-        <Condition><![CDATA[REGISTRY_DELAYEDAUTOSTART_OLD="#0"]]></Condition>
-        <RegistryValue Id="RegistryValueDelayedAutostartDisabled" Root="HKLM" Key="System\CurrentControlSet\Services\fluentdwinsvc" Name="DelayedAutostart" Value="0" Type="integer" KeyPath="yes" />
-      </Component>
-      <Component Id="SetRegistryDelayedAutostartEnabled" Guid="d78dcd1d-bc11-47ba-b365-a9f81536defb">
-        <Condition><![CDATA[REGISTRY_DELAYEDAUTOSTART_OLD="#1"]]></Condition>
-        <RegistryValue Id="RegistryValueDelayedAutostartEnabled" Root="HKLM" Key="System\CurrentControlSet\Services\fluentdwinsvc" Name="DelayedAutostart" Value="1" Type="integer" KeyPath="yes" />
+      <Component Id="SetRegistryDelayedAutostart" Guid="8cb98306-8219-400f-b8b3-e5ffca828cd4">
+        <Condition><![CDATA[REGISTRY_DELAYEDAUTOSTART_OLD<>""]]></Condition>
+        <RegistryValue Id="RegistryValueDelayedAutostart" Root="HKLM" Key="System\CurrentControlSet\Services\fluentdwinsvc" Name="DelayedAutostart" Value="[REGISTRY_DELAYEDAUTOSTART_OLD]" Type="string" KeyPath="yes" />
       </Component>
 
       <!-- fluentdopt -->
