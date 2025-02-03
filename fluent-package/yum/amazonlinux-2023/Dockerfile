@@ -28,6 +28,7 @@ RUN \
   yum install -y ${quiet} yum-utils && \
   yum groupinstall -y ${quiet} "Development Tools" && \
   yum install -y ${quiet} \
+    which \
     libedit-devel \
     ncurses-devel \
     libyaml-devel \
