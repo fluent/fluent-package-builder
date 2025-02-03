@@ -47,6 +47,8 @@ RUN \
     ruby3.2 \
     ruby3.2-rubygems \
     ruby3.2-rubygem-rake \
+    # install which for building librdkafka 1.9.0 or later
+    which \
     && \
   # raise IPv4 priority
   echo "precedence ::ffff:0:0/96 100" > /etc/gai.conf && \
