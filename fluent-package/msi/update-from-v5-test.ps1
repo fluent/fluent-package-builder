@@ -37,6 +37,10 @@ $newConfig = @'
 '@
 Add-Content -Path "C:\\opt\\td-agent\\etc\\td-agent\\fluentd.conf" -Encoding UTF8 -Value $newConfig
 
+# Edit fluentdopt and autostart
+C:\opt\fluent\bin\fluentd.bat --reg-winsvc-fluentdopt "-c C:\opt\fluent\etc\fluent\fluentd.conf -o C:\opt\td-agent\td-agent.log"
+sc.exe config fluentdwinsvc start=delayed-auto
+
 # Update to the new package
 Start-Process msiexec -ArgumentList "/i", $newPackage, "/quiet" -Wait
 Start-Service fluentdwinsvc
@@ -50,4 +54,12 @@ if ($outputFilesAfterSleep.Count -le $outputFiles.Count) {
     Write-Error ("The previous config does not work. Output file num: {0} to {1}." -f $outputFiles.Count, $outputFilesAfterSleep.Count)
 }
 
-# TODO: Add tests here when it becomes able to take over the fluentdopt and autostart configuration.
+# Test: Take over fluentdopt and autostart config
+REG QUERY HKLM\System\CurrentControlSet\Services\fluentdwinsvc | ?{$_ -match "^\s+fluentdopt\s+REG_SZ\s+(?<fluentdopt>.+)\s*$"}
+if ($Matches.fluentdopt -ne "-c C:\opt\fluent\etc\fluent\fluentd.conf -o C:\opt\td-agent\td-agent.log") {
+    Write-Error "fluentdopt is not preserved: $($Matches.fluentdopt)"
+}
+$startType =  (Get-Service fluentdwinsvc).StartType
+if ($startType -ne "Automatic") {
+    Write-Error "StartType is not preserved: $startType"
+}
