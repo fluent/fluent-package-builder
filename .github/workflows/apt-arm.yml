@@ -1,6 +1,10 @@
 name: Apt based Linux (AArch64)
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - master
+      - fluent-package-v5
+  pull_request:
 concurrency:
   group: ${{ github.head_ref || github.sha }}-${{ github.workflow }}
   cancel-in-progress: true
@@ -35,7 +39,7 @@ jobs:
             rake-job: ubuntu-noble
             rake-options: LINTIAN=no
             test-docker-image: arm64v8/ubuntu:noble
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     steps:
       - uses: actions/checkout@master
       - name: Install dependencies
@@ -46,7 +50,6 @@ jobs:
           sudo gem uninstall fileutils
       - name: Build deb with Docker
         run: |
-          docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
           rake apt:build APT_TARGETS=${{ matrix.rake-job }}-arm64 ${{ matrix.rake-options }}
       - name: Upload fluent-package deb
         uses: actions/upload-artifact@master

@@ -1,6 +1,10 @@
 name: Yum based Linux (AArch64)
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - master
+      - fluent-package-v5
+  pull_request:
 concurrency:
   group: ${{ github.head_ref || github.sha }}-${{ github.workflow }}
   cancel-in-progress: true
@@ -14,8 +18,7 @@ jobs:
           - RockyLinux 8 aarch64
           - AlmaLinux 9 aarch64
           - Amazon Linux 2 aarch64
-          # It takes too long time on GitHub Actions.
-          #- Amazon Linux 2023 aarch64
+          - Amazon Linux 2023 aarch64
         include:
           - label: RockyLinux 8 aarch64
             rake-job: rockylinux-8
@@ -26,22 +29,20 @@ jobs:
           - label: Amazon Linux 2 aarch64
             rake-job: amazonlinux-2
             test-docker-image: amazonlinux:2
-          #- label: Amazon Linux 2023 aarch64
-          #  rake-job: amazonlinux-2023
-          #  test-docker-image: amazonlinux:2023
-    runs-on: ubuntu-latest
+          - label: Amazon Linux 2023 aarch64
+            rake-job: amazonlinux-2023
+            test-docker-image: amazonlinux:2023
+    runs-on: ubuntu-24.04-arm
     steps:
       - uses: actions/checkout@master
       - name: Install dependencies
         run: |
           sudo apt update
           sudo apt -V install ruby ruby-bundler ruby-serverspec
-          sudo apt -V install qemu-user-static
           sudo gem install bundler:2.2.9 --no-document
           sudo gem uninstall fileutils
       - name: Build rpm with Docker
         run: |
-          cp /usr/bin/qemu-aarch64-static fluent-package/yum/${{ matrix.rake-job }}/
           rake yum:build YUM_TARGETS=${{ matrix.rake-job }}-aarch64
       - name: Upload fluent-package rpm
         uses: actions/upload-artifact@master
