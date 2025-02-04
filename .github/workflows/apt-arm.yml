@@ -65,6 +65,7 @@ jobs:
           docker run \
           --rm \
           --tty \
+          --env CI=true \
           --volume ${PWD}:/fluentd:ro \
           ${{ matrix.test-docker-image }} \
           /fluentd/fluent-package/apt/binstubs-test.sh

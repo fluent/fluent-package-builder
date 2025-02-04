@@ -60,5 +60,6 @@ jobs:
           --tty \
           --volume ${PWD}:/fluentd:ro \
           --env CENTOS_STREAM=false \
+          --env CI=true \
           arm64v8/${{ matrix.test-docker-image }} \
           /fluentd/fluent-package/yum/binstubs-test.sh
