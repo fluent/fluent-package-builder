@@ -41,6 +41,13 @@ jobs:
           sudo apt -V install ruby ruby-bundler ruby-serverspec
           sudo gem install bundler:2.2.9 --no-document
           sudo gem uninstall fileutils
+      - name: cache rpm
+        uses: actions/cache@v4
+        id: cache-rpm
+        with:
+          path: |
+            fluent-package/yum/repositories
+          key: ${{ runner.os }}-cache-${{ matrix.rake-job }}-${{ hashFiles('**/config.rb', '**/Rakefile', '**/Gemfile*', '**/*.spec.in', 'fluent-package/templates/**', 'fluent-package/yum/**/Dockerfile') }}
       - name: Build rpm with Docker
         run: |
           rake yum:build YUM_TARGETS=${{ matrix.rake-job }}-aarch64
@@ -52,14 +59,43 @@ jobs:
       - name: Check Package Size
         run: |
           fluent-package/yum/pkgsize-test.sh ${{ matrix.rake-job }} aarch64
+      - name: Installation Test
+        run: |
+          mkdir -p .bundle
+          docker run \
+          --rm \
+          --tty \
+          --env CI=true \
+          --volume ${PWD}:/fluentd:ro \
+          ${{ matrix.test-docker-image }} \
+          /fluentd/fluent-package/yum/install-test.sh
+      - name: Serverspec Test
+        run: |
+          mkdir -p .bundle
+          docker run \
+          --rm \
+          --tty \
+          --env CI=true \
+          --volume ${PWD}:/fluentd:ro \
+          ${{ matrix.test-docker-image }} \
+          /fluentd/fluent-package/yum/serverspec-test.sh
+      - name: Confluent Test
+        run: |
+          mkdir -p .bundle
+          docker run \
+          --rm \
+          --tty \
+          --env CI=true \
+          --volume ${PWD}:/fluentd:ro \
+          ${{ matrix.test-docker-image }} \
+          /fluentd/fluent-package/yum/confluent-test.sh
       - name: Binstubs Test
         run: |
           mkdir -p .bundle
           docker run \
           --rm \
           --tty \
-          --volume ${PWD}:/fluentd:ro \
-          --env CENTOS_STREAM=false \
           --env CI=true \
-          arm64v8/${{ matrix.test-docker-image }} \
+          --volume ${PWD}:/fluentd:ro \
+          ${{ matrix.test-docker-image }} \
           /fluentd/fluent-package/yum/binstubs-test.sh
