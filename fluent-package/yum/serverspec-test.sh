@@ -70,14 +70,15 @@ esac
 
 echo "INSTALL TEST"
 repositories_dir=/fluentd/fluent-package/yum/repositories
+ARCH=$(rpm --eval "%{_arch}")
 ${DNF} install -y \
-  ${repositories_dir}/${distribution}/${DISTRIBUTION_VERSION}/x86_64/Packages/*.rpm
+  ${repositories_dir}/${distribution}/${DISTRIBUTION_VERSION}/${ARCH}/Packages/*.rpm
 
 fluentd --version
 
 if [ $ENABLE_SERVERSPEC_TEST -eq 1 ]; then
     curl -V > /dev/null 2>&1 || ${DNF} install -y curl
-    ${DNF} install -y which ${repositories_dir}/${distribution}/${DISTRIBUTION_VERSION}/x86_64/Packages/*.rpm
+    ${DNF} install -y which ${repositories_dir}/${distribution}/${DISTRIBUTION_VERSION}/${ARCH}/Packages/*.rpm
 
     /usr/sbin/fluent-gem install --no-document serverspec
     if [ $ENABLE_KAFKA_TEST -eq 1 ]; then
