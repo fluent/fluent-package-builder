@@ -16,6 +16,10 @@ case ${code_name} in
     distribution=ubuntu
     channel=universe
     mirror=http://archive.ubuntu.com/ubuntu/
+    if [ "$architecture" = "arm64" ]; then
+        echo "For ${code_name} (arm64), use ubuntu-ports"
+        mirror=http://ports.ubuntu.com/ubuntu-ports
+    fi
     ;;
   buster|bullseye)
     distribution=debian

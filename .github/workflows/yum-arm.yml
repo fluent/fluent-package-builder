@@ -1,6 +1,10 @@
 name: Yum based Linux (AArch64)
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - master
+      - fluent-package-v5
+  pull_request:
 concurrency:
   group: ${{ github.head_ref || github.sha }}-${{ github.workflow }}
   cancel-in-progress: true
@@ -14,34 +18,38 @@ jobs:
           - RockyLinux 8 aarch64
           - AlmaLinux 9 aarch64
           - Amazon Linux 2 aarch64
-          # It takes too long time on GitHub Actions.
-          #- Amazon Linux 2023 aarch64
+          - Amazon Linux 2023 aarch64
         include:
           - label: RockyLinux 8 aarch64
             rake-job: rockylinux-8
-            test-docker-image: rockylinux:8
+            test-docker-image: arm64v8/rockylinux:8
           - label: AlmaLinux 9 aarch64
             rake-job: almalinux-9
-            test-docker-image: almalinux:9
+            test-docker-image: arm64v8/almalinux:9
           - label: Amazon Linux 2 aarch64
             rake-job: amazonlinux-2
-            test-docker-image: amazonlinux:2
-          #- label: Amazon Linux 2023 aarch64
-          #  rake-job: amazonlinux-2023
-          #  test-docker-image: amazonlinux:2023
-    runs-on: ubuntu-latest
+            test-docker-image: arm64v8/amazonlinux:2
+          - label: Amazon Linux 2023 aarch64
+            rake-job: amazonlinux-2023
+            test-docker-image: arm64v8/amazonlinux:2023
+    runs-on: ubuntu-24.04-arm
     steps:
       - uses: actions/checkout@master
       - name: Install dependencies
         run: |
           sudo apt update
           sudo apt -V install ruby ruby-bundler ruby-serverspec
-          sudo apt -V install qemu-user-static
           sudo gem install bundler:2.2.9 --no-document
           sudo gem uninstall fileutils
+      - name: cache rpm
+        uses: actions/cache@v4
+        id: cache-rpm
+        with:
+          path: |
+            fluent-package/yum/repositories
+          key: ${{ runner.os }}-cache-${{ matrix.rake-job }}-${{ hashFiles('**/config.rb', '**/Rakefile', '**/Gemfile*', '**/*.spec.in', 'fluent-package/templates/**', 'fluent-package/yum/**/Dockerfile') }}
       - name: Build rpm with Docker
         run: |
-          cp /usr/bin/qemu-aarch64-static fluent-package/yum/${{ matrix.rake-job }}/
           rake yum:build YUM_TARGETS=${{ matrix.rake-job }}-aarch64
       - name: Upload fluent-package rpm
         uses: actions/upload-artifact@master
@@ -51,13 +59,43 @@ jobs:
       - name: Check Package Size
         run: |
           fluent-package/yum/pkgsize-test.sh ${{ matrix.rake-job }} aarch64
+      - name: Installation Test
+        run: |
+          mkdir -p .bundle
+          docker run \
+          --rm \
+          --tty \
+          --env CI=true \
+          --volume ${PWD}:/fluentd:ro \
+          ${{ matrix.test-docker-image }} \
+          /fluentd/fluent-package/yum/install-test.sh
+      - name: Serverspec Test
+        run: |
+          mkdir -p .bundle
+          docker run \
+          --rm \
+          --tty \
+          --env CI=true \
+          --volume ${PWD}:/fluentd:ro \
+          ${{ matrix.test-docker-image }} \
+          /fluentd/fluent-package/yum/serverspec-test.sh
+      - name: Confluent Test
+        run: |
+          mkdir -p .bundle
+          docker run \
+          --rm \
+          --tty \
+          --env CI=true \
+          --volume ${PWD}:/fluentd:ro \
+          ${{ matrix.test-docker-image }} \
+          /fluentd/fluent-package/yum/confluent-test.sh
       - name: Binstubs Test
         run: |
           mkdir -p .bundle
           docker run \
           --rm \
           --tty \
+          --env CI=true \
           --volume ${PWD}:/fluentd:ro \
-          --env CENTOS_STREAM=false \
-          arm64v8/${{ matrix.test-docker-image }} \
+          ${{ matrix.test-docker-image }} \
           /fluentd/fluent-package/yum/binstubs-test.sh

@@ -1,6 +1,10 @@
 name: Apt based Linux (AArch64)
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - master
+      - fluent-package-v5
+  pull_request:
 concurrency:
   group: ${{ github.head_ref || github.sha }}-${{ github.workflow }}
   cancel-in-progress: true
@@ -35,7 +39,7 @@ jobs:
             rake-job: ubuntu-noble
             rake-options: LINTIAN=no
             test-docker-image: arm64v8/ubuntu:noble
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     steps:
       - uses: actions/checkout@master
       - name: Install dependencies
@@ -44,9 +48,15 @@ jobs:
           sudo apt -V install ruby ruby-bundler ruby-serverspec
           sudo gem install bundler:2.2.9 --no-document
           sudo gem uninstall fileutils
+      - name: cache deb
+        uses: actions/cache@v4
+        id: cache-deb
+        with:
+          path: |
+            fluent-package/apt/repositories
+          key: ${{ runner.os }}-cache-${{ matrix.rake-job }}-${{ hashFiles('**/config.rb', '**/Rakefile', '**/Gemfile*', 'fluent-package/templates/**', 'fluent-package/debian/**', 'fluent-package/apt/**/Dockerfile') }}
       - name: Build deb with Docker
         run: |
-          docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
           rake apt:build APT_TARGETS=${{ matrix.rake-job }}-arm64 ${{ matrix.rake-options }}
       - name: Upload fluent-package deb
         uses: actions/upload-artifact@master
@@ -62,6 +72,58 @@ jobs:
           docker run \
           --rm \
           --tty \
+          --env CI=true \
+          --volume ${PWD}:/fluentd:ro \
+          ${{ matrix.test-docker-image }} \
+          /fluentd/fluent-package/apt/binstubs-test.sh
+      - name: Installation Test
+        run: |
+          mkdir -p .bundle
+          docker run \
+          --rm \
+          --tty \
+          --env CI=true \
+          --volume ${PWD}:/fluentd:ro \
+          ${{ matrix.test-docker-image }} \
+          /fluentd/fluent-package/apt/install-test.sh
+      - name: Piuparts (Install/Remove/Upgrade) Test
+        run: |
+          mkdir -p .bundle
+          docker run \
+          --privileged \
+          --rm \
+          --tty \
+          --env CI=true \
+          --volume ${PWD}:/fluentd:ro \
+          ${{ matrix.test-docker-image }} \
+          /fluentd/fluent-package/apt/piuparts-test.sh
+      - name: Serverspec Test
+        run: |
+          mkdir -p .bundle
+          docker run \
+          --rm \
+          --tty \
+          --env CI=true \
+          --volume ${PWD}:/fluentd:ro \
+          ${{ matrix.test-docker-image }} \
+          /fluentd/fluent-package/apt/serverspec-test.sh
+      - name: Confluent Test
+        run: |
+          mkdir -p .bundle
+          docker run \
+          --rm \
+          --tty \
+          --env CI=true \
+          --volume ${PWD}:/fluentd:ro \
+          ${{ matrix.test-docker-image }} \
+          /fluentd/fluent-package/apt/confluent-test.sh
+      - name: Binstubs Test
+        run: |
+          mkdir -p .bundle
+          docker run \
+          --rm \
+          --tty \
+          --env CI=true \
           --volume ${PWD}:/fluentd:ro \
           ${{ matrix.test-docker-image }} \
           /fluentd/fluent-package/apt/binstubs-test.sh
