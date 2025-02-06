@@ -41,7 +41,7 @@ jobs:
             test-docker-image: arm64v8/ubuntu:noble
     runs-on: ubuntu-24.04-arm
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v4
       - name: Install dependencies
         run: |
           sudo apt update
