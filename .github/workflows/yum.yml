@@ -39,7 +39,7 @@ jobs:
             centos-stream: false
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v4
       - name: Install dependencies
         run: |
           sudo apt update
@@ -58,7 +58,7 @@ jobs:
         if: ${{ ! steps.cache-rpm.outputs.cache-hit }}
         run: |
           rake yum:build YUM_TARGETS=${{ matrix.rake-job }}
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v4
         if: ${{ ! steps.cache-rpm.outputs.cache-hit }}
         with:
           path: v6-test
@@ -176,7 +176,7 @@ jobs:
           - label: AmazonLinux 2023 x86_64
             test: downgrade-to-v4.sh
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
           name: packages-${{ matrix.rake-job }}
@@ -248,7 +248,7 @@ jobs:
             rake-job: almalinux-9
             lxc-image: images:almalinux/9
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
           name: packages-${{ matrix.rake-job }}
