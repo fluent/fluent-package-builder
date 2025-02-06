@@ -176,7 +176,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: packages-apt-source-${{ matrix.rake-job }}
-      - uses: canonical/setup-lxd@v0.1.1
+      - uses: canonical/setup-lxd@v0.1.2
       - name: Run diagnostic
         run: |
           uname -a

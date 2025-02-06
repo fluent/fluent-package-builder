@@ -59,8 +59,9 @@ esac
 
 echo "INSTALL TEST"
 repositories_dir=/fluentd/fluent-package/yum/repositories
+ARCH=$(rpm --eval "%{_arch}")
 ${DNF} install -y \
-  ${repositories_dir}/${distribution}/${DISTRIBUTION_VERSION}/x86_64/Packages/*.rpm
+  ${repositories_dir}/${distribution}/${DISTRIBUTION_VERSION}/${ARCH}/Packages/*.rpm
 
 fluentd --version
 test -e /etc/logrotate.d/fluentd
@@ -115,7 +116,7 @@ EOF
     # equivalent to tmpfiles.d
     mkdir -p /tmp/fluent
     ${DNF} install -y \
-           ${repositories_dir}/${distribution}/${DISTRIBUTION_VERSION}/x86_64/Packages/*.rpm
+           ${repositories_dir}/${distribution}/${DISTRIBUTION_VERSION}/${ARCH}/Packages/*.rpm
 
     getent passwd td-agent >/dev/null
     getent group td-agent >/dev/null
