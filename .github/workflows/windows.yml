@@ -20,7 +20,7 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.1
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v4
       - name: cache msi
         uses: actions/cache@v4
         id: cache-msi
