@@ -18,12 +18,17 @@ override_dh_builddeb:
 override_dh_auto_build:
 	gpg \
 	  --no-default-keyring \
-	  --keyring ./fluent-lts-archive-keyring.gpg \
+	  --keyring ./fluent-lts-archive-keyring.kbx \
 	  --import keys
 	gpg \
 	  --no-default-keyring \
-	  --keyring ./fluent-lts-archive-keyring.gpg \
+	  --keyring ./fluent-lts-archive-keyring.kbx \
 	  --import fluent-package.pub
+	gpg \
+	  --no-default-keyring \
+	  --keyring ./fluent-lts-archive-keyring.kbx \
+	  --armor \
+	  --export > ./fluent-lts-archive-keyring.asc
 
 	( \
 	  distribution=$$(lsb_release --id --short | tr 'A-Z' 'a-z'); \
@@ -37,12 +42,12 @@ override_dh_auto_build:
 	  echo "URIs: https://packages.treasuredata.com/lts/5/$${distribution}/$${code_name}/"; \
 	  echo "Suites: $${code_name}"; \
 	  echo "Components: contrib"; \
-	  echo "Signed-By: /usr/share/keyrings/fluent-lts-archive-keyring.gpg"; \
+	  echo "Signed-By: /usr/share/keyrings/fluent-lts-archive-keyring.asc"; \
 	) > fluent-lts.sources
 
 override_dh_install:
 	install -d debian/tmp/usr/share/keyrings/
-	install -m 0644 fluent-lts-archive-keyring.gpg \
+	install -m 0644 fluent-lts-archive-keyring.asc \
 	  debian/tmp/usr/share/keyrings/
 
 	install -d debian/tmp/etc/apt/sources.list.d/
