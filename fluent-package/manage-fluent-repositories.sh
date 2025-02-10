@@ -178,7 +178,7 @@ EOF
 	# update & sign rpm repository
 	repodirs=`find "${FLUENT_RELEASE_DIR}" -regex "^${FLUENT_RELEASE_DIR}/5/\(redhat\|amazon\)/\([2789]\|2023\)/\(x86_64\|aarch64\)$"`
 	for repodir in $repodirs; do
-	    createrepo_c -v "${repodir}"
+	    createrepo_c -v --compatibility "${repodir}"
 
 	    repofile="${repodir}/repodata/repomd.xml"
 	    if [ -f "${repofile}.asc" ]; then
