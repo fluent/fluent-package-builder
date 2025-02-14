@@ -95,6 +95,12 @@ case $ID in
 	    bullseye|bookworm|focal|jammy|noble)
 		setup_apt_user
 		case $REPO in
+		    5)
+			curl -fsSL https://toolbelt.treasuredata.com/sh/install-$ID-$CODENAME-fluent-package5.sh | sh
+			;;
+		    lts/5)
+			curl -fsSL https://toolbelt.treasuredata.com/sh/install-$ID-$CODENAME-fluent-package5-lts.sh | sh
+			;;
 		    exp/5)
 			curl -fsSL https://toolbelt.treasuredata.com/sh/install-$ID-$CODENAME-fluent-package5.sh | sh
  			sudo sed -i -e 's,/5,/test/experimental/5,' /etc/apt/sources.list.d/fluent.sources
@@ -116,6 +122,12 @@ case $ID in
 	VERSION_ID=$(cat /etc/os-release | grep VERSION_ID | cut -d'=' -f2)
 	setup_dnf_user
 	case $REPO in
+	    5)
+		curl -fsSL https://toolbelt.treasuredata.com/sh/install-redhat-fluent-package5.sh | sh
+		;;
+	    lts/5)
+		curl -fsSL https://toolbelt.treasuredata.com/sh/install-redhat-fluent-package5-lts.sh | sh
+		;;
 	    exp/5)
 		curl -fsSL https://toolbelt.treasuredata.com/sh/install-redhat-fluent-package5.sh | sh
  		sudo sed -i -e 's,/5,/test/experimental/5,' /etc/yum.repos.d/fluent-package.repo
@@ -135,6 +147,12 @@ case $ID in
 	    *2023*)
 		setup_dnf_user
 		case $REPO in
+		    5)
+			curl -fsSL https://toolbelt.treasuredata.com/sh/install-amazon2023-fluent-package5.sh | sh
+			;;
+		    lts/5)
+			curl -fsSL https://toolbelt.treasuredata.com/sh/install-amazon2023-fluent-package5-lts.sh | sh
+			;;
 		    exp/5)
 			curl -fsSL https://toolbelt.treasuredata.com/sh/install-amazon2023-fluent-package5.sh | sh
  			sudo sed -i -e 's,/5,/test/experimental/5,' /etc/yum.repos.d/fluent-package.repo
@@ -149,6 +167,12 @@ case $ID in
 		DNF=yum
 		setup_dnf_user
 		case $REPO in
+		    5)
+			curl -fsSL https://toolbelt.treasuredata.com/sh/install-amazon2-fluent-package5.sh | sh
+			;;
+		    lts/5)
+			curl -fsSL https://toolbelt.treasuredata.com/sh/install-amazon2-fluent-package5-lts.sh | sh
+			;;
 		    exp/5)
 			curl -fsSL https://toolbelt.treasuredata.com/sh/install-amazon2-fluent-package5.sh | sh
  			sudo sed -i -e 's,/5,/test/experimental/5,' /etc/yum.repos.d/fluent-package.repo
