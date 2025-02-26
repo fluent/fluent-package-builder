@@ -22,10 +22,23 @@ COPY qemu-* /usr/bin/
 
 ARG DEBUG
 
+RUN sed -i'' -e 's/^mirrorlist/#mirrorlist/g' \
+             -e 's/^#baseurl/baseurl/g' \
+             -e 's,mirror.centos.org/centos/$releasever,vault.centos.org/7.9.2009,g' \
+             /etc/yum.repos.d/CentOS-Base.repo
+
 RUN \
   quiet=$([ "${DEBUG}" = "yes" ] || echo "--quiet") && \
   yum update -y ${quiet} && \
   yum install -y ${quiet} centos-release-scl && \
+  sed -i'' -e 's/^mirrorlist/#mirrorlist/g' \
+           -e 's/^# baseurl/baseurl/g' \
+           -e 's,mirror.centos.org/centos/7,vault.centos.org/7.9.2009,g' \
+           /etc/yum.repos.d/CentOS-SCLo-scl.repo && \
+  sed -i'' -e 's/^mirrorlist/#mirrorlist/g' \
+           -e 's/^#baseurl/baseurl/g' \
+           -e 's,mirror.centos.org/centos/7,vault.centos.org/7.9.2009,g' \
+           /etc/yum.repos.d/CentOS-SCLo-scl-rh.repo && \
   yum install -y ${quiet} epel-release && \
   yum groupinstall -y ${quiet} "Development Tools" && \
   yum install -y ${quiet} \
