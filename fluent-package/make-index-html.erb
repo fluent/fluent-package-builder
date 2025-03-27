@@ -6,7 +6,7 @@
     <!-- https://github.com/franciscop/picnic MIT license -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/picnic">
     <!-- https://github.com/Remix-Design/RemixIcon - Apache 2.0 license -->
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.6.0/fonts/remixicon.css" rel="stylesheet"/>
     <title>Fluent Package - formerly known as Treasure Agent (td-agent)</title>
  </head>
  <body>
@@ -26,15 +26,23 @@
        </a>
      </div>
      <div style="margin: 0em auto 0em 2em">
-       Index of <a href="index.html"><%= options[:site] %><%= relative_path %></a>
+       Index of <a href="index.html"><%= options[:site] %>/<%= relative_path %></a>
      </div>
      <div>
        <div>
          <ul style="list-style: none">
+           <% if relative_path != "/" %>
+             <li><a href="../index.html"><i class="ri-arrow-left-up-box-line"></i>&nbsp;Up directory...</a></li>
+           <% end %>
            <% files.each do |file| %>
-             <li><a href="<%= options[:site] %><%= relative_path %>/<%= file %>"><i class="ri-file-download-line"></i> <%= file %></span></a>
-             <%= sprintf("%.2f", File.stat(file).size / 1024 / 1024.0) %> MiB
-             (<%= File.stat(file).mtime.getutc %>)
+             <% if File.directory?(file) %>
+               <li><a href="/<%= relative_path %>/<%= file %>"><i class="ri-folder-line"></i> <%= file %></span></a>
+             <% else %>
+               <li><a href="/<%= relative_path %>/<%= file %>"><i class="ri-file-download-line"></i> <%= file %></span></a>
+               <%= sprintf("%.2f", File.stat(file).size / 1024 / 1024.0) %> MiB
+               <%= sprintf("%d", File.stat(file).size) %> Bytes
+               (<%= File.stat(file).mtime.getutc %>)
+             <% end %>
            <% end %>
          </ul>
        </div>

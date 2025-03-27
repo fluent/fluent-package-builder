@@ -20,13 +20,14 @@ unless File.exist?(top_dir)
   exit 1
 end
 
-template_path = File.expand_path("#{File.basename(__FILE__, ".rb")}.erb")
+template_path = File.expand_path("#{File.dirname(__FILE__)}/#{File.basename(__FILE__, '.rb')}.erb")
 puts "Template path: #{template_path}"
-Dir.glob("#{top_dir}/{#{options[:channel]}}/**/{windows,x86_64,aarch64,fluent-package}/") do |path|
+Find.find("#{top_dir}/#{options[:channel]}") do |path|
+  Find.prune if File.file?(path)
   puts "Updating: #{path} ..." if options[:verbose]
   index_path = File.expand_path(File.join(path, "index.html"))
   Dir.chdir(path) do
-    files = Dir.glob(["*.deb", "*.msi", "*.rpm"])
+    files = Dir.glob("*")
     relative_path = Pathname.new(path).relative_path_from(top_dir).to_s
     erb = ERB.new(File.read(template_path)).result(binding)
     File.open(index_path, "w+") do |file|
