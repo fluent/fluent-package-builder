@@ -83,6 +83,23 @@ def macos?
   /darwin/ =~ RUBY_PLATFORM
 end
 
+def rhel?
+  retval = false
+  File.open("/etc/os-release") do |f|
+    f.readlines.each do |line|
+      case line
+      when /ID="amzn"/
+        retval = true
+      when /ID="almalinux"/
+        retval = true
+      when /ID="rocky"/
+        retval = true
+      end
+    end
+  end
+  retval
+end
+
 def ensure_directory(dirname)
   mkdir_p(dirname) unless File.exist?(dirname)
   if block_given?
@@ -432,6 +449,12 @@ class BuildTask
       task :ruby_gems => windows? ? [:"download:ruby_gems", :fluentd, :win32_service] : [:"download:ruby_gems", :fluentd] do
         puts "::group::Install ruby gems" if ENV["CI"]
         gem_install("bundler", BUNDLER_VERSION)
+
+        if not windows? and not macos? and rhel?
+          IO.popen("rpm -qa | grep ssl") do |rpm_io|
+            puts rpm_io.read
+          end
+        end
 
         gem_home = ENV["GEM_HOME"]
         ENV["GEM_HOME"] = gem_staging_dir
