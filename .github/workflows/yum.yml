@@ -164,10 +164,10 @@ jobs:
         include:
           - label: AmazonLinux 2 x86_64
             rake-job: amazonlinux-2
-            lxc-image: images:amazonlinux/2
+            container-image: images:amazonlinux/2
           - label: AmazonLinux 2023 x86_64
             rake-job: amazonlinux-2023
-            lxc-image: images:amazonlinux/2023
+            container-image: images:amazonlinux/2023
         exclude:
           - label: AmazonLinux 2023 x86_64
             test: update-from-v4.sh
@@ -184,27 +184,31 @@ jobs:
         with:
           name: v6-packages-${{ matrix.rake-job }}
           path: v6-test
-      - uses: canonical/setup-lxd@v0.1.2
-      - name: Run diagnostic
+      - name: Install Incus
         run: |
-          uname -a
-          echo "::group::snap info lxd"
-          snap info lxd
-          echo "::endgroup::"
-          echo "::group::snap services lxd"
-          snap services lxd
-          echo "::endgroup::"
-          echo "::group::snap logs lxd"
-          sudo snap logs lxd
-          echo "::endgroup::"
-          echo "::group::lxc remote list"
-          lxc remote list
-          echo "::endgroup::"
-          echo "::group::lxc list images:"
-          lxc image list images:
-          echo "::endgroup::"
-      - name: Run Test ${{ matrix.test }} on ${{ matrix.lxc-image }}
-        run: fluent-package/yum/systemd-test/test.sh ${{ matrix.lxc-image }} ${{ matrix.test }}
+          sudo curl -fsSL https://pkgs.zabbly.com/key.asc -o /etc/apt/keyrings/zabbly.asc
+          cat <<SOURCES | sudo tee /etc/apt/sources.list.d/zabbly-incus-stable.sources
+          Enabled: yes
+          Types: deb
+          URIs: https://pkgs.zabbly.com/incus/stable
+          Suites: $(. /etc/os-release && echo ${VERSION_CODENAME})
+          Components: main
+          Architectures: $(dpkg --print-architecture)
+          Signed-By: /etc/apt/keyrings/zabbly.asc
+          SOURCES
+
+          sudo apt-get update
+          sudo apt-get install -y -V incus
+      - name: Allow egress network traffic flows for Incus
+        # https://linuxcontainers.org/incus/docs/main/howto/network_bridge_firewalld/#prevent-connectivity-issues-with-incus-and-docker
+        run: |
+          sudo iptables -I DOCKER-USER -i incusbr0 -j ACCEPT
+          sudo iptables -I DOCKER-USER -o incusbr0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+      - name: Setup Incus
+        run: |
+          sudo incus admin init --auto
+      - name: Run Test ${{ matrix.test }} on ${{ matrix.container-image }}
+        run: fluent-package/yum/systemd-test/test.sh ${{ matrix.container-image }} ${{ matrix.test }}
 
   v2test:
     name: Test ${{ matrix.label }} ${{ matrix.test }} (CGroup V2)
@@ -243,10 +247,10 @@ jobs:
         include:
           - label: RockyLinux 8 x86_64
             rake-job: rockylinux-8
-            lxc-image: images:rockylinux/8
+            container-image: images:rockylinux/8
           - label: AlmaLinux 9 x86_64
             rake-job: almalinux-9
-            lxc-image: images:almalinux/9
+            container-image: images:almalinux/9
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
@@ -256,6 +260,17 @@ jobs:
         with:
           name: v6-packages-${{ matrix.rake-job }}
           path: v6-test
-      - uses: canonical/setup-lxd@v0.1.2
-      - name: Run Test ${{ matrix.test }} on ${{ matrix.lxc-image }}
-        run: fluent-package/yum/systemd-test/test.sh ${{ matrix.lxc-image }} ${{ matrix.test }}
+      - name: Install Incus
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y -V incus
+      - name: Allow egress network traffic flows for Incus
+        # https://linuxcontainers.org/incus/docs/main/howto/network_bridge_firewalld/#prevent-connectivity-issues-with-incus-and-docker
+        run: |
+          sudo iptables -I DOCKER-USER -i incusbr0 -j ACCEPT
+          sudo iptables -I DOCKER-USER -o incusbr0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+      - name: Setup Incus
+        run: |
+          sudo incus admin init --auto
+      - name: Run Test ${{ matrix.test }} on ${{ matrix.container-image }}
+        run: fluent-package/yum/systemd-test/test.sh ${{ matrix.container-image }} ${{ matrix.test }}
