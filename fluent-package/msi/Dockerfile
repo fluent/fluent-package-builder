@@ -29,7 +29,8 @@ RUN @"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -I
 RUN \
   choco feature disable --name=showDownloadProgress && \
   choco install -y git wixtoolset 7zip && \
-  choco install -y cmake --installargs 'ADD_CMAKE_TO_PATH=System' && \
+  # Required CMake 3.x to build cmetrics gem
+  choco install -y cmake --version=3.31.6 --installargs 'ADD_CMAKE_TO_PATH=System' && \
   choco install -y msys2 --params /NoUpdate --version=20241208.0.0 && \
   choco install ruby -y --version=3.2.6.1 && \
   refreshenv && \
