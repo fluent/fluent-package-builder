@@ -1,17 +1,17 @@
-From 22ef9f8d96e796933b490bf1bf8c41425e6d621e Mon Sep 17 00:00:00 2001
+From 708f5d4e693b1f602026e4ecde24531ffeb6a385 Mon Sep 17 00:00:00 2001
 From: Kentaro Hayashi <hayashi@clear-code.com>
 Date: Wed, 11 Dec 2024 22:55:30 +0900
 Subject: [PATCH] bump version to 6.0.0
 
 Signed-off-by: Kentaro Hayashi <hayashi@clear-code.com>
 ---
- fluent-package/config.rb                  | 6 +++---
- fluent-package/debian/changelog           | 6 ++++++
- fluent-package/yum/fluent-package.spec.in | 3 +++
- 3 files changed, 12 insertions(+), 3 deletions(-)
+ fluent-package/config.rb                  | 10 +++++-----
+ fluent-package/debian/changelog           |  6 ++++++
+ fluent-package/yum/fluent-package.spec.in |  3 +++
+ 3 files changed, 14 insertions(+), 5 deletions(-)
 
 diff --git a/fluent-package/config.rb b/fluent-package/config.rb
-index 8219301..7d4fec7 100644
+index 865352b..aaaf077 100644
 --- a/fluent-package/config.rb
 +++ b/fluent-package/config.rb
 @@ -1,5 +1,5 @@
@@ -27,11 +27,22 @@ index 8219301..7d4fec7 100644
  # https://www.ruby-lang.org/en/downloads/ (tar.gz)
 -BUNDLED_RUBY_VERSION = "3.2.6"
 -BUNDLED_RUBY_SOURCE_SHA256SUM = "d9cb65ecdf3f18669639f2638b63379ed6fbb17d93ae4e726d4eb2bf68a48370"
-+BUNDLED_RUBY_VERSION = "3.3.6"
-+BUNDLED_RUBY_SOURCE_SHA256SUM = "8dc48fffaf270f86f1019053f28e51e4da4cce32a36760a0603a9aee67d7fd8d"
++BUNDLED_RUBY_VERSION = "3.4.2"
++BUNDLED_RUBY_SOURCE_SHA256SUM = "41328ac21f2bfdd7de6b3565ef4f0dd7543354d37e96f157a1552a6bd0eb364b"
  
  BUNDLED_RUBY_PATCHES = [
    # An example entry:
+@@ -32,8 +32,8 @@ BUNDLED_RUBY_PATCHES = [
+ ]
+ 
+ # https://rubyinstaller.org/downloads/ (7-ZIP ARCHIVES)
+-BUNDLED_RUBY_INSTALLER_X64_VERSION = "3.2.6-1"
+-BUNDLED_RUBY_INSTALLER_X64_SHA256SUM = "549616f2964301616fd713e5590f024b63b28d6cc5e5033c87eff32e0d1fa2d2"
++BUNDLED_RUBY_INSTALLER_X64_VERSION = "3.4.2-1"
++BUNDLED_RUBY_INSTALLER_X64_SHA256SUM = "99f2bc97a0f905e4b4ae081a12f757a228824b88b44d7788c31b28f3dc5567e9"
+ 
+ # Files under rubyinstaller/ are patches for RubyInstaller's binary package.
+ # Other patches for Ruby's source tree which can be shared with BUNDLED_RUBY_PATCHES.
 diff --git a/fluent-package/debian/changelog b/fluent-package/debian/changelog
 index 0a73dbb..2614fac 100644
 --- a/fluent-package/debian/changelog
@@ -61,5 +72,5 @@ index 45f0519..240f30c 100644
  - New upstream release.
  
 -- 
-2.45.2
+2.49.0
 
