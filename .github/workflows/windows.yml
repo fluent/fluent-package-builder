@@ -5,6 +5,7 @@ on:
       - master
       - fluent-package-v5
   pull_request:
+  workflow_dispatch:
 concurrency:
   group: ${{ github.head_ref || github.sha }}-${{ github.workflow }}
   cancel-in-progress: true
@@ -39,10 +40,12 @@ jobs:
           name: packages-windows-x86_64
           path: fluent-package/msi/repositories
       - name: Check Package Size
+        if: ${{ ! steps.cache-msi.outputs.cache-hit }} || ${{ github.event_name == 'workflow_dispatch' }}
         shell: pwsh
         run: |
           powershell -ExecutionPolicy Bypass -Command ".\fluent-package\msi\pkgsize-test.ps1"
       - name: Installation Test
+        if: ${{ ! steps.cache-msi.outputs.cache-hit }} || ${{ github.event_name == 'workflow_dispatch' }}
         shell: pwsh
         run: |
           mkdir -p .bundle
@@ -53,6 +56,7 @@ jobs:
           mcr.microsoft.com/dotnet/framework/runtime:3.5 `
           powershell -ExecutionPolicy Bypass -Command "C:\fluentd\fluent-package\msi\install-test.ps1"
       - name: Migration From v4 Test
+        if: ${{ ! steps.cache-msi.outputs.cache-hit }} || ${{ github.event_name == 'workflow_dispatch' }}
         shell: pwsh
         run: |
           docker run `
@@ -62,6 +66,7 @@ jobs:
           mcr.microsoft.com/dotnet/framework/runtime:3.5 `
           powershell -ExecutionPolicy Bypass -Command "C:\fluentd\fluent-package\msi\update-from-v4-test.ps1"
       - name: Update From v5 Test
+        if: ${{ ! steps.cache-msi.outputs.cache-hit }} || ${{ github.event_name == 'workflow_dispatch' }}
         shell: pwsh
         run: |
           docker run `
@@ -71,6 +76,7 @@ jobs:
           mcr.microsoft.com/dotnet/framework/runtime:3.5 `
           powershell -ExecutionPolicy Bypass -Command "C:\fluentd\fluent-package\msi\update-from-v5-test.ps1"
       - name: Serverspec Test
+        if: ${{ ! steps.cache-msi.outputs.cache-hit }} || ${{ github.event_name == 'workflow_dispatch' }}
         shell: pwsh
         run: |
           docker run `

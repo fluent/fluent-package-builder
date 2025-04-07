@@ -5,6 +5,7 @@ on:
       - master
       - fluent-package-v5
   pull_request:
+  workflow_dispatch:
 concurrency:
   group: ${{ github.head_ref || github.sha }}-${{ github.workflow }}
   cancel-in-progress: true
@@ -57,9 +58,11 @@ jobs:
           name: packages-${{ matrix.rake-job }}-aarch64
           path: fluent-package/yum/repositories
       - name: Check Package Size
+        if: ${{ ! steps.cache-rpm.outputs.cache-hit }} || ${{ github.event_name == 'workflow_dispatch' }}
         run: |
           fluent-package/yum/pkgsize-test.sh ${{ matrix.rake-job }} aarch64
       - name: Installation Test
+        if: ${{ ! steps.cache-rpm.outputs.cache-hit }} || ${{ github.event_name == 'workflow_dispatch' }}
         run: |
           mkdir -p .bundle
           docker run \
@@ -70,6 +73,7 @@ jobs:
           ${{ matrix.test-docker-image }} \
           /fluentd/fluent-package/yum/install-test.sh
       - name: Serverspec Test
+        if: ${{ ! steps.cache-rpm.outputs.cache-hit }} || ${{ github.event_name == 'workflow_dispatch' }}
         run: |
           mkdir -p .bundle
           docker run \
@@ -80,6 +84,7 @@ jobs:
           ${{ matrix.test-docker-image }} \
           /fluentd/fluent-package/yum/serverspec-test.sh
       - name: Confluent Test
+        if: ${{ ! steps.cache-rpm.outputs.cache-hit }} || ${{ github.event_name == 'workflow_dispatch' }}
         run: |
           mkdir -p .bundle
           docker run \
@@ -90,6 +95,7 @@ jobs:
           ${{ matrix.test-docker-image }} \
           /fluentd/fluent-package/yum/confluent-test.sh
       - name: Binstubs Test
+        if: ${{ ! steps.cache-rpm.outputs.cache-hit }} || ${{ github.event_name == 'workflow_dispatch' }}
         run: |
           mkdir -p .bundle
           docker run \
