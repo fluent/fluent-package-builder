@@ -16,7 +16,7 @@ if [ "$status_before_update" = active ]; then
 fi
 
 # Set FLUENT_PACKAGE_SERVICE_RESTART
-sed -i "s/=auto/=$service_restart/" /etc/sysconfig/fluentd
+sudo sed -i "s/=auto/=$service_restart/" /etc/sysconfig/fluentd
 
 # Install plugin manually (plugin and gem)
 sudo /opt/fluent/bin/fluent-gem install --no-document fluent-plugin-concat

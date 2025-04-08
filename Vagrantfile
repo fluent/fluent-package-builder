@@ -38,6 +38,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       :id => "amazonlinux-2",
       :box => "bento/amazonlinux-2",
     },
+    {
+      :id => "amazonlinux-2023",
+      :box => "bento/amazonlinux-2023",
+    },
   ]
 
   n_cpus = ENV["BOX_N_CPUS"]&.to_i || 2
@@ -52,5 +56,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         virtual_box.memory = memory if memory
       end
     end
+    mount_dir = ENV["BOX_MOUNT_DIR"] || "."
+    config.vm.synced_folder mount_dir, "/host"
   end
 end

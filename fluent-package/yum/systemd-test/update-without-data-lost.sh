@@ -41,8 +41,8 @@ sudo $DNF install -y rsyslog
 sudo $DNF install -y $package
 
 # Set up configuration
-cat < $(dirname $0)/../../test-tools/rsyslog.conf >> /etc/rsyslog.conf
-cp $(dirname $0)/../../test-tools/fluentd.conf /etc/fluent/fluentd.conf
+cat < $(dirname $0)/../../test-tools/rsyslog.conf | sudo tee -a /etc/rsyslog.conf
+sudo cp $(dirname $0)/../../test-tools/fluentd.conf /etc/fluent/fluentd.conf
 
 # Launch rsyslog
 sudo systemctl restart rsyslog
@@ -69,7 +69,7 @@ sleep 20
 test $main_pid -ne $(eval $(systemctl show fluentd --property=MainPID) && echo $MainPID)
 
 # Stop fluentd to flush the logs and check
-systemctl stop fluentd
+sudo systemctl stop fluentd
 test $(wc -l /var/log/fluent/test_udp*.log | tail -n 1 | awk '{print $1}') = "50"
 test $(wc -l /var/log/fluent/test_tcp*.log | tail -n 1 | awk '{print $1}') = "60"
 test $(grep "test-syslog" /var/log/fluent/test_syslog*.log | wc -l) = "70"
