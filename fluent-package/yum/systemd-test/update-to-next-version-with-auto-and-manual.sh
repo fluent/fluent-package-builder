@@ -56,7 +56,7 @@ sudo $DNF remove -y fluent-package
 # Upgrade package with manual feature
 sudo $DNF install -y $package
 sudo systemctl enable --now fluentd
-sed -i 's/=auto/=manual/' /etc/sysconfig/fluentd
+sudo sed -i 's/=auto/=manual/' /etc/sysconfig/fluentd
 main_pid=$(eval $(systemctl show fluentd --property=MainPID) && echo $MainPID)
 
 sudo $DNF install -y ./$next_package
@@ -66,7 +66,7 @@ test $main_pid -eq $(eval $(systemctl show fluentd --property=MainPID) && echo $
 sleep 15
 test $main_pid -eq $(eval $(systemctl show fluentd --property=MainPID) && echo $MainPID)
 
-kill -USR2 $main_pid
+sudo kill -USR2 $main_pid
 
 # Main process should be replaced by USR2 signal
 sleep 15

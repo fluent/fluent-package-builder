@@ -29,7 +29,7 @@ sudo $DNF install -y \
 
 # Customize the env file to prevent replacing by downgrade.
 # Need this to test the case where some tmp files is left.
-echo "FOO=foo" >> /etc/sysconfig/fluentd
+echo "FOO=foo" | sudo tee -a /etc/sysconfig/fluentd
 
 sudo systemctl enable --now fluentd
 systemctl status --no-pager fluentd
