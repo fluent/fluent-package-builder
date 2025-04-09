@@ -9,34 +9,23 @@ concurrency:
   group: ${{ github.head_ref || github.sha }}-${{ github.workflow }}
   cancel-in-progress: true
 jobs:
+  define-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: set-matrix
+        # See https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/evaluate-expressions-in-workflows-and-actions#example-returning-a-json-object
+        run: echo "matrix=$(cat apt.matrix.json | jq --compact-output)" >> $GITHUB_OUTPUT
+        working-directory: .github/workflows/
   build:
     name: Build
     timeout-minutes: 120
+    needs: define-matrix
     strategy:
       fail-fast: false
-      matrix:
-        label:
-          - Debian bullseye amd64
-          - Debian bookworm amd64
-          - Ubuntu Focal amd64
-          - Ubuntu Jammy amd64
-          - Ubuntu Noble amd64
-        include:
-          - label: Debian bullseye amd64
-            rake-job: debian-bullseye
-            test-docker-image: debian:bullseye
-          - label: Debian bookworm amd64
-            rake-job: debian-bookworm
-            test-docker-image: debian:bookworm
-          - label: Ubuntu Focal amd64
-            rake-job: ubuntu-focal
-            test-docker-image: ubuntu:focal
-          - label: Ubuntu Jammy amd64
-            rake-job: ubuntu-jammy
-            test-docker-image: ubuntu:jammy
-          - label: Ubuntu Noble amd64
-            rake-job: ubuntu-noble
-            test-docker-image: ubuntu:noble
+      matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -92,10 +81,36 @@ jobs:
         with:
           name: packages-lts-apt-source-${{ matrix.rake-job }}
           path: fluent-lts-apt-source/apt/repositories
-      # TODO move the following steps to "Test" job
+
+  check_package_size:
+    name: Check Package Size
+    runs-on: ubuntu-latest
+    needs: [define-matrix, build]
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: packages-${{ matrix.rake-job }}
+          path: fluent-package/apt/repositories
       - name: Check Package Size
         run: |
           fluent-package/apt/pkgsize-test.sh ${{ matrix.rake-job }} amd64
+  installation_test:
+    name: Installation Test
+    runs-on: ubuntu-latest
+    needs: [define-matrix, build]
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: packages-${{ matrix.rake-job }}
+          path: fluent-package/apt/repositories
       - name: Installation Test
         run: |
           mkdir -p .bundle
@@ -106,6 +121,19 @@ jobs:
           --volume ${PWD}:/fluentd:ro \
           ${{ matrix.test-docker-image }} \
           /fluentd/fluent-package/apt/install-test.sh
+  piuparts_test:
+    name: Piuparts Test
+    runs-on: ubuntu-latest
+    needs: [define-matrix, build]
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: packages-${{ matrix.rake-job }}
+          path: fluent-package/apt/repositories
       - name: Piuparts (Install/Remove/Upgrade) Test
         run: |
           mkdir -p .bundle
@@ -117,6 +145,19 @@ jobs:
           --volume ${PWD}:/fluentd:ro \
           ${{ matrix.test-docker-image }} \
           /fluentd/fluent-package/apt/piuparts-test.sh
+  serverspec_test:
+    name: Serverspec Test
+    runs-on: ubuntu-latest
+    needs: [define-matrix, build]
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: packages-${{ matrix.rake-job }}
+          path: fluent-package/apt/repositories
       - name: Serverspec Test
         run: |
           mkdir -p .bundle
@@ -127,6 +168,19 @@ jobs:
           --volume ${PWD}:/fluentd:ro \
           ${{ matrix.test-docker-image }} \
           /fluentd/fluent-package/apt/serverspec-test.sh
+  confluent_test:
+    name: Confluent Test
+    runs-on: ubuntu-latest
+    needs: [define-matrix, build]
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: packages-${{ matrix.rake-job }}
+          path: fluent-package/apt/repositories
       - name: Confluent Test
         run: |
           mkdir -p .bundle
@@ -137,6 +191,19 @@ jobs:
           --volume ${PWD}:/fluentd:ro \
           ${{ matrix.test-docker-image }} \
           /fluentd/fluent-package/apt/confluent-test.sh
+  binstubs_test:
+    name: Binstubs Test
+    needs: [define-matrix, build]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: packages-${{ matrix.rake-job }}
+          path: fluent-package/apt/repositories
       - name: Binstubs Test
         run: |
           mkdir -p .bundle
@@ -149,7 +216,7 @@ jobs:
           /fluentd/fluent-package/apt/binstubs-test.sh
   test:
     name: Test ${{ matrix.label }} ${{ matrix.test }}
-    needs: build
+    needs: [check_package_size, installation_test, piuparts_test, serverspec_test, confluent_test, binstubs_test]
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
