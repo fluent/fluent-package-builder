@@ -6,13 +6,7 @@ td_agent_version=4.5.2
 fluent_package_lts_version=5.0.5
 
 case ${code_name} in
-  xenial)
-    distribution=ubuntu
-    channel=universe
-    mirror=http://archive.ubuntu.com/ubuntu/
-    java_jdk=openjdk-8-jre
-    ;;
-  bionic|focal|hirsute|jammy|noble)
+  jammy|noble)
     distribution=ubuntu
     channel=universe
     mirror=http://archive.ubuntu.com/ubuntu/
@@ -21,12 +15,7 @@ case ${code_name} in
         mirror=http://ports.ubuntu.com/ubuntu-ports
     fi
     ;;
-  buster|bullseye)
-    distribution=debian
-    channel=main
-    mirror=http://deb.debian.org/debian
-    ;;
-  bookworm)
+  bookworm|trixie)
     distribution=debian
     channel=main
     mirror=http://deb.debian.org/debian

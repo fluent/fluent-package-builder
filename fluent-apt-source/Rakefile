@@ -86,9 +86,8 @@ class FluentdAptSourcePackageTask < PackageTask
 
   def apt_targets_default
     [
-      "debian-bulleye",
       "debian-bookworm",
-      "ubuntu-focal",
+      "debian-trixie",
       "ubuntu-jammy",
       "ubuntu-noble"
     ]

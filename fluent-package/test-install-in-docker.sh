@@ -92,7 +92,7 @@ case $ID in
 	export DEBIAN_FRONTEND=noninteractive
 	CODENAME=$(cat /etc/os-release | grep VERSION_CODENAME | cut -d'=' -f2)
 	case $CODENAME in
-	    bullseye|bookworm|focal|jammy|noble)
+	    bookworm|trixie|jammy|noble)
 		setup_apt_user
 		case $REPO in
 		    5)

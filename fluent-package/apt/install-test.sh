@@ -38,7 +38,7 @@ for conf_path in /etc/td-agent/td-agent.conf /etc/fluent/fluentd.conf; do
 done
 
 case $code_name in
-    bookworm|noble)
+    bookworm|trixie|noble)
 	echo "As ${code_name} is not published for v4, so package upgrade install check for ${code_name} is disabled"
 	exit 0
 	;;

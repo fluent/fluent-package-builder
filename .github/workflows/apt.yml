@@ -223,9 +223,8 @@ jobs:
       fail-fast: false
       matrix:
         label:
-          - Debian bullseye amd64
           - Debian bookworm amd64
-          - Ubuntu Focal amd64
+          - Debian trixie amd64
           - Ubuntu Jammy amd64
           - Ubuntu Noble amd64
         test:
@@ -254,15 +253,12 @@ jobs:
           - "update-without-data-lost.sh v5 v6"
           - "update-without-data-lost.sh v6 v5"
         include:
-          - label: Debian bullseye amd64
-            rake-job: debian-bullseye
-            container-image: images:debian/11
           - label: Debian bookworm amd64
             rake-job: debian-bookworm
             container-image: images:debian/12
-          - label: Ubuntu Focal amd64
-            rake-job: ubuntu-focal
-            container-image: images:ubuntu/20.04
+          - label: Debian trixie amd64
+            rake-job: debian-trixie
+            container-image: images:debian/13
           - label: Ubuntu Jammy amd64
             rake-job: ubuntu-jammy
             container-image: images:ubuntu/22.04
@@ -280,6 +276,25 @@ jobs:
             test: update-to-next-version-with-backward-compat-for-v4.sh
           - label: Debian bookworm amd64
             test: downgrade-to-v4.sh
+          # Temporary disable test for trixie (not released yet)
+          - label: Debian trixie amd64
+            test: update-from-v4.sh local
+          - label: Debian trixie amd64
+            test: update-from-v4.sh v5
+          - label: Debian trixie amd64
+            test: update-from-v4.sh lts
+          - label: Debian trixie amd64
+            test: update-from-v5-lts.sh
+          - label: Debian trixie amd64
+            test: downgrade-to-v4.sh
+          - label: Debian trixie amd64
+            test: downgrade-to-v5-lts.sh
+          - label: Debian trixie amd64
+            test: install-newly.sh v5
+          - label: Debian trixie amd64
+            test: install-newly.sh lts
+          - label: Debian trixie amd64
+            test: update-to-next-version-with-backward-compat-for-v4.sh
           - label: Ubuntu Noble amd64
             test: update-from-v4.sh local
           - label: Ubuntu Noble amd64

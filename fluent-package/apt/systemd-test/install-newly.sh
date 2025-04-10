@@ -36,7 +36,7 @@ sudo /usr/sbin/fluentd --dry-run
 sudo apt remove -y fluent-package
 
 case ${code_name} in
-  bookworm|noble)
+  bookworm|trixie|noble)
     # no dead fluentd.service symlink in /etc/systemd/system
     (! test -h /etc/systemd/system/fluentd.service)
     test -h /etc/systemd/system/multi-user.target.wants/fluentd.service

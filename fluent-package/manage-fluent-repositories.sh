@@ -74,7 +74,7 @@ case $COMMAND in
 	$command
 	;;
     dry-upload|upload)
-	TARGETS="amazon redhat windows macosx debian/bullseye debian/bookworm ubuntu/jammy ubuntu/focal ubuntu/noble"
+	TARGETS="amazon redhat windows macosx debian/bookworm debian/trixie ubuntu/jammy ubuntu/focal ubuntu/noble"
 	DRYRUN_OPTION="--dryrun"
 	if [ $COMMAND = "upload" ]; then
 	   DRYRUN_OPTION=""
@@ -138,10 +138,10 @@ EOF
 	echo "Ready to type signing passphrase? (process starts in 10 seconds, Ctrl+C to abort)"
 	sleep 10
 	export GPG_TTY=$(tty)
-	for d in bullseye bookworm focal jammy noble; do
+	for d in bookworm trixie jammy noble; do
 	    aptly -config="$aptly_conf" repo create -distribution=$d -component=contrib fluent-package5-$d
 	    case $d in
-		bullseye|bookworm)
+		bookworm|trixie)
 		    aptly -config="$aptly_conf" repo add fluent-package5-$d $FLUENT_RELEASE_DIR/5/debian/$d/
 		    aptly -config="$aptly_conf" snapshot create fluent-package5-$d-${FLUENT_PACKAGE_VERSION}-1 from repo fluent-package5-$d
 		    # publish snapshot with prefix, InRelease looks like (e.g. bullseye):
@@ -151,7 +151,7 @@ EOF
 		    # Place generated files, package files themselves are already in there
 		    tar cf - --exclude="td-agent_*.deb" --exclude="fluent-package_*.deb" -C "$aptly_rootdir/public" $d | tar xvf - -C $FLUENT_RELEASE_DIR/5/debian/
 		    ;;
-		focal|jammy|noble)
+		jammy|noble)
 		    aptly -config="$aptly_conf" repo add fluent-package5-$d $FLUENT_RELEASE_DIR/5/ubuntu/$d/
 		    aptly -config="$aptly_conf" snapshot create fluent-package5-$d-${FLUENT_PACKAGE_VERSION}-1 from repo fluent-package5-$d
 		    # publish snapshot with prefix, InRelease looks like (e.g. focal):

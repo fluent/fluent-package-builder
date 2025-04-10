@@ -1,19 +1,14 @@
 {
   "include": [
     {
-      "label": "Debian bullseye amd64",
-      "rake-job": "debian-bullseye",
-      "test-docker-image": "debian:bullseye"
-    },
-    {
       "label": "Debian bookworm amd64",
       "rake-job": "debian-bookworm",
       "test-docker-image": "debian:bookworm"
     },
     {
-      "label": "Ubuntu Focal amd64",
-      "rake-job": "ubuntu-focal",
-      "test-docker-image": "ubuntu:focal"
+      "label": "Debian trixie amd64",
+      "rake-job": "debian-trixie",
+      "test-docker-image": "debian:trixie"
     },
     {
       "label": "Ubuntu Jammy amd64",
