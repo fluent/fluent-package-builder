@@ -27,9 +27,9 @@ case $1 in
     apt|deb)
 	REPOSITORY_TYPE=apt
 	REPOSITORY_PATH=$FLUENT_PACKAGE_DIR/$REPOSITORY_TYPE/repositories
-	for d in bullseye bookworm focal jammy noble; do
+	for d in bookworm trixie jammy noble; do
 	    case $d in
-		bullseye|bookworm)
+		bookworm|trixie)
 		    # e.g. mapping debian/pool/buster/main/t/td-agent/ => 5/debian/buster/pool/contrib/t/td-agent
 		    #      mapping debian/pool/buster/main/f/fluent-package/ => 5/debian/buster/pool/contrib/f/fluent-package
 		    mkdir -p $ARTIFACTS_DIR/5/debian/$d/pool/contrib/f/fluent-package
@@ -49,7 +49,7 @@ case $1 in
 			     -exec cp {} $ARTIFACTS_DIR/5/debian/$d/pool/contrib/f/fluent-apt-source \;
 		    fi
 		    ;;
-		focal|jammy|noble)
+		jammy|noble)
 		    # e.g. mapping ubuntu/pool/.../main/t/td-agent/ => 5/ubuntu/.../pool/contrib/t/td-agent
 		    #      mapping ubuntu/pool/.../main/f/fluent-package/ => 5/ubuntu/.../pool/contrib/f/fluent-package
 		    mkdir -p $ARTIFACTS_DIR/5/ubuntu/$d/pool/contrib/f/fluent-package
