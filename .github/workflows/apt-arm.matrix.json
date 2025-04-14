@@ -1,0 +1,26 @@
+{
+  "include": [
+    {
+      "label": "Debian bookworm arm64",
+      "rake-job": "debian-bookworm",
+      "test-docker-image": "arm64v8/debian:bookworm"
+    },
+    {
+      "label": "Debian trixie arm64",
+      "rake-job": "debian-trixie",
+      "test-docker-image": "arm64v8/debian:trixie"
+    },
+    {
+      "label": "Ubuntu Jammy arm64",
+      "rake-job": "ubuntu-jammy",
+      "rake-options": "LINTIAN=no",
+      "test-docker-image": "arm64v8/ubuntu:jammy"
+    },
+    {
+      "label": "Ubuntu Noble arm64",
+      "rake-job": "ubuntu-noble",
+      "rake-options": "LINTIAN=no",
+      "test-docker-image": "arm64v8/ubuntu:noble"
+    }
+  ]
+}

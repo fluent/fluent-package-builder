@@ -1,0 +1,24 @@
+{
+  "include": [
+    {
+      "label": "RockyLinux 8 aarch64",
+      "rake-job": "rockylinux-8",
+      "test-docker-image": "arm64v8/rockylinux:8"
+    },
+    {
+      "label": "AlmaLinux 9 aarch64",
+      "rake-job": "almalinux-9",
+      "test-docker-image": "arm64v8/almalinux:9"
+    },
+    {
+      "label": "Amazon Linux 2 aarch64",
+      "rake-job": "amazonlinux-2",
+      "test-docker-image": "arm64v8/amazonlinux:2"
+    },
+    {
+      "label": "Amazon Linux 2023 aarch64",
+      "rake-job": "amazonlinux-2023",
+      "test-docker-image": "arm64v8/amazonlinux:2023"
+    }
+  ]
+}
