@@ -37,6 +37,7 @@ RUN \
     devscripts \
     ruby-dev \
     ruby-bundler \
+    libcap-ng-dev \
     libedit2 \
     libncurses5-dev \
     libyaml-dev \

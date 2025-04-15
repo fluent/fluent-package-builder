@@ -28,6 +28,7 @@ RUN \
   yum install -y ${quiet} yum-utils && \
   yum groupinstall -y ${quiet} "Development Tools" && \
   yum install -y ${quiet} \
+    libcap-ng-devel \
     libedit-devel \
     ncurses-devel \
     libyaml-devel \
