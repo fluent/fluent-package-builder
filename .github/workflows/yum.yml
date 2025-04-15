@@ -35,6 +35,7 @@ jobs:
         with:
           path: |
             fluent-package/yum/repositories
+            fluent-release/yum/repositories
             v6-test/fluent-package/yum/repositories
           key: ${{ runner.os }}-cache-${{ matrix.rake-job }}-${{ hashFiles('**/config.rb', '**/Rakefile', '**/Gemfile*', '**/*.spec.in', 'fluent-package/templates/**', 'fluent-package/yum/**/Dockerfile') }}
       - name: Install dependencies
@@ -65,6 +66,11 @@ jobs:
         with:
           name: packages-${{ matrix.rake-job }}
           path: fluent-package/yum/repositories
+      - name: Upload fluent-release rpm
+        uses: actions/upload-artifact@v4
+        with:
+          name: packages-release-${{ matrix.rake-job }}
+          path: fluent-release/yum/repositories
       - name: Upload v6 fluent-package rpm
         uses: actions/upload-artifact@v4
         with:
@@ -318,6 +324,9 @@ jobs:
           name: packages-${{ matrix.rake-job }}
       - uses: actions/download-artifact@v4
         with:
+          name: packages-release-${{ matrix.rake-job }}
+      - uses: actions/download-artifact@v4
+        with:
           name: v6-packages-${{ matrix.rake-job }}
           path: v6-test
       - name: Install Incus
@@ -334,3 +343,51 @@ jobs:
           sudo incus admin init --auto
       - name: Run Test ${{ matrix.test }} on ${{ matrix.container-image }}
         run: fluent-package/yum/systemd-test/test.sh ${{ matrix.container-image }} ${{ matrix.test }}
+
+  fluent-release-test:
+    name: Test ${{ matrix.label }} ${{ matrix.test }} (CGroup V2)
+    needs: [v2test]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        label:
+          - RockyLinux 8 x86_64
+          - AlmaLinux 9 x86_64
+          # - AlmaLinux 10 x86_64
+          - AmazonLinux 2023 x86_64
+        test:
+          - install-from-r2.sh
+        include:
+          - label: RockyLinux 8 x86_64
+            rake-job: rockylinux-8
+            container-image: images:rockylinux/8
+          - label: AlmaLinux 9 x86_64
+            rake-job: almalinux-9
+            container-image: images:almalinux/9
+          # - label: AlmaLinux 10 x86_64
+          #   rake-job: almalinux-10
+          #   container-image: images:almalinux/10
+          - label: AmazonLinux 2023 x86_64
+            rake-job: amazonlinux-2023
+            container-image: images:amazonlinux/2023
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: packages-release-${{ matrix.rake-job }}
+      - name: Install Incus
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y -V incus
+      - name: Allow egress network traffic flows for Incus
+        # https://linuxcontainers.org/incus/docs/main/howto/network_bridge_firewalld/#prevent-connectivity-issues-with-incus-and-docker
+        run: |
+          sudo iptables -I DOCKER-USER -i incusbr0 -j ACCEPT
+          sudo iptables -I DOCKER-USER -o incusbr0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+      - name: Setup Incus
+        run: |
+          sudo incus admin init --auto
+      - name: Run Test ${{matrix.test}} on ${{ matrix.container-image }}
+        run: fluent-release/yum/systemd-test/test.sh ${{ matrix.container-image }} ${{ matrix.test }}

@@ -24,10 +24,15 @@ APT_SOURCE_PACKAGES = [
   "fluent-lts-apt-source",
 ]
 
+YUM_RELEASE_PACKAGES = [
+  "fluent-release"
+]
+
 ALL_PACKAGE = [
   "fluent-package",
   "fluent-apt-source",
   "fluent-lts-apt-source",
+  "fluent-release",
 ]
 
 def define_bulked_task(name, description, packages = PACKAGES)
@@ -59,6 +64,7 @@ end
 
 [
   ["apt:build", "Build fluent-apt-source deb packages", APT_SOURCE_PACKAGES],
+  ["yum:build", "Build fluent-release rpm packages", YUM_RELEASE_PACKAGES],
 ].each do |params|
   define_bulked_task(*params)
 end
