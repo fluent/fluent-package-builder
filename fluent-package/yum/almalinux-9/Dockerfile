@@ -32,6 +32,7 @@ RUN \
     rubygems \
     rubygem-rake \
     rubygem-bundler \
+    libcap-ng-devel \
     libedit-devel \
     ncurses-devel \
     libyaml-devel \
