@@ -58,5 +58,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
     mount_dir = ENV["BOX_MOUNT_DIR"] || "."
     config.vm.synced_folder mount_dir, "/host"
+    config.vm.boot_timeout = 600
   end
 end
