@@ -138,19 +138,19 @@ jobs:
         include:
           - label: Debian bullseye amd64
             rake-job: debian-bullseye
-            test-lxc-image: images:debian/11
+            container-image: images:debian/11
           - label: Debian bookworm amd64
             rake-job: debian-bookworm
-            test-lxc-image: images:debian/12
+            container-image: images:debian/12
           - label: Ubuntu Focal amd64
             rake-job: ubuntu-focal
-            test-lxc-image: ubuntu:20.04
+            container-image: images:ubuntu/20.04
           - label: Ubuntu Jammy amd64
             rake-job: ubuntu-jammy
-            test-lxc-image: ubuntu:22.04
+            container-image: images:ubuntu/22.04
           - label: Ubuntu Noble amd64
             rake-job: ubuntu-noble
-            test-lxc-image: ubuntu:24.04
+            container-image: images:ubuntu/24.04
         exclude:
           - label: Debian bookworm amd64
             test-file: update-from-v4.sh
@@ -176,24 +176,17 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: packages-apt-source-${{ matrix.rake-job }}
-      - uses: canonical/setup-lxd@v0.1.2
-      - name: Run diagnostic
+      - name: Setup Incus
         run: |
-          uname -a
-          echo "::group::snap info lxd"
-          snap info lxd
-          echo "::endgroup::"
-          echo "::group::snap services lxd"
-          snap services lxd
-          echo "::endgroup::"
-          echo "::group::snap logs lxd"
-          sudo snap logs lxd
-          echo "::endgroup::"
-          echo "::group::lxc remote list"
-          lxc remote list
-          echo "::endgroup::"
-          echo "::group::lxc list images:"
-          lxc image list images:
-          echo "::endgroup::"
-      - name: Run Test  ${{ matrix.test-file }} on ${{ matrix.test-lxc-image }}
-        run: fluent-package/apt/systemd-test/test.sh ${{ matrix.test-lxc-image }} ${{ matrix.test-file }}
+          sudo apt update
+          sudo apt install -y -V incus
+      - name: Allow egress network traffic flows for Incus
+        # https://linuxcontainers.org/incus/docs/main/howto/network_bridge_firewalld/#prevent-connectivity-issues-with-incus-and-docker
+        run: |
+          sudo iptables -I DOCKER-USER -i incusbr0 -j ACCEPT
+          sudo iptables -I DOCKER-USER -o incusbr0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+      - name: Setup Incus
+        run: |
+          sudo incus admin init --auto
+      - name: Run Test  ${{ matrix.test-file }} on ${{ matrix.container-image }}
+        run: fluent-package/apt/systemd-test/test.sh ${{ matrix.container-image }} ${{ matrix.test-file }}
