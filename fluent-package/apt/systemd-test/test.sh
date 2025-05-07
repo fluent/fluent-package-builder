@@ -25,8 +25,8 @@ echo "::endgroup::"
 echo "::group::Run test: setup $image"
 sudo incus exec target -- $dir/setup.sh
 echo "::endgroup::"
-echo "::group::Run test: $test_file $other_args on $image"
-sudo incus exec target -- $dir/$test_file $other_args
+echo "::group::Run test: $test_file $apt_repo_type on $image"
+sudo incus exec target -- $dir/$test_file $apt_repo_type
 echo "::endgroup::"
 echo "::group::Run test: cleanup $image"
 sudo incus stop target

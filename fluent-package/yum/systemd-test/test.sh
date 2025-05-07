@@ -21,8 +21,8 @@ echo "::group::Run test: configure $image"
 sudo incus config device add target host disk source=$PWD path=/host
 sudo incus list
 echo "::endgroup::"
-echo "::group::Run test: $test_file $other_args on $image"
-sudo incus exec target -- $dir/$test_file $other_args
+echo "::group::Run test: $test_file $yum_repo_type on $image"
+sudo incus exec target -- $dir/$test_file $yum_repo_type
 echo "::endgroup::"
 echo "::group::Run test: cleanup $image"
 sudo incus stop target
