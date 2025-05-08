@@ -91,7 +91,10 @@ jobs:
   v1test:
     name: Test ${{ matrix.label }} ${{ matrix.test-file }} (CGroup V1)
     needs: build
-    runs-on: ubuntu-20.04
+    # Ubuntu 20.04 is not available anymore, so can't use container based
+    # approach. Instead, use vagrant on Ubuntu 24.04.
+    # (NOTE: nested VM is executable on macos-13, but it is too slow)
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     strategy:
       fail-fast: false
@@ -109,10 +112,8 @@ jobs:
         include:
           - label: AmazonLinux 2 x86_64
             rake-job: amazonlinux-2
-            container-image: images:amazonlinux/2
           - label: AmazonLinux 2023 x86_64
             rake-job: amazonlinux-2023
-            container-image: images:amazonlinux/2023
         exclude:
           - label: AmazonLinux 2023 x86_64
             test-file: update-from-v4.sh
@@ -125,31 +126,29 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: packages-${{ matrix.rake-job }}
-      - name: Install Incus
+      - name: Show host runner information
         run: |
-          sudo curl -fsSL https://pkgs.zabbly.com/key.asc -o /etc/apt/keyrings/zabbly.asc
-          cat <<SOURCES | sudo tee /etc/apt/sources.list.d/zabbly-incus-stable.sources
-          Enabled: yes
-          Types: deb
-          URIs: https://pkgs.zabbly.com/incus/stable
-          Suites: $(. /etc/os-release && echo ${VERSION_CODENAME})
-          Components: main
-          Architectures: $(dpkg --print-architecture)
-          Signed-By: /etc/apt/keyrings/zabbly.asc
-          SOURCES
-
+          cat /proc/cpuinfo | grep -E "vmx|svm"
+          lsmod | grep kvm
+      - name: Set up virtualbox
+        run: |
           sudo apt-get update
-          sudo apt-get install -y -V incus
-      - name: Allow egress network traffic flows for Incus
-        # https://linuxcontainers.org/incus/docs/main/howto/network_bridge_firewalld/#prevent-connectivity-issues-with-incus-and-docker
+          sudo apt-get install -y virtualbox
+      - name: Set up vagrant
         run: |
-          sudo iptables -I DOCKER-USER -i incusbr0 -j ACCEPT
-          sudo iptables -I DOCKER-USER -o incusbr0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
-      - name: Setup Incus
+          sudo apt-get update
+          wget -O - https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+          echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+          sudo apt-get update && sudo apt install -y vagrant
+          vagrant --version
+          vagrant status
+      - name: Spin up vagrant
         run: |
-          sudo incus admin init --auto
-      - name: Run Test ${{ matrix.test-file }} on ${{ matrix.container-image }}
-        run: fluent-package/yum/systemd-test/test.sh ${{ matrix.container-image }} ${{ matrix.test-file }}
+          vagrant up --provider virtualbox ${{ matrix.rake-job }}
+      # Run tests based on AlmaLinux 8 (CGroup v1)
+      - name: Run Test ${{ matrix.test-file }} on ${{ matrix.rake-job }}
+        run: |
+          BOX_MOUNT_DIR=fluent-package/yum/repositories vagrant ssh ${{ matrix.rake-job }} -- /host/fluent-package/yum/systemd-test/${{ matrix.test-file }}
 
   v2test:
     name: Test ${{ matrix.label }} ${{ matrix.test-file }} (CGroup V2)

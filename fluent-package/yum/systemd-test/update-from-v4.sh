@@ -35,11 +35,11 @@ sudo systemctl enable --now td-agent
 systemctl status --no-pager td-agent
 
 # Generate garbage files
-touch /etc/td-agent/a\ b\ c
-touch /var/log/td-agent/a\ b\ c.log
-touch /etc/td-agent/plugin/in_fake.rb
+sudo touch /etc/td-agent/a\ b\ c
+sudo touch /var/log/td-agent/a\ b\ c.log
+sudo touch /etc/td-agent/plugin/in_fake.rb
 for d in $(seq 1 10); do
-    touch /var/log/td-agent/$d.log
+    sudo touch /var/log/td-agent/$d.log
 done
 
 # Install the current
