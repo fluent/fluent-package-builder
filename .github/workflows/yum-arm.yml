@@ -35,12 +35,6 @@ jobs:
     runs-on: ubuntu-24.04-arm
     steps:
       - uses: actions/checkout@v4
-      - name: Install dependencies
-        run: |
-          sudo apt update
-          sudo apt -V install ruby ruby-bundler ruby-serverspec
-          sudo gem install bundler:2.2.9 --no-document
-          sudo gem uninstall fileutils
       - name: cache rpm
         uses: actions/cache@v4
         id: cache-rpm
@@ -48,7 +42,15 @@ jobs:
           path: |
             fluent-package/yum/repositories
           key: ${{ runner.os }}-cache-${{ matrix.rake-job }}-aarch64-${{ hashFiles('**/config.rb', '**/Rakefile', '**/Gemfile*', '**/*.spec.in', 'fluent-package/templates/**', 'fluent-package/yum/**/Dockerfile') }}
+      - name: Install dependencies
+        if: ${{ ! steps.cache-rpm.outputs.cache-hit }}
+        run: |
+          sudo apt update
+          sudo apt -V install ruby ruby-bundler ruby-serverspec
+          sudo gem install bundler:2.2.9 --no-document
+          sudo gem uninstall fileutils
       - name: Build rpm with Docker
+        if: ${{ ! steps.cache-rpm.outputs.cache-hit }}
         run: |
           rake yum:build YUM_TARGETS=${{ matrix.rake-job }}-aarch64
       - name: Upload fluent-package rpm
