@@ -29,13 +29,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: cache deb
+        uses: actions/cache@v4
+        id: cache-deb
+        with:
+          path: |
+            fluent-package/apt/repositories
+            fluent-apt-source/apt/repositories
+            fluent-lts-apt-source/apt/repositories
+          key: ${{ runner.os }}-cache-${{ matrix.rake-job }}-${{ hashFiles('**/config.rb', '**/Rakefile', '**/Gemfile*', 'fluent-package/templates/**', 'fluent-package/debian/**', 'fluent-package/apt/**/Dockerfile') }}
       - name: Install dependencies
+        if: ${{ ! steps.cache-deb.outputs.cache-hit }}
         run: |
           sudo apt update
           sudo apt -V install ruby ruby-bundler ruby-serverspec
           sudo gem install bundler:2.2.9 --no-document
           sudo gem uninstall fileutils
       - name: Build deb with Docker
+        if: ${{ ! steps.cache-deb.outputs.cache-hit }}
         run: |
           rake apt:build APT_TARGETS=${{ matrix.rake-job }}
       - name: Upload fluent-package deb
