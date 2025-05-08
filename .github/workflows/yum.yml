@@ -9,34 +9,23 @@ concurrency:
   group: ${{ github.head_ref || github.sha }}-${{ github.workflow }}
   cancel-in-progress: true
 jobs:
+  define-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: set-matrix
+        # See https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/evaluate-expressions-in-workflows-and-actions#example-returning-a-json-object
+        run: echo "matrix=$(cat yum.matrix.json | jq --compact-output)" >> $GITHUB_OUTPUT
+        working-directory: .github/workflows/
   build:
+    needs: define-matrix
     name: Build
     timeout-minutes: 60
     strategy:
       fail-fast: false
-      matrix:
-        label:
-          - RockyLinux 8 x86_64
-          - AlmaLinux 9 x86_64
-          - Amazon Linux 2 x86_64
-          - Amazon Linux 2023 x86_64
-        include:
-          - label: RockyLinux 8 x86_64
-            rake-job: rockylinux-8
-            test-docker-image: rockylinux/rockylinux:8
-            centos-stream: false
-          - label: AlmaLinux 9 x86_64
-            rake-job: almalinux-9
-            test-docker-image: almalinux:9
-            centos-stream: false
-          - label: Amazon Linux 2 x86_64
-            rake-job: amazonlinux-2
-            test-docker-image: amazonlinux:2
-            centos-stream: false
-          - label: Amazon Linux 2023 x86_64
-            rake-job: amazonlinux-2023
-            test-docker-image: amazonlinux:2023
-            centos-stream: false
+      matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -54,10 +43,36 @@ jobs:
         with:
           name: packages-${{ matrix.rake-job }}
           path: fluent-package/yum/repositories
-      # TODO move the following steps to "Test" job
+  check_package_size:
+    name: Check Package Size
+    runs-on: ubuntu-latest
+    needs: [define-matrix, build]
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: packages-${{ matrix.rake-job }}
+          path: fluent-package/yum/repositories
       - name: Check Package Size
         run: |
           fluent-package/yum/pkgsize-test.sh ${{ matrix.rake-job }} x86_64
+
+  installation_test:
+    name: Installation Test
+    runs-on: ubuntu-latest
+    needs: [define-matrix, build]
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: packages-${{ matrix.rake-job }}
+          path: fluent-package/yum/repositories
       - name: Installation Test
         run: |
           mkdir -p .bundle
@@ -68,6 +83,19 @@ jobs:
           --env CENTOS_STREAM=${{ matrix.centos-stream }} \
           ${{ matrix.test-docker-image }} \
           /fluentd/fluent-package/yum/install-test.sh
+  serverspec_test:
+    name: Serverspec Test
+    runs-on: ubuntu-latest
+    needs: [define-matrix, build]
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: packages-${{ matrix.rake-job }}
+          path: fluent-package/yum/repositories
       - name: Serverspec Test
         run: |
           mkdir -p .bundle
@@ -78,6 +106,19 @@ jobs:
           --env CENTOS_STREAM=${{ matrix.centos-stream }} \
           ${{ matrix.test-docker-image }} \
           /fluentd/fluent-package/yum/serverspec-test.sh
+  binstubs_test:
+    name: Binstubs Test
+    runs-on: ubuntu-latest
+    needs: [define-matrix, build]
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: packages-${{ matrix.rake-job }}
+          path: fluent-package/yum/repositories
       - name: Binstubs Test
         run: |
           mkdir -p .bundle
@@ -90,7 +131,7 @@ jobs:
           /fluentd/fluent-package/yum/binstubs-test.sh
   v1test:
     name: Test ${{ matrix.label }} ${{ matrix.test-file }} (CGroup V1)
-    needs: build
+    needs: [check_package_size, installation_test, serverspec_test, binstubs_test]
     # Ubuntu 20.04 is not available anymore, so can't use container based
     # approach. Instead, use vagrant on Ubuntu 24.04.
     # (NOTE: nested VM is executable on macos-13, but it is too slow)
@@ -152,7 +193,7 @@ jobs:
 
   v2test:
     name: Test ${{ matrix.label }} ${{ matrix.test-file }} (CGroup V2)
-    needs: build
+    needs: [check_package_size, installation_test, serverspec_test, binstubs_test]
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:

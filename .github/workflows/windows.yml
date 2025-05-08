@@ -38,10 +38,30 @@ jobs:
         with:
           name: packages-windows-x86_64
           path: fluent-package/msi/repositories
+  check_package_size:
+    name: Check Package Size
+    needs: build
+    runs-on: windows-2019
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: packages-windows-x86_64
+          path: fluent-package/msi/repositories
       - name: Check Package Size
         shell: pwsh
         run: |
           powershell -ExecutionPolicy Bypass -Command ".\fluent-package\msi\pkgsize-test.ps1"
+  installation_test:
+    name: Installation Test
+    needs: build
+    runs-on: windows-2019
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: packages-windows-x86_64
+          path: fluent-package/msi/repositories
       - name: Installation Test
         shell: pwsh
         run: |
@@ -52,6 +72,16 @@ jobs:
           --volume ${PWD}:C:\fluentd:ro `
           mcr.microsoft.com/dotnet/framework/runtime:3.5 `
           powershell -ExecutionPolicy Bypass -Command "C:\fluentd\fluent-package\msi\install-test.ps1"
+  update_from_v4_test:
+    name: Migration From v4 Test
+    needs: build
+    runs-on: windows-2019
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: packages-windows-x86_64
+          path: fluent-package/msi/repositories
       - name: Migration From v4 Test
         shell: pwsh
         run: |
@@ -61,6 +91,16 @@ jobs:
           --volume ${PWD}:C:\fluentd:ro `
           mcr.microsoft.com/dotnet/framework/runtime:3.5 `
           powershell -ExecutionPolicy Bypass -Command "C:\fluentd\fluent-package\msi\update-from-v4-test.ps1"
+  update_from_v5_test:
+    name: Update From v5 Test
+    needs: build
+    runs-on: windows-2019
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: packages-windows-x86_64
+          path: fluent-package/msi/repositories
       - name: Update From v5 Test
         shell: pwsh
         run: |
@@ -70,6 +110,16 @@ jobs:
           --volume ${PWD}:C:\fluentd:ro `
           mcr.microsoft.com/dotnet/framework/runtime:3.5 `
           powershell -ExecutionPolicy Bypass -Command "C:\fluentd\fluent-package\msi\update-from-v5-test.ps1"
+  serverspec_test:
+    name: Serverspec Test
+    needs: build
+    runs-on: windows-2019
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: packages-windows-x86_64
+          path: fluent-package/msi/repositories
       - name: Serverspec Test
         shell: pwsh
         run: |
