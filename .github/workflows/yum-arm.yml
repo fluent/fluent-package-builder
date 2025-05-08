@@ -9,29 +9,22 @@ concurrency:
   group: ${{ github.head_ref || github.sha }}-${{ github.workflow }}
   cancel-in-progress: true
 jobs:
+  define-matrix:
+    runs-on: ubuntu-24.04-arm
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: set-matrix
+        # See https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/evaluate-expressions-in-workflows-and-actions#example-returning-a-json-object
+        run: echo "matrix=$(cat yum-arm.matrix.json | jq --compact-output)" >> $GITHUB_OUTPUT
+        working-directory: .github/workflows/
   build:
     name: Build
+    needs: define-matrix
     strategy:
       fail-fast: false
-      matrix:
-        label:
-          - RockyLinux 8 aarch64
-          - AlmaLinux 9 aarch64
-          - Amazon Linux 2 aarch64
-          - Amazon Linux 2023 aarch64
-        include:
-          - label: RockyLinux 8 aarch64
-            rake-job: rockylinux-8
-            test-docker-image: arm64v8/rockylinux:8
-          - label: AlmaLinux 9 aarch64
-            rake-job: almalinux-9
-            test-docker-image: arm64v8/almalinux:9
-          - label: Amazon Linux 2 aarch64
-            rake-job: amazonlinux-2
-            test-docker-image: arm64v8/amazonlinux:2
-          - label: Amazon Linux 2023 aarch64
-            rake-job: amazonlinux-2023
-            test-docker-image: arm64v8/amazonlinux:2023
+      matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
     runs-on: ubuntu-24.04-arm
     steps:
       - uses: actions/checkout@v4
@@ -58,9 +51,35 @@ jobs:
         with:
           name: packages-${{ matrix.rake-job }}-aarch64
           path: fluent-package/yum/repositories
+  check_package_size:
+    name: Check Package Size
+    runs-on: ubuntu-24.04-arm
+    needs: [define-matrix, build]
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: packages-${{ matrix.rake-job }}-aarch64
+          path: fluent-package/yum/repositories
       - name: Check Package Size
         run: |
           fluent-package/yum/pkgsize-test.sh ${{ matrix.rake-job }} aarch64
+  installation_test:
+    name: Installation Test
+    runs-on: ubuntu-24.04-arm
+    needs: [define-matrix, build]
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: packages-${{ matrix.rake-job }}-aarch64
+          path: fluent-package/yum/repositories
       - name: Installation Test
         run: |
           mkdir -p .bundle
@@ -71,6 +90,19 @@ jobs:
           --volume ${PWD}:/fluentd:ro \
           ${{ matrix.test-docker-image }} \
           /fluentd/fluent-package/yum/install-test.sh
+  serverspec_test:
+    name: Serverspec Test
+    runs-on: ubuntu-24.04-arm
+    needs: [define-matrix, build]
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: packages-${{ matrix.rake-job }}-aarch64
+          path: fluent-package/yum/repositories
       - name: Serverspec Test
         run: |
           mkdir -p .bundle
@@ -81,6 +113,19 @@ jobs:
           --volume ${PWD}:/fluentd:ro \
           ${{ matrix.test-docker-image }} \
           /fluentd/fluent-package/yum/serverspec-test.sh
+  binstubs_test:
+    name: Binstubs Test
+    runs-on: ubuntu-24.04-arm
+    needs: [define-matrix, build]
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: packages-${{ matrix.rake-job }}-aarch64
+          path: fluent-package/yum/repositories
       - name: Binstubs Test
         run: |
           mkdir -p .bundle
