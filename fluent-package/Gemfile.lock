@@ -17,6 +17,7 @@ GIT
       certstore_c (~> 0.1.7)
       console (< 1.24)
       cool.io (>= 1.4.5, < 2.0.0)
+      fiddle (~ 1.1)
       http_parser.rb (>= 0.5.1, < 0.9.0)
       logger (~> 1.6)
       msgpack (>= 1.3.1, < 2.0.0)
@@ -112,6 +113,7 @@ GEM
       ffi
     fiber-annotation (0.2.0)
     fiber-local (1.0.0)
+    fiddle (1.1.8)
     fileutils (1.7.3)
     fluent-config-regexp-type (1.0.0)
       fluentd (> 1.0.0, < 2)
