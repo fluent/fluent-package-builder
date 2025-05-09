@@ -38,15 +38,8 @@ sudo systemctl enable fluentd # Enable the unit name alias
 systemctl status --no-pager td-agent
 
 # Make a dummy pacakge for the next version
-case $distribution in
-    amazon)
-        sudo amazon-linux-extras install -y epel
-        ;;
-    *)
-        sudo $DNF install -y epel-release
-        ;;
-esac
-sudo $DNF install -y rpmrebuild
+. $(dirname $0)/setup-rpmrebuild.sh
+
 # Example: "1.el9"
 release=$(rpmquery --queryformat="%{Release}" -p $package)
 # Example: "1"

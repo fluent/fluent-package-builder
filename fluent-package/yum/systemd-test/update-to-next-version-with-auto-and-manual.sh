@@ -7,25 +7,7 @@ set -exu
 package="/host/${distribution}/${DISTRIBUTION_VERSION}/x86_64/Packages/fluent-package-[0-9]*.rpm"
 
 # Make a dummy pacakge for the next version
-case $distribution in
-    amazon)
-        case $version in
-            2023)
-                curl -L -o rpmrebuild.noarch.rpm https://sourceforge.net/projects/rpmrebuild/files/latest/download
-                sudo $DNF install -y ./rpmrebuild.noarch.rpm
-                ;;
-            2)
-                sudo amazon-linux-extras install -y epel
-                sudo $DNF install -y rpmrebuild
-                ;;
-        esac
-        ;;
-    *)
-        sudo $DNF install -y epel-release
-        sudo $DNF install -y rpmrebuild
-        ;;
-esac
-
+. $(dirname $0)/setup-rpmrebuild.sh
 
 # Example: "1.el9"
 release=$(rpmquery --queryformat="%{Release}" -p $package)
