@@ -22,7 +22,7 @@ jobs:
         run: |
           cd fluent-package
           gem install bundler:2.3.27
-          bundle _2.3.27_ update -j 4
+          bundle _2.3.27_ update -j 4 --patch
       - name: Create Pull Request
         run: |
           $today=Get-Date -Format "yyyy-MM-dd"
