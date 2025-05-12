@@ -1,0 +1,37 @@
+name: Maintenance - Bundle Update
+
+on:
+  workflow_dispatch
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  bundle-update:
+    runs-on: windows-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.2 # Use same Ruby version with fluent-package bundled
+      - uses: actions/checkout@v4
+      - name: Bundle Update
+        run: |
+          cd fluent-package
+          gem install bundler:2.3.27
+          bundle _2.3.27_ update -j 4
+      - name: Create Pull Request
+        run: |
+          $today=Get-Date -Format "yyyy-MM-dd"
+          $branch="maintenance/bundle-update/${today}"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch --create $branch
+          git add fluent-package/Gemfile.lock
+          git commit --message "Update Gemfile.lock" --signoff
+          git push origin $branch
+          gh pr create --title "Update Gemfile.lock" --body "Update Gemfile.lock by maintenance workflow"
