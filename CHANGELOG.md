@@ -44,7 +44,7 @@ About the past changelog entries, see [old CHANGELOG](CHANGELOG-v4.md) instead.
 * fluent-plugin-rewrite-tag-filter v2.4.0
 * fluent-plugin-s3 v1.7.2
 * fluent-plugin-sd-dns 0.1.0
-* fluent-plugin-systemd v1.1.1 (update)
+* fluent-plugin-systemd v1.1.0
 * fluent-plugin-td v1.2.0
 * fluent-plugin-utmpx v0.5.0
 * fluent-plugin-webhdfs v1.5.0
@@ -52,7 +52,7 @@ About the past changelog entries, see [old CHANGELOG](CHANGELOG-v4.md) instead.
 * prometheus-client v2.1.0
 * rdkafka v0.12.0
 * ruby-kafka v1.5.0
-* systemd-journal v2.1.0 (update)
+* systemd-journal v2.0.0
 * td-client v1.0.8
 * webhdfs v0.10.2
 
