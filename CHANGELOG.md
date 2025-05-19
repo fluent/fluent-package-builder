@@ -16,11 +16,12 @@ About the past changelog entries, see [old CHANGELOG](CHANGELOG-v4.md) instead.
 * jemalloc v3.6.0
 * OpenSSL 3.4.0 Windows
 * OpenSSL 3.0.8 macOS
-* fluentd v1.16.9 (update)
-* msgpack 1.7.5
-* oj 3.16.5
-* webrick 1.8.2
-* openssl 3.3.0 (update)
+* gems
+  * fluentd v1.16.9 (update)
+  * msgpack 1.7.5
+  * oj 3.16.5
+  * webrick 1.8.2
+  * openssl 3.3.0 (update)
 
 ### Bundled plugins and gems
 
