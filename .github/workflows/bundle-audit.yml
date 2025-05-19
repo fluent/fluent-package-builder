@@ -1,0 +1,29 @@
+name: Bundle audit
+on:
+  push:
+    branches:
+      - master
+      - fluent-package-v5
+  pull_request:
+  workflow_dispatch
+concurrency:
+  group: ${{ github.head_ref || github.sha }}-${{ github.workflow }}
+  cancel-in-progress: true
+jobs:
+  build:
+    name: Audit
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+    runs-on: windows-2019
+    steps:
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.2
+      - uses: actions/checkout@v4
+      - name: Build
+        run: |
+          gem install bundle-audit
+          cd fluent-package
+          bundle-audit check --update
