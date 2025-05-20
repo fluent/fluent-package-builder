@@ -36,7 +36,7 @@
            <% end %>
            <% files.each do |file| %>
              <% if File.directory?(file) %>
-               <li><a href="/<%= relative_path %>/<%= file %>"><i class="ri-folder-line"></i> <%= file %></span></a>
+               <li><a href="/<%= relative_path %>/<%= file %>/index.html"><i class="ri-folder-line"></i> <%= file %></span></a>
              <% else %>
                <li><a href="/<%= relative_path %>/<%= file %>"><i class="ri-file-download-line"></i> <%= file %></span></a>
                <%= sprintf("%.2f", File.stat(file).size / 1024 / 1024.0) %> MiB
