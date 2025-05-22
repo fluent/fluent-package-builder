@@ -15,11 +15,17 @@ case ${code_name} in
         mirror=http://ports.ubuntu.com/ubuntu-ports
     fi
     ;;
-  bookworm|trixie)
+  bookworm)
     distribution=debian
     channel=main
     mirror=http://deb.debian.org/debian
     java_jdk=openjdk-17-jre
+    ;;
+  trixie)
+    distribution=debian
+    channel=main
+    mirror=http://deb.debian.org/debian
+    java_jdk=openjdk-25-jre-headless
     ;;
 esac
 
