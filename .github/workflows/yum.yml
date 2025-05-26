@@ -189,6 +189,8 @@ jobs:
     # approach. Instead, use vagrant on Ubuntu 24.04.
     # (NOTE: nested VM is executable on macos-13, but it is too slow)
     runs-on: ubuntu-24.04
+    container:
+      image: docker.io/amazonlinux:2
     timeout-minutes: 15
     strategy:
       fail-fast: false
