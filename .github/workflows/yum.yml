@@ -138,67 +138,72 @@ jobs:
           --env CENTOS_STREAM=${{ matrix.centos-stream }} \
           ${{ matrix.test-docker-image }} \
           /fluentd/fluent-package/yum/binstubs-test.sh
-  v1test:
-    name: Test ${{ matrix.label }} ${{ matrix.test-file }} (CGroup V1)
-    needs: [check_package_size, installation_test, serverspec_test, binstubs_test]
-    # Ubuntu 20.04 is not available anymore, so can't use container based
-    # approach. Instead, use vagrant on Ubuntu 24.04.
-    # (NOTE: nested VM is executable on macos-13, but it is too slow)
-    runs-on: ubuntu-24.04
-    timeout-minutes: 15
-    strategy:
-      fail-fast: false
-      matrix:
-        label:
-          - AmazonLinux 2 x86_64
-          - AmazonLinux 2023 x86_64
-        test-file:
-          - "update-from-v4.sh"
-          - "update-to-next-version-with-backward-compat-for-v4.sh"
-          - "downgrade-to-v4.sh"
-          - "install-newly.sh local"
-          - "install-newly.sh v5"
-          - "install-newly.sh lts"
-        include:
-          - label: AmazonLinux 2 x86_64
-            rake-job: amazonlinux-2
-          - label: AmazonLinux 2023 x86_64
-            rake-job: amazonlinux-2023
-        exclude:
-          - label: AmazonLinux 2023 x86_64
-            test-file: update-from-v4.sh
-          - label: AmazonLinux 2023 x86_64
-            test-file: update-to-next-version-with-backward-compat-for-v4.sh
-          - label: AmazonLinux 2023 x86_64
-            test-file: downgrade-to-v4.sh
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
-        with:
-          name: packages-${{ matrix.rake-job }}
-      - name: Show host runner information
-        run: |
-          cat /proc/cpuinfo | grep -E "vmx|svm"
-          lsmod | grep kvm
-      - name: Set up virtualbox
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y virtualbox
-      - name: Set up vagrant
-        run: |
-          sudo apt-get update
-          wget -O - https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
-          echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
-          sudo apt-get update && sudo apt install -y vagrant
-          vagrant --version
-          vagrant status
-      - name: Spin up vagrant
-        run: |
-          vagrant up --provider virtualbox ${{ matrix.rake-job }}
-      # Run tests based on AlmaLinux 8 (CGroup v1)
-      - name: Run Test ${{ matrix.test-file }} on ${{ matrix.rake-job }}
-        run: |
-          BOX_MOUNT_DIR=fluent-package/yum/repositories vagrant ssh ${{ matrix.rake-job }} -- /host/fluent-package/yum/systemd-test/${{ matrix.test-file }}
+  #
+  # NOTE: It is hard to keep testing environment for AmazonLinux:2 properly and it is not sustainable enough at this time.
+  # Thus disable v1test job for a while. (Running AmazonLinux:2 (CGroup v1) on CGroup v2 host with VirtualBox is fragile and not stable enough.)
+  # If we found a better solution for it, replace with it.
+  #
+  # v1test:
+  #   name: Test ${{ matrix.label }} ${{ matrix.test-file }} (CGroup V1)
+  #   needs: [check_package_size, installation_test, serverspec_test, binstubs_test]
+  #   # Ubuntu 20.04 is not available anymore, so can't use container based
+  #   # approach. Instead, use vagrant on Ubuntu 24.04.
+  #   # (NOTE: nested VM is executable on macos-13, but it is too slow)
+  #   runs-on: ubuntu-24.04
+  #   timeout-minutes: 15
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       label:
+  #         - AmazonLinux 2 x86_64
+  #         - AmazonLinux 2023 x86_64
+  #       test-file:
+  #         - "update-from-v4.sh"
+  #         - "update-to-next-version-with-backward-compat-for-v4.sh"
+  #         - "downgrade-to-v4.sh"
+  #         - "install-newly.sh local"
+  #         - "install-newly.sh v5"
+  #         - "install-newly.sh lts"
+  #       include:
+  #         - label: AmazonLinux 2 x86_64
+  #           rake-job: amazonlinux-2
+  #         - label: AmazonLinux 2023 x86_64
+  #           rake-job: amazonlinux-2023
+  #       exclude:
+  #         - label: AmazonLinux 2023 x86_64
+  #           test-file: update-from-v4.sh
+  #         - label: AmazonLinux 2023 x86_64
+  #           test-file: update-to-next-version-with-backward-compat-for-v4.sh
+  #         - label: AmazonLinux 2023 x86_64
+  #           test-file: downgrade-to-v4.sh
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: actions/download-artifact@v4
+  #       with:
+  #         name: packages-${{ matrix.rake-job }}
+  #     - name: Show host runner information
+  #       run: |
+  #         cat /proc/cpuinfo | grep -E "vmx|svm"
+  #         lsmod | grep kvm
+  #     - name: Set up virtualbox
+  #       run: |
+  #         sudo apt-get update
+  #         sudo apt-get install -y virtualbox
+  #     - name: Set up vagrant
+  #       run: |
+  #         sudo apt-get update
+  #         wget -O - https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+  #         echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+  #         sudo apt-get update && sudo apt install -y vagrant
+  #         vagrant --version
+  #         vagrant status
+  #     - name: Spin up vagrant
+  #       run: |
+  #         vagrant up --provider virtualbox ${{ matrix.rake-job }}
+  #     # Run tests based on AlmaLinux 8 (CGroup v1)
+  #     - name: Run Test ${{ matrix.test-file }} on ${{ matrix.rake-job }}
+  #       run: |
+  #         BOX_MOUNT_DIR=fluent-package/yum/repositories vagrant ssh ${{ matrix.rake-job }} -- /host/fluent-package/yum/systemd-test/${{ matrix.test-file }}
 
   v2test:
     name: Test ${{ matrix.label }} ${{ matrix.test-file }} (CGroup V2)
