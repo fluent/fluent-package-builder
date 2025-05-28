@@ -32,7 +32,7 @@ RUN \
   # Required CMake 3.x to build cmetrics gem
   choco install -y cmake --version=3.31.6 --installargs 'ADD_CMAKE_TO_PATH=System' && \
   choco install -y msys2 --params /NoUpdate --version=20250221.0.0 && \
-  choco install ruby -y --version=3.2.8.1 && \
+  choco install ruby -y --version=3.4.4.2 && \
   refreshenv && \
   ridk install 3 && \
   gem install --no-document --force bundler builder
