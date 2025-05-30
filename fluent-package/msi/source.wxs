@@ -280,6 +280,20 @@
                   Return="check"
                   Impersonate="no" />
 
+    <!-- Show custom navigation to release note -->
+    <Property Id="BROWSER">
+      <RegistrySearch Id="DefaultBrowser" Type="raw" Root='HKCR' Key='http\shell\open\command' />
+    </Property>
+    <Property Id="FluentPackageReleaseNote" Value=" "/>
+    <CustomAction Id="SetFluentPackageReleaseNote"
+                  Property="FluentPackageReleaseNote"
+                  Value="https://github.com/fluent/fluent-package-builder/releases/tag/v[ProductVersion]"/>
+    <CustomAction Id="PostVisitReleaseNote" Property="BROWSER" ExeCommand="[FluentPackageReleaseNote]" Return="asyncNoWait" />
+    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOX" Value="1"/>
+    <CustomAction Id="SetExitDialogDescription"
+                  Property="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT"
+                  Value="Visit [ProductName] release note"/>
+
     <InstallExecuteSequence>
       <Custom Action="SetPostInstallCommand" After="InstallFiles">NOT Installed</Custom>
       <Custom Action="PostInstall" After="SetPostInstallCommand">NOT Installed</Custom>
@@ -294,6 +308,11 @@
       <Custom Action="CreateCompatTdAgentBat" After="SetCreateCompatTdAgentBat">NOT Installed</Custom>
       <Custom Action="SetCreateCompatTdAgentGemBat" Before="InstallFinalize">NOT Installed</Custom>
       <Custom Action="CreateCompatTdAgentGemBat" After="SetCreateCompatTdAgentGemBat">NOT Installed</Custom>
+
+      <!-- Show navigation checkbox to access release note -->
+      <Custom Action="SetFluentPackageReleaseNote" Before="InstallFinalize">NOT Installed</Custom>
+      <Custom Action="SetExitDialogDescription" After="SetFluentPackageReleaseNote">NOT Installed</Custom>
+      <Custom Action="PostVisitReleaseNote" After="InstallFinalize">WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 AND NOT Installed</Custom>
 
       <!-- Delete hardlink before removing installed files -->
       <Custom Action="SetDeleteCompatTdAgentBat" After="InstallInitialize">Installed AND NOT REINSTALL</Custom>
