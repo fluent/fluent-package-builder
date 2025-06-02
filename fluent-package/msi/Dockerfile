@@ -16,7 +16,7 @@
 
 # The latest chocolatey requires .net 4.8, and wixtoolset requires .net 3.5,
 # To satisfy both of them without reboot, use sdk image.
-ARG FROM=mcr.microsoft.com/dotnet/framework/sdk:3.5-windowsservercore-ltsc2019
+ARG FROM=mcr.microsoft.com/dotnet/framework/sdk:3.5-windowsservercore-ltsc2022
 FROM ${FROM}
 
 # Launch the following command as if cmd /S /C ...
