@@ -1371,7 +1371,6 @@ EOS
       "centos-7",
       "rockylinux-8",
       "almalinux-9",
-      "amazonlinux-2",
       "amazonlinux-2023",
     ]
   end

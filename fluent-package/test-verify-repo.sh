@@ -54,7 +54,7 @@ if [ -z "$DEB_TARGETS" ]; then
     DEB_TARGETS="debian:bullseye debian:bookworm ubuntu:focal ubuntu:jammy ubuntu:noble"
 fi
 if [ -z "$RPM_TARGETS" ]; then
-    RPM_TARGETS="almalinux:8 rockylinux:9 amazonlinux:2 amazonlinux:2023"
+    RPM_TARGETS="almalinux:8 rockylinux:9 amazonlinux:2023"
 fi
 if [ -z "$REPO_TARGETS" ]; then
     REPO_TARGETS="exp/5 exp/lts/5"
