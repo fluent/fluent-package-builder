@@ -280,6 +280,17 @@
                   Return="check"
                   Impersonate="no" />
 
+    <Property Id="PostNotifyWithToastBat" Value=" "/>
+    <CustomAction Id="SetPostNotifyWithToastBat"
+                  Property="PostNotifyWithToastBat"
+                  Value="&quot;[FLUENTPROJECTLOCATION]bin\fluent-package-post-toast.bat&quot;"/>
+    <CustomAction Id="PostNotifyWithToastBat"
+                  BinaryKey="WixCA"
+                  DllEntry="WixQuietExec64"
+                  Execute="deferred"
+                  Return="check"
+                  Impersonate="yes" />
+
     <InstallExecuteSequence>
       <Custom Action="SetPostInstallCommand" After="InstallFiles">NOT Installed</Custom>
       <Custom Action="PostInstall" After="SetPostInstallCommand">NOT Installed</Custom>
@@ -294,6 +305,10 @@
       <Custom Action="CreateCompatTdAgentBat" After="SetCreateCompatTdAgentBat">NOT Installed</Custom>
       <Custom Action="SetCreateCompatTdAgentGemBat" Before="InstallFinalize">NOT Installed</Custom>
       <Custom Action="CreateCompatTdAgentGemBat" After="SetCreateCompatTdAgentGemBat">NOT Installed</Custom>
+
+      <!-- Notify enterprise services for Fluentd users -->
+      <Custom Action="SetPostNotifyWithToastBat" Before="InstallFinalize">NOT Installed</Custom>
+      <Custom Action="PostNotifyWithToastBat" After="SetPostNotifyWithToastBat">NOT Installed</Custom>
 
       <!-- Delete hardlink before removing installed files -->
       <Custom Action="SetDeleteCompatTdAgentBat" After="InstallInitialize">Installed AND NOT REINSTALL</Custom>
