@@ -11,6 +11,11 @@
       "test-docker-image": "arm64v8/almalinux:9"
     },
     {
+      "label": "AlmaLinux 10 aarch64",
+      "rake-job": "almalinux-10",
+      "test-docker-image": "arm64v8/almalinux:10"
+    },
+    {
       "label": "Amazon Linux 2023 aarch64",
       "rake-job": "amazonlinux-2023",
       "test-docker-image": "arm64v8/amazonlinux:2023"
