@@ -99,7 +99,9 @@ gem "fluent-plugin-windows-exporter", "1.0.0", platforms: windows_platforms
 
 not_windows_platforms = [:ruby]
 gem "capng_c", "0.2.3", platforms: not_windows_platforms
-gem "rdkafka", "0.16.1", platforms: not_windows_platforms
+# Use newer bundled rdkafka with librdkafka 2.8.0 to support AlmaLinux 10
+# (librdkafka 2.8.0 supports "OpenSSL without the ENGINE component")
+gem "rdkafka", "0.21.0", platforms: not_windows_platforms
 gem "systemd-journal", "2.0.0", platforms: not_windows_platforms
 gem "fluent-plugin-systemd", "1.1.0", platforms: not_windows_platforms
 gem "fluent-plugin-utmpx", "0.5.0", platforms: not_windows_platforms

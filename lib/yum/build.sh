@@ -112,7 +112,8 @@ run cp \
 run cat <<BUILD > build.sh
 #!/bin/bash
 
-rpmbuild -ba ${rpmbuild_options} rpmbuild/SPECS/${PACKAGE}.spec
+# Ignore invalid RPATHS such as /opt/fluent/lib
+QA_RPATHS=$(( 0x0002 )) rpmbuild -ba ${rpmbuild_options} rpmbuild/SPECS/${PACKAGE}.spec
 BUILD
 run chmod +x build.sh
 if [ -n "${DEVTOOLSET_VERSION:-}" ]; then
