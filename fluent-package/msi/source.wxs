@@ -151,6 +151,10 @@
       <TextStyle Id="WixUI_Font_Normal_White" FaceName="Tahoma" Size="8" Red="255" Green="255" Blue="255" />
       <TextStyle Id="WixUI_Font_Bigger_White" FaceName="Tahoma" Size="12" Red="255" Green="255" Blue="255" />
       <TextStyle Id="WixUI_Font_Title_White" FaceName="Tahoma" Size="9" Bold="yes" Red="255" Green="255" Blue="255" />
+      <Publish Dialog="ExitDialog"
+               Control="Finish"
+               Event="DoAction"
+               Value="PostLaunchReleaseNote">WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 AND NOT Installed</Publish>
     </UI>
 
     <WixVariable Id="WixUILicenseRtf" Value="assets\LICENSE.rtf" />
@@ -290,6 +294,31 @@
                   Execute="deferred"
                   Return="check"
                   Impersonate="yes" />
+
+    <!--
+        Show custom navigation to release note
+        NOTE: The issue with checkbox with gray background color won't be fixed.
+        See https://github.com/wixtoolset/issues/issues/1687#issuecomment-166082031
+    -->
+    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOX" Value="1"/>
+    <CustomAction Id="SetExitDialogDescription"
+                  Property="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT"
+                  Value="Visit [ProductName] release note"/>
+    <CustomAction Id="SetPostVisitReleaseNote"
+                  Property="PostVisitReleaseNote"
+                  Value="https://github.com/fluent/fluent-package-builder/releases/tag/v[ProductVersion]" />
+    <CustomAction Id="PostLaunchReleaseNote"
+                  Directory="TARGETDIR"
+                  Execute="immediate"
+                  ExeCommand="explorer.exe [PostVisitReleaseNote]"
+                  Impersonate="yes"
+                  Return="asyncNoWait" />
+
+    <InstallUISequence>
+      <!-- Show navigation checkbox to access release note -->
+      <Custom Action="SetPostVisitReleaseNote" After="FindRelatedProducts">NOT Installed</Custom>
+      <Custom Action="SetExitDialogDescription" After="SetPostVisitReleaseNote">NOT Installed</Custom>
+    </InstallUISequence>
 
     <InstallExecuteSequence>
       <Custom Action="SetPostInstallCommand" After="InstallFiles">NOT Installed</Custom>
