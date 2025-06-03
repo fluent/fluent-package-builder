@@ -232,7 +232,7 @@ GEM
     public_suffix (6.0.1)
     racc (1.8.1)
     rake (13.2.1)
-    rdkafka (0.16.1)
+    rdkafka (0.21.0)
       ffi (~> 1.15)
       mini_portile2 (~> 2.6)
       rake (> 12)
@@ -342,7 +342,7 @@ DEPENDENCIES
   opensearch-ruby (= 3.4.0)
   prometheus-client (= 2.1.0)
   rake
-  rdkafka (= 0.16.1)
+  rdkafka (= 0.21.0)
   ruby-kafka (= 1.5.0)
   serverengine (= 2.4.0)
   sigdump (= 0.2.5)
