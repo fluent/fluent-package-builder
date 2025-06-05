@@ -1,17 +1,18 @@
-From 22ef9f8d96e796933b490bf1bf8c41425e6d621e Mon Sep 17 00:00:00 2001
+From f6e245b9eae6f4f98a41125e623d0dd7ac2e535a Mon Sep 17 00:00:00 2001
 From: Kentaro Hayashi <hayashi@clear-code.com>
-Date: Wed, 11 Dec 2024 22:55:30 +0900
-Subject: [PATCH] bump version to 6.0.0
+Date: Mon, 9 Jun 2025 18:20:28 +0900
+Subject: [PATCH] Bump version to v6.0.0
 
 Signed-off-by: Kentaro Hayashi <hayashi@clear-code.com>
 ---
- fluent-package/config.rb                  | 6 +++---
- fluent-package/debian/changelog           | 6 ++++++
- fluent-package/yum/fluent-package.spec.in | 3 +++
- 3 files changed, 12 insertions(+), 3 deletions(-)
+ fluent-package/config.rb                  | 10 +++++-----
+ fluent-package/debian/changelog           |  6 ++++++
+ fluent-package/msi/Dockerfile             |  2 +-
+ fluent-package/yum/fluent-package.spec.in |  3 +++
+ 4 files changed, 15 insertions(+), 6 deletions(-)
 
 diff --git a/fluent-package/config.rb b/fluent-package/config.rb
-index 8219301..7d4fec7 100644
+index 509f338..de767fd 100644
 --- a/fluent-package/config.rb
 +++ b/fluent-package/config.rb
 @@ -1,5 +1,5 @@
@@ -27,11 +28,22 @@ index 8219301..7d4fec7 100644
  # https://www.ruby-lang.org/en/downloads/ (tar.gz)
 -BUNDLED_RUBY_VERSION = "3.2.6"
 -BUNDLED_RUBY_SOURCE_SHA256SUM = "d9cb65ecdf3f18669639f2638b63379ed6fbb17d93ae4e726d4eb2bf68a48370"
-+BUNDLED_RUBY_VERSION = "3.3.6"
-+BUNDLED_RUBY_SOURCE_SHA256SUM = "8dc48fffaf270f86f1019053f28e51e4da4cce32a36760a0603a9aee67d7fd8d"
++BUNDLED_RUBY_VERSION = "3.4.4"
++BUNDLED_RUBY_SOURCE_SHA256SUM = "a0597bfdf312e010efd1effaa8d7f1d7833146fdc17950caa8158ffa3dcbfa85"
  
  BUNDLED_RUBY_PATCHES = [
    # An example entry:
+@@ -32,8 +32,8 @@ BUNDLED_RUBY_PATCHES = [
+ ]
+ 
+ # https://rubyinstaller.org/downloads/ (7-ZIP ARCHIVES)
+-BUNDLED_RUBY_INSTALLER_X64_VERSION = "3.2.6-1"
+-BUNDLED_RUBY_INSTALLER_X64_SHA256SUM = "549616f2964301616fd713e5590f024b63b28d6cc5e5033c87eff32e0d1fa2d2"
++BUNDLED_RUBY_INSTALLER_X64_VERSION = "3.4.4-2"
++BUNDLED_RUBY_INSTALLER_X64_SHA256SUM = "29fe655a8bee91d6466e631ae612142a1c5d68d46323ccca7f35add2dbb28b51"
+ 
+ # Files under rubyinstaller/ are patches for RubyInstaller's binary package.
+ # Other patches for Ruby's source tree which can be shared with BUNDLED_RUBY_PATCHES.
 diff --git a/fluent-package/debian/changelog b/fluent-package/debian/changelog
 index 0a73dbb..2614fac 100644
 --- a/fluent-package/debian/changelog
@@ -46,6 +58,19 @@ index 0a73dbb..2614fac 100644
  fluent-package (5.2.0-1) unstable; urgency=low
  
    * New upstream release.
+diff --git a/fluent-package/msi/Dockerfile b/fluent-package/msi/Dockerfile
+index f140c34..a064784 100644
+--- a/fluent-package/msi/Dockerfile
++++ b/fluent-package/msi/Dockerfile
+@@ -32,7 +32,7 @@ RUN \
+   # Required CMake 3.x to build cmetrics gem
+   choco install -y cmake --version=3.31.6 --installargs 'ADD_CMAKE_TO_PATH=System' && \
+   choco install -y msys2 --params /NoUpdate --version=20250221.0.0 && \
+-  choco install ruby -y --version=3.2.8.1 && \
++  choco install ruby -y --version=3.4.4.2 && \
+   refreshenv && \
+   ridk install 3 && \
+   gem install --no-document --force bundler builder
 diff --git a/fluent-package/yum/fluent-package.spec.in b/fluent-package/yum/fluent-package.spec.in
 index 45f0519..240f30c 100644
 --- a/fluent-package/yum/fluent-package.spec.in
@@ -61,5 +86,5 @@ index 45f0519..240f30c 100644
  - New upstream release.
  
 -- 
-2.45.2
+2.49.0
 
