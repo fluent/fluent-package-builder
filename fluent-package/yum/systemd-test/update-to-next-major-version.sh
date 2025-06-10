@@ -22,9 +22,15 @@ sudo sed -i "s/=auto/=$service_restart/" /etc/sysconfig/fluentd
 sudo /opt/fluent/bin/fluent-gem install --no-document fluent-plugin-concat
 sudo /opt/fluent/bin/fluent-gem install --no-document gqtp
 
+# Show bundled ruby version before updating to next major version
+/opt/fluent/bin/ruby -v
+
 # Install next major version
 package="/host/v6-test/${distribution}/${DISTRIBUTION_VERSION}/x86_64/Packages/fluent-package-*.rpm"
 sudo $DNF install -y $package
+
+# Show bundled ruby version
+/opt/fluent/bin/ruby -v
 
 # Test: Check whether plugin/gem were installed during upgrading
 if [ "$service_restart" != manual ] && [ "$status_before_update" = active ]; then
