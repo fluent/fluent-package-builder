@@ -114,6 +114,8 @@ class PackageTask
     id = os
     id = "#{id}-#{architecture}" if architecture
     docker_tag = "#{@package}-#{id}"
+    # TODO: Fix docker tag name
+    docker_tag = "watson1978/#{docker_tag}" if os == "centos-7"
     build_command_line = [
       "docker",
       "build",
@@ -149,7 +151,14 @@ class PackageTask
     build_command_line << docker_context
     run_command_line.concat([docker_tag, "/host/build.sh"])
 
-    sh(*build_command_line)
+    if os == "centos-7"
+      if ENV["BUILD_DOCKER_IMAGE_ONLY"]
+        sh(*build_command_line)
+        exit
+      end
+    else
+      sh(*build_command_line)
+    end
     sh(*run_command_line)
   end
 
