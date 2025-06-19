@@ -225,7 +225,7 @@ GEM
       rake (>= 13)
     googleapis-common-protos-types (1.20.0)
       google-protobuf (>= 3.18, < 5.a)
-    grpc (1.72.0)
+    grpc (1.73.0)
       google-protobuf (>= 3.25, < 5.0)
       googleapis-common-protos-types (~> 1.0)
     hirb (0.7.3)
