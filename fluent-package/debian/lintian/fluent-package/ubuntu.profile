@@ -8,5 +8,5 @@ Extends: ubuntu/main
 #   the old tag name of custom-library-search-path
 #   (binary-or-shlib-defines-rpath) must be specified.
 #
-Disable-Tags: dir-or-file-in-opt,
+Disable-Tags: dir-or-file-in-opt
  binary-or-shlib-defines-rpath
