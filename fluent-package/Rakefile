@@ -1146,6 +1146,28 @@ class BuildTask
         remove_files("ports", true) if gem_dir.start_with?("#{gem_staging_dir}/gems/cmetrics-")
       end
     end
+
+    # Remove unnecessary precompiled libraries from fat gems
+    ruby_version = /(\d+\.\d+)/.match(BUNDLED_RUBY_VERSION).to_s
+    Dir.glob("#{gem_staging_dir}/gems/google-protobuf*").each do |gem_dir|
+      cd(gem_dir) do
+        Dir.glob("lib/google/*/protobuf_c.so").each do |so_path|
+          unless so_path.include?(ruby_version)
+            rm_f(so_path)
+          end
+        end
+      end
+    end
+    Dir.glob("#{gem_staging_dir}/gems/grpc*").each do |gem_dir|
+      cd(gem_dir) do
+        Dir.glob("src/ruby/lib/grpc/*/grpc_c.so").each do |so_path|
+          unless so_path.include?(ruby_version)
+            rm_f(so_path)
+          end
+        end
+      end
+    end
+
     Dir.glob("#{fluent_package_staging_dir}/lib/lib*.a").each do |static_library|
       unless static_library.end_with?(".dll.a")
         rm_f(static_library)
