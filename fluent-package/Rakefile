@@ -1164,6 +1164,8 @@ class BuildTask
           unless so_path.include?(ruby_version)
             rm_f(so_path)
           end
+          # Remove unnecessary test files
+          rm_rf("src/ruby/spec")
         end
       end
     end
