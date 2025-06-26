@@ -21,7 +21,7 @@ catch {
 
 $msi = (Get-Item "fluent-package\\msi\\repositories\\fluent-package-*.msi") | Sort-Object -Descending { $_.LastWriteTime } | Select-Object -First 1
 "Checking package size: {0}" -F $msi.FullName | Write-Host
-$package_size_threshold = $response.RawContentLength * 1.2
+$package_size_threshold = $response.RawContentLength * 1.3
 $previous_msi = (Get-Item $previous_msi_name)
 "{0:0.0} MiB ({1}) {2}" -F ($previous_msi.Length / 1024 / 1024), $previous_msi.Length, $previous_msi.Name | Write-Host
 "{0:0.0} MiB ({1}) {2}" -F ($msi.Length / 1024 / 1024), $msi.Length, $msi.Name | Write-Host

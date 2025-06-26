@@ -165,6 +165,11 @@ GEM
       faraday_middleware-aws-sigv4 (~> 1.0.1)
       fluentd (>= 0.14.22)
       opensearch-ruby (>= 3.0.1)
+    fluent-plugin-opentelemetry (0.2.0)
+      async-http (~> 0.88)
+      excon (~> 1.2)
+      fluentd (~> 1.18)
+      google-protobuf (~> 4.30)
     fluent-plugin-parser-winevt_xml (0.2.8)
       base64 (~> 0.2)
       csv (~> 3.2)
@@ -205,6 +210,17 @@ GEM
     fluent-plugin-windows-exporter (1.0.0)
       bindata (~> 2.4)
       fluentd (>= 0.14.10, < 2)
+    google-protobuf (4.31.1)
+      bigdecimal
+      rake (>= 13)
+    google-protobuf (4.31.1-x64-mingw-ucrt)
+      bigdecimal
+      rake (>= 13)
+    google-protobuf (4.31.1-x86_64-linux-gnu)
+      bigdecimal
+      rake (>= 13)
+    googleapis-common-protos-types (1.20.0)
+      google-protobuf (>= 3.18, < 5.a)
     hirb (0.7.3)
     http_parser.rb (0.8.0)
     httpclient (2.9.0)
@@ -307,9 +323,8 @@ GEM
     zstd-ruby (1.5.6.6)
 
 PLATFORMS
+  aarch64-linux
   x64-mingw-ucrt
-  x64-mingw32
-  x86_64-darwin-18
   x86_64-linux
 
 DEPENDENCIES
@@ -338,6 +353,7 @@ DEPENDENCIES
   fluent-plugin-metrics-cmetrics (= 0.1.2)
   fluent-plugin-obsolete-plugins (= 0.1.1)
   fluent-plugin-opensearch (= 1.1.5)
+  fluent-plugin-opentelemetry (= 0.2.0)
   fluent-plugin-parser-winevt_xml (= 0.2.8)
   fluent-plugin-prometheus (= 2.2.1)
   fluent-plugin-prometheus_pushgateway (= 0.2.1)
