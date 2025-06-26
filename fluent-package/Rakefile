@@ -1158,17 +1158,6 @@ class BuildTask
         end
       end
     end
-    Dir.glob("#{gem_staging_dir}/gems/grpc*").each do |gem_dir|
-      cd(gem_dir) do
-        Dir.glob("src/ruby/lib/grpc/*/grpc_c.so").each do |so_path|
-          unless so_path.include?(ruby_version)
-            rm_f(so_path)
-          end
-          # Remove unnecessary test files
-          rm_rf("src/ruby/spec")
-        end
-      end
-    end
 
     Dir.glob("#{fluent_package_staging_dir}/lib/lib*.a").each do |static_library|
       unless static_library.end_with?(".dll.a")
