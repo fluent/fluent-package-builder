@@ -47,6 +47,7 @@ RUN \
     rh-ruby26-rubygems \
     rh-ruby26-rubygem-rake \
     rh-ruby26-rubygem-bundler \
+    libcap-ng-devel \
     libedit-devel \
     ncurses-devel \
     libyaml-devel \
