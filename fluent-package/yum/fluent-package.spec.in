@@ -42,8 +42,8 @@
 %global __python %{nil}
 %endif
 
-# Omit the brp-python-bytecompile automagic because post hook for ffi fails on AmazonLinux 2 and CentOS 7.
-%if %{_amazon_ver} == 2 || %{_centos_ver} == 7
+# Omit the brp-python-bytecompile automagic because post hook for ffi fails on AmazonLinux 2.
+%if %{_amazon_ver} == 2
 %global __brp_python_bytecompile %{nil}
 %endif
 
