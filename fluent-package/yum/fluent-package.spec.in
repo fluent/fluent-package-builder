@@ -36,8 +36,14 @@
 %define install_plugins /tmp/@PACKAGE_DIR@/.install_plugins
 %define pid_for_auto_restart /tmp/@PACKAGE_DIR@/.pid_for_auto_restart
 
-# Omit the brp-python-bytecompile automagic because post hook for ffi fails on AmazonLinux 2.
-%if %{_amazon_ver} == 2
+# Disable to use old python on CentOS 7 because it causes error in brp-python-bytecompile.
+# Only __brp_python_bytecompile disabled, it does not solve the error...
+%if %{_centos_ver} == 7
+%global __python %{nil}
+%endif
+
+# Omit the brp-python-bytecompile automagic because post hook for ffi fails on AmazonLinux 2 and CentOS 7.
+%if %{_amazon_ver} == 2 || %{_centos_ver} == 7
 %global __brp_python_bytecompile %{nil}
 %endif
 
