@@ -37,7 +37,8 @@
 %define pid_for_auto_restart /tmp/@PACKAGE_DIR@/.pid_for_auto_restart
 
 # Disable to use old python on CentOS 7 because it causes error in brp-python-bytecompile.
-# Only __brp_python_bytecompile disabled, it does not solve the error...
+# We can use __brp_python_bytecompile to disable it with rpm 4.14.2+ environment,
+# but CentOS 7 has rpm 4.11.3 which does not support it.
 %if %{_centos_ver} == 7
 %global __python %{nil}
 %endif
