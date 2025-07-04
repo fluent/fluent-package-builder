@@ -36,10 +36,8 @@
 %define install_plugins /tmp/@PACKAGE_DIR@/.install_plugins
 %define pid_for_auto_restart /tmp/@PACKAGE_DIR@/.pid_for_auto_restart
 
-# Omit the brp-python-bytecompile automagic because post hook for ffi fails on AmazonLinux 2.
-%if %{_amazon_ver} == 2
-%global __brp_python_bytecompile %{nil}
-%endif
+# Stop interrupting by bytecopile errors. The errors are causes on Amazon Linux 2 and CentOS 7.
+%global _python_bytecompile_errors_terminate_build 0
 
 %global __provides_exclude_from ^/opt/%{name}/.*\\.so.*
 %global __requires_exclude libjemalloc.*|libruby.*|/opt/%{name}/.*
