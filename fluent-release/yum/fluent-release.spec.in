@@ -17,7 +17,7 @@ Source0:	@PACKAGE@-@VERSION@.tar.gz
 Requires: epel-release
 Requires: dnf-command(config-manager)
 %else
-%if 0%{_amzn} == 2
+%if %{_amzn} == 2
 Requires: yum-utils
 %else
 Requires: dnf-command(config-manager)
