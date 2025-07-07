@@ -17,20 +17,6 @@ class FluentReleasePackageTask < PackageTask
     CLEAN.include(@archive_name)
   end
 
-  def git_directory?(directory)
-    candidate_paths = [".git", "HEAD"]
-    candidate_paths.any? do |candidate_path|
-      File.exist?(File.join(directory, candidate_path))
-    end
-  end
-
-  def latest_commit_time(git_directory)
-    return nil unless git_directory?(git_directory)
-    Dir.chdir(git_directory) do
-      return Time.iso8601(`git log -n 1 --format=%aI`.chomp).utc
-    end
-  end
-
   def repository_version
     "2025.6.29"
   end
@@ -49,38 +35,9 @@ class FluentReleasePackageTask < PackageTask
     "https://fluentd.cdn.cncf.io"
   end
 
-  def td_agent_key_id
-    "BEE682289B2217F45AF4CC3F901F9177AB97ACBE"
-  end
-
-  def fluent_package_key_id
-    "B40948B6A3B80E90F40E841F977D7A0943FA320E"
-  end
-
-  def rpm_gpg_key_path(id)
-    case id
-    when td_agent_key_id
-      "RPM-GPG-KEY-td-agent"
-    when fluent_package_key_id
-      "RPM-GPG-KEY-fluent-package"
-    end
-  end
-
-
   def define
     super
     define_yum_latest_task
-  end
-
-  def generate_gpg_keys
-    repository_gpg_key_ids.each do |gpg_key_id|
-      unless system("gpg", "--list-keys", gpg_key_id, out: IO::NULL)
-        sh("gpg",
-           "--keyserver", "keyserver.ubuntu.com",
-           "--recv-key", gpg_key_id)
-      end
-      sh("gpg", "--armor", "--export", gpg_key_id, out: "#{@archive_base_name}/#{rpm_gpg_key_path(gpg_key_id)}")
-    end
   end
 
   def generate_repo_files
@@ -137,6 +94,48 @@ enabled=1
 
   private
 
+  def git_directory?(directory)
+    candidate_paths = [".git", "HEAD"]
+    candidate_paths.any? do |candidate_path|
+      File.exist?(File.join(directory, candidate_path))
+    end
+  end
+
+  def latest_commit_time(git_directory)
+    return nil unless git_directory?(git_directory)
+    Dir.chdir(git_directory) do
+      return Time.iso8601(`git log -n 1 --format=%aI`.chomp).utc
+    end
+  end
+
+  def td_agent_key_id
+    "BEE682289B2217F45AF4CC3F901F9177AB97ACBE"
+  end
+
+  def fluent_package_key_id
+    "B40948B6A3B80E90F40E841F977D7A0943FA320E"
+  end
+
+  def rpm_gpg_key_path(id)
+    case id
+    when td_agent_key_id
+      "RPM-GPG-KEY-td-agent"
+    when fluent_package_key_id
+      "RPM-GPG-KEY-fluent-package"
+    end
+  end
+
+  def generate_gpg_keys
+    repository_gpg_key_ids.each do |gpg_key_id|
+      unless system("gpg", "--list-keys", gpg_key_id, out: IO::NULL)
+        sh("gpg",
+           "--keyserver", "keyserver.ubuntu.com",
+           "--recv-key", gpg_key_id)
+      end
+      sh("gpg", "--armor", "--export", gpg_key_id, out: "#{@archive_base_name}/#{rpm_gpg_key_path(gpg_key_id)}")
+    end
+  end
+
   def repository_gpg_key_ids
     [td_agent_key_id, fluent_package_key_id]
   end
@@ -156,6 +155,7 @@ enabled=1
     [
       "rockylinux-8",
       "almalinux-9",
+      "almalinux-10",
       "amazonlinux-2",
       "amazonlinux-2023"
     ]
