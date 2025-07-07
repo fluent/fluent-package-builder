@@ -44,20 +44,17 @@ class FluentReleasePackageTask < PackageTask
     targets = [
       {
         id: "rhel-compat",
-        label: "RHEL $releasever compatible distribution",
         distribution: "redhat",
         version: "$releasever",
       },
       {
         id: "amazonlinux2023",
-        label: "Amazon Linux 2023",
         distribution: "amazon",
         version: "2023",
       },
       # For v5
       {
         id: "amazonlinux2",
-        label: "Amazon Linux 2",
         distribution: "amazon",
         version: "2",
       },
