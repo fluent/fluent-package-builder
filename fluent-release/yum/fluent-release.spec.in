@@ -39,8 +39,8 @@ mkdir -p %{buildroot}%{_sysconfdir}/pki/rpm-gpg/
 
 mkdir -p %{buildroot}%{_sysconfdir}/yum.repos.d/
 
-if grep -q 'Amazon Linux' /etc/os-release 2>/dev/null; then
-  if grep -q 'VERSION="2"' /etc/os-release 2>/dev/null; then
+if grep -qs 'Amazon Linux' /etc/os-release; then
+  if grep -qs 'VERSION="2"' /etc/os-release; then
     echo "Install .repo for Amazon Linux 2"
     cp fluent-package-amazonlinux2.repo fluent-package.repo
   else
