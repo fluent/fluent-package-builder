@@ -51,7 +51,6 @@ else
     echo "Install .repo for RHEL compatible distribution"
     cp fluent-package-rhel-compat.repo fluent-package.repo
 fi
-# fluent-release package must be enabled by config-manager
 %{__install} -D --preserve-timestamps --target-directory %{buildroot}%{_sysconfdir}/yum.repos.d/ --mode=0644 fluent-package.repo
 
 %files
