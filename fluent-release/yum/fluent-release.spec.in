@@ -1,6 +1,6 @@
 # -*- rpm -*-
 
-%define _amzn %{?amzn:%{amzn}}%{!?amzn:0}
+%define _amzn %{?amzn}%{!?amzn:0}
 %define is_amazon_linux (%{_amzn} != 0)
 
 Name:		@PACKAGE@
