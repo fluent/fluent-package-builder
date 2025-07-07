@@ -74,14 +74,13 @@ class FluentReleasePackageTask < PackageTask
 
   def generate_gpg_keys
     repository_gpg_key_ids.each do |gpg_key_id|
-        unless system("gpg", "--list-keys", gpg_key_id, out: IO::NULL)
-          sh("gpg",
-             "--keyserver", "keyserver.ubuntu.com",
-             "--recv-key", gpg_key_id)
-        end
+      unless system("gpg", "--list-keys", gpg_key_id, out: IO::NULL)
+        sh("gpg",
+           "--keyserver", "keyserver.ubuntu.com",
+           "--recv-key", gpg_key_id)
       end
-      sh("gpg", "--armor", "--export", td_agent_key_id, out: "#{@archive_base_name}/RPM-GPG-KEY-td-agent")
-      sh("gpg", "--armor", "--export", fluent_package_key_id, out: "#{@archive_base_name}/RPM-GPG-KEY-fluent-package")
+      sh("gpg", "--armor", "--export", gpg_key_id, out: "#{@archive_base_name}/#{rpm_gpg_key_path(gpg_key_id)}")
+    end
   end
 
   def generate_repo_files
