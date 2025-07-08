@@ -12,11 +12,8 @@ test -f /etc/pki/rpm-gpg/RPM-GPG-KEY-fluent-package
 
 test -f /etc/yum.repos.d/fluent-package.repo
 grep fluentd.cdn.cncf.io /etc/yum.repos.d/fluent-package.repo
-# .repo file is disabled by default
-test $($DNF config-manager --dump fluent-package-v6 | grep --count "enabled = 1") = 1
-test $($DNF config-manager --dump fluent-package-v6-lts | grep --count "enabled = 1") = 0
-test $($DNF config-manager --dump fluent-package-v5 | grep --count "enabled = 1") = 0
-test $($DNF config-manager --dump fluent-package-v5-lts | grep --count "enabled = 1") = 0
+test $($DNF repolist --enabled | grep 'Fluentd Project' | wc -l) -eq 1
+test $($DNF repolist --enabled | grep 'Fluentd Project' | cut -d' ' -f1) = fluent-package-v6
 
 # TODO: v6 package was released, remove it and test with v6
 sudo $DNF config-manager --disable fluent-package-v6
