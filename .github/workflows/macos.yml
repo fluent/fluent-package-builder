@@ -33,7 +33,7 @@ jobs:
           rm -rf fluent/staging
           rake dmg:selfbuild PATH="$HOME/.cargo/bin:$PATH"
       - name: Upload fluent-package dmg
-        uses: actions/upload-artifact@master
+        uses: actions/upload-artifact@v4
         with:
           name: packages-macos
           path: fluent-package/dmg/*.dmg

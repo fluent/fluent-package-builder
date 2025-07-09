@@ -50,17 +50,17 @@ jobs:
         run: |
           rake apt:build APT_TARGETS=${{ matrix.rake-job }}
       - name: Upload fluent-package deb
-        uses: actions/upload-artifact@master
+        uses: actions/upload-artifact@v4
         with:
           name: packages-${{ matrix.rake-job }}
           path: fluent-package/apt/repositories
       - name: Upload fluent-apt-source deb
-        uses: actions/upload-artifact@master
+        uses: actions/upload-artifact@v4
         with:
           name: packages-apt-source-${{ matrix.rake-job }}
           path: fluent-apt-source/apt/repositories
       - name: Upload fluent-lts-apt-source deb
-        uses: actions/upload-artifact@master
+        uses: actions/upload-artifact@v4
         with:
           name: packages-lts-apt-source-${{ matrix.rake-job }}
           path: fluent-lts-apt-source/apt/repositories

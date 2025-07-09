@@ -34,7 +34,7 @@ jobs:
           gem install bundler:2.2.9 --no-document
           rake msi:build
       - name: Upload td-agent msi
-        uses: actions/upload-artifact@master
+        uses: actions/upload-artifact@v4
         with:
           name: packages-windows-x86_64
           path: fluent-package/msi/repositories
