@@ -1,0 +1,67 @@
+# -*- rpm -*-
+
+%define _amzn %{?amzn}%{!?amzn:0}
+%define is_amazon_linux (%{_amzn} != 0)
+
+Name:		@PACKAGE@
+Version:	@VERSION@
+Release:	@RELEASE@%{?dist}
+Summary:	Fluent Package release files
+BuildArchitectures: noarch
+
+License:	ASL 2.0
+URL:		https://docs.fluentd.org/
+Source0:	@PACKAGE@-@VERSION@.tar.gz
+
+%if ! %{is_amazon_linux}
+Requires: epel-release
+Requires: dnf-command(config-manager)
+%else
+%if %{_amzn} == 2
+Requires: yum-utils
+%else
+Requires: dnf-command(config-manager)
+%endif
+%endif
+
+%description
+The stable distribution of Fluentd release repository files
+
+%prep
+%setup -q -n @PACKAGE@-%{version}
+
+%build
+
+%install
+
+mkdir -p %{buildroot}%{_sysconfdir}/pki/rpm-gpg/
+%{__install} -Dp -t %{buildroot}%{_sysconfdir}/pki/rpm-gpg/ -m0644 RPM-GPG-KEY-*
+
+mkdir -p %{buildroot}%{_sysconfdir}/yum.repos.d/
+
+if grep -qs 'Amazon Linux' /etc/os-release; then
+  if grep -qs 'VERSION="2"' /etc/os-release; then
+    echo "Install .repo for Amazon Linux 2"
+    cp fluent-package-amazonlinux2.repo fluent-package.repo
+  else
+    echo "Install .repo for Amazon Linux 2023"
+    cp fluent-package-amazonlinux2023.repo fluent-package.repo
+  fi
+else
+    echo "Install .repo for RHEL compatible distribution"
+    cp fluent-package-rhel-compat.repo fluent-package.repo
+fi
+%{__install} -D --preserve-timestamps --target-directory %{buildroot}%{_sysconfdir}/yum.repos.d/ --mode=0644 fluent-package.repo
+
+%files
+%defattr(-,root,root,-)
+%dir %{_sysconfdir}/yum.repos.d/
+%config(noreplace) %{_sysconfdir}/yum.repos.d/*.repo
+%dir %{_sysconfdir}/pki/rpm-gpg/
+%config(noreplace) %{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-td-agent
+%config(noreplace) %{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-fluent-package
+
+%changelog
+* Sun Jun 29 2025 Kentaro Hayashi <hayashi@clear-code.com> - 2025.6.29-1
+- New upstream release.
+
