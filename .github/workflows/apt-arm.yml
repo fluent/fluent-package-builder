@@ -47,7 +47,7 @@ jobs:
         run: |
           rake apt:build APT_TARGETS=${{ matrix.rake-job }}-arm64 ${{ matrix.rake-options }}
       - name: Upload fluent-package deb
-        uses: actions/upload-artifact@master
+        uses: actions/upload-artifact@v4
         with:
           name: packages-${{ matrix.rake-job }}-arm64
           path: fluent-package/apt/repositories

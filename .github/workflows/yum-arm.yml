@@ -34,6 +34,7 @@ jobs:
         with:
           path: |
             fluent-package/yum/repositories
+            fluent-release/yum/repositories
           key: ${{ runner.os }}-cache-${{ matrix.rake-job }}-aarch64-${{ hashFiles('**/config.rb', '**/Rakefile', '**/Gemfile*', '**/*.spec.in', 'fluent-package/templates/**', 'fluent-package/yum/**/Dockerfile') }}
       - name: Install dependencies
         if: ${{ ! steps.cache-rpm.outputs.cache-hit }}
@@ -47,10 +48,15 @@ jobs:
         run: |
           rake yum:build YUM_TARGETS=${{ matrix.rake-job }}-aarch64
       - name: Upload fluent-package rpm
-        uses: actions/upload-artifact@master
+        uses: actions/upload-artifact@v4
         with:
           name: packages-${{ matrix.rake-job }}-aarch64
           path: fluent-package/yum/repositories
+      - name: Upload fluent-release rpm
+        uses: actions/upload-artifact@v4
+        with:
+          name: packages-release-lts-${{ matrix.rake-job }}-aarch64
+          path: fluent-release/yum/repositories
   check_package_size:
     name: Check Package Size
     runs-on: ubuntu-24.04-arm

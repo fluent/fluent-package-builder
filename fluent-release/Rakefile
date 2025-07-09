@@ -1,0 +1,205 @@
+# -*- ruby -*-
+
+require_relative "../lib/package-task"
+require "rake/clean"
+require "time"
+
+CLEAN.include("yum/tmp")
+CLEAN.include("yum/build.sh")
+CLEAN.include("yum/env.sh")
+CLOBBER.include("yum/repositories")
+
+class FluentReleasePackageTask < PackageTask
+  def initialize
+    super("fluent-release",
+          repository_version,
+          latest_commit_time(File.join(__dir__, "..")))
+    CLEAN.include(@archive_name)
+  end
+
+  def repository_version
+    "2025.6.29"
+  end
+
+  def repository_label
+    "Fluentd Project"
+  end
+
+  def repository_description
+    "Fluentd Project related packages"
+  end
+
+  def repository_url
+    # Navigate to R2 by default
+    # "https://packages.treasuredata.com"
+    "https://fluentd.cdn.cncf.io"
+  end
+
+  def define
+    super
+    define_yum_latest_task
+  end
+
+  def generate_repo_files
+    targets = [
+      {
+        id: "rhel-compat",
+        distribution: "redhat",
+        version: "$releasever",
+      },
+      {
+        id: "amazonlinux2023",
+        distribution: "amazon",
+        version: "2023",
+      },
+      # For v5
+      {
+        id: "amazonlinux2",
+        distribution: "amazon",
+        version: "2",
+      },
+    ]
+    # fluent-release source tar.gz contains some fluent-package-${TARGET_DISTRIBUTION}-${RELEASE_CHANNEL}.repo files
+    targets.each do |target|
+      repo_path = "#{@archive_base_name}/fluent-package-#{target[:id]}.repo"
+      prefix = "gpgkey="
+      gpgkey = ""
+      repository_gpg_key_ids.each do |gpg_key_id|
+        gpgkey += <<-KEY
+#{prefix}file:///etc/pki/rpm-gpg/#{rpm_gpg_key_path(gpg_key_id)}
+        KEY
+        prefix = " " * prefix.size
+      end
+      File.open(repo_path, "w") do |repo|
+        repo.puts(<<-REPOSITORY)
+[fluent-package-lts-v5]
+name=#{repository_label}
+baseurl=#{repository_url}/lts/5/#{target[:distribution]}/#{target[:version]}/$basearch/
+gpgcheck=1
+enabled=1
+#{gpgkey}
+[fluent-package-lts-v6]
+name=#{repository_label}
+baseurl=#{repository_url}/lts/6/#{target[:distribution]}/#{target[:version]}/$basearch/
+gpgcheck=1
+enabled=0
+#{gpgkey}
+        REPOSITORY
+      end
+    end
+  end
+
+  private
+
+  def git_directory?(directory)
+    candidate_paths = [".git", "HEAD"]
+    candidate_paths.any? do |candidate_path|
+      File.exist?(File.join(directory, candidate_path))
+    end
+  end
+
+  def latest_commit_time(git_directory)
+    return nil unless git_directory?(git_directory)
+    Dir.chdir(git_directory) do
+      return Time.iso8601(`git log -n 1 --format=%aI`.chomp).utc
+    end
+  end
+
+  def td_agent_key_id
+    "BEE682289B2217F45AF4CC3F901F9177AB97ACBE"
+  end
+
+  def fluent_package_key_id
+    "B40948B6A3B80E90F40E841F977D7A0943FA320E"
+  end
+
+  def rpm_gpg_key_path(id)
+    case id
+    when td_agent_key_id
+      "RPM-GPG-KEY-td-agent"
+    when fluent_package_key_id
+      "RPM-GPG-KEY-fluent-package"
+    end
+  end
+
+  def generate_gpg_keys
+    repository_gpg_key_ids.each do |gpg_key_id|
+      unless system("gpg", "--list-keys", gpg_key_id, out: IO::NULL)
+        sh("gpg",
+           "--keyserver", "keyserver.ubuntu.com",
+           "--recv-key", gpg_key_id)
+      end
+      sh("gpg", "--armor", "--export", gpg_key_id, out: "#{@archive_base_name}/#{rpm_gpg_key_path(gpg_key_id)}")
+    end
+  end
+
+  def repository_gpg_key_ids
+    [td_agent_key_id, fluent_package_key_id]
+  end
+
+  def define_archive_task
+    file @archive_name do
+      rm_rf(@archive_base_name)
+      mkdir(@archive_base_name)
+      generate_gpg_keys
+      generate_repo_files
+      cp("yum/fluent-release.spec.in", "#{@archive_base_name}/fluent-release.spec.in")
+      sh("tar", "czf", @archive_name, @archive_base_name)
+    end
+  end
+
+  def yum_targets_default
+    [
+      "rockylinux-8",
+      "almalinux-9",
+      "almalinux-10",
+      "amazonlinux-2",
+      "amazonlinux-2023"
+    ]
+  end
+
+  def define_yum_latest_task
+    namespace :yum do
+      task :build do
+        yum_targets.each do |target|
+          distribution, version, arch = target.split("-", 3)
+          arch = "x86_64" if arch.nil?
+          suffix = case version
+                   when "2"
+                     "amzn2"
+                   when "2023"
+                     "amzn2023"
+                   else
+                     "el#{version}"
+                   end
+          distribution = case distribution
+                         when "rockylinux"
+                           "rocky"
+                         when "amazonlinux"
+                           "amazon"
+                         else
+                           distribution
+                         end
+          rpm = [
+            yum_dir,
+            "repositories",
+            distribution,
+            version,
+            arch,
+            "Packages",
+            "#{@package}-#{@rpm_version}-#{@rpm_release}.#{suffix}.noarch.rpm",
+          ].join("/")
+          rpm_dir = File.dirname(rpm)
+          directory rpm_dir
+        end
+      end
+    end
+  end
+
+  def enable_apt?
+    false
+  end
+end
+
+task = FluentReleasePackageTask.new
+task.define
