@@ -227,8 +227,8 @@ jobs:
   #         - "update-to-next-major-version.sh manual inactive"
   #         - "update-to-next-major-version.sh etc active"
   #         - "update-to-next-major-version.sh etc inactive"
-  #         - "update-without-data-lost.sh v5 v6"
-  #         - "update-without-data-lost.sh v6 v5"
+  #         - "update-without-data-lost.sh v6 v7"
+  #         - "update-without-data-lost.sh v7 v6"
   #       include:
   #         - label: AmazonLinux 2 x86_64
   #           rake-job: amazonlinux-2
@@ -298,8 +298,8 @@ jobs:
           - "update-to-next-major-version.sh manual inactive"
           - "update-to-next-major-version.sh etc active"
           - "update-to-next-major-version.sh etc inactive"
-          - "update-without-data-lost.sh v5 v6"
-          - "update-without-data-lost.sh v6 v5"
+          - "update-without-data-lost.sh v6 v7"
+          - "update-without-data-lost.sh v7 v6"
         include:
           - label: RockyLinux 8 x86_64
             rake-job: rockylinux-8

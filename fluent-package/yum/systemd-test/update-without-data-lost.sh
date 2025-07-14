@@ -4,15 +4,15 @@ set -exu
 
 . $(dirname $0)/commonvar.sh
 
-v5_package="/host/${distribution}/${DISTRIBUTION_VERSION}/x86_64/Packages/fluent-package-*.rpm"
-v6_package="/host/v6-test/${distribution}/${DISTRIBUTION_VERSION}/x86_64/Packages/fluent-package-*.rpm"
+v6_package="/host/${distribution}/${DISTRIBUTION_VERSION}/x86_64/Packages/fluent-package-*.rpm"
+v7_package="/host/v7-test/${distribution}/${DISTRIBUTION_VERSION}/x86_64/Packages/fluent-package-*.rpm"
 
 case "$1" in
-    v5)
-        package=$v5_package
-        ;;
     v6)
         package=$v6_package
+        ;;
+    v7)
+        package=$v7_package
         ;;
     *)
         echo "Invalid argument: $1"
@@ -22,12 +22,12 @@ esac
 
 command="install"
 case "$2" in
-    v5)
-        next_package=$v5_package
-        command="downgrade" # Avoid error in AmazonLinux2
-        ;;
     v6)
         next_package=$v6_package
+        command="downgrade" # Avoid error in AmazonLinux2
+        ;;
+    v7)
+        next_package=$v7_package
         ;;
     *)
         echo "Invalid argument: $2"

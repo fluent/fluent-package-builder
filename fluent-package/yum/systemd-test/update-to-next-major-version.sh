@@ -26,7 +26,7 @@ sudo /opt/fluent/bin/fluent-gem install --no-document gqtp
 /opt/fluent/bin/ruby -v
 
 # Install next major version
-package="/host/v6-test/${distribution}/${DISTRIBUTION_VERSION}/x86_64/Packages/fluent-package-*.rpm"
+package="/host/v7-test/${distribution}/${DISTRIBUTION_VERSION}/x86_64/Packages/fluent-package-*.rpm"
 sudo $DNF install -y $package
 
 # Show bundled ruby version
