@@ -112,8 +112,5 @@ gem "capng_c", "0.2.3", platforms: not_windows_platforms
 unless platform_centos7?
   gem "rdkafka", "0.21.0", platforms: not_windows_platforms
 end
-# Keep systemd-journal 2.0.0 and f-p-systemd 1.1.0 until regression issue is fixed
-# See https://github.com/ledbettj/systemd-journal/pull/109
-gem "systemd-journal", "2.0.0", platforms: not_windows_platforms
-gem "fluent-plugin-systemd", "1.1.0", platforms: not_windows_platforms
+gem "fluent-plugin-systemd", "1.1.1", platforms: not_windows_platforms
 gem "fluent-plugin-utmpx", "0.5.0", platforms: not_windows_platforms
