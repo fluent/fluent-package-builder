@@ -1,3 +1,10 @@
+fluent-apt-source (2025.7.29-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Support fluent-package v6.
+
+ -- Kentaro Hayashi <hayashi@clear-code.com>  Thu, 17 Jul 2025 14:52:37 +0900
+
 fluent-apt-source (2025.1.8-1) unstable; urgency=medium
 
   * New upstream release.
