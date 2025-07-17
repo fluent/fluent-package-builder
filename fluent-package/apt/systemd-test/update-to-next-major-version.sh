@@ -24,7 +24,7 @@ sudo /opt/fluent/bin/fluent-gem install --no-document gqtp
 
 # Install next major version
 sudo apt install -V -y \
-    /host/v6-test/${distribution}/pool/${code_name}/${channel}/*/*/fluent-package_*_${architecture}.deb 2>&1 | tee upgrade.log
+    /host/v7-test/${distribution}/pool/${code_name}/${channel}/*/*/fluent-package_*_${architecture}.deb 2>&1 | tee upgrade.log
 
 # Test: needrestart was suppressed
 test_suppressed_needrestart upgrade.log

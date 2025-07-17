@@ -4,15 +4,16 @@ set -exu
 
 . $(dirname $0)/../commonvar.sh
 
-v5_package="/host/${distribution}/pool/${code_name}/${channel}/*/*/fluent-package_*_${architecture}.deb"
-v6_package="/host/v6-test/${distribution}/pool/${code_name}/${channel}/*/*/fluent-package_*_${architecture}.deb"
+# TODO: v5_package
+v6_package="/host/${distribution}/pool/${code_name}/${channel}/*/*/fluent-package_*_${architecture}.deb"
+v7_package="/host/v7-test/${distribution}/pool/${code_name}/${channel}/*/*/fluent-package_*_${architecture}.deb"
 
 case "$1" in
-    v5)
-        package=$v5_package
-        ;;
     v6)
         package=$v6_package
+        ;;
+    v7)
+        package=$v7_package
         ;;
     *)
         echo "Invalid argument: $1"
@@ -21,11 +22,11 @@ case "$1" in
 esac
 
 case "$2" in
-    v5)
-        next_package=$v5_package
-        ;;
     v6)
         next_package=$v6_package
+        ;;
+    v7)
+        next_package=$v7_package
         ;;
     *)
         echo "Invalid argument: $2"
