@@ -21,6 +21,18 @@ case $1 in
         ;;
     esac
     ;;
+  v6)
+    case $DISTRIBUTION in
+      amazon)
+        curl --fail --silent --show-error --location \
+             https://toolbelt.treasuredata.com/sh/install-${DISTRIBUTION}${DISTRIBUTION_VERSION}-fluent-package6.sh | sh
+        ;;
+      *)
+        curl --fail --silent --show-error --location \
+             https://toolbelt.treasuredata.com/sh/install-redhat-fluent-package6.sh | sh
+        ;;
+    esac
+    ;;
   lts)
     case $DISTRIBUTION in
       amazon)
