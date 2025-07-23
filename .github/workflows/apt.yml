@@ -237,6 +237,7 @@ jobs:
           - "downgrade-to-v5-lts.sh"
           - "install-newly.sh local"
           - "install-newly.sh v5"
+          #- "install-newly.sh v6"
           - "install-newly.sh lts"
           - "update-to-next-version.sh"
           - "update-to-next-version-with-backward-compat-for-v4.sh"
