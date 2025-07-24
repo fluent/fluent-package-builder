@@ -36,13 +36,13 @@ jobs:
             fluent-package/yum/repositories
             fluent-release/yum/repositories
           key: ${{ runner.os }}-cache-${{ matrix.rake-job }}-aarch64-${{ hashFiles('**/config.rb', '**/Rakefile', '**/Gemfile*', '**/*.spec.in', 'fluent-package/templates/**', 'fluent-package/yum/**/Dockerfile') }}
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.4'
       - name: Install dependencies
         if: ${{ ! steps.cache-rpm.outputs.cache-hit }}
         run: |
-          sudo apt update
-          sudo apt -V install ruby ruby-bundler ruby-serverspec
-          sudo gem install bundler:2.2.9 --no-document
-          sudo gem uninstall fileutils
+          gem install serverspec --no-document
       - name: Build rpm with Docker
         if: ${{ ! steps.cache-rpm.outputs.cache-hit }}
         run: |

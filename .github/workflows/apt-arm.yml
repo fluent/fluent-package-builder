@@ -35,13 +35,13 @@ jobs:
           path: |
             fluent-package/apt/repositories
           key: ${{ runner.os }}-cache-${{ matrix.rake-job }}-arm64-${{ hashFiles('**/config.rb', '**/Rakefile', '**/Gemfile*', 'fluent-package/templates/**', 'fluent-package/debian/**', 'fluent-package/apt/**/Dockerfile') }}
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.4'
       - name: Install dependencies
         if: ${{ ! steps.cache-deb.outputs.cache-hit }}
         run: |
-          sudo apt update
-          sudo apt -V install ruby ruby-bundler ruby-serverspec
-          sudo gem install bundler:2.2.9 --no-document
-          sudo gem uninstall fileutils
+          gem install serverspec --no-document
       - name: Build deb with Docker
         if: ${{ ! steps.cache-deb.outputs.cache-hit }}
         run: |
