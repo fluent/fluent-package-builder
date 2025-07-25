@@ -1,6 +1,6 @@
-From 3b8ca4e15fbabd64ec595255b8e0610e8e9586bf Mon Sep 17 00:00:00 2001
+From 1f249c067ff43a5a181856a9646719d333cc1083 Mon Sep 17 00:00:00 2001
 From: Shizuo Fujita <fujita@clear-code.com>
-Date: Mon, 14 Jul 2025 11:47:01 +0900
+Date: Fri, 25 Jul 2025 11:09:35 +0900
 Subject: [PATCH] Bump version to v7.0.0
 
 Signed-off-by: Shizuo Fujita <fujita@clear-code.com>
@@ -12,7 +12,7 @@ Signed-off-by: Shizuo Fujita <fujita@clear-code.com>
  4 files changed, 16 insertions(+), 7 deletions(-)
 
 diff --git a/fluent-package/config.rb b/fluent-package/config.rb
-index de767fd..b6d101d 100644
+index 5aa9799..fd6e938 100644
 --- a/fluent-package/config.rb
 +++ b/fluent-package/config.rb
 @@ -1,5 +1,5 @@
@@ -26,8 +26,8 @@ index de767fd..b6d101d 100644
  BUNDLER_VERSION= "2.3.27"
  
  # https://www.ruby-lang.org/en/downloads/ (tar.gz)
--BUNDLED_RUBY_VERSION = "3.4.4"
--BUNDLED_RUBY_SOURCE_SHA256SUM = "a0597bfdf312e010efd1effaa8d7f1d7833146fdc17950caa8158ffa3dcbfa85"
+-BUNDLED_RUBY_VERSION = "3.4.5"
+-BUNDLED_RUBY_SOURCE_SHA256SUM = "1d88d8a27b442fdde4aa06dc99e86b0bbf0b288963d8433112dd5fac798fd5ee"
 +BUNDLED_RUBY_VERSION = "3.3.8"
 +BUNDLED_RUBY_SOURCE_SHA256SUM = "5ae28a87a59a3e4ad66bc2931d232dbab953d0aa8f6baf3bc4f8f80977c89cab"
  
@@ -37,8 +37,8 @@ index de767fd..b6d101d 100644
  ]
  
  # https://rubyinstaller.org/downloads/ (7-ZIP ARCHIVES)
--BUNDLED_RUBY_INSTALLER_X64_VERSION = "3.4.4-2"
--BUNDLED_RUBY_INSTALLER_X64_SHA256SUM = "29fe655a8bee91d6466e631ae612142a1c5d68d46323ccca7f35add2dbb28b51"
+-BUNDLED_RUBY_INSTALLER_X64_VERSION = "3.4.5-1"
+-BUNDLED_RUBY_INSTALLER_X64_SHA256SUM = "61634b204f808deec191a6819e4c25c7b3005d84537b24c4fbe7c604aeece89f"
 +BUNDLED_RUBY_INSTALLER_X64_VERSION = "3.3.8-1"
 +BUNDLED_RUBY_INSTALLER_X64_SHA256SUM = "2aa7d8fa7bc527b7373b91c75fae9549f5926fa918ba808b8744c1f0d8ad9f52"
  
