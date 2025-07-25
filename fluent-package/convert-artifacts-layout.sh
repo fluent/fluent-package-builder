@@ -82,9 +82,9 @@ case $1 in
 	    if [ $dist = "rocky" -o $dist = "almalinux" ]; then
 		dist_dest="redhat"
 	    fi
-	    for release in 2 8 9 2023; do
+	    for release in 8 9 10 2023; do
 		if [ $dist = "amazon" ]; then
-		    if [ $release -ne 2 -a $release -ne 2023 ]; then
+		    if [ $release -ne 2023 ]; then
 			echo "skip $dist:$release"
 			continue
 		    fi
@@ -93,9 +93,11 @@ case $1 in
 		    echo "skip $dist:$release"
 		    continue
 		fi
-		if [ $dist = "almalinux" -a $release -ne 9 ]; then
-		    echo "skip $dist:$release"
-		    continue
+		if [ $dist = "almalinux" ]; then
+                    if [ $release -ne 9 -a $release -ne 10 ]; then
+		        echo "skip $dist:$release"
+		        continue
+                    fi
 		fi
 		for arch in aarch64 x86_64; do
 		    # e.g. mapping amazon/2/x86_64/Packages/ => 5/amazon/2/x86_64
