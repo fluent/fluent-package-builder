@@ -32,40 +32,40 @@ case $1 in
 		bookworm|trixie)
 		    # e.g. mapping debian/pool/buster/main/t/td-agent/ => 5/debian/buster/pool/contrib/t/td-agent
 		    #      mapping debian/pool/buster/main/f/fluent-package/ => 5/debian/buster/pool/contrib/f/fluent-package
-		    mkdir -p $ARTIFACTS_DIR/5/debian/$d/pool/contrib/f/fluent-package
+		    mkdir -p $ARTIFACTS_DIR/6/debian/$d/pool/contrib/f/fluent-package
 		    find $REPOSITORY_PATH/debian/pool/$d -name 'td-agent*.deb' -not -name '*dbgsym*' \
-			 -exec cp {} $ARTIFACTS_DIR/5/debian/$d/pool/contrib/f/fluent-package \;
+			 -exec cp {} $ARTIFACTS_DIR/6/debian/$d/pool/contrib/f/fluent-package \;
 		    find $REPOSITORY_PATH/debian/pool/$d -name 'fluent-package*.deb' -not -name '*dbgsym*' \
-			 -exec cp {} $ARTIFACTS_DIR/5/debian/$d/pool/contrib/f/fluent-package \;
+			 -exec cp {} $ARTIFACTS_DIR/6/debian/$d/pool/contrib/f/fluent-package \;
 		    if [ "$2" = "lts" ]; then
-			mkdir -p $ARTIFACTS_DIR/5/debian/$d/pool/contrib/f/fluent-lts-apt-source
+			mkdir -p $ARTIFACTS_DIR/6/debian/$d/pool/contrib/f/fluent-lts-apt-source
 			find $REPOSITORY_PATH/debian/pool/$d -name 'fluent-lts-apt-source*.deb' -not -name '*dbgsym*' \
-			     -exec cp {} $ARTIFACTS_DIR/5/debian/$d/pool/contrib/f/fluent-lts-apt-source \;
+			     -exec cp {} $ARTIFACTS_DIR/6/debian/$d/pool/contrib/f/fluent-lts-apt-source \;
 		    else
-			mkdir -p $ARTIFACTS_DIR/5/debian/$d/pool/contrib/f/fluent-apt-source
+			mkdir -p $ARTIFACTS_DIR/6/debian/$d/pool/contrib/f/fluent-apt-source
 			find $REPOSITORY_PATH/debian/pool/$d -name 'fluent*-apt-source*.deb' \
 			     -not -name '*dbgsym*' \
 			     -not -name 'fluent-lts*' \
-			     -exec cp {} $ARTIFACTS_DIR/5/debian/$d/pool/contrib/f/fluent-apt-source \;
+			     -exec cp {} $ARTIFACTS_DIR/6/debian/$d/pool/contrib/f/fluent-apt-source \;
 		    fi
 		    ;;
 		jammy|noble)
 		    # e.g. mapping ubuntu/pool/.../main/t/td-agent/ => 5/ubuntu/.../pool/contrib/t/td-agent
 		    #      mapping ubuntu/pool/.../main/f/fluent-package/ => 5/ubuntu/.../pool/contrib/f/fluent-package
-		    mkdir -p $ARTIFACTS_DIR/5/ubuntu/$d/pool/contrib/f/fluent-package
+		    mkdir -p $ARTIFACTS_DIR/6/ubuntu/$d/pool/contrib/f/fluent-package
 		    find $REPOSITORY_PATH/ubuntu/pool/$d -name 'td-agent*.deb' \
-			 -exec cp {} $ARTIFACTS_DIR/5/ubuntu/$d/pool/contrib/f/fluent-package \;
+			 -exec cp {} $ARTIFACTS_DIR/6/ubuntu/$d/pool/contrib/f/fluent-package \;
 		    find $REPOSITORY_PATH/ubuntu/pool/$d -name 'fluent-package*.deb' \
-			 -exec cp {} $ARTIFACTS_DIR/5/ubuntu/$d/pool/contrib/f/fluent-package \;
+			 -exec cp {} $ARTIFACTS_DIR/6/ubuntu/$d/pool/contrib/f/fluent-package \;
 		    if [ "$2" = "lts" ]; then
-			mkdir -p $ARTIFACTS_DIR/5/ubuntu/$d/pool/contrib/f/fluent-lts-apt-source
+			mkdir -p $ARTIFACTS_DIR/6/ubuntu/$d/pool/contrib/f/fluent-lts-apt-source
 			find $REPOSITORY_PATH/ubuntu/pool/$d -name 'fluent-lts-apt-source*.deb' \
-			     -exec cp {} $ARTIFACTS_DIR/5/ubuntu/$d/pool/contrib/f/fluent-lts-apt-source \;
+			     -exec cp {} $ARTIFACTS_DIR/6/ubuntu/$d/pool/contrib/f/fluent-lts-apt-source \;
 		    else
-			mkdir -p $ARTIFACTS_DIR/5/ubuntu/$d/pool/contrib/f/fluent-apt-source
+			mkdir -p $ARTIFACTS_DIR/6/ubuntu/$d/pool/contrib/f/fluent-apt-source
 			find $REPOSITORY_PATH/ubuntu/pool/$d -name 'fluent*-apt-source*.deb' \
 			     -not -name 'fluent-lts*' \
-			     -exec cp {} $ARTIFACTS_DIR/5/ubuntu/$d/pool/contrib/f/fluent-apt-source \;
+			     -exec cp {} $ARTIFACTS_DIR/6/ubuntu/$d/pool/contrib/f/fluent-apt-source \;
 		    fi
 		    ;;
 		*)
@@ -101,8 +101,8 @@ case $1 in
 		fi
 		for arch in aarch64 x86_64; do
 		    # e.g. mapping amazon/2/x86_64/Packages/ => 5/amazon/2/x86_64
-		    mkdir -p $ARTIFACTS_DIR/5/$dist_dest/$release/$arch
-		    find $REPOSITORY_PATH/$dist/$release/$arch -name '*.rpm' -not -name '*debug*' -exec cp {} $ARTIFACTS_DIR/5/$dist_dest/$release/$arch \;
+		    mkdir -p $ARTIFACTS_DIR/6/$dist_dest/$release/$arch
+		    find $REPOSITORY_PATH/$dist/$release/$arch -name '*.rpm' -not -name '*debug*' -exec cp {} $ARTIFACTS_DIR/6/$dist_dest/$release/$arch \;
 		done
 	    done
 	done

@@ -51,13 +51,13 @@ fi
 VERSION=$1
 
 if [ -z "$DEB_TARGETS" ]; then
-    DEB_TARGETS="debian:bullseye debian:bookworm ubuntu:focal ubuntu:jammy ubuntu:noble"
+    DEB_TARGETS="debian:bookworm debian:trixie ubuntu:jammy ubuntu:noble"
 fi
 if [ -z "$RPM_TARGETS" ]; then
-    RPM_TARGETS="almalinux:8 rockylinux:9 amazonlinux:2023"
+    RPM_TARGETS="rockylinux:8 almalinux:9 almalinux:10 amazonlinux:2023"
 fi
 if [ -z "$REPO_TARGETS" ]; then
-    REPO_TARGETS="exp/5 exp/lts/5"
+    REPO_TARGETS="exp/6 exp/lts/6"
 fi
 
 echo "DEB_TARGETS: $DEB_TARGETS"
