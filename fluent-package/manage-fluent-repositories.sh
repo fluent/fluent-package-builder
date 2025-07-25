@@ -209,7 +209,10 @@ EOF
 	    download_url=$(echo $line | cut -d' ' -f3)
 	    echo "Downloading $package.zip from $download_url"
 	    case $package in
-		*debian*|*ubuntu*)
+		v7*)
+	            echo "Skip downloading v7 test package ($package.zip)"
+                    ;;
+                *debian*|*ubuntu*)
 		    mkdir -p apt/repositories
 		    (cd apt/repositories &&
 			 rm -f $package.zip &&
@@ -237,6 +240,10 @@ EOF
 	    package=$(echo $line | cut -d' ' -f1)
 	    download_size=$(echo $line | cut -d' ' -f2)
 	    case $package in
+		v7*)
+	            echo "Skip processing v7 test package ($package.zip)"
+                    continue
+                    ;;
 		*debian*|*ubuntu*)
 		    actual_size=$(stat --format="%s" apt/repositories/$package.zip)
 		    ;;
