@@ -24,7 +24,10 @@ gem "msgpack", "1.8.0"
 gem "oj", "3.16.11"
 gem "tzinfo", "2.0.6"
 gem "tzinfo-data", "1.2025.2"
-gem "async", "2.26.0"
+
+# Fluentd v1.19.0 requires io-event 1.10.x or before.
+# The dependency condition cannot be met with async >= 2.25
+gem "async", "2.24.0"
 gem "async-http", "0.89.0"
 gem "webrick", "1.9.1"
 
