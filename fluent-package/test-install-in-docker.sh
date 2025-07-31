@@ -102,13 +102,21 @@ case $ID in
 			curl -fsSL https://toolbelt.treasuredata.com/sh/install-$ID-$CODENAME-fluent-package6-lts.sh | sh
 			;;
 		    exp/6)
+			set +e
 			curl -fsSL https://toolbelt.treasuredata.com/sh/install-$ID-$CODENAME-fluent-package6.sh | sh
- 			sudo sed -i -e 's,/5,/test/experimental/5,' /etc/apt/sources.list.d/fluent.sources
-			;;
+			set -e
+			sudo sed -i -e 's,/6,/test/experimental/6,' /etc/apt/sources.list.d/fluent.sources
+			sudo apt update
+			sudo apt install -y fluent-package
+                        ;;
 		    exp/lts/6)
+			set +e
 			curl -fsSL https://toolbelt.treasuredata.com/sh/install-$ID-$CODENAME-fluent-package6-lts.sh | sh
-			sudo sed -i -e 's,/lts/5,/test/experimental/lts/5,' /etc/apt/sources.list.d/fluent-lts.sources
- 			;;
+			set -e
+			sudo sed -i -e 's,/lts/6,/test/experimental/lts/6,' /etc/apt/sources.list.d/fluent-lts.sources
+			sudo apt update
+			sudo apt install -y fluent-package
+			;;
 		esac
 		sudo apt update
 		sudo apt upgrade -y
@@ -129,13 +137,21 @@ case $ID in
 		curl -fsSL https://toolbelt.treasuredata.com/sh/install-redhat-fluent-package6-lts.sh | sh
 		;;
 	    exp/6)
+		set +e
 		curl -fsSL https://toolbelt.treasuredata.com/sh/install-redhat-fluent-package6.sh | sh
- 		sudo sed -i -e 's,/5,/test/experimental/5,' /etc/yum.repos.d/fluent-package.repo
+		set -e
+		sudo sed -i -e 's,/6,/test/experimental/6,' /etc/yum.repos.d/fluent-package.repo
+		sudo $DNF update -y
+		sudo $DNF install -y fluent-package
 		;;
 	    exp/lts/6)
+		set +e
 		curl -fsSL https://toolbelt.treasuredata.com/sh/install-redhat-fluent-package6-lts.sh | sh
-		sudo sed -i -e 's,/lts/5,/test/experimental/lts/5,' /etc/yum.repos.d/fluent-package-lts.repo
- 		;;
+		set -e
+		sudo sed -i -e 's,/lts/6,/test/experimental/lts/6,' /etc/yum.repos.d/fluent-package-lts.repo
+		sudo $DNF update -y
+		sudo $DNF install -y fluent-package
+		;;
 	esac
 	$DNF update -y
 	v=$($DNF info fluent-package | grep "^Version" | head -n 1 | cut -d':' -f 2)
@@ -154,12 +170,20 @@ case $ID in
 			curl -fsSL https://toolbelt.treasuredata.com/sh/install-amazon2023-fluent-package6-lts.sh | sh
 			;;
 		    exp/6)
+			set +e
 			curl -fsSL https://toolbelt.treasuredata.com/sh/install-amazon2023-fluent-package6.sh | sh
- 			sudo sed -i -e 's,/5,/test/experimental/5,' /etc/yum.repos.d/fluent-package.repo
+			set -e
+			sudo sed -i -e 's,/6,/test/experimental/6,' /etc/yum.repos.d/fluent-package.repo
+			sudo $DNF update
+			sudo $DNF install -y fluent-package
 			;;
 		    exp/lts/6)
+			set +e
 			curl -fsSL https://toolbelt.treasuredata.com/sh/install-amazon2023-fluent-package6-lts.sh | sh
-			sudo sed -i -e 's,/lts/5,/test/experimental/lts/5,' /etc/yum.repos.d/fluent-package-lts.repo
+			set -e
+			sudo sed -i -e 's,/lts/6,/test/experimental/lts/6,' /etc/yum.repos.d/fluent-package-lts.repo
+			sudo $DNF update
+			sudo $DNF install -y fluent-package
 			;;
 		esac
 		;;
