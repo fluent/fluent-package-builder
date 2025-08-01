@@ -102,17 +102,15 @@ case $ID in
 			curl -fsSL https://toolbelt.treasuredata.com/sh/install-$ID-$CODENAME-fluent-package6-lts.sh | sh
 			;;
 		    exp/6)
-			set +e
-			curl -fsSL https://toolbelt.treasuredata.com/sh/install-$ID-$CODENAME-fluent-package6.sh | sh
-			set -e
+			curl -o fluent-apt-source.deb  https://packages.treasuredata.com/test/experimental/6/$ID/$CODENAME/pool/contrib/f/fluent-apt-source/fluent-apt-source_2025.7.29-1_all.deb
+			sudo apt install -y ./fluent-apt-source.deb
 			sudo sed -i -e 's,/6,/test/experimental/6,' /etc/apt/sources.list.d/fluent.sources
 			sudo apt update
 			sudo apt install -y fluent-package
                         ;;
 		    exp/lts/6)
-			set +e
-			curl -fsSL https://toolbelt.treasuredata.com/sh/install-$ID-$CODENAME-fluent-package6-lts.sh | sh
-			set -e
+			curl -o fluent-apt-source.deb  https://packages.treasuredata.com/test/experimental/lts/6/$ID/$CODENAME/pool/contrib/f/fluent-apt-source/fluent-apt-source_2025.7.29-1_all.deb
+			sudo apt install -y ./fluent-apt-source.deb
 			sudo sed -i -e 's,/lts/6,/test/experimental/lts/6,' /etc/apt/sources.list.d/fluent-lts.sources
 			sudo apt update
 			sudo apt install -y fluent-package
