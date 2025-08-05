@@ -39,7 +39,7 @@ override_dh_auto_build:
 	    component=main; \
 	  fi; \
 	  echo "Types: deb"; \
-	  echo "URIs: https://packages.treasuredata.com/lts/5/$${distribution}/$${code_name}/"; \
+	  echo "URIs: https://fluentd.cdn.cncf.io/lts/5/$${distribution}/$${code_name}/"; \
 	  echo "Suites: $${code_name}"; \
 	  echo "Components: contrib"; \
 	  echo "Signed-By: /usr/share/keyrings/fluent-lts-archive-keyring.asc"; \
