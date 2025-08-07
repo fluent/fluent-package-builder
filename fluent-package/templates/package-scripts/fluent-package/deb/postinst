@@ -34,6 +34,7 @@ add_directories() {
     mkdir -p /var/run/<%= package_dir %>
     mkdir -p /etc/<%= package_dir %>
     mkdir -p /etc/<%= package_dir %>/plugin
+    mkdir -p /etc/<%= package_dir %>/conf.d
     mkdir -p /var/log/<%= package_dir %>
 }
 

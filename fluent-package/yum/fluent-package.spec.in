@@ -164,6 +164,7 @@ mkdir -p %{buildroot}%{_localstatedir}/run/@PACKAGE_DIR@
 mkdir -p %{buildroot}%{_localstatedir}/log/@PACKAGE_DIR@
 mkdir -p %{buildroot}%{_localstatedir}/log/@PACKAGE_DIR@/buffer
 mkdir -p %{buildroot}%{_sysconfdir}/@PACKAGE_DIR@/plugin
+mkdir -p %{buildroot}%{_sysconfdir}/@PACKAGE_DIR@/conf.d
 mkdir -p %{buildroot}/tmp/@PACKAGE_DIR@
 
 %pre
@@ -441,6 +442,8 @@ fi
 %attr(0755,fluentd,fluentd) %dir %{_localstatedir}/log/@PACKAGE_DIR@/buffer
 %attr(0755,fluentd,fluentd) %dir %{_sysconfdir}/@PACKAGE_DIR@
 %attr(0755,fluentd,fluentd) %dir %{_sysconfdir}/@PACKAGE_DIR@/plugin
+%attr(0755,fluentd,fluentd) %dir %{_sysconfdir}/@PACKAGE_DIR@/conf.d
+%config(noreplace) %{_sysconfdir}/@PACKAGE_DIR@/conf.d/obsolete_plugins.conf
 # NOTE: %{_tmpfilesdir} is available since CentOS 7
 %attr(0755,fluentd,fluentd) %dir /tmp/@PACKAGE_DIR@
 %changelog
