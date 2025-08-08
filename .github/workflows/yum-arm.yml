@@ -35,6 +35,7 @@ jobs:
           path: |
             fluent-package/yum/repositories
             fluent-release/yum/repositories
+            fluent-lts-release/yum/repositories
           key: ${{ runner.os }}-cache-${{ matrix.rake-job }}-aarch64-${{ hashFiles('**/config.rb', '**/Rakefile', '**/Gemfile*', '**/*.spec.in', 'fluent-package/templates/**', 'fluent-package/yum/**/Dockerfile') }}
       - uses: ruby/setup-ruby@v1
         with:
