@@ -25,7 +25,8 @@ APT_SOURCE_PACKAGES = [
 ]
 
 YUM_RELEASE_PACKAGES = [
-  "fluent-release"
+  "fluent-release",
+  "fluent-lts-release"
 ]
 
 ALL_PACKAGE = [
@@ -33,6 +34,7 @@ ALL_PACKAGE = [
   "fluent-apt-source",
   "fluent-lts-apt-source",
   "fluent-release",
+  "fluent-lts-release"
 ]
 
 def define_bulked_task(name, description, packages = PACKAGES)
