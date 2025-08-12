@@ -1192,6 +1192,7 @@ class BuildTask
     end
     configs.concat([
       "etc/#{PACKAGE_DIR}/conf.d/obsolete_plugins.conf",
+      "etc/#{PACKAGE_DIR}/conf.d/update_notifier.conf",
     ])
     configs.each do |config|
       src =
