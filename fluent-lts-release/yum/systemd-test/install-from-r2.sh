@@ -13,7 +13,7 @@ test -f /etc/pki/rpm-gpg/RPM-GPG-KEY-fluent-package
 test -f /etc/yum.repos.d/fluent-package-lts.repo
 grep fluentd.cdn.cncf.io /etc/yum.repos.d/fluent-package-lts.repo
 test $($DNF repolist --enabled | grep 'Fluentd Project' | wc -l) -eq 1
-test $($DNF repolist --enabled | grep 'Fluentd Project' | cut -d' ' -f1) = fluent-package-v6
+test $($DNF repolist --enabled | grep 'Fluentd Project' | cut -d' ' -f1) = fluent-package-v6-lts
 
 # TODO: v6 package was released, remove it and test with v6
 sudo $DNF config-manager --disable fluent-package-v6-lts
