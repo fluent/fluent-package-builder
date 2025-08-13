@@ -34,7 +34,7 @@ class FluentdAptSourcePackageTask < PackageTask
   end
 
   def repository_version
-    "2025.1.8"
+    "2025.8.29"
   end
 
   def repository_name
@@ -42,15 +42,15 @@ class FluentdAptSourcePackageTask < PackageTask
   end
 
   def repository_label
-    "Treasure Agent"
+    "Fluentd Project"
   end
 
   def repository_description
-    "Treasure Agent related packages"
+    "Fluentd Project related packages"
   end
 
   def repository_url
-    "https://packages.treasuredata.com"
+    "https://fluentd.cdn.cncf.io"
   end
 
   def repository_gpg_key_ids

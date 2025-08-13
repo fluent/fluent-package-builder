@@ -1,3 +1,10 @@
+fluent-lts-apt-source (2025.8.29-1) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  * Switch from packages.treasuredata.com to fluentd.cdn.cncf.io.
+
+ -- Kentaro Hayashi <hayashi@clear-code.com>  Fri, 29 Aug 2025 18:42:21 +0900
+
 fluent-lts-apt-source (2025.1.8-1) unstable; urgency=medium
 
   * New upstream release.
