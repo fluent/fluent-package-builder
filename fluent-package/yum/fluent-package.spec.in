@@ -144,6 +144,12 @@ The stable distribution of Fluentd, formerly known as td-agent.
 %if %{use_scl_ruby}
 . /opt/rh/rh-ruby%{scl_ruby_ver}/enable
 %endif
+
+# Remove flag for linker script to avoid exposing to user environment.
+# The flag is referenced when users install Ruby gems which has C extensions.
+# However, it causes an error because the linker script does not exist in the user environment.
+export LDFLAGS="$(echo "$LDFLAGS" | sed -E 's|-Wl,-dT,[^ ]+||g')"
+
 rake build:rpm_config FLUENT_PACKAGE_STAGING_PATH=%{buildroot} NO_VAR_RUN=1
 rake build:all FLUENT_PACKAGE_STAGING_PATH=%{buildroot} PATH="$HOME/.cargo/bin:$PATH"
 mkdir -p %{buildroot}%{_mandir}/man1
