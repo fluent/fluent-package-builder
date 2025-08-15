@@ -254,6 +254,7 @@ jobs:
           - "update-to-next-major-version.sh etc inactive"
           - "update-without-data-lost.sh v6 v7"
           - "update-without-data-lost.sh v7 v6"
+          - "obsolete-plugins.sh"
         include:
           - label: Debian bookworm amd64
             rake-job: debian-bookworm

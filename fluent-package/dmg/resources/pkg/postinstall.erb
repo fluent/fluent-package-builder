@@ -15,6 +15,7 @@ fi
 if [ ! -e "/etc/<%= package_dir %>/" ]; then
   mkdir -p /etc/<%= package_dir %>/
   mkdir -p /etc/<%= package_dir %>/plugin
+  mkdir -p /etc/<%= package_dir %>/conf.d
 fi
 if [ ! -e "/tmp/<%= package_dir %>/" ]; then
   mkdir -p /tmp/<%= package_dir %>/

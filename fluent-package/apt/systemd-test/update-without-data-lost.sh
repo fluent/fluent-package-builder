@@ -51,7 +51,7 @@ sudo systemctl restart fluentd
 main_pid=$(systemctl show --value --property=MainPID fluentd)
 
 # Ensure to wait for fluentd launching
-sleep 1
+sleep 3
 
 # Send logs in background for 4 seconds
 /opt/fluent/bin/ruby $(dirname $0)/../../test-tools/logdata-sender.rb \
