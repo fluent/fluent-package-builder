@@ -11,7 +11,7 @@ CLOBBER.include("yum/repositories")
 
 class FluentReleasePackageTask < PackageTask
   def initialize
-    super("fluent-release",
+    super("fluent-lts-release",
           repository_version,
           latest_commit_time(File.join(__dir__, "..")))
     CLEAN.include(@archive_name)
@@ -72,15 +72,15 @@ class FluentReleasePackageTask < PackageTask
       end
       File.open(repo_path, "w") do |repo|
         repo.puts(<<-REPOSITORY)
-[fluent-package-v5]
+[fluent-package-v5-lts]
 name=#{repository_label}
-baseurl=#{repository_url}/5/#{target[:distribution]}/#{target[:version]}/$basearch/
+baseurl=#{repository_url}/lts/5/#{target[:distribution]}/#{target[:version]}/$basearch/
 gpgcheck=1
 enabled=0
 #{gpgkey}
-[fluent-package-v6]
+[fluent-package-v6-lts]
 name=#{repository_label}
-baseurl=#{repository_url}/6/#{target[:distribution]}/#{target[:version]}/$basearch/
+baseurl=#{repository_url}/lts/6/#{target[:distribution]}/#{target[:version]}/$basearch/
 gpgcheck=1
 enabled=1
 #{gpgkey}
@@ -143,7 +143,7 @@ enabled=1
       mkdir(@archive_base_name)
       generate_gpg_keys
       generate_repo_files
-      cp("yum/fluent-release.spec.in", "#{@archive_base_name}/fluent-release.spec.in")
+      cp("yum/fluent-lts-release.spec.in", "#{@archive_base_name}/fluent-lts-release.spec.in")
       sh("tar", "czf", @archive_name, @archive_base_name)
     end
   end
