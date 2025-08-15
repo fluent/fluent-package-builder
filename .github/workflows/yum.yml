@@ -301,7 +301,7 @@ jobs:
           - "update-to-next-major-version.sh etc inactive"
           - "update-without-data-lost.sh v6 v7"
           - "update-without-data-lost.sh v7 v6"
-          - "builtin-plugins.sh"
+          - "obsolete-plugins.sh"
         include:
           - label: RockyLinux 8 x86_64
             rake-job: rockylinux-8
