@@ -17,7 +17,6 @@ for /f "usebackq" %%i in (`^""%FLUENT_PACKAGE_BINDIR%\ruby.exe" -rrbconfig -e "p
 set "GEM_HOME=%FLUENT_PACKAGE_TOPDIR%lib/ruby/gems/%RUBY_VERSION%"
 set "GEM_PATH=%FLUENT_PACKAGE_TOPDIR%lib/ruby/gems/%RUBY_VERSION%"
 set "FLUENT_CONF=%FLUENT_PACKAGE_TOPDIR%etc/fluent/fluentd.conf"
-set "FLUENT_CONF_INCLUDE_DIR=%FLUENT_PACKAGE_TOPDIR%etc/fluent/conf.d"
 set "FLUENT_PLUGIN=%FLUENT_PACKAGE_TOPDIR%etc/fluent/plugin"
 
 setlocal enabledelayedexpansion
