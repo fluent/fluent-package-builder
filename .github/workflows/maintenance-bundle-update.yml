@@ -12,6 +12,7 @@ jobs:
     runs-on: windows-latest
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      CFLAGS: '-Wno-error=sign-conversion' # Compiler flag to avoid build error in libiconv
     steps:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
