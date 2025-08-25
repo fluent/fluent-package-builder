@@ -6,13 +6,13 @@ About the past changelog entries, see [old CHANGELOG](CHANGELOG-v4.md) instead.
 
 ### News
 
-* Update Ruby to 3.4.4
+* Update Ruby to 3.4.5
 * Update fluentd to 1.19.0
 * Update bundled gems
 
 ### Core component
 
-* ruby v3.4.4 (update)
+* ruby v3.4.5 (update)
 * jemalloc v3.6.0
 * OpenSSL 3.4.0 Windows
 * OpenSSL 3.0.8 macOS
@@ -25,24 +25,24 @@ About the past changelog entries, see [old CHANGELOG](CHANGELOG-v4.md) instead.
 
 ### Bundled plugins and gems
 
-* aws-partitions v1.1134.0 (update)
-* aws-sdk-core v3.227.0 (update)
-* aws-sdk-kms v1.107.0 (update)
-* aws-sdk-s3 v1.194.0 (update)
-* aws-sdk-sqs v1.97.0 (update)
+* aws-partitions v1.1150.0 (update)
+* aws-sdk-core v3.230.0 (update)
+* aws-sdk-kms v1.110.0 (update)
+* aws-sdk-s3 v1.197.0 (update)
+* aws-sdk-sqs v1.101.0 (update)
 * aws-sigv4 v1.12.1 (update)
-* elasticsearch v9.0.3 (update)
+* elasticsearch v8.19.0 (update)
 * fluent-diagtool v1.0.5
 * fluent-plugin-elasticsearch v6.0.0 (update)
 * fluent-plugin-fluent-package-notifier v0.1.0 (new)
 * fluent-plugin-flowcounter-simple 0.1.0
 * fluent-plugin-kafka v0.19.5 (update)
 * fluent-plugin-metrics-cmetrics v0.1.2
-* fluent-plugin-obsolete-plugins v0.1.1 (new)
+* fluent-plugin-obsolete-plugins v0.2.1 (new)
 * fluent-plugin-opensearch v1.1.5 (update)
 * fluent-plugin-prometheus v2.2.1 (update)
 * fluent-plugin-prometheus_pushgateway v0.2.1 (update)
-* fluent-plugin-record-modifier v2.2.0 (update)
+* fluent-plugin-record-modifier v2.2.1 (update)
 * fluent-plugin-rewrite-tag-filter v2.4.0
 * fluent-plugin-s3 v1.8.3 (update)
 * fluent-plugin-sd-dns 0.1.0
@@ -55,10 +55,10 @@ About the past changelog entries, see [old CHANGELOG](CHANGELOG-v4.md) instead.
 * rdkafka v0.21.0 (update)
 * ruby-kafka v1.5.0
 * systemd-journal v2.0.0 (update)
-* td-client v2.0.0 (update)
+* td-client v3.0.0 (update)
 * webhdfs v0.11.0 (update)
 * fluent-plugin-opentelemetry 0.3.0 (new)
-* fluent-plugin-fluent-package-update-notifier 0.2.0 (new)
+* fluent-plugin-fluent-package-update-notifier 0.2.1 (new)
 
 On Windows
 
