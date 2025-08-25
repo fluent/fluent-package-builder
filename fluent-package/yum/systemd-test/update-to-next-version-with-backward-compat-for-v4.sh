@@ -4,17 +4,7 @@ set -exu
 
 . $(dirname $0)/commonvar.sh
 
-# Install v4
-sudo rpm --import https://packages.treasuredata.com/GPG-KEY-td-agent
-case ${distribution} in
-    amazon)
-        curl -fsSL https://toolbelt.treasuredata.com/sh/install-amazon2-td-agent4.sh | sh
-        ;;
-    *)
-    	curl -fsSL https://toolbelt.treasuredata.com/sh/install-redhat-td-agent4.sh | sh
-        ;;
-esac
-
+install_v4
 sudo systemctl enable --now td-agent
 systemctl status --no-pager td-agent
 

@@ -4,15 +4,7 @@ set -exu
 
 . $(dirname $0)/commonvar.sh
 
-# Install v4
-case ${distribution} in
-    amazon)
-	curl -fsSL https://toolbelt.treasuredata.com/sh/install-amazon2-td-agent4.sh | sh
-	;;
-    *)
-	curl -fsSL https://toolbelt.treasuredata.com/sh/install-redhat-td-agent4.sh | sh
-	;;
-esac
+install_v4
 
 # Not auto started
 (! systemctl status --no-pager td-agent)
@@ -22,15 +14,13 @@ sudo systemctl enable --now td-agent
 sudo systemctl stop td-agent
 
 # Install the current
-sudo $DNF install -y \
-    /host/${distribution}/${DISTRIBUTION_VERSION}/x86_64/Packages/fluent-package-[0-9]*.rpm
-
+install_current
 sudo systemctl daemon-reload
 sudo systemctl enable --now fluentd
 sudo systemctl stop fluentd
 
+# Downgrade to v4
 sudo $DNF remove -y fluent-package
-
 # Symlinks are automatically removed
 (! test -e /etc/td-agent)
 (! test -e /var/log/td-agent)
@@ -38,22 +28,13 @@ sudo $DNF remove -y fluent-package
 test -e /etc/fluent/td-agent.conf
 test -h /etc/fluent/fluentd.conf.rpmsave
 test $(readlink /etc/fluent/fluentd.conf.rpmsave) = "/etc/fluent/td-agent.conf"
-
+# Manually prepare downgrading
 sudo mkdir -p /var/log/td-agent
 sudo chown td-agent:td-agent /var/log/td-agent
 sudo mv /var/log/fluent/* /var/log/td-agent/
 sudo rm -fr /var/log/fluent
-
-# Downgrade to v4
-case ${distribution} in
-    amazon)
-	curl -fsSL https://toolbelt.treasuredata.com/sh/install-amazon2-td-agent4.sh | sh
-	;;
-    *)
-	curl -fsSL https://toolbelt.treasuredata.com/sh/install-redhat-td-agent4.sh | sh
-	;;
-esac
-
+# Downgrade by install v4 again
+install_v4
 sudo systemctl daemon-reload
 sudo systemctl enable --now td-agent
 

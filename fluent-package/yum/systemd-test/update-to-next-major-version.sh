@@ -7,9 +7,7 @@ set -exu
 service_restart=$1
 status_before_update=$2 # active / inactive
 
-# Install the current
-package="/host/${distribution}/${DISTRIBUTION_VERSION}/x86_64/Packages/fluent-package-*.rpm"
-sudo $DNF install -y $package
+install_current
 
 if [ "$status_before_update" = active ]; then
     sudo systemctl start fluentd

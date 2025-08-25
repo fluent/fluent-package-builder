@@ -5,27 +5,10 @@ set -exu
 . $(dirname $0)/commonvar.sh
 
 # Install v5 LTS to register the repository
-case $distribution in
-    amazon)
-        case $version in
-            2023)
-                curl -fsSL https://toolbelt.treasuredata.com/sh/install-amazon2023-fluent-package5-lts.sh | sh
-                ;;
-            2)
-                curl -fsSL https://toolbelt.treasuredata.com/sh/install-amazon2-fluent-package5-lts.sh | sh
-                ;;
-        esac
-        ;;
-    *)
-        curl -fsSL https://toolbelt.treasuredata.com/sh/install-redhat-fluent-package5-lts.sh | sh
-        ;;
-esac
-
+install_v5_lts
 sudo $DNF remove -y fluent-package
 
-# Install the current
-sudo $DNF install -y \
-    /host/${distribution}/${DISTRIBUTION_VERSION}/x86_64/Packages/fluent-package-[0-9]*.rpm
+install_current
 
 # Customize the env file to prevent replacing by downgrade.
 # Need this to test the case where some tmp files is left.
@@ -58,8 +41,7 @@ test $main_pid -eq $(eval $(systemctl show fluentd --property=MainPID) && echo $
 test -e /tmp/fluent/.install_plugins
 test -e /tmp/fluent/.pid_for_auto_restart
 
-sudo $DNF install -y \
-    /host/${distribution}/${DISTRIBUTION_VERSION}/x86_64/Packages/fluent-package-[0-9]*.rpm | tee upgrade.log
+install_current | tee upgrade.log
 
 # zerodowntime-restart should NOT be triggered.
 (! grep "Kick auto restart" upgrade.log)

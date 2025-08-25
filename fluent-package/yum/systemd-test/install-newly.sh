@@ -6,44 +6,16 @@ set -exu
 
 case $1 in
   local)
-    sudo $DNF install -y \
-      /host/${distribution}/${DISTRIBUTION_VERSION}/x86_64/Packages/fluent-package-[0-9]*.rpm
+    install_current
     ;;
   v5)
-    case $DISTRIBUTION in
-      amazon)
-        curl --fail --silent --show-error --location \
-             https://toolbelt.treasuredata.com/sh/install-${DISTRIBUTION}${DISTRIBUTION_VERSION}-fluent-package5.sh | sh
-        ;;
-      *)
-        curl --fail --silent --show-error --location \
-             https://toolbelt.treasuredata.com/sh/install-redhat-fluent-package5.sh | sh
-        ;;
-    esac
+    install_v5
     ;;
   v6)
-    case $DISTRIBUTION in
-      amazon)
-        curl --fail --silent --show-error --location \
-             https://toolbelt.treasuredata.com/sh/install-${DISTRIBUTION}${DISTRIBUTION_VERSION}-fluent-package6.sh | sh
-        ;;
-      *)
-        curl --fail --silent --show-error --location \
-             https://toolbelt.treasuredata.com/sh/install-redhat-fluent-package6.sh | sh
-        ;;
-    esac
+    install_v6
     ;;
   lts)
-    case $DISTRIBUTION in
-      amazon)
-        curl --fail --silent --show-error --location \
-             https://toolbelt.treasuredata.com/sh/install-${DISTRIBUTION}${DISTRIBUTION_VERSION}-fluent-package5-lts.sh | sh
-        ;;
-      *)
-        curl --fail --silent --show-error --location \
-             https://toolbelt.treasuredata.com/sh/install-redhat-fluent-package5-lts.sh | sh
-        ;;
-    esac
+    install_v5_lts
     ;;
 esac
 
