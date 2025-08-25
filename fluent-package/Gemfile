@@ -54,7 +54,7 @@ end
 
 # plugin gems
 
-gem "elasticsearch", "9.0.3"
+gem "elasticsearch", "8.19.0"
 gem "fluent-plugin-elasticsearch", "6.0.0"
 gem "ruby-kafka", "1.5.0"
 gem "digest-murmurhash", "1.1.1"
