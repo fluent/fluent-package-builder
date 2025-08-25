@@ -2,7 +2,7 @@
 
 set -exu
 
-. $(dirname $0)/commonvar.sh
+. $(dirname $0)/common.sh
 
 enabled_before_update=$1 # enabled / disabled
 status_before_update=$2 # active / inactive

@@ -2,7 +2,7 @@
 
 set -exu
 
-. $(dirname $0)/commonvar.sh
+. $(dirname $0)/common.sh
 
 install_v4
 sudo systemctl enable --now td-agent

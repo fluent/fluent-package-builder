@@ -2,7 +2,7 @@
 
 set -exu
 
-. $(dirname $0)/commonvar.sh
+. $(dirname $0)/common.sh
 
 # Install v5 LTS to register the repository
 install_v5_lts

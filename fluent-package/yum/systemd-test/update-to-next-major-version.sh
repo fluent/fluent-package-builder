@@ -2,7 +2,7 @@
 
 set -exu
 
-. $(dirname $0)/commonvar.sh
+. $(dirname $0)/common.sh
 
 service_restart=$1
 status_before_update=$2 # active / inactive
