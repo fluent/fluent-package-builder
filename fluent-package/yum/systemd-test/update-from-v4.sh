@@ -2,19 +2,9 @@
 
 set -exu
 
-. $(dirname $0)/commonvar.sh
+. $(dirname $0)/common.sh
 
-# Install v4
-sudo rpm --import https://packages.treasuredata.com/GPG-KEY-td-agent
-case ${distribution} in
-    amazon)
-        curl -fsSL https://toolbelt.treasuredata.com/sh/install-amazon2-td-agent4.sh | sh
-        ;;
-    *)
-    	curl -fsSL https://toolbelt.treasuredata.com/sh/install-redhat-td-agent4.sh | sh
-        ;;
-esac
-
+install_v4
 sudo systemctl enable --now td-agent
 systemctl status --no-pager td-agent
 main_pid=$(eval $(systemctl show td-agent --property=MainPID) && echo $MainPID)
@@ -27,9 +17,7 @@ for d in $(seq 1 10); do
     sudo touch /var/log/td-agent/$d.log
 done
 
-# Install the current
-sudo $DNF install -y \
-    /host/${distribution}/${DISTRIBUTION_VERSION}/x86_64/Packages/fluent-package-[0-9]*.rpm
+install_current
 
 # Test: take over enabled state
 systemctl is-enabled fluentd

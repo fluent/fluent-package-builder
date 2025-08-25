@@ -2,12 +2,9 @@
 
 set -exu
 
-. $(dirname $0)/commonvar.sh
+. $(dirname $0)/common.sh
 
-package="/host/${distribution}/${DISTRIBUTION_VERSION}/x86_64/Packages/fluent-package-*.rpm"
-
-# Install the current
-sudo $DNF install -y $package
+install_current
 
 # Install obsoleted plugins
 sudo fluent-gem install fluent-plugin-grep

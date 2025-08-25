@@ -2,7 +2,7 @@
 
 set -exu
 
-. $(dirname $0)/commonvar.sh
+. $(dirname $0)/common.sh
 
 v6_package="/host/${distribution}/${DISTRIBUTION_VERSION}/x86_64/Packages/fluent-package-*.rpm"
 v7_package="/host/v7-test/${distribution}/${DISTRIBUTION_VERSION}/x86_64/Packages/fluent-package-*.rpm"

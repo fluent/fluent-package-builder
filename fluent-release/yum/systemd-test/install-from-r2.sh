@@ -2,7 +2,7 @@
 
 set -exu
 
-. $(dirname $0)/../../../fluent-package/yum/systemd-test/commonvar.sh
+. $(dirname $0)/../../../fluent-package/yum/systemd-test/common.sh
 
 sudo $DNF install -y \
      /host/${distribution}/${DISTRIBUTION_VERSION}/x86_64/Packages/fluent-release-*.noarch.rpm

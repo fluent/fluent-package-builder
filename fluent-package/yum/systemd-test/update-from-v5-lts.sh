@@ -2,34 +2,16 @@
 
 set -exu
 
-. $(dirname $0)/commonvar.sh
+. $(dirname $0)/common.sh
 
-# If it update from v5 LTS without stopping Fluentd, Fluentd will be restarted.
-# Install v5 LTS
-case $distribution in
-    amazon)
-        case $version in
-            2023)
-                curl -fsSL https://toolbelt.treasuredata.com/sh/install-amazon2023-fluent-package5-lts.sh | sh
-                ;;
-            2)
-                curl -fsSL https://toolbelt.treasuredata.com/sh/install-amazon2-fluent-package5-lts.sh | sh
-                ;;
-        esac
-        ;;
-    *)
-        curl -fsSL https://toolbelt.treasuredata.com/sh/install-redhat-fluent-package5-lts.sh | sh
-        ;;
-esac
-
+install_v5_lts
 sudo systemctl enable --now fluentd
 systemctl status --no-pager fluentd
 systemctl status --no-pager td-agent
 main_pid=$(eval $(systemctl show fluentd --property=MainPID) && echo $MainPID)
 
-# Install the current
-sudo $DNF install -y \
-    /host/${distribution}/${DISTRIBUTION_VERSION}/x86_64/Packages/fluent-package-[0-9]*.rpm
+# Install the current without stopping the service to test automatic restart after update.
+install_current
 
 # Test: take over enabled state
 systemctl is-enabled fluentd
