@@ -4,6 +4,8 @@ set -exu
 
 . $(dirname $0)/../commonvar.sh
 
+testcase=${1:-from-current-updated-directly}
+
 # Install v4
 sudo apt install -y curl ca-certificates
 curl -fsSL https://toolbelt.treasuredata.com/sh/install-${distribution}-${code_name}-td-agent4.sh | sh
@@ -16,6 +18,9 @@ systemctl status --no-pager td-agent
 #sudo apt purge -y fluent-lts-apt-source
 
 # Ensure to install the current
+if [ "$testcase" = from-current-updated-via-v5 ]; then
+    curl --fail --silent --show-error --location https://toolbelt.treasuredata.com/sh/install-${distribution}-${code_name}-fluent-package5-lts.sh | sh
+fi
 sudo apt install -V -y \
     /host/${distribution}/pool/${code_name}/${channel}/*/*/fluent-package_*_${architecture}.deb \
     /host/${distribution}/pool/${code_name}/${channel}/*/*/td-agent_*_all.deb
