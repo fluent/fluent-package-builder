@@ -229,11 +229,11 @@ jobs:
           - Ubuntu Jammy amd64
           - Ubuntu Noble amd64
         test:
-          - "update-from-v4.sh local"
-          - "update-from-v4.sh v5"
-          - "update-from-v4.sh lts"
+          - "update-from-v4.sh"
+          - "update-from-v4.sh via-v5"
           - "update-from-v5-lts.sh"
           - "downgrade-to-v4.sh"
+          - "downgrade-to-v4.sh from-current-updated-via-v5"
           - "downgrade-to-v5-lts.sh"
           - "install-newly.sh local"
           - "install-newly.sh v5"
@@ -270,26 +270,26 @@ jobs:
             container-image: images:ubuntu/24.04
         exclude:
           - label: Debian bookworm amd64
-            test: update-from-v4.sh local
+            test: update-from-v4.sh
           - label: Debian bookworm amd64
-            test: update-from-v4.sh v5
-          - label: Debian bookworm amd64
-            test: update-from-v4.sh lts
+            test: update-from-v4.sh via-v5
           - label: Debian bookworm amd64
             test: update-to-next-version-with-backward-compat-for-v4.sh
           - label: Debian bookworm amd64
             test: downgrade-to-v4.sh
+          - label: Debian bookworm amd64
+            test: downgrade-to-v4.sh from-current-updated-via-v5
           # Temporary disable test for trixie (not released yet)
           - label: Debian trixie amd64
-            test: update-from-v4.sh local
+            test: update-from-v4.sh
           - label: Debian trixie amd64
-            test: update-from-v4.sh v5
-          - label: Debian trixie amd64
-            test: update-from-v4.sh lts
+            test: update-from-v4.sh via-v5
           - label: Debian trixie amd64
             test: update-from-v5-lts.sh
           - label: Debian trixie amd64
             test: downgrade-to-v4.sh
+          - label: Debian trixie amd64
+            test: downgrade-to-v4.sh from-current-updated-via-v5
           - label: Debian trixie amd64
             test: downgrade-to-v5-lts.sh
           - label: Debian trixie amd64
@@ -299,15 +299,15 @@ jobs:
           - label: Debian trixie amd64
             test: update-to-next-version-with-backward-compat-for-v4.sh
           - label: Ubuntu Noble amd64
-            test: update-from-v4.sh local
+            test: update-from-v4.sh
           - label: Ubuntu Noble amd64
-            test: update-from-v4.sh v5
-          - label: Ubuntu Noble amd64
-            test: update-from-v4.sh lts
+            test: update-from-v4.sh via-v5
           - label: Ubuntu Noble amd64
             test: update-to-next-version-with-backward-compat-for-v4.sh
           - label: Ubuntu Noble amd64
             test: downgrade-to-v4.sh
+          - label: Ubuntu Noble amd64
+            test: downgrade-to-v4.sh from-current-updated-via-v5
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4

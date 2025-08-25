@@ -4,6 +4,8 @@ set -exu
 
 . $(dirname $0)/common.sh
 
+testcase=${1:-from-current-updated-directly}
+
 install_v4
 
 # Not auto started
@@ -14,6 +16,9 @@ sudo systemctl enable --now td-agent
 sudo systemctl stop td-agent
 
 # Install the current
+if [ "$testcase" = from-current-updated-via-v5 ]; then
+    install_v5_lts
+fi
 install_current
 sudo systemctl daemon-reload
 sudo systemctl enable --now fluentd
