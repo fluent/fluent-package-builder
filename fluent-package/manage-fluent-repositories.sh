@@ -50,8 +50,10 @@ case $COMMAND in
 	# Allow copying the URL from browser's URL bar.
 	PULL_REQUEST_URL=$2
 	PULL_NUMBER=${PULL_REQUEST_URL##*/}
-	read -rsp "Please enter your GitHub personal access token: " GITHUB_ACCESS_TOKEN
-	echo
+	if [ -z "$GITHUB_ACCESS_TOKEN" ]; then
+	    read -rsp "Please enter your GitHub personal access token: " GITHUB_ACCESS_TOKEN
+	    echo
+	fi
 	;;
     *)
 	FLUENT_RELEASE_PROFILE=$2
@@ -196,12 +198,22 @@ EOF
 	head_branch=$(echo $response | cut -d' ' -f1)
 	head_sha=$(echo $response | cut -d' ' -f2)
 	rm -f dl.list
-	curl --silent --location \
-	     -H "Accept: application/vnd.github+json" \
-	     -H "Authorization: Bearer $GITHUB_ACCESS_TOKEN" \
-	     -H "X-GitHub-Api-Version: 2022-11-28" \
-	     "https://api.github.com/repos/fluent/fluent-package-builder/actions/artifacts?per_page=100&page=$d" | \
-	    jq --raw-output '.artifacts[] | select(.workflow_run.head_branch == "'$head_branch'" and .workflow_run.head_sha == "'$head_sha'") | .name + " " + (.size_in_bytes|tostring) + " " + .archive_download_url' > dl.list
+	for d in `seq 1 5`; do
+	    curl --silent --location \
+		 -H "Accept: application/vnd.github+json" \
+		 -H "Authorization: Bearer $GITHUB_ACCESS_TOKEN" \
+		 -H "X-GitHub-Api-Version: 2022-11-28" \
+		 "https://api.github.com/repos/fluent/fluent-package-builder/actions/artifacts?per_page=100&page=$d" | \
+		jq --raw-output '.artifacts[] | select(.workflow_run.head_branch == "'$head_branch'" and .workflow_run.head_sha == "'$head_sha'") | .name + " " + (.size_in_bytes|tostring) + " " + .archive_download_url' > dl.list
+	    filesize=$(stat -c "%s" dl.list)
+	    if [ $filesize -eq 0 ]; then
+		echo "Failed to fetch artifacts list"
+		rm -f dl.list
+		continue
+	    else
+		break
+	    fi
+	done
 	while read line
 	do
 	    package=$(echo $line | cut -d' ' -f1)
