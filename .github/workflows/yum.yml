@@ -72,6 +72,11 @@ jobs:
         with:
           name: packages-release-${{ matrix.rake-job }}
           path: fluent-release/yum/repositories
+      - name: Upload fluent-lts-release rpm
+        uses: actions/upload-artifact@v4
+        with:
+          name: packages-lts-release-${{ matrix.rake-job }}
+          path: fluent-lts-release/yum/repositories
       - name: Upload v7 fluent-package rpm
         uses: actions/upload-artifact@v4
         with:
