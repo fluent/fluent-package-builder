@@ -100,7 +100,13 @@ case $1 in
 		for arch in aarch64 x86_64; do
 		    # e.g. mapping amazon/2/x86_64/Packages/ => 5/amazon/2/x86_64
 		    mkdir -p $ARTIFACTS_DIR/5/$dist_dest/$release/$arch
-		    find $REPOSITORY_PATH/$dist/$release/$arch -name '*.rpm' -not -name '*debug*' -exec cp {} $ARTIFACTS_DIR/5/$dist_dest/$release/$arch \;
+		    if [ "$2" = "lts" ]; then
+                        find $REPOSITORY_PATH/$dist/$release/$arch -name '*.rpm' \
+                             -not \( -name 'fluent-release*' -o -name '*debug*' \) -exec cp {} $ARTIFACTS_DIR/5/$dist_dest/$release/$arch \;
+		    else
+                        find $REPOSITORY_PATH/$dist/$release/$arch -name '*.rpm' \
+                             -not \( -name 'fluent-lts-release*' -o -name '*debug*' \) -exec cp {} $ARTIFACTS_DIR/5/$dist_dest/$release/$arch \;
+                    fi
 		done
 	    done
 	done
