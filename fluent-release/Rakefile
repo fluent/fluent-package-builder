@@ -72,13 +72,13 @@ class FluentReleasePackageTask < PackageTask
       end
       File.open(repo_path, "w") do |repo|
         repo.puts(<<-REPOSITORY)
-[fluent-package-lts-v5]
+[fluent-package-v5]
 name=#{repository_label}
 baseurl=#{repository_url}/lts/5/#{target[:distribution]}/#{target[:version]}/$basearch/
 gpgcheck=1
 enabled=1
 #{gpgkey}
-[fluent-package-lts-v6]
+[fluent-package-v6]
 name=#{repository_label}
 baseurl=#{repository_url}/lts/6/#{target[:distribution]}/#{target[:version]}/$basearch/
 gpgcheck=1
