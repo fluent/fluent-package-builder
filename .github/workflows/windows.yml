@@ -62,6 +62,7 @@ jobs:
         test:
           - "install-test.ps1"
           - "update-from-v4-test.ps1"
+          - "update-from-v4-test.ps1 -ViaV5"
           - "update-from-v5-test.ps1"
           - "serverspec-test.ps1"
     steps:
