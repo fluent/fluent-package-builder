@@ -217,6 +217,16 @@ EOF
 		package=$(echo $line | cut -d' ' -f1)
 		download_url=$(echo $line | cut -d' ' -f3)
 		echo "Downloading $package.zip from $download_url"
+		if [ -n "$SKIP_FLUENT_PACKAGE" ]; then
+		    case $package in
+			packages-lts*|packages-apt*|packages-release*)
+			    # fluent-apt-source, fluent-lts-*, fluent-release
+			    ;;
+			*)
+			    continue
+			    ;;
+		    esac
+		fi
 		case $package in
 		    *debian*|*ubuntu*)
 			mkdir -p apt/repositories
@@ -245,6 +255,16 @@ EOF
 	    do
 		package=$(echo $line | cut -d' ' -f1)
 		download_size=$(echo $line | cut -d' ' -f2)
+		if [ -n "$SKIP_FLUENT_PACKAGE" ]; then
+		    case $package in
+			packages-lts*|packages-apt*|packages-release*)
+			    # fluent-apt-source, fluent-lts-*, fluent-release
+			    ;;
+			*)
+			    continue
+			    ;;
+		    esac
+		fi
 		case $package in
 		    *debian*|*ubuntu*)
 			actual_size=$(stat --format="%s" apt/repositories/$package.zip)
