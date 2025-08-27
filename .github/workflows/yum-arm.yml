@@ -51,17 +51,17 @@ jobs:
       - name: Upload fluent-package rpm
         uses: actions/upload-artifact@v4
         with:
-          name: packages-${{ matrix.rake-job }}-aarch64
+          name: packages-v5-${{ matrix.rake-job }}-aarch64
           path: fluent-package/yum/repositories
       - name: Upload fluent-release rpm
         uses: actions/upload-artifact@v4
         with:
-          name: packages-release-lts-${{ matrix.rake-job }}-aarch64
+          name: packages-release-v5-${{ matrix.rake-job }}-aarch64
           path: fluent-release/yum/repositories
       - name: Upload fluent-lts-release rpm
         uses: actions/upload-artifact@v4
         with:
-          name: packages-lts-release-${{ matrix.rake-job }}-aarch64
+          name: packages-lts-release-v5-${{ matrix.rake-job }}-aarch64
           path: fluent-lts-release/yum/repositories
   check_package_size:
     name: Check Package Size
@@ -74,7 +74,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
-          name: packages-${{ matrix.rake-job }}-aarch64
+          name: packages-v5-${{ matrix.rake-job }}-aarch64
           path: fluent-package/yum/repositories
       - name: Check Package Size
         run: |
@@ -90,7 +90,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
-          name: packages-${{ matrix.rake-job }}-aarch64
+          name: packages-v5-${{ matrix.rake-job }}-aarch64
           path: fluent-package/yum/repositories
       - name: Installation Test
         run: |
@@ -113,7 +113,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
-          name: packages-${{ matrix.rake-job }}-aarch64
+          name: packages-v5-${{ matrix.rake-job }}-aarch64
           path: fluent-package/yum/repositories
       - name: Serverspec Test
         run: |
@@ -136,7 +136,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
-          name: packages-${{ matrix.rake-job }}-aarch64
+          name: packages-v5-${{ matrix.rake-job }}-aarch64
           path: fluent-package/yum/repositories
       - name: Binstubs Test
         run: |
