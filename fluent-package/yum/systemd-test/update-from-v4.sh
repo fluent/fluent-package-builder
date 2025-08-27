@@ -4,6 +4,8 @@ set -exu
 
 . $(dirname $0)/common.sh
 
+testcase=${1:-directly}
+
 install_v4
 sudo systemctl enable --now td-agent
 systemctl status --no-pager td-agent
@@ -17,7 +19,12 @@ for d in $(seq 1 10); do
     sudo touch /var/log/td-agent/$d.log
 done
 
+# Install current
+if [ "$testcase" = via-v5 ]; then
+    install_v5_lts
+fi
 install_current
+sleep 3
 
 # Test: take over enabled state
 systemctl is-enabled fluentd

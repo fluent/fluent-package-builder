@@ -1,3 +1,7 @@
+Param(
+    [switch] $ViaV5 = $false
+)
+
 $ErrorActionPreference = 'Stop'
 $ProgressPreference = 'SilentlyContinue'
 Set-PSDebug -Trace 1
@@ -24,7 +28,11 @@ Add-Content -Path "C:\\opt\\td-agent\\etc\\td-agent\\td-agent.conf" -Encoding UT
 Restart-Service fluentdwinsvc
 Start-Sleep 30 # Must wait until all processes are surely started.
 
-# Update to v5
+# Update to current
+if ($ViaV5) {
+    Invoke-WebRequest "https://s3.amazonaws.com/packages.treasuredata.com/lts/5/windows/fluent-package-5.0.7-x64.msi" -OutFile "fluent-package-5.0.7-x64.msi"
+    Start-Process msiexec -ArgumentList "/i", "fluent-package-5.0.7-x64.msi", "/quiet" -Wait -NoNewWindow
+}
 $new_package = ((Get-Item "C:\\fluentd\\fluent-package\\msi\\repositories\\fluent-package-*.msi") | Sort-Object -Descending { $_.LastWriteTime } | Select-Object -First 1).FullName
 Start-Process msiexec -ArgumentList "/i", $new_package, "/quiet" -Wait -NoNewWindow
 Start-Service fluentdwinsvc

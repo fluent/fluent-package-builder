@@ -4,6 +4,8 @@ set -exu
 
 . $(dirname $0)/../commonvar.sh
 
+testcase=${1:-directly}
+
 # Install v4
 sudo apt install -y curl ca-certificates
 curl -fsSL https://toolbelt.treasuredata.com/sh/install-${distribution}-${code_name}-td-agent4.sh | sh
@@ -25,22 +27,15 @@ done
 sudo systemctl stop td-agent
 
 # Install the current
-case $1 in
-  local)
-    sudo apt install -V -y \
-      /host/${distribution}/pool/${code_name}/${channel}/*/*/fluent-package_*_${architecture}.deb \
-      /host/${distribution}/pool/${code_name}/${channel}/*/*/td-agent_*_all.deb 2>&1 | tee upgrade.log
-    # Test: needrestart was suppressed
-    test_suppressed_needrestart upgrade.log
-    ;;
-  v5)
-    curl --fail --silent --show-error --location https://toolbelt.treasuredata.com/sh/install-${distribution}-${code_name}-fluent-package5.sh | sh 2>&1 | tee upgrade.log
-    test_suppressed_needrestart upgrade.log
-    ;;
-  lts)
+if [ "$testcase" = via-v5 ]; then
     curl --fail --silent --show-error --location https://toolbelt.treasuredata.com/sh/install-${distribution}-${code_name}-fluent-package5-lts.sh | sh
-    ;;
-esac
+fi
+sudo apt install -V -y \
+    /host/${distribution}/pool/${code_name}/${channel}/*/*/fluent-package_*_${architecture}.deb \
+    /host/${distribution}/pool/${code_name}/${channel}/*/*/td-agent_*_all.deb 2>&1 | tee upgrade.log
+
+# Test: needrestart was suppressed
+test_suppressed_needrestart upgrade.log
 
 # Test: service status
 systemctl status --no-pager fluentd
