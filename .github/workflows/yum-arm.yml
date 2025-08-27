@@ -58,6 +58,11 @@ jobs:
         with:
           name: packages-release-lts-${{ matrix.rake-job }}-aarch64
           path: fluent-release/yum/repositories
+      - name: Upload fluent-lts-release rpm
+        uses: actions/upload-artifact@v4
+        with:
+          name: packages-lts-release-${{ matrix.rake-job }}-aarch64
+          path: fluent-lts-release/yum/repositories
   check_package_size:
     name: Check Package Size
     runs-on: ubuntu-24.04-arm
