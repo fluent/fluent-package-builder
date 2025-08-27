@@ -38,7 +38,7 @@ About the past changelog entries, see [old CHANGELOG](CHANGELOG-v4.md) instead.
 * fluent-plugin-flowcounter-simple 0.1.0
 * fluent-plugin-kafka v0.19.5 (update)
 * fluent-plugin-metrics-cmetrics v0.1.2
-* fluent-plugin-obsolete-plugins v0.2.1 (new)
+* fluent-plugin-obsolete-plugins v0.2.2 (new)
 * fluent-plugin-opensearch v1.1.5 (update)
 * fluent-plugin-prometheus v2.2.1 (update)
 * fluent-plugin-prometheus_pushgateway v0.2.1 (update)
@@ -58,7 +58,7 @@ About the past changelog entries, see [old CHANGELOG](CHANGELOG-v4.md) instead.
 * td-client v3.0.0 (update)
 * webhdfs v0.11.0 (update)
 * fluent-plugin-opentelemetry 0.3.0 (new)
-* fluent-plugin-fluent-package-update-notifier 0.2.1 (new)
+* fluent-plugin-fluent-package-update-notifier 0.2.2 (new)
 
 On Windows
 
