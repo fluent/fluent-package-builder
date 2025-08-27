@@ -36,6 +36,7 @@ jobs:
           path: |
             fluent-package/yum/repositories
             fluent-release/yum/repositories
+            fluent-lts-release/yum/repositories
           key: ${{ runner.os }}-cache-${{ matrix.rake-job }}-${{ hashFiles('**/config.rb', '**/Rakefile', '**/Gemfile*', '**/*.spec.in', 'fluent-package/templates/**', 'fluent-package/yum/**/Dockerfile') }}
       - name: Install dependencies
         if: ${{ ! steps.cache-rpm.outputs.cache-hit }}
