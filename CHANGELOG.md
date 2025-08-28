@@ -58,7 +58,7 @@ About the past changelog entries, see [old CHANGELOG](CHANGELOG-v4.md) instead.
 * td-client v3.0.0 (update)
 * webhdfs v0.11.0 (update)
 * fluent-plugin-opentelemetry 0.3.0 (new)
-* fluent-plugin-fluent-package-update-notifier 0.2.2 (new)
+* fluent-plugin-fluent-package-update-notifier 0.2.3 (new)
 
 On Windows
 
