@@ -251,6 +251,7 @@ EOF
 		case $package in
 		    v7*)
 			echo "Skip downloading v7 test package ($package.zip)"
+			continue
 			;;
 		    *debian*|*ubuntu*)
 			actual_size=$(stat --format="%s" apt/repositories/$package.zip)
