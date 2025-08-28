@@ -13,11 +13,14 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
+      label: ${{ steps.set-matrix.outputs.label }}
     steps:
       - uses: actions/checkout@v4
       - id: set-matrix
         # See https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/evaluate-expressions-in-workflows-and-actions#example-returning-a-json-object
-        run: echo "matrix=$(cat yum.matrix.json | jq --compact-output)" >> $GITHUB_OUTPUT
+        run: |
+          echo "matrix=$(cat yum.matrix.json | jq --compact-output)" >> $GITHUB_OUTPUT
+          echo "label=$(cat yum.matrix.json | jq '[.include[].label]' --compact-output)" >> $GITHUB_OUTPUT
         working-directory: .github/workflows/
   build:
     needs: define-matrix
@@ -273,16 +276,13 @@ jobs:
 
   v2test:
     name: Test ${{ matrix.label }} ${{ matrix.test }} (CGroup V2)
-    needs: [check_package_size, installation_test, serverspec_test, confluent_test, binstubs_test]
+    needs: [define-matrix, check_package_size, installation_test, serverspec_test, confluent_test, binstubs_test]
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
-        label:
-          - RockyLinux 8 x86_64
-          - AlmaLinux 9 x86_64
-          - AmazonLinux 2023 x86_64
+        label: ${{ fromJSON(needs.define-matrix.outputs.label) }}
         test:
           - "update-from-v4.sh"
           - "update-from-v4.sh via-v5"
@@ -309,25 +309,46 @@ jobs:
           - "update-without-data-lost.sh v6 v7"
           - "update-without-data-lost.sh v7 v6"
           - "obsolete-plugins.sh"
-        include:
-          - label: RockyLinux 8 x86_64
-            rake-job: rockylinux-8
-            container-image: images:rockylinux/8
-          - label: AlmaLinux 9 x86_64
-            rake-job: almalinux-9
-            container-image: images:almalinux/9
-          - label: AmazonLinux 2023 x86_64
-            rake-job: amazonlinux-2023
-            container-image: images:amazonlinux/2023
+        include: ${{ fromJSON(needs.define-matrix.outputs.matrix).include }}
         exclude:
-          - label: AmazonLinux 2023 x86_64
+          - label: Amazon Linux 2023 x86_64
             test: update-from-v4.sh
-          - label: AmazonLinux 2023 x86_64
+          - label: Amazon Linux 2023 x86_64
             test: update-from-v4.sh via-v5
-          - label: AmazonLinux 2023 x86_64
+          - label: Amazon Linux 2023 x86_64
             test: update-to-next-version-with-backward-compat-for-v4.sh
-          - label: AmazonLinux 2023 x86_64
+          - label: Amazon Linux 2023 x86_64
             test: downgrade-to-v4.sh
+          - label: AlmaLinux 10 x86_64
+            test: update-from-v4.sh
+          - label: AlmaLinux 10 x86_64
+            test: update-from-v4.sh via-v5
+          - label: AlmaLinux 10 x86_64
+            test: update-from-v5-lts.sh
+          - label: AlmaLinux 10 x86_64
+            test: update-to-next-version-with-backward-compat-for-v4.sh
+          - label: AlmaLinux 10 x86_64
+            test: downgrade-to-v4.sh
+          - label: AlmaLinux 10 x86_64
+            test: downgrade-to-v5-lts.sh
+          - label: AlmaLinux 10 x86_64
+            test: install-newly.sh v5
+          # After replacing to v6 lts test, this condition should be removed
+          - label: AlmaLinux 10 x86_64
+            test: install-newly.sh lts
+          # rpmrebuild is not supported on EPEL for AlmaLinux 10 yet
+          - label: AlmaLinux 10 x86_64
+            test: update-to-next-version.sh
+          - label: AlmaLinux 10 x86_64
+            test: update-to-next-version-service-status.sh enabled active
+          - label: AlmaLinux 10 x86_64
+            test: update-to-next-version-service-status.sh enabled inactive
+          - label: AlmaLinux 10 x86_64
+            test: update-to-next-version-service-status.sh disabled active
+          - label: AlmaLinux 10 x86_64
+            test: update-to-next-version-service-status.sh disabled inactive
+          - label: AlmaLinux 10 x86_64
+            test: update-to-next-version-with-auto-and-manual.sh
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
@@ -352,37 +373,21 @@ jobs:
       - name: Setup Incus
         run: |
           sudo incus admin init --auto
-      - name: Run Test ${{ matrix.test }} on ${{ matrix.container-image }}
-        run: fluent-package/yum/systemd-test/test.sh ${{ matrix.container-image }} ${{ matrix.test }}
+      - name: Run Test ${{ matrix.test }} on ${{ matrix.test-incus-image }}
+        run: fluent-package/yum/systemd-test/test.sh ${{ matrix.test-incus-image }} ${{ matrix.test }}
 
   fluent-release-test:
     name: Test ${{ matrix.label }} ${{ matrix.test }} (CGroup V2)
-    needs: [v2test]
+    needs: [define-matrix, v2test]
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
-        label:
-          - RockyLinux 8 x86_64
-          - AlmaLinux 9 x86_64
-          # - AlmaLinux 10 x86_64
-          - AmazonLinux 2023 x86_64
+        label: ${{ fromJSON(needs.define-matrix.outputs.label) }}
         test:
           - install-from-r2.sh
-        include:
-          - label: RockyLinux 8 x86_64
-            rake-job: rockylinux-8
-            container-image: images:rockylinux/8
-          - label: AlmaLinux 9 x86_64
-            rake-job: almalinux-9
-            container-image: images:almalinux/9
-          # - label: AlmaLinux 10 x86_64
-          #   rake-job: almalinux-10
-          #   container-image: images:almalinux/10
-          - label: AmazonLinux 2023 x86_64
-            rake-job: amazonlinux-2023
-            container-image: images:amazonlinux/2023
+        include: ${{ fromJSON(needs.define-matrix.outputs.matrix).include }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
@@ -400,5 +405,7 @@ jobs:
       - name: Setup Incus
         run: |
           sudo incus admin init --auto
-      - name: Run Test ${{matrix.test}} on ${{ matrix.container-image }}
-        run: fluent-release/yum/systemd-test/test.sh ${{ matrix.container-image }} ${{ matrix.test }}
+      - name: Run Test ${{matrix.test}} on ${{ matrix.test-incus-image }}
+        # There are no released for AlmaLinux 10 x86_64 yet
+        if: ${{ matrix.label != 'AlmaLinux 10 x86_64' }}
+        run: fluent-release/yum/systemd-test/test.sh ${{ matrix.test-incus-image }} ${{ matrix.test }}
