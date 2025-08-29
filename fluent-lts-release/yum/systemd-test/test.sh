@@ -10,7 +10,7 @@ image=$1
 test_file=$2
 shift 2
 other_args="$@"
-dir="/host/fluent-release/yum/systemd-test"
+dir="/host/fluent-lts-release/yum/systemd-test"
 
 set -eux
 
