@@ -15,9 +15,5 @@ grep fluentd.cdn.cncf.io /etc/yum.repos.d/fluent-package.repo
 test $($DNF repolist --enabled | grep 'Fluentd Project' | wc -l) -eq 1
 test $($DNF repolist --enabled | grep 'Fluentd Project' | cut -d' ' -f1) = fluent-package-v6
 
-# TODO: v6 package was released, remove it and test with v6
-sudo $DNF config-manager --disable fluent-package-v6
-sudo $DNF config-manager --enable fluent-package-v5
-
 sudo $DNF update -y
 sudo $DNF install -y fluent-package

@@ -406,6 +406,36 @@ jobs:
         run: |
           sudo incus admin init --auto
       - name: Run Test ${{matrix.test}} on ${{ matrix.test-incus-image }}
-        # There are no released for AlmaLinux 10 x86_64 yet
-        if: ${{ matrix.label != 'AlmaLinux 10 x86_64' }}
         run: fluent-release/yum/systemd-test/test.sh ${{ matrix.test-incus-image }} ${{ matrix.test }}
+
+  fluent-lts-release-test:
+    name: Test ${{ matrix.label }} ${{ matrix.test }} (CGroup V2)
+    needs: [define-matrix, v2test]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        label: ${{ fromJSON(needs.define-matrix.outputs.label) }}
+        test:
+          - install-from-r2.sh
+        include: ${{ fromJSON(needs.define-matrix.outputs.matrix).include }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: packages-lts-release-${{ matrix.rake-job }}
+      - name: Install Incus
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y -V incus
+      - name: Allow egress network traffic flows for Incus
+        # https://linuxcontainers.org/incus/docs/main/howto/network_bridge_firewalld/#prevent-connectivity-issues-with-incus-and-docker
+        run: |
+          sudo iptables -I DOCKER-USER -i incusbr0 -j ACCEPT
+          sudo iptables -I DOCKER-USER -o incusbr0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+      - name: Setup Incus
+        run: |
+          sudo incus admin init --auto
+      - name: Run Test ${{matrix.test}} on ${{ matrix.test-incus-image }}
+        run: fluent-lts-release/yum/systemd-test/test.sh ${{ matrix.test-incus-image }} ${{ matrix.test }}
