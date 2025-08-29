@@ -10,8 +10,18 @@ systemctl status --no-pager fluentd
 systemctl status --no-pager td-agent
 main_pid=$(eval $(systemctl show fluentd --property=MainPID) && echo $MainPID)
 
-# Install the current without stopping the service to test automatic restart after update.
-install_current
+# Install without stopping the service to test automatic restart after update.
+case $1 in
+  local)
+    install_current
+    ;;
+  v6)
+    install_v6
+    ;;
+  lts)
+    install_v6_lts
+    ;;
+esac
 
 # Test: take over enabled state
 systemctl is-enabled fluentd
