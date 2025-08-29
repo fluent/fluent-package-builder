@@ -286,12 +286,13 @@ jobs:
         test:
           - "update-from-v4.sh"
           - "update-from-v4.sh via-v5"
-          - "update-from-v5-lts.sh"
+          - "update-from-v5-lts.sh local"
+          - "update-from-v5-lts.sh v6"
+          - "update-from-v5-lts.sh lts"
           - "downgrade-to-v4.sh"
           - "downgrade-to-v5-lts.sh"
           - "install-newly.sh local"
-          - "install-newly.sh v5"
-          #- "install-newly.sh v6"
+          - "install-newly.sh v6"
           - "install-newly.sh lts"
           - "update-to-next-version.sh"
           - "update-to-next-version-with-backward-compat-for-v4.sh"
@@ -324,18 +325,17 @@ jobs:
           - label: AlmaLinux 10 x86_64
             test: update-from-v4.sh via-v5
           - label: AlmaLinux 10 x86_64
-            test: update-from-v5-lts.sh
+            test: update-from-v5-lts.sh local
+          - label: AlmaLinux 10 x86_64
+            test: update-from-v5-lts.sh v6
+          - label: AlmaLinux 10 x86_64
+            test: update-from-v5-lts.sh lts
           - label: AlmaLinux 10 x86_64
             test: update-to-next-version-with-backward-compat-for-v4.sh
           - label: AlmaLinux 10 x86_64
             test: downgrade-to-v4.sh
           - label: AlmaLinux 10 x86_64
             test: downgrade-to-v5-lts.sh
-          - label: AlmaLinux 10 x86_64
-            test: install-newly.sh v5
-          # After replacing to v6 lts test, this condition should be removed
-          - label: AlmaLinux 10 x86_64
-            test: install-newly.sh lts
           # rpmrebuild is not supported on EPEL for AlmaLinux 10 yet
           - label: AlmaLinux 10 x86_64
             test: update-to-next-version.sh

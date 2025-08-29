@@ -8,14 +8,11 @@ case $1 in
   local)
     install_current
     ;;
-  v5)
-    install_v5
-    ;;
   v6)
     install_v6
     ;;
   lts)
-    install_v5_lts
+    install_v6_lts
     ;;
 esac
 

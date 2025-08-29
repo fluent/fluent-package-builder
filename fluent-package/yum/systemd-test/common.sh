@@ -106,17 +106,31 @@ function install_v6()
       case "$DISTRIBUTION_VERSION" in
         2023)
           curl --fail --silent --show-error --location \
-            https://toolbelt.treasuredata.com/sh/install-amazon2023-fluent-package6.sh | sh
-          ;;
-        2)
-          curl --fail --silent --show-error --location \
-            https://toolbelt.treasuredata.com/sh/install-amazon2-fluent-package6.sh | sh
+            https://fluentd.cdn.cncf.io/sh/install-amazon2023-fluent-package6.sh | sh
           ;;
       esac
       ;;
     *)
       curl --fail --silent --show-error --location \
-        https://toolbelt.treasuredata.com/sh/install-redhat-fluent-package6.sh | sh
+        https://fluentd.cdn.cncf.io/sh/install-redhat-fluent-package6.sh | sh
+      ;;
+  esac
+}
+
+function install_v6_lts()
+{
+  case "$DISTRIBUTION" in
+    amazon)
+      case "$DISTRIBUTION_VERSION" in
+        2023)
+          curl --fail --silent --show-error --location \
+            https://fluentd.cdn.cncf.io/sh/install-amazon2023-fluent-package6-lts.sh | sh
+          ;;
+      esac
+      ;;
+    *)
+      curl --fail --silent --show-error --location \
+        https://fluentd.cdn.cncf.io/sh/install-redhat-fluent-package6-lts.sh | sh
       ;;
   esac
 }
