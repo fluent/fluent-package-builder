@@ -10,10 +10,10 @@ case $1 in
       /host/${distribution}/pool/${code_name}/${channel}/*/*/fluent-package_*_${architecture}.deb
     ;;
   v6)
-    curl --fail --silent --show-error --location https://toolbelt.treasuredata.com/sh/install-${distribution}-${code_name}-fluent-package6.sh | sh
+    curl --fail --silent --show-error --location https://fluentd.cdn.cncf.io/sh/install-${distribution}-${code_name}-fluent-package6.sh | sh
     ;;
   lts)
-    curl --fail --silent --show-error --location https://toolbelt.treasuredata.com/sh/install-${distribution}-${code_name}-fluent-package6-lts.sh | sh
+    curl --fail --silent --show-error --location https://fluentd.cdn.cncf.io/sh/install-${distribution}-${code_name}-fluent-package6-lts.sh | sh
     ;;
 esac
 
