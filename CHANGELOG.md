@@ -6,8 +6,8 @@ About the past changelog entries, see [old CHANGELOG](CHANGELOG-v4.md) instead.
 
 ### News
 
-* Update Ruby to 3.2.9
-* Update fluentd to 1.16.10
+* Update Ruby to 3.2.9 (#911)
+* Update fluentd to 1.16.10 (#911)
 * Update bundled gems
 
 ### Core component
