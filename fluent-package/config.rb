@@ -7,7 +7,7 @@ COMPAT_SERVICE_NAME = "td-agent"
 PACKAGE_DIR = "fluent"
 COMPAT_PACKAGE_DIR = COMPAT_SERVICE_NAME
 
-FLUENTD_REVISION = 'daccbc6f0551611c65d3ce7efd81dfc7b693f3e3' # v1.16.9
+FLUENTD_REVISION = '5114da659c360c3d7afdd2940ac129f7ffd00214' # v1.16.10
 FLUENTD_LOCAL_GEM_REPO = "file://" + File.expand_path(File.join(__dir__, "local_gem_repo"))
 
 # https://github.com/jemalloc/jemalloc/releases
@@ -23,8 +23,8 @@ OPENSSL_FOR_MACOS_SHA256SUM = "6c13d2bf38fdf31eac3ce2a347073673f5d63263398f1f69d
 BUNDLER_VERSION= "2.3.27"
 
 # https://www.ruby-lang.org/en/downloads/ (tar.gz)
-BUNDLED_RUBY_VERSION = "3.2.8"
-BUNDLED_RUBY_SOURCE_SHA256SUM = "77acdd8cfbbe1f8e573b5e6536e03c5103df989dc05fa68c70f011833c356075"
+BUNDLED_RUBY_VERSION = "3.2.9"
+BUNDLED_RUBY_SOURCE_SHA256SUM = "abbad98db9aeb152773b0d35868e50003b8c467f3d06152577c4dfed9d88ed2a"
 
 BUNDLED_RUBY_PATCHES = [
   # An example entry:
@@ -32,8 +32,8 @@ BUNDLED_RUBY_PATCHES = [
 ]
 
 # https://rubyinstaller.org/downloads/ (7-ZIP ARCHIVES)
-BUNDLED_RUBY_INSTALLER_X64_VERSION = "3.2.8-1"
-BUNDLED_RUBY_INSTALLER_X64_SHA256SUM = "e37172bc960a22b1fda9603bea617625b5a1af48d009844818e85eaa00684962"
+BUNDLED_RUBY_INSTALLER_X64_VERSION = "3.2.9-1"
+BUNDLED_RUBY_INSTALLER_X64_SHA256SUM = "d732a4d02236b623a18dedcfacc00dc0e09cf3a10b172d58255887693791d300"
 
 # Files under rubyinstaller/ are patches for RubyInstaller's binary package.
 # Other patches for Ruby's source tree which can be shared with BUNDLED_RUBY_PATCHES.
