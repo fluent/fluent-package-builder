@@ -34,7 +34,7 @@ class FluentdAptLtsSourcePackageTask < PackageTask
   end
 
   def repository_version
-    "2025.8.29"
+    "2025.9.29"
   end
 
   def repository_name
