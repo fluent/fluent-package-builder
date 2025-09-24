@@ -138,6 +138,13 @@ The stable distribution of Fluentd, formerly known as td-agent.
 %if %{use_scl_ruby}
 . /opt/rh/rh-ruby%{scl_ruby_ver}/enable
 %endif
+
+# Disable package-note-file which embeds build environment path
+# in LDFLAGS. It blocks build process with third-party gems which
+# requires compile procedure.
+%undefine _package_note_file  # For AmazonLinux 2023
+%undefine _package_note_flags # For RHEL 10
+
 rake build:rpm_config FLUENT_PACKAGE_STAGING_PATH=%{buildroot} NO_VAR_RUN=1
 rake build:all FLUENT_PACKAGE_STAGING_PATH=%{buildroot} PATH="$HOME/.cargo/bin:$PATH"
 mkdir -p %{buildroot}%{_mandir}/man1
