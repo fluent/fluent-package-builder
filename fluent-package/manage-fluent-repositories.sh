@@ -169,13 +169,18 @@ EOF
 	;;
     rpm)
 	# resign rpm packages
-	find $FLUENT_RELEASE_DIR/6 -name "*$FLUENT_PACKAGE_VERSION*.rpm"
+	RPM_PATTERN=(
+	      -name "*$FLUENT_PACKAGE_VERSION*.rpm"
+	  -or -name "*fluent-release*.rpm"
+	  -or -name "*fluent-lts-release*.rpm"
+	)
+	find $FLUENT_RELEASE_DIR/6 "${RPM_PATTERN[@]}"
 	echo "Ready to type signing passphrase? (process starts in 10 seconds, Ctrl+C to abort)"
 	sleep 10
 	export GPG_TTY=$(tty)
-	find $FLUENT_RELEASE_DIR/6 -name "*$FLUENT_PACKAGE_VERSION*.rpm" | xargs rpm --resign --define "_gpg_name $SIGNING_KEY"
+	find $FLUENT_RELEASE_DIR/6 "${RPM_PATTERN[@]}" | xargs rpm --resign --define "_gpg_name $SIGNING_KEY"
 	# check whether packages are signed correctly.
-	find $FLUENT_RELEASE_DIR/6 -name "*$FLUENT_PACKAGE_VERSION*.rpm" | xargs rpm -K || \
+	find $FLUENT_RELEASE_DIR/6 "${RPM_PATTERN[@]}" | xargs rpm -K || \
 	    (echo "Import public key to verify: rpm --import https://s3.amazonaws.com/packages.treasuredata.com/GPG-KEY-fluent-package" && exit 1)
 
 	# update & sign rpm repository
