@@ -222,7 +222,7 @@ jobs:
             container-image: images:debian/12
           - label: Ubuntu Focal amd64
             rake-job: ubuntu-focal
-            container-image: images:ubuntu/20.04
+            container-image: fluent:ubuntu/20.04
           - label: Ubuntu Jammy amd64
             rake-job: ubuntu-jammy
             container-image: images:ubuntu/22.04
@@ -266,5 +266,6 @@ jobs:
       - name: Setup Incus
         run: |
           sudo incus admin init --auto
+          sudo incus remote add fluent https://fluentd.cdn.cncf.io/test/incus-images --protocol=simplestreams
       - name: Run Test  ${{ matrix.test-file }} on ${{ matrix.container-image }}
         run: fluent-package/apt/systemd-test/test.sh ${{ matrix.container-image }} ${{ matrix.test-file }}
