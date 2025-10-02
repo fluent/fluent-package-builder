@@ -235,7 +235,7 @@ GEM
       ffi (~> 1.15)
       mini_portile2 (~> 2.6)
       rake (> 12)
-    rexml (3.3.9)
+    rexml (3.4.4)
     ruby-kafka (1.5.0)
       digest-crc
     ruby-progressbar (1.13.0)
@@ -340,6 +340,7 @@ DEPENDENCIES
   prometheus-client (= 2.1.0)
   rake
   rdkafka (= 0.12.0)
+  rexml (= 3.4.4)
   ruby-kafka (= 1.5.0)
   serverengine (= 2.3.2)
   sigdump (= 0.2.5)
