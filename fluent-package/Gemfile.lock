@@ -235,7 +235,7 @@ GEM
       ffi (~> 1.15)
       mini_portile2 (~> 2.6)
       rake (> 12)
-    rexml (3.2.9)
+    rexml (3.3.9)
       strscan
     ruby-kafka (1.5.0)
       digest-crc
