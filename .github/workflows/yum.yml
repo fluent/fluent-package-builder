@@ -226,6 +226,7 @@ jobs:
           - "install-newly.sh local"
           - "install-newly.sh v5"
           - "install-newly.sh lts"
+          - "tmpfiles.sh"
         include:
           - label: RockyLinux 8 x86_64
             rake-job: rockylinux-8
