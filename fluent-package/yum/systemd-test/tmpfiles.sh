@@ -2,14 +2,15 @@
 
 set -exu
 
-. $(dirname $0)/common.sh
+. $(dirname $0)/commonvar.sh
 
 # Display unit info for debug
 sudo systemctl cat systemd-tmpfiles-clean.service
 sudo systemctl cat systemd-tmpfiles-clean.timer
 
 # Install the built package
-install_current
+sudo $DNF install -y \
+    /host/${distribution}/${DISTRIBUTION_VERSION}/x86_64/Packages/fluent-package-[0-9]*.rpm
 
 # Wait all processes to start
 (! systemctl status --no-pager fluentd)
