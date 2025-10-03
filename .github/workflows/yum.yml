@@ -310,6 +310,7 @@ jobs:
           - "update-without-data-lost.sh v6 v7"
           - "update-without-data-lost.sh v7 v6"
           - "obsolete-plugins.sh"
+          - "tmpfiles.sh"
         include: ${{ fromJSON(needs.define-matrix.outputs.matrix).include }}
         exclude:
           - label: Amazon Linux 2023 x86_64
