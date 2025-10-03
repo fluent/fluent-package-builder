@@ -265,8 +265,6 @@ jobs:
           sudo incus admin init --auto
       - name: Run Test ${{ matrix.test-file }} on ${{ matrix.container-image }}
         run: fluent-package/yum/systemd-test/test.sh ${{ matrix.container-image }} ${{ matrix.test-file }}
-      - name: Run Test ${{ matrix.test }} on ${{ matrix.container-image }}
-        run: fluent-package/yum/systemd-test/test.sh ${{ matrix.container-image }} ${{ matrix.test-file }}
 
   fluent-release-test:
     name: Test ${{ matrix.label }} ${{ matrix.test }} (CGroup V2)
