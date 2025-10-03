@@ -70,6 +70,7 @@ gem "fluent-diagtool", "1.0.5"
 gem "td", "0.17.1"
 gem "td-client", "1.0.8"
 gem "fluent-plugin-td", "1.2.0"
+gem "rexml", "3.4.4"
 gem "webhdfs", "0.10.2"
 gem "fluent-plugin-webhdfs", "1.5.0"
 gem "fluent-plugin-record-modifier", "2.1.1"
@@ -87,7 +88,7 @@ gem "fluent-plugin-opensearch", "1.1.4"
 windows_platforms = [:mingw, :x64_mingw] # :mswin
 gem "ffi", "1.15.5", platforms: windows_platforms
 gem "ffi-win32-extensions", "1.0.4", platforms: windows_platforms
-gem "nokogiri", "1.16.8", platforms: windows_platforms
+gem "nokogiri", "1.18.10", platforms: windows_platforms
 gem "win32-event", "0.6.3", platforms: windows_platforms
 gem "win32-ipc", "0.7.0", platforms: windows_platforms
 # Use officially released version when PR was merged and released.

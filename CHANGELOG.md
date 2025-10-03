@@ -55,13 +55,14 @@ About the past changelog entries, see [old CHANGELOG](CHANGELOG-v4.md) instead.
 * systemd-journal v2.1.1 (update)
 * td-client v1.0.8
 * webhdfs v0.10.2
+* rexml v3.4.4 (update)
 
 On Windows
 
 * fluent-plugin-parser-winevt_xml v0.2.8 (update)
 * fluent-plugin-windows-exporter v1.0.0
 * winevt_c v0.10.2
-* nokogiri v1.16.8
+* nokogiri v1.18.10 (update)
 
 ## Release v5.0.7 - 2025/05/14
 
