@@ -213,6 +213,7 @@ jobs:
           - "install-newly.sh local"
           - "install-newly.sh v5"
           - "install-newly.sh lts"
+          - "tmpfiles.sh"
         include:
           - label: Debian bullseye amd64
             rake-job: debian-bullseye
