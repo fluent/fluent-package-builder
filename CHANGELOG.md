@@ -2,7 +2,7 @@
 
 About the past changelog entries, see [old CHANGELOG](CHANGELOG-v4.md) instead.
 
-## Release v5.0.8 - 2025/09/29
+## Release v5.0.8 - 2025/10/08
 
 ### News
 
