@@ -61,6 +61,7 @@ jobs:
       matrix:
         test:
           - "install-test.ps1"
+          - "install-test-with-install-path-including-space.ps1"
           - "update-from-v4-test.ps1"
           - "update-from-v4-test.ps1 -ViaV5"
           - "update-from-v5-test.ps1"
