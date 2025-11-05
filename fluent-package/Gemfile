@@ -54,7 +54,7 @@ end
 
 # plugin gems
 
-gem "elasticsearch", "8.19.0"
+gem "elasticsearch", "8.19.2"
 gem "fluent-plugin-elasticsearch", "6.0.0"
 gem "ruby-kafka", "1.5.0"
 gem "digest-murmurhash", "1.1.1"
@@ -72,7 +72,7 @@ gem "aws-sdk-s3", "1.197.0"
 gem "fluent-plugin-s3", "1.8.3"
 gem "httpclient", "2.9.0"
 gem "fluent-diagtool", "1.0.5"
-gem "td", "0.19.0"
+gem "td", "0.19.1"
 gem "td-client", "3.0.0"
 gem "fluent-plugin-td", "1.2.0"
 gem "webhdfs", "0.11.0"
@@ -88,7 +88,7 @@ gem "opensearch-ruby", "3.4.0"
 gem "fluent-plugin-opensearch", "1.1.5"
 gem "fluent-plugin-fluent-package-update-notifier", "0.2.3"
 gem "fluent-plugin-obsolete-plugins", "0.2.2"
-gem "fluent-plugin-opentelemetry", "0.3.0"
+gem "fluent-plugin-opentelemetry", "0.4.0"
 
 windows_platforms = [:mingw, :x64_mingw] # :mswin
 # ffi-win32-extensions doesn't support ffi 1.17.1 or later
@@ -96,7 +96,7 @@ gem "ffi", "1.17.0", platforms: windows_platforms
 gem "ffi-win32-extensions", "1.1.0", platforms: windows_platforms
 # fiddle gem that isn't default gems as of Ruby 3.5
 gem "fiddle", "1.1.8", platforms: windows_platforms
-gem "nokogiri", "1.18.9", platforms: windows_platforms
+gem "nokogiri", "1.18.10", platforms: windows_platforms
 gem "win32-event", "0.6.3", platforms: windows_platforms
 gem "win32-ipc", "0.7.0", platforms: windows_platforms
 # Use officially released version when PR was merged and released.

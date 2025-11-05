@@ -9,10 +9,10 @@ GIT
 
 GIT
   remote: https://github.com/fluent/fluentd
-  revision: ed15edc4b7c86c1fcea3fbf326b7c42325e6fc71
-  ref: ed15edc4b7c86c1fcea3fbf326b7c42325e6fc71
+  revision: efdc4dca81c23480c9b55e13e55de6aa925b1cf5
+  ref: efdc4dca81c23480c9b55e13e55de6aa925b1cf5
   specs:
-    fluentd (1.19.0)
+    fluentd (1.19.1)
       async-http (~> 0.86)
       base64 (~> 0.2)
       bundler
@@ -22,8 +22,6 @@ GIT
       drb (~> 2.2)
       fiddle (~> 1.1)
       http_parser.rb (>= 0.5.1, < 0.9.0)
-      io-event (< 1.11.0)
-      io-stream (< 0.8.0)
       logger (~> 1.6)
       msgpack (>= 1.3.1, < 2.0.0)
       serverengine (>= 2.3.2, < 3.0.0)
@@ -31,7 +29,7 @@ GIT
       strptime (>= 0.2.4, < 1.0.0)
       tzinfo (>= 1.0, < 3.0)
       tzinfo-data (~> 1.0)
-      uri (~> 1.0)
+      uri (~> 1.0, < 1.1.0)
       webrick (~> 1.4)
       win32-event (~> 0.6.3)
       win32-ipc (~> 0.7.0)
@@ -85,7 +83,7 @@ GEM
     aws-sigv4 (1.12.1)
       aws-eventstream (~> 1, >= 1.0.2)
     base64 (0.3.0)
-    bigdecimal (3.2.2)
+    bigdecimal (3.2.3)
     bindata (2.4.15)
     capng_c (0.2.3)
     certstore_c (0.1.7)
@@ -102,15 +100,15 @@ GEM
       rake (>= 12.0.0, < 14.0.0)
     digest-murmurhash (1.1.1)
     drb (2.2.3)
-    elastic-transport (8.4.0)
+    elastic-transport (8.4.1)
       faraday (< 3)
       multi_json
-    elasticsearch (8.19.0)
+    elasticsearch (8.19.2)
       elastic-transport (~> 8.3)
-      elasticsearch-api (= 8.19.0)
-    elasticsearch-api (8.19.0)
+      elasticsearch-api (= 8.19.2)
+    elasticsearch-api (8.19.2)
       multi_json
-    excon (1.3.0)
+    excon (1.3.1)
       logger
     faraday (2.13.4)
       faraday-net_http (>= 2.0, < 3.5)
@@ -169,7 +167,7 @@ GEM
       faraday_middleware-aws-sigv4 (~> 1.0.1)
       fluentd (>= 0.14.22)
       opensearch-ruby (>= 3.0.1)
-    fluent-plugin-opentelemetry (0.3.0)
+    fluent-plugin-opentelemetry (0.4.0)
       async-http (~> 0.88)
       excon (~> 1.2)
       fluentd (~> 1.18)
@@ -214,13 +212,13 @@ GEM
     fluent-plugin-windows-exporter (1.0.0)
       bindata (~> 2.4)
       fluentd (>= 0.14.10, < 2)
-    google-protobuf (4.32.0-aarch64-linux-gnu)
+    google-protobuf (4.32.1-aarch64-linux-gnu)
       bigdecimal
       rake (>= 13)
-    google-protobuf (4.32.0-x64-mingw-ucrt)
+    google-protobuf (4.32.1-x64-mingw-ucrt)
       bigdecimal
       rake (>= 13)
-    google-protobuf (4.32.0-x86_64-linux-gnu)
+    google-protobuf (4.32.1-x86_64-linux-gnu)
       bigdecimal
       rake (>= 13)
     hirb (0.7.3)
@@ -236,7 +234,7 @@ GEM
       bindata (~> 2.4.8)
     logger (1.7.0)
     ltsv (0.1.2)
-    metrics (0.14.0)
+    metrics (0.14.1)
     mini_portile2 (2.8.9)
     msgpack (1.8.0)
     multi_json (1.17.0)
@@ -247,7 +245,7 @@ GEM
       net-ssh (>= 2.6.5, < 8.0.0)
     net-ssh (7.3.0)
     net-telnet (0.2.0)
-    nokogiri (1.18.9)
+    nokogiri (1.18.10)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     oj (3.16.11)
@@ -262,19 +260,19 @@ GEM
       base64
     protocol-hpack (1.5.1)
     protocol-http (0.53.0)
-    protocol-http1 (0.35.0)
+    protocol-http1 (0.35.2)
       protocol-http (~> 0.22)
     protocol-http2 (0.22.1)
       protocol-hpack (~> 1.4)
       protocol-http (~> 0.47)
     public_suffix (6.0.2)
     racc (1.8.1)
-    rake (13.3.0)
+    rake (13.3.1)
     rdkafka (0.21.0)
       ffi (~> 1.15)
       mini_portile2 (~> 2.6)
       rake (> 12)
-    rexml (3.4.1)
+    rexml (3.4.4)
     ruby-kafka (1.5.0)
       digest-crc
     ruby-progressbar (1.13.0)
@@ -294,7 +292,7 @@ GEM
     strptime (0.2.5)
     systemd-journal (2.1.1)
       ffi (~> 1.9)
-    td (0.19.0)
+    td (0.19.1)
       csv
       hirb (>= 0.4.5)
       msgpack
@@ -315,12 +313,12 @@ GEM
       msgpack (>= 0.5.6, < 2.0)
       mutex_m (>= 0.2.0, < 1.0)
       td-client (>= 1.0.8, < 4.0)
-    traces (0.18.1)
+    traces (0.18.2)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     tzinfo-data (1.2025.2)
       tzinfo (>= 1.0.0)
-    uri (1.0.3)
+    uri (1.0.4)
     webhdfs (0.11.0)
       addressable
     webrick (1.9.1)
@@ -334,7 +332,7 @@ GEM
     yajl-ruby (1.4.3)
     zip-zip (0.3)
       rubyzip (>= 1.0.0)
-    zstd-ruby (1.5.7.0)
+    zstd-ruby (1.5.7.1)
 
 PLATFORMS
   aarch64-linux
@@ -355,7 +353,7 @@ DEPENDENCIES
   cmetrics (= 0.3.3)
   cool.io (= 1.9.0)
   digest-murmurhash (= 1.1.1)
-  elasticsearch (= 8.19.0)
+  elasticsearch (= 8.19.2)
   ffi (= 1.17.0)
   ffi-win32-extensions (= 1.1.0)
   fiddle (= 1.1.8)
@@ -367,7 +365,7 @@ DEPENDENCIES
   fluent-plugin-metrics-cmetrics (= 0.1.2)
   fluent-plugin-obsolete-plugins (= 0.2.2)
   fluent-plugin-opensearch (= 1.1.5)
-  fluent-plugin-opentelemetry (= 0.3.0)
+  fluent-plugin-opentelemetry (= 0.4.0)
   fluent-plugin-parser-winevt_xml (= 0.2.8)
   fluent-plugin-prometheus (= 2.2.1)
   fluent-plugin-prometheus_pushgateway (= 0.2.1)
@@ -387,7 +385,7 @@ DEPENDENCIES
   jmespath (= 1.6.2)
   mini_portile2 (= 2.8.9)
   msgpack (= 1.8.0)
-  nokogiri (= 1.18.9)
+  nokogiri (= 1.18.10)
   oj (= 3.16.11)
   opensearch-ruby (= 3.4.0)
   prometheus-client (= 4.2.5)
@@ -396,7 +394,7 @@ DEPENDENCIES
   ruby-kafka (= 1.5.0)
   serverengine (= 2.4.0)
   sigdump (= 0.2.5)
-  td (= 0.19.0)
+  td (= 0.19.1)
   td-client (= 3.0.0)
   tzinfo (= 2.0.6)
   tzinfo-data (= 1.2025.2)
