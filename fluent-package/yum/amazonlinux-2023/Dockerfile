@@ -27,6 +27,8 @@ RUN \
   yum update -y ${quiet} && \
   yum install -y ${quiet} yum-utils && \
   yum groupinstall -y ${quiet} "Development Tools" && \
+  # Downgrade glibc to 2.34-52 because latest version (2.34-231.amzn2023.0.1) contains glibc 2.35 symbols
+  yum downgrade -y ${quiet} glibc-2.34-52.amzn2023.0.7 glibc-devel-2.34-52.amzn2023.0.7 glibc-headers-x86-2.34-52.amzn2023.0.7 && \
   yum install -y ${quiet} \
     libcap-ng-devel \
     libedit-devel \
