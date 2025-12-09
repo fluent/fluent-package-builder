@@ -2,6 +2,67 @@
 
 About the past changelog entries, see [old CHANGELOG](CHANGELOG-v4.md) instead.
 
+## Release v5.0.9 - 2025/12/19
+
+### News
+
+* Update fluentd to 1.16.11 (#942)
+* Update bundled gems
+
+### Core component
+
+* ruby v3.2.9
+* jemalloc v3.6.0
+* OpenSSL 3.5.1 Windows
+* OpenSSL 3.0.8 macOS
+* fluentd v1.16.11 (update)
+* msgpack 1.7.5
+* oj 3.16.5
+* webrick 1.8.2
+* openssl 3.3.0
+
+### Bundled plugins and gems
+
+* aws-partitions v1.785.0
+* aws-sdk-core v3.178.0
+* aws-sdk-kms v1.71.0
+* aws-sdk-s3 v1.129.0
+* aws-sdk-sqs v1.61.0
+* aws-sigv4 v1.6.0
+* elasticsearch v8.8.0
+* fluent-diagtool v1.0.5
+* fluent-plugin-calyptia-monitoring v0.1.3
+* fluent-plugin-elasticsearch v5.4.4
+* fluent-plugin-flowcounter-simple 0.1.0
+* fluent-plugin-kafka v0.19.5
+* fluent-plugin-metrics-cmetrics v0.1.2
+* fluent-plugin-opensearch v1.1.4
+* fluent-plugin-prometheus v2.1.0
+* fluent-plugin-prometheus_pushgateway v0.1.1
+* fluent-plugin-record-modifier v2.1.1
+* fluent-plugin-rewrite-tag-filter v2.4.0
+* fluent-plugin-s3 v1.7.2
+* fluent-plugin-sd-dns 0.1.0
+* fluent-plugin-systemd v1.1.1
+* fluent-plugin-td v1.2.0
+* fluent-plugin-utmpx v0.5.0
+* fluent-plugin-webhdfs v1.5.0
+* mini_portile2 v2.8.9
+* prometheus-client v2.1.0
+* rdkafka v0.12.0
+* ruby-kafka v1.5.0
+* systemd-journal v2.1.1
+* td-client v1.0.8
+* webhdfs v0.10.2
+* rexml v3.4.4
+
+On Windows
+
+* fluent-plugin-parser-winevt_xml v0.2.8
+* fluent-plugin-windows-exporter v1.0.0
+* winevt_c v0.10.2
+* nokogiri v1.18.10
+
 ## Release v5.0.8 - 2025/10/08
 
 ### News
