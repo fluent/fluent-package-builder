@@ -1,0 +1,32 @@
+name: Ruby OpenSSL Version on Windows
+
+on:
+  workflow_dispatch
+
+permissions: read-all
+
+jobs:
+  test:
+    runs-on: windows-latest
+    continue-on-error: false
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby-version: ['3.4.7', '3.4.5', '3.2.9', '3.2.8', '3.2.7', '3.2.6', '3.2.5', '3.2.4', '3.2.3', '3.2.2']
+    name: Ruby ${{ matrix.ruby-version }}
+    steps:
+      - uses: actions/checkout@v6
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby-version }}
+          rubygems: latest
+      - name: Ruby OpenSSL Version
+        run: |
+          $openssl_ver = ruby -r openssl -e "puts OpenSSL::OPENSSL_VERSION"
+
+          # Output to console
+          Write-Host "Detected: $openssl_ver"
+
+          # Output to GitHub actions summary
+          echo "* **Ruby ${{ matrix.ruby-version }}:** $openssl_ver" >> $env:GITHUB_STEP_SUMMARY
