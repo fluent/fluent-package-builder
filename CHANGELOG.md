@@ -78,7 +78,7 @@ On Windows
 
 * ruby v3.4.5 (update)
 * jemalloc v3.6.0
-* OpenSSL 3.4.0 Windows
+* OpenSSL 3.5.1 Windows
 * OpenSSL 3.0.8 macOS
 * gems
   * fluentd v1.19.0 (update)
