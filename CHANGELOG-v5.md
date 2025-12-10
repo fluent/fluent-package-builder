@@ -14,7 +14,7 @@ About the past changelog entries, see [old CHANGELOG](CHANGELOG-v4.md) instead.
 
 * ruby v3.2.9 (update)
 * jemalloc v3.6.0
-* OpenSSL 3.4.0 Windows
+* OpenSSL 3.5.1 Windows
 * OpenSSL 3.0.8 macOS
 * fluentd v1.16.10 (update)
 * msgpack 1.7.5
@@ -76,7 +76,7 @@ On Windows
 
 * ruby v3.2.8 (update)
 * jemalloc v3.6.0
-* OpenSSL 3.4.0 Windows
+* OpenSSL 3.4.1 Windows
 * OpenSSL 3.0.8 macOS
 * gems
   * fluentd v1.16.9 (update)
@@ -208,7 +208,7 @@ If you want LTS version, stick to use v5.0.x.
 
 * ruby v3.2.6 (update)
 * jemalloc v3.6.0
-* OpenSSL 3.1.0 Windows
+* OpenSSL 3.4.0 Windows
 * OpenSSL 3.0.8 macOS
 * fluentd v1.18.0 (update)
 
@@ -342,7 +342,7 @@ If you want LTS version, stick to use v5.0.x.
 
 * ruby v3.2.5 (update)
 * jemalloc v3.6.0
-* OpenSSL 3.1.0 Windows
+* OpenSSL 3.3.1 Windows
 * OpenSSL 3.0.8 macOS
 * fluentd v1.17.0
 
@@ -416,7 +416,7 @@ On Windows
 
 * ruby v3.2.4 (update)
 * jemalloc v3.6.0
-* OpenSSL 3.1.0 Windows
+* OpenSSL 3.3.0 Windows
 * OpenSSL 3.0.8 macOS
 * fluentd v1.16.5
 
@@ -500,7 +500,7 @@ On Windows
 
 * ruby v3.2.3 (update)
 * jemalloc v3.6.0
-* OpenSSL 3.1.0 Windows
+* OpenSSL 3.2.0 Windows
 * OpenSSL 3.0.8 macOS
 * fluentd v1.16.4 (update)
 
