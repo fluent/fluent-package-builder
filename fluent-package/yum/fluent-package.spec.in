@@ -378,6 +378,9 @@ fi
 # NOTE: %{_tmpfilesdir} is available since CentOS 7
 %attr(0755,fluentd,fluentd) %dir /tmp/@PACKAGE_DIR@
 %changelog
+* Fri Dec 19 2025 Shizuo Fujita <fujita@clear-code.com> - 5.0.9-1
+- New upstream release.
+
 * Mon Sep 29 2025 Shizuo Fujita <fujita@clear-code.com> - 5.0.8-1
 - New upstream release.
 

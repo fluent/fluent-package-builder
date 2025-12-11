@@ -9,14 +9,17 @@ GIT
 
 GIT
   remote: https://github.com/fluent/fluentd
-  revision: 5114da659c360c3d7afdd2940ac129f7ffd00214
-  ref: 5114da659c360c3d7afdd2940ac129f7ffd00214
+  revision: 844c1d8711d94976910cf9a70e29464fbada2862
+  ref: 844c1d8711d94976910cf9a70e29464fbada2862
   specs:
-    fluentd (1.16.10)
+    fluentd (1.16.11)
+      base64 (~> 0.2)
       bundler
       certstore_c (~> 0.1.7)
       console (< 1.24)
       cool.io (>= 1.4.5, < 2.0.0)
+      csv (~> 3.2)
+      drb (~> 2.2)
       fiddle (~> 1.1)
       http_parser.rb (>= 0.5.1, < 0.9.0)
       logger (~> 1.6)
@@ -35,8 +38,8 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    addressable (2.8.7)
-      public_suffix (>= 2.0.2, < 7.0)
+    addressable (2.8.8)
+      public_suffix (>= 2.0.2, < 8.0)
     async (1.31.0)
       console (~> 1.10)
       nio4r (~> 2.3)
@@ -88,7 +91,8 @@ GEM
     digest-crc (0.6.5)
       rake (>= 12.0.0, < 14.0.0)
     digest-murmurhash (1.1.1)
-    elastic-transport (8.3.5)
+    drb (2.2.3)
+    elastic-transport (8.3.6)
       faraday (< 3)
       multi_json
     elasticsearch (8.8.0)
