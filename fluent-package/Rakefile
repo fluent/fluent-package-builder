@@ -366,6 +366,22 @@ class UpdateLockfileTask
         end
       end
     end
+
+    namespace :gemfile do
+      desc "Update Gemfile"
+      task :update do
+        require_relative '../lib/update-gems'
+        cd gemfile_dir do
+          options = {
+            lts: false,
+            replace: true,
+            gemfile: 'Gemfile'
+          }
+          checker = GemfileUpdateChecker.new(options)
+          checker.run
+        end
+      end
+    end
   end
 end
 
