@@ -1,12 +1,14 @@
 #!/bin/bash
 
-# Utility to manage rpm/deb repositories for packages.treasuredata.com
+# Utility to manage rpm/deb repositories for fluentd.cdn.cncf.io
 #
 # Usage:
 #   $ manage-fluent-repositories.sh COMMAND FLUENT_RELEASE_DIR
 #
-# NOTE: setup AccessKeyId, SecretAccessKey, SessionToken and AWS release-td-agent profile in beforehand
-#   $ aws sts get-session-token --serial-number arn:aws:iam::523683666290:mfa/clearcode-xxx --profile USER_PROFILE --duration-seconds 129600 --token-code XXXXX
+# NOTE: setup fluentd-r2 profile in beforehand. See secrets in fluent-apt-source/
+#
+# 1. configure fluentd-r2 profile in ~/.aws/credentials
+# 2. export AWS_ENDPOINT_URL_S3=...
 #
 
 set -e
@@ -17,13 +19,13 @@ Usage:
   $0 COMMAND [FLUENT_RELEASE_PROFILE] [FLUENT_RELEASE_DIR] [FLUENT_PACKAGE_VERSION]
 
 Example:
-  $ $0 ls release-td-agent
-  $ $0 dry-download release-td-agent /tmp/td-agent-release
-  $ $0 download release-td-agent /tmp/td-agent-release
-  $ $0 dry-upload release-td-agent /tmp/td-agent-release
-  $ $0 upload release-td-agent /tmp/td-agent-release
-  $ $0 deb /tmp/td-agent-release 4.2.0
-  $ $0 rpm /tmp/td-agent-release 4.2.0
+  $ $0 ls fluentd-r2
+  $ $0 dry-download fluentd-r2 /tmp/fluent-package-release
+  $ $0 download fluentd-r2 /tmp/fluent-package-release
+  $ $0 dry-upload fluentd-r2 /tmp/fluent-package-release
+  $ $0 upload fluentd-r2 /tmp/fluent-package-release
+  $ $0 deb /tmp/fluent-package-release 6.0.0
+  $ $0 rpm /tmp/fluent-package-release 6.0.0
   $ $0 download-artifacts pull/587
 EOF
 }
@@ -42,7 +44,7 @@ case $COMMAND in
 	FLUENT_RELEASE_DIR=$2
 	FLUENT_PACKAGE_VERSION=$3
 	if [ -z "$FLUENT_PACKAGE_VERSION" ]; then
-	    echo "ERROR: No package version for releasing fluentd packages, (e.g export FLUENT_PACKAGE_VERSION=4.2.0)"
+	    echo -e "\e[37;41mERROR:\e[0m No package version for releasing fluentd packages, (e.g export FLUENT_PACKAGE_VERSION=4.2.0)"
 	    exit 1
 	fi
 	;;
@@ -61,7 +63,12 @@ case $COMMAND in
 	FLUENT_RELEASE_DIR=$3
 	FLUENT_PACKAGE_VERSION=$4
 	if [ -z "$FLUENT_RELEASE_PROFILE" ]; then
-	    echo "ERROR: No s3 profile for releasing fluentd packages"
+	    echo -e "\e[37;41mERROR:\e[0m No s3 profile for releasing fluentd packages"
+	    usage
+	    exit 1
+	fi
+	if [ -z "$AWS_ENDPOINT_URL_S3" ]; then
+	    echo -e "\e[37;41mERROR:\e[0m No AWS_ENDPOINT_URL_S3 environment variable"
 	    usage
 	    exit 1
 	fi
@@ -71,7 +78,7 @@ esac
 case $COMMAND in
     ls)
 	# check whether profile and permission is valid
-	command="aws s3 ls s3://packages.treasuredata.com --profile $FLUENT_RELEASE_PROFILE"
+	command="aws s3 ls s3://fluentd --profile $FLUENT_RELEASE_PROFILE"
 	echo $command
 	$command
 	;;
@@ -84,16 +91,16 @@ case $COMMAND in
 	for target in $TARGETS; do
 	    case $FLUENT_RELEASE_DIR in
 		*test/experimental/lts)
-		    command="aws s3 sync $DRYRUN_OPTION --delete $FLUENT_RELEASE_DIR/6/$target s3://packages.treasuredata.com/test/experimental/lts/6/$target --profile $FLUENT_RELEASE_PROFILE"
+		    command="aws s3 sync $DRYRUN_OPTION --delete $FLUENT_RELEASE_DIR/6/$target s3://fluentd/test/experimental/lts/6/$target --profile $FLUENT_RELEASE_PROFILE"
 		    ;;
 		*test/experimental)
-		    command="aws s3 sync $DRYRUN_OPTION --delete $FLUENT_RELEASE_DIR/6/$target s3://packages.treasuredata.com/test/experimental/6/$target --profile $FLUENT_RELEASE_PROFILE"
+		    command="aws s3 sync $DRYRUN_OPTION --delete $FLUENT_RELEASE_DIR/6/$target s3://fluentd/test/experimental/6/$target --profile $FLUENT_RELEASE_PROFILE"
 		    ;;
 		*lts)
-		    command="aws s3 sync $DRYRUN_OPTION --delete $FLUENT_RELEASE_DIR/6/$target s3://packages.treasuredata.com/lts/6/$target --profile $FLUENT_RELEASE_PROFILE"
+		    command="aws s3 sync $DRYRUN_OPTION --delete $FLUENT_RELEASE_DIR/6/$target s3://fluentd/lts/6/$target --profile $FLUENT_RELEASE_PROFILE"
 		    ;;
 		*)
-		    command="aws s3 sync $DRYRUN_OPTION --delete $FLUENT_RELEASE_DIR/6/$target s3://packages.treasuredata.com/6/$target --profile $FLUENT_RELEASE_PROFILE"
+		    command="aws s3 sync $DRYRUN_OPTION --delete $FLUENT_RELEASE_DIR/6/$target s3://fluentd/6/$target --profile $FLUENT_RELEASE_PROFILE"
 		    ;;
 	    esac
 	    echo $command
@@ -101,7 +108,7 @@ case $COMMAND in
 	done
 	;;
     dry-download|download)
-	VERSIONS="5"
+	VERSIONS="6"
 	DRYRUN_OPTION="--dryrun"
 	if [ $COMMAND = "download" ]; then
 	   DRYRUN_OPTION=""
@@ -109,16 +116,16 @@ case $COMMAND in
 	for target in $VERSIONS; do
 	    case $FLUENT_RELEASE_DIR in
 		*test/experimental/lts)
-		    command="aws s3 sync $DRYRUN_OPTION --delete s3://packages.treasuredata.com/test/experimental/lts/$target $FLUENT_RELEASE_DIR/$target --profile $FLUENT_RELEASE_PROFILE"
+		    command="aws s3 sync $DRYRUN_OPTION --delete s3://fluentd/test/experimental/lts/$target $FLUENT_RELEASE_DIR/$target --profile $FLUENT_RELEASE_PROFILE"
 		    ;;
 		*test/experimental)
-		    command="aws s3 sync $DRYRUN_OPTION --delete s3://packages.treasuredata.com/test/experimental/$target $FLUENT_RELEASE_DIR/$target --profile $FLUENT_RELEASE_PROFILE"
+		    command="aws s3 sync $DRYRUN_OPTION --delete s3://fluentd/test/experimental/$target $FLUENT_RELEASE_DIR/$target --profile $FLUENT_RELEASE_PROFILE"
 		    ;;
 		*lts)
-		    command="aws s3 sync $DRYRUN_OPTION --delete s3://packages.treasuredata.com/lts/$target $FLUENT_RELEASE_DIR/$target --profile $FLUENT_RELEASE_PROFILE"
+		    command="aws s3 sync $DRYRUN_OPTION --delete s3://fluentd/lts/$target $FLUENT_RELEASE_DIR/$target --profile $FLUENT_RELEASE_PROFILE"
 		    ;;
 		*)
-		    command="aws s3 sync $DRYRUN_OPTION --delete s3://packages.treasuredata.com/$target $FLUENT_RELEASE_DIR/$target --profile $FLUENT_RELEASE_PROFILE"
+		    command="aws s3 sync $DRYRUN_OPTION --delete s3://fluentd/$target $FLUENT_RELEASE_DIR/$target --profile $FLUENT_RELEASE_PROFILE"
 		    ;;
 	    esac
 	    echo $command
@@ -176,7 +183,7 @@ EOF
 	find $FLUENT_RELEASE_DIR/6 -name "*$FLUENT_PACKAGE_VERSION*.rpm" | xargs rpm --resign --define "_gpg_name $SIGNING_KEY"
 	# check whether packages are signed correctly.
 	find $FLUENT_RELEASE_DIR/6 -name "*$FLUENT_PACKAGE_VERSION*.rpm" | xargs rpm -K || \
-	    (echo "Import public key to verify: rpm --import https://s3.amazonaws.com/packages.treasuredata.com/GPG-KEY-fluent-package" && exit 1)
+	    (echo -e "\e[37;41mERROR:\e[0m Import public key to verify: rpm --import https://fluentd/GPG-KEY-fluent-package" && exit 1)
 
 	# update & sign rpm repository
 	repodirs=`find "${FLUENT_RELEASE_DIR}" -regex "^${FLUENT_RELEASE_DIR}/6/\(redhat\|amazon\)/\([2789]\|10\|2023\)/\(x86_64\|aarch64\)$"`
