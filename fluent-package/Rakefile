@@ -373,7 +373,7 @@ class UpdateLockfileTask
         require_relative '../lib/update-gems'
         cd gemfile_dir do
           options = {
-            lts: false,
+            lts: !!ENV['LTS'],
             replace: true,
             gemfile: 'Gemfile'
           }
