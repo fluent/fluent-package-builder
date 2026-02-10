@@ -168,6 +168,9 @@ mkdir -p %{buildroot}%{_sysconfdir}/@PACKAGE_DIR@/conf.d
 mkdir -p %{buildroot}/tmp/@PACKAGE_DIR@
 
 %pre
+# Ensure the working directory exists
+mkdir -p /tmp/@PACKAGE_DIR@/
+
 # Make sure the previous tmp files for auto restart does not remain.
 # Note:
 #   %preun (FROM-side) can create these files, but they will be removed in %posttrans (TO-side).
