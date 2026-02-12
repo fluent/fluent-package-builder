@@ -61,14 +61,15 @@ purge_bin_symlinks() {
 }
 
 purge_tmp_files_for_upgrade() {
-    rm -f "/tmp/<%= package_dir %>/.plugin_list"
-    rm -f "/tmp/<%= package_dir %>/.main_pid"
+    rm -f "/var/cache/<%= package_dir %>/.plugin_list"
+    rm -f "/var/cache/<%= package_dir %>/.main_pid"
 }
 
 case $1 in
     remove)
 	purge_var_run
 	purge_bin_symlinks
+	purge_working_dir
 	;;
     purge)
 	purge_conf_files
@@ -76,6 +77,7 @@ case $1 in
 	purge_var_log
 	purge_users
 	purge_bin_symlinks
+	purge_working_dir
 	;;
     upgrade)
         purge_tmp_files_for_upgrade

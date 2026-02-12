@@ -10,6 +10,10 @@ set -e
 # for details, see https://www.debian.org/doc/debian-policy/ or
 # the debian-policy package.
 
+make_sure_working_dir_exists() {
+    mkdir -p "/var/cache/<%= package_dir %>"
+}
+
 mark_auto_restart_ready() {
     # Copy tmp files made by FROM-side because they should be cleaned postrm of FROM-side.
     # (To ensure cleanup, tmp files should be cleaned by its own-side).
@@ -18,16 +22,30 @@ mark_auto_restart_ready() {
     #   2. TO-preinst(upgrade): Copy tmp files for TO-side.
     #   3. FROM-postrm(upgrade): Clean tmp files of FROM-side(1.).
     #   4. TO-postinst(configure): Use and clean tmp files of TO-side(2.).
+    if [ -f "/var/cache/<%= package_dir %>/.plugin_list" ]; then
+        cp "/var/cache/<%= package_dir %>/.plugin_list" "/var/cache/<%= package_dir %>/.previous_plugin_list"
+    fi
+    if [ -f "/var/cache/<%= package_dir %>/.main_pid" ]; then
+        cp "/var/cache/<%= package_dir %>/.main_pid" "/var/cache/<%= package_dir %>/.pid_for_auto_restart"
+    fi
+
+    # For compatibility with fluent-package 6.0.0 / 6.0.1
     if [ -f "/tmp/<%= package_dir %>/.plugin_list" ]; then
-        cp "/tmp/<%= package_dir %>/.plugin_list" "/tmp/<%= package_dir %>/.previous_plugin_list"
+        cp "/tmp/<%= package_dir %>/.plugin_list" "/var/cache/<%= package_dir %>/.previous_plugin_list"
     fi
     if [ -f "/tmp/<%= package_dir %>/.main_pid" ]; then
-        cp "/tmp/<%= package_dir %>/.main_pid" "/tmp/<%= package_dir %>/.pid_for_auto_restart"
+        cp "/tmp/<%= package_dir %>/.main_pid" "/var/cache/<%= package_dir %>/.pid_for_auto_restart"
     fi
+
+    # Ensure compatibility for downgrading to v6.0.0/6.0.1
+    mkdir -p "/tmp/<%= package_dir %>/"
+    cp "/var/cache/<%= package_dir %>/.previous_plugin_list" "/tmp/<%= package_dir %>/.previous_plugin_list"
+    cp "/var/cache/<%= package_dir %>/.pid_for_auto_restart" "/tmp/<%= package_dir %>/.pid_for_auto_restart"
 }
 
 case "$1" in
     upgrade)
+        make_sure_working_dir_exists
         mark_auto_restart_ready
 	;;
     abort-upgrade)

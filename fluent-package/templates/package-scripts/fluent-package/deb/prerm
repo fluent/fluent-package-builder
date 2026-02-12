@@ -44,9 +44,14 @@ leave_info_for_auto_restart_if_need() {
         return
     fi
 
-    /usr/sbin/fluent-gem list '^fluent-plugin-' --no-version --no-verbose > "/tmp/<%= package_dir %>/.plugin_list"
+    /usr/sbin/fluent-gem list '^fluent-plugin-' --no-version --no-verbose > "/var/cache/<%= package_dir %>/.plugin_list"
 
-    echo "$pid" > "/tmp/<%= package_dir %>/.main_pid"
+    echo "$pid" > "/var/cache/<%= package_dir %>/.main_pid"
+
+    # Ensure compatibility for downgrading to v6.0.0/6.0.1
+    mkdir -p "/tmp/<%= package_dir %>/"
+    cp "/var/cache/<%= package_dir %>/.plugin_list" "/tmp/<%= package_dir %>/.plugin_list"
+    cp "/var/cache/<%= package_dir %>/.main_pid" "/tmp/<%= package_dir %>/.main_pid"
 }
 
 case "$1" in

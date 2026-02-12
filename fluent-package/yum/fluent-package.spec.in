@@ -28,13 +28,13 @@
 # Omit check-rpath and brp-mangle-shebangs since we use our own Ruby
 %define __arch_install_post %{nil}
 %undefine __brp_mangle_shebangs
-%define v4migration /tmp/@PACKAGE_DIR@/.v4migration
-%define v4migration_with_restart /tmp/@PACKAGE_DIR@/.v4migration_with_restart
-%define v4migration_old_rotate_config_saved /tmp/@PACKAGE_DIR@/.old_rotate_config
-%define v4migration_enabled_service /tmp/@PACKAGE_DIR@/.v4migration_enabled_service
-%define local_base_plugins /tmp/@PACKAGE_DIR@/.local_base_plugins
-%define install_plugins /tmp/@PACKAGE_DIR@/.install_plugins
-%define pid_for_auto_restart /tmp/@PACKAGE_DIR@/.pid_for_auto_restart
+%define v4migration /var/cache/@PACKAGE_DIR@/.v4migration
+%define v4migration_with_restart /var/cache/@PACKAGE_DIR@/.v4migration_with_restart
+%define v4migration_old_rotate_config_saved /var/cache/@PACKAGE_DIR@/.old_rotate_config
+%define v4migration_enabled_service /var/cache/@PACKAGE_DIR@/.v4migration_enabled_service
+%define local_base_plugins /var/cache/@PACKAGE_DIR@/.local_base_plugins
+%define install_plugins /var/cache/@PACKAGE_DIR@/.install_plugins
+%define pid_for_auto_restart /var/cache/@PACKAGE_DIR@/.pid_for_auto_restart
 
 # Stop interrupting by bytecopile errors. The errors are causes on Amazon Linux 2 and CentOS 7.
 %global _python_bytecompile_errors_terminate_build 0
@@ -169,7 +169,7 @@ mkdir -p %{buildroot}/tmp/@PACKAGE_DIR@
 
 %pre
 # Ensure the working directory exists
-mkdir -p /tmp/@PACKAGE_DIR@/
+mkdir -p /var/cache/@PACKAGE_DIR@/
 
 # Make sure the previous tmp files for auto restart does not remain.
 # Note:
@@ -233,6 +233,11 @@ if [ $1 -eq 1 ]; then
       # Note: Wants to collect plugin-list here, but we need to do it in %pre (see comments in %pre).
       touch %{install_plugins}
       echo "$pid" > %{pid_for_auto_restart}
+
+      # Ensure compatibility for downgrading to v6.0.0/6.0.1
+      mkdir -p /tmp/@PACKAGE_DIR@/
+      cp %{install_plugins} /tmp/@PACKAGE_DIR@/.install_plugins
+      cp %{pid_for_auto_restart} /tmp/@PACKAGE_DIR@/.pid_for_auto_restart
     fi
   fi
 fi
@@ -395,6 +400,14 @@ if [ -f %{v4migration} ]; then
     systemctl restart @SERVICE_NAME@.service
     rm -f %{v4migration_with_restart}
   fi
+fi
+
+# For compatibility with fluent-package 6.0.0 / 6.0.1
+if [ -f "/tmp/@PACKAGE_DIR@/.pid_for_auto_restart" ]; then
+    cp "/tmp/@PACKAGE_DIR@/.pid_for_auto_restart" "%{pid_for_auto_restart}"
+fi
+if [ -f "/tmp/@PACKAGE_DIR@/.install_plugins" ]; then
+    cp "/tmp/@PACKAGE_DIR@/.install_plugins" "%{install_plugins}"
 fi
 if [ -f %{install_plugins} ] && [ -f %{local_base_plugins} ]; then
   local_current_plugins=$(/usr/sbin/fluent-gem list '^fluent-plugin-' --no-versions --no-verbose)
