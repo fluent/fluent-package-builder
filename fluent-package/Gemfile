@@ -15,21 +15,21 @@ source "https://rubygems.org"
 no_fat_gem = [:ruby]
 gem "rake"
 gem "bundler", BUNDLER_VERSION
-gem "cool.io", "1.9.0",  platforms: no_fat_gem
+gem "cool.io", "1.9.3",  platforms: no_fat_gem
 gem "sigdump", "0.2.5"
-gem "http_parser.rb", "0.8.0"
+gem "http_parser.rb", "0.8.1"
 gem "yajl-ruby", "1.4.3"
 gem "serverengine", "2.4.0"
 gem "msgpack", "1.8.0"
 gem "oj", "3.16.11"
 gem "tzinfo", "2.0.6"
-gem "tzinfo-data", "1.2025.2"
+gem "tzinfo-data", "1.2025.3"
 
 # Fluentd v1.19.0 requires io-event 1.10.x or before.
 # The dependency condition cannot be met with async >= 2.25
 gem "async", "2.24.0"
 gem "async-http", "0.89.0"
-gem "webrick", "1.9.1"
+gem "webrick", "1.9.2"
 
 if ENV["INSTALL_GEM_FROM_LOCAL_REPO"]
   # During build process, pre-built fluentd gem will be installed
@@ -88,7 +88,7 @@ gem "opensearch-ruby", "3.4.0"
 gem "fluent-plugin-opensearch", "1.1.5"
 gem "fluent-plugin-fluent-package-update-notifier", "0.2.3"
 gem "fluent-plugin-obsolete-plugins", "0.2.2"
-gem "fluent-plugin-opentelemetry", "0.4.0"
+gem "fluent-plugin-opentelemetry", "0.5.1"
 
 windows_platforms = [:mingw, :x64_mingw] # :mswin
 # ffi-win32-extensions doesn't support ffi 1.17.1 or later
@@ -104,11 +104,11 @@ gem "win32-ipc", "0.7.0", platforms: windows_platforms
 gem "winevt_c", "0.11.2", platforms: windows_platforms
 gem "win32-eventlog", "0.6.7", platforms: windows_platforms
 gem "fluent-plugin-parser-winevt_xml", "0.2.8", platforms: windows_platforms
-gem "fluent-plugin-windows-eventlog", "0.9.1", platforms: windows_platforms
+gem "fluent-plugin-windows-eventlog", "0.9.2", platforms: windows_platforms
 gem "fluent-plugin-windows-exporter", "1.0.0", platforms: windows_platforms
 
 not_windows_platforms = [:ruby]
-gem "capng_c", "0.2.3", platforms: not_windows_platforms
+gem "capng_c", "0.2.4", platforms: not_windows_platforms
 # Use newer bundled rdkafka with librdkafka 2.8.0 to support AlmaLinux 10
 # (librdkafka 2.8.0 supports "OpenSSL without the ENGINE component")
 # librdkafka 2.8.0 can't be built on CentOS 7.

@@ -9,10 +9,10 @@ GIT
 
 GIT
   remote: https://github.com/fluent/fluentd
-  revision: efdc4dca81c23480c9b55e13e55de6aa925b1cf5
-  ref: efdc4dca81c23480c9b55e13e55de6aa925b1cf5
+  revision: 76841666b4e4aade23f0c100a7e048995f7d52c8
+  ref: 76841666b4e4aade23f0c100a7e048995f7d52c8
   specs:
-    fluentd (1.19.1)
+    fluentd (1.19.2)
       async-http (~> 0.86)
       base64 (~> 0.2)
       bundler
@@ -24,12 +24,14 @@ GIT
       http_parser.rb (>= 0.5.1, < 0.9.0)
       logger (~> 1.6)
       msgpack (>= 1.3.1, < 2.0.0)
+      net-http (~> 0.8)
+      ostruct (~> 0.6)
       serverengine (>= 2.3.2, < 3.0.0)
       sigdump (~> 0.2.5)
       strptime (>= 0.2.4, < 1.0.0)
       tzinfo (>= 1.0, < 3.0)
       tzinfo-data (~> 1.0)
-      uri (~> 1.0, < 1.1.0)
+      uri (~> 1.0)
       webrick (~> 1.4)
       win32-event (~> 0.6.3)
       win32-ipc (~> 0.7.0)
@@ -40,8 +42,8 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    addressable (2.8.7)
-      public_suffix (>= 2.0.2, < 7.0)
+    addressable (2.8.8)
+      public_suffix (>= 2.0.2, < 8.0)
     async (2.24.0)
       console (~> 1.29)
       fiber-annotation
@@ -58,7 +60,7 @@ GEM
       protocol-http1 (~> 0.30)
       protocol-http2 (~> 0.22)
       traces (~> 0.10)
-    async-pool (0.11.0)
+    async-pool (0.11.1)
       async (>= 2.0)
     aws-eventstream (1.4.0)
     aws-partitions (1.1150.0)
@@ -85,16 +87,16 @@ GEM
     base64 (0.3.0)
     bigdecimal (3.2.3)
     bindata (2.4.15)
-    capng_c (0.2.3)
+    capng_c (0.2.4)
     certstore_c (0.1.7)
     cmetrics (0.3.3)
       mini_portile2 (~> 2.7)
-    concurrent-ruby (1.3.5)
+    concurrent-ruby (1.3.6)
     console (1.33.0)
       fiber-annotation
       fiber-local (~> 1.1)
       json
-    cool.io (1.9.0)
+    cool.io (1.9.3)
     csv (3.3.5)
     digest-crc (0.7.0)
       rake (>= 12.0.0, < 14.0.0)
@@ -108,7 +110,7 @@ GEM
       elasticsearch-api (= 8.19.2)
     elasticsearch-api (8.19.2)
       multi_json
-    excon (1.3.1)
+    excon (1.3.2)
       logger
     faraday (2.13.4)
       faraday-net_http (>= 2.0, < 3.5)
@@ -117,8 +119,8 @@ GEM
     faraday-excon (2.3.0)
       excon (>= 1.0.0)
       faraday (>= 2.11.0, < 3)
-    faraday-net_http (3.4.1)
-      net-http (>= 0.5.0)
+    faraday-net_http (3.4.2)
+      net-http (~> 0.5)
     faraday_middleware-aws-sigv4 (1.0.1)
       aws-sigv4 (~> 1.0)
       faraday (>= 2.0, < 3)
@@ -167,11 +169,13 @@ GEM
       faraday_middleware-aws-sigv4 (~> 1.0.1)
       fluentd (>= 0.14.22)
       opensearch-ruby (>= 3.0.1)
-    fluent-plugin-opentelemetry (0.4.0)
+    fluent-plugin-opentelemetry (0.5.1)
       async-http (~> 0.88)
       excon (~> 1.2)
       fluentd (~> 1.18)
+      get_process_mem (~> 1.0)
       google-protobuf (~> 4.30)
+      sys-proctable (~> 1.3)
     fluent-plugin-parser-winevt_xml (0.2.8)
       base64 (~> 0.2)
       csv (~> 3.2)
@@ -205,13 +209,16 @@ GEM
     fluent-plugin-webhdfs (1.6.0)
       fluentd (>= 0.14.22)
       webhdfs (>= 0.11.0)
-    fluent-plugin-windows-eventlog (0.9.1)
+    fluent-plugin-windows-eventlog (0.9.2)
       fluentd (>= 0.14.12, < 2)
       win32-eventlog
       winevt_c (>= 0.11.0)
     fluent-plugin-windows-exporter (1.0.0)
       bindata (~> 2.4)
       fluentd (>= 0.14.10, < 2)
+    get_process_mem (1.0.0)
+      bigdecimal (>= 2.0)
+      ffi (~> 1.0)
     google-protobuf (4.32.1-aarch64-linux-gnu)
       bigdecimal
       rake (>= 13)
@@ -222,7 +229,7 @@ GEM
       bigdecimal
       rake (>= 13)
     hirb (0.7.3)
-    http_parser.rb (0.8.0)
+    http_parser.rb (0.8.1)
     httpclient (2.9.0)
       mutex_m
     io-endpoint (0.15.2)
@@ -239,8 +246,8 @@ GEM
     msgpack (1.8.0)
     multi_json (1.17.0)
     mutex_m (0.3.0)
-    net-http (0.6.0)
-      uri
+    net-http (0.8.0)
+      uri (>= 0.11.1)
     net-scp (4.1.0)
       net-ssh (>= 2.6.5, < 8.0.0)
     net-ssh (7.3.0)
@@ -290,7 +297,9 @@ GEM
       net-telnet
       sfl
     strptime (0.2.5)
-    systemd-journal (2.1.1)
+    sys-proctable (1.3.0)
+      ffi (~> 1.1)
+    systemd-journal (2.1.2)
       ffi (~> 1.9)
     td (0.19.1)
       csv
@@ -316,12 +325,12 @@ GEM
     traces (0.18.2)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
-    tzinfo-data (1.2025.2)
+    tzinfo-data (1.2025.3)
       tzinfo (>= 1.0.0)
     uri (1.0.4)
     webhdfs (0.11.0)
       addressable
-    webrick (1.9.1)
+    webrick (1.9.2)
     win32-event (0.6.3)
       win32-ipc (>= 0.6.0)
     win32-eventlog (0.6.7)
@@ -349,9 +358,9 @@ DEPENDENCIES
   aws-sdk-sqs (= 1.101.0)
   aws-sigv4 (= 1.12.1)
   bundler (= 2.3.27)
-  capng_c (= 0.2.3)
+  capng_c (= 0.2.4)
   cmetrics (= 0.3.3)
-  cool.io (= 1.9.0)
+  cool.io (= 1.9.3)
   digest-murmurhash (= 1.1.1)
   elasticsearch (= 8.19.2)
   ffi (= 1.17.0)
@@ -365,7 +374,7 @@ DEPENDENCIES
   fluent-plugin-metrics-cmetrics (= 0.1.2)
   fluent-plugin-obsolete-plugins (= 0.2.2)
   fluent-plugin-opensearch (= 1.1.5)
-  fluent-plugin-opentelemetry (= 0.4.0)
+  fluent-plugin-opentelemetry (= 0.5.1)
   fluent-plugin-parser-winevt_xml (= 0.2.8)
   fluent-plugin-prometheus (= 2.2.1)
   fluent-plugin-prometheus_pushgateway (= 0.2.1)
@@ -377,10 +386,10 @@ DEPENDENCIES
   fluent-plugin-td (= 1.2.0)
   fluent-plugin-utmpx (= 0.5.0)
   fluent-plugin-webhdfs (= 1.6.0)
-  fluent-plugin-windows-eventlog (= 0.9.1)
+  fluent-plugin-windows-eventlog (= 0.9.2)
   fluent-plugin-windows-exporter (= 1.0.0)
   fluentd!
-  http_parser.rb (= 0.8.0)
+  http_parser.rb (= 0.8.1)
   httpclient (= 2.9.0)
   jmespath (= 1.6.2)
   mini_portile2 (= 2.8.9)
@@ -397,9 +406,9 @@ DEPENDENCIES
   td (= 0.19.1)
   td-client (= 3.0.0)
   tzinfo (= 2.0.6)
-  tzinfo-data (= 1.2025.2)
+  tzinfo-data (= 1.2025.3)
   webhdfs (= 0.11.0)
-  webrick (= 1.9.1)
+  webrick (= 1.9.2)
   win32-event (= 0.6.3)
   win32-eventlog (= 0.6.7)
   win32-ipc (= 0.7.0)
