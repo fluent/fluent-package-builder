@@ -1,51 +1,50 @@
-From 5eaeb61c45f17b38f537b4207648f6b254987e30 Mon Sep 17 00:00:00 2001
-From: Shizuo Fujita <fujita@clear-code.com>
-Date: Fri, 25 Jul 2025 11:09:35 +0900
+From c8d4773262556bcd0ba7b47f67efcd3d30b6946d Mon Sep 17 00:00:00 2001
+From: Kentaro Hayashi <hayashi@clear-code.com>
+Date: Fri, 13 Feb 2026 15:21:38 +0900
 Subject: [PATCH] Bump version to v7.0.0
 
-Signed-off-by: Shizuo Fujita <fujita@clear-code.com>
+Signed-off-by: Kentaro Hayashi <hayashi@clear-code.com>
 ---
  fluent-package/config.rb                  | 10 +++++-----
  fluent-package/debian/changelog           |  6 ++++++
- fluent-package/msi/Dockerfile             |  2 +-
  fluent-package/yum/fluent-package.spec.in |  3 +++
- 4 files changed, 15 insertions(+), 6 deletions(-)
+ 3 files changed, 14 insertions(+), 5 deletions(-)
 
 diff --git a/fluent-package/config.rb b/fluent-package/config.rb
-index c681f3b4..efcdc09e 100644
+index bbecffb..ddc0dec 100644
 --- a/fluent-package/config.rb
 +++ b/fluent-package/config.rb
 @@ -1,5 +1,5 @@
  PACKAGE_NAME = "fluent-package"
--PACKAGE_VERSION = "6.0.1"
+-PACKAGE_VERSION = "6.0.2"
 +PACKAGE_VERSION = "7.0.0"
  
  # Keep internal path (/opt/td-agent) for package name migration
  SERVICE_NAME = "fluentd"
-@@ -23,8 +23,8 @@
+@@ -23,8 +23,8 @@ OPENSSL_FOR_MACOS_SHA256SUM = "6c13d2bf38fdf31eac3ce2a347073673f5d63263398f1f69d
  BUNDLER_VERSION= "2.3.27"
  
  # https://www.ruby-lang.org/en/downloads/ (tar.gz)
--BUNDLED_RUBY_VERSION = "3.4.7"
--BUNDLED_RUBY_SOURCE_SHA256SUM = "23815a6d095696f7919090fdc3e2f9459b2c83d57224b2e446ce1f5f7333ef36"
-+BUNDLED_RUBY_VERSION = "3.3.8"
-+BUNDLED_RUBY_SOURCE_SHA256SUM = "5ae28a87a59a3e4ad66bc2931d232dbab953d0aa8f6baf3bc4f8f80977c89cab"
+-BUNDLED_RUBY_VERSION = "3.4.8"
+-BUNDLED_RUBY_SOURCE_SHA256SUM = "53c4ddad41fbb6189f1f5ee0db57a51d54bd1f87f8755b3d68604156a35b045b"
++BUNDLED_RUBY_VERSION = "4.0.1"
++BUNDLED_RUBY_SOURCE_SHA256SUM = "3924be2d05db30f4e35f859bf028be85f4b7dd01714142fd823e4af5de2faf9d"
  
  BUNDLED_RUBY_PATCHES = [
    # An example entry:
-@@ -32,8 +32,8 @@
+@@ -32,8 +32,8 @@ BUNDLED_RUBY_PATCHES = [
  ]
  
  # https://rubyinstaller.org/downloads/ (7-ZIP ARCHIVES)
--BUNDLED_RUBY_INSTALLER_X64_VERSION = "3.4.7-1"
--BUNDLED_RUBY_INSTALLER_X64_SHA256SUM = "955678a8373c23e53032ac10f730a06120c7d3b956074020e57ca8b99b8930d4"
-+BUNDLED_RUBY_INSTALLER_X64_VERSION = "3.3.8-1"
-+BUNDLED_RUBY_INSTALLER_X64_SHA256SUM = "2aa7d8fa7bc527b7373b91c75fae9549f5926fa918ba808b8744c1f0d8ad9f52"
+-BUNDLED_RUBY_INSTALLER_X64_VERSION = "3.4.8-1"
+-BUNDLED_RUBY_INSTALLER_X64_SHA256SUM = "d1c3ba83ae748c08e35e0b1d9939d45dbca7925e0a8bf84a42860bf19847e0d6"
++BUNDLED_RUBY_INSTALLER_X64_VERSION = "4.0.1-1"
++BUNDLED_RUBY_INSTALLER_X64_SHA256SUM = "45cd5ac6aa0fdd976acbc0b0c768e38e8f5357b1b07d2c803cccafd7de758fb1"
  
  # Files under rubyinstaller/ are patches for RubyInstaller's binary package.
  # Other patches for Ruby's source tree which can be shared with BUNDLED_RUBY_PATCHES.
 diff --git a/fluent-package/debian/changelog b/fluent-package/debian/changelog
-index f2828f27..6ede1213 100644
+index 56073b5..3c760ab 100644
 --- a/fluent-package/debian/changelog
 +++ b/fluent-package/debian/changelog
 @@ -1,3 +1,9 @@
@@ -55,24 +54,11 @@ index f2828f27..6ede1213 100644
 +
 + -- Shizuo Fujita <fujita@clear-code.com>  Sun, 29 Aug 2027 13:55:06 -0000
 +
- fluent-package (6.0.1-1) unstable; urgency=low
+ fluent-package (6.0.2-1) unstable; urgency=low
  
    * New upstream release.
-diff --git a/fluent-package/msi/Dockerfile b/fluent-package/msi/Dockerfile
-index a064784f..99c36c67 100644
---- a/fluent-package/msi/Dockerfile
-+++ b/fluent-package/msi/Dockerfile
-@@ -32,7 +32,7 @@ RUN \
-   # Required CMake 3.x to build cmetrics gem
-   choco install -y cmake --version=3.31.6 --installargs 'ADD_CMAKE_TO_PATH=System' && \
-   choco install -y msys2 --params /NoUpdate --version=20250221.0.0 && \
--  choco install ruby -y --version=3.4.4.2 && \
-+  choco install ruby -y --version=3.3.8.1 && \
-   refreshenv && \
-   ridk install 3 && \
-   gem install --no-document --force bundler builder
 diff --git a/fluent-package/yum/fluent-package.spec.in b/fluent-package/yum/fluent-package.spec.in
-index 47d5404c..d4f56f43 100644
+index 9e3e81f..a663057 100644
 --- a/fluent-package/yum/fluent-package.spec.in
 +++ b/fluent-package/yum/fluent-package.spec.in
 @@ -448,6 +448,9 @@ fi
@@ -82,7 +68,7 @@ index 47d5404c..d4f56f43 100644
 +* Sun Aug 29 2027 Shizuo Fujita <fujita@clear-code.com> - 7.0.0-1
 +- New upstream release.
 +
- * Tue Nov 11 2025 Shizuo Fujita <fujita@clear-code.com> - 6.0.1-1
+ * Fri Feb 27 2026 Kentaro Hayashi <hayashi@clear-code.com> - 6.0.2-1
  - New upstream release.
  
 -- 
