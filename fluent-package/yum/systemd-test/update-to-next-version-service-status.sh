@@ -4,6 +4,11 @@ set -exu
 
 . $(dirname $0)/common.sh
 
+if [ "$distribution" = "amazon" ]; then
+    sudo $DNF repolist -v
+    sudo $DNF --releasever=latest update -y
+fi
+
 enabled_before_update=$1 # enabled / disabled
 status_before_update=$2 # active / inactive
 
