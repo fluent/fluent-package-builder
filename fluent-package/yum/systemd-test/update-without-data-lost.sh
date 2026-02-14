@@ -4,6 +4,11 @@ set -exu
 
 . $(dirname $0)/common.sh
 
+if [ "$distribution" = "amazon" ]; then
+    sudo $DNF repolist -v
+    sudo $DNF --releasever=latest update -y
+fi
+
 v6_package="/host/${distribution}/${DISTRIBUTION_VERSION}/x86_64/Packages/fluent-package-*.rpm"
 v7_package="/host/v7-test/${distribution}/${DISTRIBUTION_VERSION}/x86_64/Packages/fluent-package-*.rpm"
 
