@@ -2,7 +2,7 @@ $ErrorActionPreference = 'Stop'
 
 $PSVersionTable
 
-$base_uri = "http://packages.treasuredata.com.s3.amazonaws.com"
+$base_uri = "https://fluentd.cdn.cncf.io"
 &git fetch --unshallow
 $previous_version = (git describe --abbrev=0 --tags) -Replace "v",""
 $major_version = ([version] $previous_version).Major
@@ -12,7 +12,7 @@ try {
     $response = Invoke-WebRequest -UseBasicParsing -Uri "${base_uri}/${major_version}/windows/${previous_msi_name}" -OutFile $previous_msi_name -PassThru
 }
 catch {
-    $heroku_uri = 'http://td-agent-package-browser.herokuapp.com'
+    $heroku_uri = 'https://td-agent-package-browser.herokuapp.com'
     Write-Host "An exception was caught: $($_.Exception.Message). Try to find previous version in ${heroku_uri} instead"
     "Checking package major version: {0}" -F $major_version | Write-Host
     "Checking {0}/{1}/windows" -F $heroku_uri, $major_version | Write-Host
