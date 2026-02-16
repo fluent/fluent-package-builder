@@ -353,6 +353,9 @@ if [ $1 -eq 0 ]; then
   if [ -h /var/log/@COMPAT_PACKAGE_DIR@ ]; then
     rm -f /var/log/@COMPAT_PACKAGE_DIR@
   fi
+  if [ -d /var/cache/@PACKAGE_DIR@ ]; then
+    rm -rf /var/cache/@PACKAGE_DIR@
+  fi
 fi
 
 %posttrans

@@ -65,6 +65,10 @@ purge_tmp_files_for_upgrade() {
     rm -f "/var/cache/<%= package_dir %>/.main_pid"
 }
 
+purge_working_dir() {
+    rm -rf "/var/cache/<%= package_dir %>/"
+}
+
 case $1 in
     remove)
 	purge_var_run
