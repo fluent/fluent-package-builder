@@ -90,6 +90,9 @@ gem "fluent-plugin-fluent-package-update-notifier", "0.2.3"
 gem "fluent-plugin-obsolete-plugins", "0.2.2"
 gem "fluent-plugin-opentelemetry", "0.5.1"
 
+# fix CVE-2026-25765 for elasticseach and opensearch
+gem "faraday", "2.14.1"
+
 windows_platforms = [:mingw, :x64_mingw] # :mswin
 # ffi-win32-extensions doesn't support ffi 1.17.1 or later
 gem "ffi", "1.17.0", platforms: windows_platforms
