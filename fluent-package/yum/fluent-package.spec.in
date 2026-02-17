@@ -178,6 +178,11 @@ mkdir -p /var/cache/@PACKAGE_DIR@/
 #   In the future, want to figure out a more secure way to manage tmp files...
 rm -f %{install_plugins}
 rm -f %{pid_for_auto_restart}
+# For compatibility with fluent-package 6.0.0 / 6.0.1
+if [ -d /tmp/@PACKAGE_DIR@/ ]; then
+    rm -f /tmp/@PACKAGE_DIR@/.install_plugins
+    rm -f /tmp/@PACKAGE_DIR@/.pid_for_auto_restart
+fi
 
 if ! getent group @COMPAT_SERVICE_NAME@ >/dev/null; then
     if ! getent group @SERVICE_NAME@ >/dev/null; then

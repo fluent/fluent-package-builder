@@ -63,6 +63,11 @@ purge_bin_symlinks() {
 purge_tmp_files_for_upgrade() {
     rm -f "/var/cache/<%= package_dir %>/.plugin_list"
     rm -f "/var/cache/<%= package_dir %>/.main_pid"
+    # For compatibility with fluent-package 6.0.0 / 6.0.1
+    if [ -d "/tmp/<%= package_dir %>/" ]; then
+        rm -f "/tmp/<%= package_dir %>/.plugin_list"
+        rm -f "/tmp/<%= package_dir %>/.main_pid"
+    fi
 }
 
 purge_working_dir() {
