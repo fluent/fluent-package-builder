@@ -252,7 +252,7 @@ if [ $1 -eq 1 ]; then
 	for d in /etc/@COMPAT_PACKAGE_DIR@/*; do
             if [ ! "$d" = "/etc/@COMPAT_PACKAGE_DIR@/plugin" ]; then
 		# except managed under deb files must be migrated
-		echo "Migrating from /etc/@COMPAT_PACKAGE_DIR@/$d to /etc/<%= package_dir %>/..."
+		echo "Migrating from /etc/@COMPAT_PACKAGE_DIR@/$d to /etc/@PACKAGE_DIR@/..."
 		mv -f "$d" /etc/@PACKAGE_DIR@/
             fi
 	done
