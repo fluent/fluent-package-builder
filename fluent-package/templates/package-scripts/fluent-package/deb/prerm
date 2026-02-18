@@ -44,6 +44,7 @@ leave_info_for_auto_restart_if_need() {
         return
     fi
 
+    mkdir -p "/var/cache/<%= package_dir %>"
     /usr/sbin/fluent-gem list '^fluent-plugin-' --no-version --no-verbose > "/var/cache/<%= package_dir %>/.plugin_list"
 
     echo "$pid" > "/var/cache/<%= package_dir %>/.main_pid"
