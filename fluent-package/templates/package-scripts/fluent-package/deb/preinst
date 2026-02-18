@@ -39,8 +39,12 @@ mark_auto_restart_ready() {
 
     # Ensure compatibility for downgrading to v6.0.0/6.0.1
     mkdir -p "/tmp/<%= package_dir %>/"
-    cp "/var/cache/<%= package_dir %>/.previous_plugin_list" "/tmp/<%= package_dir %>/.previous_plugin_list"
-    cp "/var/cache/<%= package_dir %>/.pid_for_auto_restart" "/tmp/<%= package_dir %>/.pid_for_auto_restart"
+    if [ -f "/var/cache/<%= package_dir %>/.previous_plugin_list" ]; then
+        cp "/var/cache/<%= package_dir %>/.previous_plugin_list" "/tmp/<%= package_dir %>/.previous_plugin_list"
+    fi
+    if [ -f "/var/cache/<%= package_dir %>/.pid_for_auto_restart" ]; then
+        cp "/var/cache/<%= package_dir %>/.pid_for_auto_restart" "/tmp/<%= package_dir %>/.pid_for_auto_restart"
+    fi
 }
 
 case "$1" in
