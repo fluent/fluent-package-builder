@@ -1,3 +1,9 @@
+fluent-package (6.0.2-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Kentaro Hayashi <hayashi@clear-code.com>  Fri, 27 Feb 2026 04:51:09 -0000
+
 fluent-package (6.0.1-1) unstable; urgency=low
 
   * New upstream release.
