@@ -12,6 +12,7 @@ set -e
 
 make_sure_working_dir_exists() {
     mkdir -p "/var/cache/<%= package_dir %>"
+    mkdir -p "/tmp/<%= package_dir %>"
 }
 
 mark_auto_restart_ready() {
@@ -38,7 +39,6 @@ mark_auto_restart_ready() {
     fi
 
     # Ensure compatibility for downgrading to v6.0.0/6.0.1
-    mkdir -p "/tmp/<%= package_dir %>/"
     if [ -f "/var/cache/<%= package_dir %>/.previous_plugin_list" ]; then
         cp "/var/cache/<%= package_dir %>/.previous_plugin_list" "/tmp/<%= package_dir %>/.previous_plugin_list"
     fi
