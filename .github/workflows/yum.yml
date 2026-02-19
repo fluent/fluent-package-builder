@@ -152,29 +152,6 @@ jobs:
           --env CENTOS_STREAM=${{ matrix.centos-stream }} \
           ${{ matrix.test-docker-image }} \
           /fluentd/fluent-package/yum/serverspec-test.sh
-  confluent_test:
-    name: Confluent Test
-    runs-on: ubuntu-latest
-    needs: [define-matrix, build]
-    strategy:
-      fail-fast: false
-      matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
-        with:
-          name: packages-${{ matrix.rake-job }}
-          path: fluent-package/yum/repositories
-      - name: Confluent Test
-        run: |
-          mkdir -p .bundle
-          docker run \
-          --rm \
-          --tty \
-          --env CI=true \
-          --volume ${PWD}:/fluentd:ro \
-          ${{ matrix.test-docker-image }} \
-          /fluentd/fluent-package/yum/confluent-test.sh
   binstubs_test:
     name: Binstubs Test
     runs-on: ubuntu-latest
@@ -378,6 +355,30 @@ jobs:
           sudo incus admin init --auto
       - name: Run Test ${{ matrix.test }} on ${{ matrix.test-incus-image }}
         run: fluent-package/yum/systemd-test/test.sh ${{ matrix.test-incus-image }} ${{ matrix.test }}
+
+  confluent_test:
+    name: Confluent Test
+    runs-on: ubuntu-latest
+    needs: [define-matrix, v2test]
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: packages-${{ matrix.rake-job }}
+          path: fluent-package/yum/repositories
+      - name: Confluent Test
+        run: |
+          mkdir -p .bundle
+          docker run \
+          --rm \
+          --tty \
+          --env CI=true \
+          --volume ${PWD}:/fluentd:ro \
+          ${{ matrix.test-docker-image }} \
+          /fluentd/fluent-package/yum/confluent-test.sh
 
   fluent-release-test:
     name: Test ${{ matrix.label }} ${{ matrix.test }} (CGroup V2)
