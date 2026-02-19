@@ -43,7 +43,7 @@ leave_info_for_auto_restart_if_need() {
 
     echo "$pid" > "/var/cache/<%= package_dir %>/.main_pid"
 
-    # Ensure compatibility for downgrading to v6.0.0/6.0.1
+    # Ensure compatibility for downgrading to 6.0.0 / 6.0.1
     cp "/var/cache/<%= package_dir %>/.plugin_list" "/tmp/<%= package_dir %>/.plugin_list"
     cp "/var/cache/<%= package_dir %>/.main_pid" "/tmp/<%= package_dir %>/.main_pid"
 }

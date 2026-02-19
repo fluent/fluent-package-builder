@@ -38,7 +38,7 @@ mark_auto_restart_ready() {
         cp "/tmp/<%= package_dir %>/.main_pid" "/var/cache/<%= package_dir %>/.pid_for_auto_restart"
     fi
 
-    # Ensure compatibility for downgrading to v6.0.0/6.0.1
+    # Ensure compatibility for downgrading to 6.0.0 / 6.0.1
     if [ -f "/var/cache/<%= package_dir %>/.previous_plugin_list" ]; then
         cp "/var/cache/<%= package_dir %>/.previous_plugin_list" "/tmp/<%= package_dir %>/.previous_plugin_list"
     fi

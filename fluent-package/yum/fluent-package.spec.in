@@ -239,7 +239,7 @@ if [ $1 -eq 1 ]; then
       touch %{install_plugins}
       echo "$pid" > %{pid_for_auto_restart}
 
-      # Ensure compatibility for downgrading to v6.0.0/6.0.1
+      # Ensure compatibility for downgrading to 6.0.0 / 6.0.1
       mkdir -p /tmp/@PACKAGE_DIR@/
       cp %{install_plugins} /tmp/@PACKAGE_DIR@/.install_plugins
       cp %{pid_for_auto_restart} /tmp/@PACKAGE_DIR@/.pid_for_auto_restart
