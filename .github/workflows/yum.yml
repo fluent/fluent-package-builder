@@ -255,7 +255,7 @@ jobs:
 
   v2test:
     name: Test ${{ matrix.label }} ${{ matrix.test }} (CGroup V2)
-    needs: [define-matrix, check_package_size, installation_test, serverspec_test, confluent_test, binstubs_test]
+    needs: [define-matrix, check_package_size, installation_test, serverspec_test, binstubs_test]
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
@@ -413,3 +413,61 @@ jobs:
         run: ./fluent-package/test-tools/setup-incus.sh
       - name: Run Test ${{matrix.test}} on ${{ matrix.test-incus-image }}
         run: fluent-lts-release/yum/systemd-test/test.sh ${{ matrix.test-incus-image }} ${{ matrix.test }}
+
+  elasticsearch_test:
+    name: Elasticsearch Test ${{ matrix.label }} ${{ matrix.test }}
+    needs: [define-matrix, v2test]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: packages-${{ matrix.rake-job }}
+      - name: Setup Incus
+        run: ./fluent-package/test-tools/setup-incus.sh
+      - name: Setup Elasticsearch on host
+        run: |
+          docker run -d -p 9200:9200 -e "discovery.type=single-node" -e "xpack.security.enabled=false" docker.elastic.co/elasticsearch/elasticsearch:8.19.11
+      - name: Copy elasticsearch.conf
+        run: cp fluent-package/test-tools/elasticsearch.conf fluent-package/yum/systemd-test
+      - name: Ensure elasticsearch availability from host
+        run: |
+          until curl --silent "http://localhost:9200/_cluster/health" | jq --raw-output ".status // empty" | grep -E "yellow|green"; do
+            sleep 5
+          done
+          curl --silent "http://localhost:9200/_cat/indices?v"
+      - name: Run Test elasticsearch.sh on ${{ matrix.test-incus-image }}
+        run: fluent-package/yum/systemd-test/test.sh ${{ matrix.test-incus-image }} elasticsearch.sh
+
+  opensearch_test:
+    name: Opensearch Test ${{ matrix.label }}
+    needs: [define-matrix, v2test]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: packages-${{ matrix.rake-job }}
+      - name: Setup Incus
+        run: ./fluent-package/test-tools/setup-incus.sh
+      - name: Setup Opensearch on host
+        run: |
+          docker run -d -p 9200:9200 -p 9600:9600 \
+            -e "discovery.type=single-node" -e OPENSEARCH_INITIAL_ADMIN_PASSWORD=Passvv0rd@ opensearchproject/opensearch:2
+      - name: Copy opensearch.conf
+        run: cp fluent-package/test-tools/opensearch.conf fluent-package/yum/systemd-test
+      - name: Ensure Opensearch availability from host
+        run: |
+          until curl --silent --insecure --user "admin:Passvv0rd@" \
+                "https://localhost:9200/_cluster/health" | jq --raw-output ".status // empty" | grep -E "yellow|green"; do
+            sleep 5
+          done
+          curl --silent --insecure --user "admin:Passvv0rd@" "https://localhost:9200/_cat/indices?v"
+      - name: Run Test opensearch.sh on ${{ matrix.test-incus-image }}
+        run: fluent-package/yum/systemd-test/test.sh ${{ matrix.test-incus-image }} opensearch.sh
