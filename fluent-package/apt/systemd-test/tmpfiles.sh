@@ -31,3 +31,12 @@ touch -d "2 months ago" /tmp/fluentd-lock-*
 sudo systemd-tmpfiles --clean
 ls -d /tmp/fluent
 ls -d /tmp/fluentd-lock-*
+
+# The update should succeed even if the working directory does not exist
+# https://github.com/fluent/fluent-package-builder/pull/955
+systemctl stop fluentd
+rm -rf /tmp/fluent/
+
+# Install next major version
+sudo apt install -V -y \
+    /host/v7-test/${distribution}/pool/${code_name}/${channel}/*/*/fluent-package_*_${architecture}.deb 2>&1 | tee upgrade.log
