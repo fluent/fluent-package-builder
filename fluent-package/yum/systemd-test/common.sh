@@ -134,3 +134,21 @@ function install_v6_lts()
       ;;
   esac
 }
+
+function install_aws_cli()
+{
+    ARCH=$(rpm --eval '%{_arch}')
+    case $ARCH in
+        x86_64)
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            ;;
+        arm*)
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip" -o "awscliv2.zip"
+            ;;
+        *)
+            ;;
+    esac
+    sudo $DNF install -y unzip
+    unzip awscliv2.zip
+    sudo ./aws/install
+}
