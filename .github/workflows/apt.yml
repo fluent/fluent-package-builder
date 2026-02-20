@@ -236,6 +236,7 @@ jobs:
           - "update-from-v5-lts.sh"
           - "downgrade-to-v4.sh"
           - "downgrade-to-v5-lts.sh"
+          - "downgrade-to-v6-lts-tmpfiles.sh"
           - "install-newly.sh local"
           - "install-newly.sh v6"
           - "install-newly.sh lts"
