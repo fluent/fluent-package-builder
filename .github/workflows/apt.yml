@@ -196,7 +196,7 @@ jobs:
           /fluentd/fluent-package/apt/binstubs-test.sh
   test:
     name: Test ${{ matrix.label }} ${{ matrix.test }}
-    needs: [check_package_size, installation_test, piuparts_test, serverspec_test, confluent_test, binstubs_test]
+    needs: [check_package_size, installation_test, piuparts_test, serverspec_test, binstubs_test]
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
@@ -320,3 +320,28 @@ jobs:
           --volume ${PWD}:/fluentd:ro \
           ${{ matrix.test-docker-image }} \
           /fluentd/fluent-package/apt/confluent-test.sh
+
+  s3_test:
+    name: S3 Test (${{ matrix.label }} s3.sh
+    needs: [define-matrix, test]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: packages-${{ matrix.rake-job }}
+      - name: Setup Incus
+        run: ./fluent-package/test-tools/setup-incus.sh
+      - name: Setup localstack on host
+        run: |
+          docker run -d --name localstack -p 4566:4566 \
+            -e AWS_ACCESS_KEY_ID=localstack-test -e AWS_SECRET_ACCESS_KEY=localstack-test -e AWS_DEFAULT_REGION=ap-northeast-1 localstack/localstack:4.13.1
+      - name: Copy s3.conf
+        run: cp fluent-package/test-tools/s3.conf fluent-package/apt/systemd-test
+      - name: Ensure localstack availability from host
+        run: sleep 10 && curl http://127.0.0.1:4566/_localstack/health
+      - name: Run Test ${{matrix.test}} on ${{ matrix.test-incus-image }}
+        run: fluent-package/apt/systemd-test/test.sh ${{ matrix.test-incus-image }} s3.sh
