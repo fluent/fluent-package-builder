@@ -293,17 +293,7 @@ jobs:
         with:
           name: packages-apt-source-${{ matrix.rake-job }}
       - name: Setup Incus
-        run: |
-          sudo apt update
-          sudo apt install -y -V incus
-      - name: Allow egress network traffic flows for Incus
-        # https://linuxcontainers.org/incus/docs/main/howto/network_bridge_firewalld/#prevent-connectivity-issues-with-incus-and-docker
-        run: |
-          sudo iptables -I DOCKER-USER -i incusbr0 -j ACCEPT
-          sudo iptables -I DOCKER-USER -o incusbr0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
-      - name: Setup Incus
-        run: |
-          sudo incus admin init --auto
+        run: ./fluent-package/test-tools/setup-incus.sh
       - name: Run Test  ${{ matrix.test }} on ${{ matrix.container-image }}
         run: fluent-package/apt/systemd-test/test.sh ${{ matrix.container-image }} ${{ matrix.test }}
 
