@@ -3,22 +3,26 @@
     {
       "label": "Debian bookworm amd64",
       "rake-job": "debian-bookworm",
-      "test-docker-image": "debian:bookworm"
+      "test-docker-image": "debian:bookworm",
+      "test-incus-image": "images:debian/12"
     },
     {
       "label": "Debian trixie amd64",
       "rake-job": "debian-trixie",
-      "test-docker-image": "debian:trixie"
+      "test-docker-image": "debian:trixie",
+      "test-incus-image": "images:debian/13"
     },
     {
       "label": "Ubuntu Jammy amd64",
       "rake-job": "ubuntu-jammy",
-      "test-docker-image": "ubuntu:jammy"
+      "test-docker-image": "ubuntu:jammy",
+      "test-incus-image": "images:ubuntu/22.04"
     },
     {
       "label": "Ubuntu Noble amd64",
       "rake-job": "ubuntu-noble",
-      "test-docker-image": "ubuntu:noble"
+      "test-docker-image": "ubuntu:noble",
+      "test-incus-image": "images:ubuntu/24.04"
     }
   ]
 }

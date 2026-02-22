@@ -255,7 +255,7 @@ jobs:
 
   v2test:
     name: Test ${{ matrix.label }} ${{ matrix.test }} (CGroup V2)
-    needs: [define-matrix, check_package_size, installation_test, serverspec_test, confluent_test, binstubs_test]
+    needs: [define-matrix, check_package_size, installation_test, serverspec_test, binstubs_test]
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
@@ -341,18 +341,8 @@ jobs:
         with:
           name: v7-packages-${{ matrix.rake-job }}
           path: v7-test
-      - name: Install Incus
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y -V incus
-      - name: Allow egress network traffic flows for Incus
-        # https://linuxcontainers.org/incus/docs/main/howto/network_bridge_firewalld/#prevent-connectivity-issues-with-incus-and-docker
-        run: |
-          sudo iptables -I DOCKER-USER -i incusbr0 -j ACCEPT
-          sudo iptables -I DOCKER-USER -o incusbr0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
       - name: Setup Incus
-        run: |
-          sudo incus admin init --auto
+        run: ./fluent-package/test-tools/setup-incus.sh
       - name: Run Test ${{ matrix.test }} on ${{ matrix.test-incus-image }}
         run: fluent-package/yum/systemd-test/test.sh ${{ matrix.test-incus-image }} ${{ matrix.test }}
 
@@ -397,18 +387,8 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: packages-release-${{ matrix.rake-job }}
-      - name: Install Incus
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y -V incus
-      - name: Allow egress network traffic flows for Incus
-        # https://linuxcontainers.org/incus/docs/main/howto/network_bridge_firewalld/#prevent-connectivity-issues-with-incus-and-docker
-        run: |
-          sudo iptables -I DOCKER-USER -i incusbr0 -j ACCEPT
-          sudo iptables -I DOCKER-USER -o incusbr0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
       - name: Setup Incus
-        run: |
-          sudo incus admin init --auto
+        run: ./fluent-package/test-tools/setup-incus.sh
       - name: Run Test ${{matrix.test}} on ${{ matrix.test-incus-image }}
         run: fluent-release/yum/systemd-test/test.sh ${{ matrix.test-incus-image }} ${{ matrix.test }}
 
@@ -429,17 +409,32 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: packages-lts-release-${{ matrix.rake-job }}
-      - name: Install Incus
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y -V incus
-      - name: Allow egress network traffic flows for Incus
-        # https://linuxcontainers.org/incus/docs/main/howto/network_bridge_firewalld/#prevent-connectivity-issues-with-incus-and-docker
-        run: |
-          sudo iptables -I DOCKER-USER -i incusbr0 -j ACCEPT
-          sudo iptables -I DOCKER-USER -o incusbr0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
       - name: Setup Incus
-        run: |
-          sudo incus admin init --auto
+        run: ./fluent-package/test-tools/setup-incus.sh
       - name: Run Test ${{matrix.test}} on ${{ matrix.test-incus-image }}
         run: fluent-lts-release/yum/systemd-test/test.sh ${{ matrix.test-incus-image }} ${{ matrix.test }}
+
+  s3_test:
+    name: S3 Test (${{ matrix.label }} s3.sh
+    needs: [define-matrix, v2test]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: packages-${{ matrix.rake-job }}
+      - name: Setup Incus
+        run: ./fluent-package/test-tools/setup-incus.sh
+      - name: Setup localstack on host
+        run: |
+          docker run -d --name localstack -p 4566:4566 \
+            -e AWS_ACCESS_KEY_ID=localstack-test -e AWS_SECRET_ACCESS_KEY=localstack-test -e AWS_DEFAULT_REGION=ap-northeast-1 localstack/localstack:4.13.1
+      - name: Copy s3.conf
+        run: cp fluent-package/test-tools/s3.conf fluent-package/yum/systemd-test
+      - name: Ensure localstack availability from host
+        run: sleep 10 && curl http://127.0.0.1:4566/_localstack/health
+      - name: Run Test s3.sh on ${{ matrix.test-incus-image }}
+        run: fluent-package/yum/systemd-test/test.sh ${{ matrix.test-incus-image }} s3.sh
