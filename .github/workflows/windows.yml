@@ -74,6 +74,20 @@ jobs:
         with:
           name: packages-windows-x86_64
           path: fluent-package/msi/repositories
+      - name: Ensure availability of Docker
+        shell: pwsh
+        run: |
+          Start-Service docker
+          1..3 | ForEach-Object {
+            try {
+              docker version
+              Write-Host "Docker is ready"
+              exit 0
+            } catch {
+              Write-Host "Waiting for Docker..."
+              Start-Sleep -Seconds 10
+            }
+          }
       - name: Installation Test
         shell: pwsh
         run: |
