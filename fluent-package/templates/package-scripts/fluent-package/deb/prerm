@@ -17,12 +17,7 @@ set -e
 # the debian-policy package.
 
 make_sure_working_dir_exists() {
-    # This func is for CI ONLY.
-    # Some CI cases don't provide env with systemd.
-    # tmpfiles.d owns /tmp/<%= package_dir %>, but not created without systemd
-    if [ -d /run/systemd/system ]; then
-        return
-    fi
+    mkdir -p "/var/cache/<%= package_dir %>"
     mkdir -p "/tmp/<%= package_dir %>"
 }
 
@@ -44,9 +39,13 @@ leave_info_for_auto_restart_if_need() {
         return
     fi
 
-    /usr/sbin/fluent-gem list '^fluent-plugin-' --no-version --no-verbose > "/tmp/<%= package_dir %>/.plugin_list"
+    /usr/sbin/fluent-gem list '^fluent-plugin-' --no-version --no-verbose > "/var/cache/<%= package_dir %>/.plugin_list"
 
-    echo "$pid" > "/tmp/<%= package_dir %>/.main_pid"
+    echo "$pid" > "/var/cache/<%= package_dir %>/.main_pid"
+
+    # Ensure compatibility for downgrading to 6.0.0 / 6.0.1
+    cp "/var/cache/<%= package_dir %>/.plugin_list" "/tmp/<%= package_dir %>/.plugin_list"
+    cp "/var/cache/<%= package_dir %>/.main_pid" "/tmp/<%= package_dir %>/.main_pid"
 }
 
 case "$1" in
