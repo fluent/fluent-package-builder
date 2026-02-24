@@ -146,7 +146,7 @@ migration_from_v4_post_process() {
     fi
 }
 
-local_base_plugins="/tmp/<%= package_dir %>/.previous_plugin_list"
+local_base_plugins="/var/cache/<%= package_dir %>/.previous_plugin_list"
 install_missing_plugins() {
     # Install missing gems (even though systemd is not available, it works)
     if [ -f $local_base_plugins ]; then
@@ -169,7 +169,7 @@ install_missing_plugins() {
     fi
 }
 
-pid_for_auto_restart="/tmp/<%= package_dir %>/.pid_for_auto_restart"
+pid_for_auto_restart="/var/cache/<%= package_dir %>/.pid_for_auto_restart"
 fluentd_auto_restart() {
     if [ ! -f "$pid_for_auto_restart" ]; then
         return
