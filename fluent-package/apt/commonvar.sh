@@ -45,3 +45,18 @@ function test_suppressed_needrestart()
         esac
     fi
 }
+
+function install_aws_cli()
+{
+    case $architecture in
+        amd64)
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            ;;
+        arm64)
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip" -o "awscliv2.zip"
+            ;;
+    esac
+    sudo apt install -y unzip
+    unzip awscliv2.zip
+    sudo ./aws/install
+}
