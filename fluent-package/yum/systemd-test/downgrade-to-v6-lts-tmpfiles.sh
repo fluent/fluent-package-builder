@@ -37,11 +37,11 @@ ls -d /tmp/fluentd-lock-*
 case "$distribution" in
 amazon)
     curl -O https://fluentd.cdn.cncf.io/lts/6/amazon/2023/x86_64/fluent-package-6.0.0-1.amzn2023.x86_64.rpm
-    sudo $DNF install -y fluent-package-6.0.0-1.amzn2023.x86_64.rpm
+    sudo $DNF install -y ./fluent-package-6.0.0-1.amzn2023.x86_64.rpm
     ;;
 *)
     curl -O https://fluentd.cdn.cncf.io/lts/6/redhat/${DISTRIBUTION_VERSION}/x86_64/fluent-package-6.0.0-1.el${DISTRIBUTION_VERSION}.x86_64.rpm
-    sudo $DNF install -y fluent-package-6.0.0-1.el${DISTRIBUTION_VERSION}.x86_64.rpm
+    sudo $DNF install -y ./fluent-package-6.0.0-1.el${DISTRIBUTION_VERSION}.x86_64.rpm
     ;;
 esac
 

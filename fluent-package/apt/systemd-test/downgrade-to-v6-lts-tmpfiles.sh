@@ -31,7 +31,7 @@ ls -d /tmp/fluentd-lock-*
 
 # Downgrade to v6.0.0
 curl -O https://fluentd.cdn.cncf.io/lts/6/${distribution}/${code_name}/pool/contrib/f/fluent-package/fluent-package_6.0.0-1_amd64.deb
-sudo apt install -V -y --allow-downgrades fluent-package_6.0.0-1_amd64.deb
+sudo apt install -V -y --allow-downgrades ./fluent-package_6.0.0-1_amd64.deb
 
 systemctl status --no-pager fluentd
 systemctl status --no-pager td-agent
