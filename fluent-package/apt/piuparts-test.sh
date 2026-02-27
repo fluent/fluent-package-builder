@@ -18,7 +18,7 @@ if [ -z "$(apt-cache show piuparts 2>/dev/null)" ]; then
 fi
 
 case $code_name in
-    trixie)
+    trixie|resolute)
 	echo "As ${code_name} is not published for v5, so piuparts check for ${code_name} is disabled"
 	exit 0
 	;;

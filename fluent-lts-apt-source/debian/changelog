@@ -1,3 +1,9 @@
+fluent-lts-apt-source (2026.4.29-1) unstable; urgency=medium
+
+  * New upstream release.
+
+ -- Kentaro Hayashi <hayashi@clear-code.com>  Wed, 29 Apr 2026 14:17:45 +0900
+
 fluent-lts-apt-source (2025.9.29-1) unstable; urgency=low
 
   * New upstream release.
