@@ -1396,6 +1396,7 @@ EOS
       "debian-trixie",
       "ubuntu-jammy",
       "ubuntu-noble",
+      "ubuntu-resolute",
     ]
   end
 

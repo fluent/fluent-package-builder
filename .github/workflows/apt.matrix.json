@@ -23,6 +23,12 @@
       "rake-job": "ubuntu-noble",
       "test-docker-image": "ubuntu:noble",
       "test-incus-image": "images:ubuntu/24.04"
+    },
+    {
+      "label": "Ubuntu Resolute amd64",
+      "rake-job": "ubuntu-resolute",
+      "test-docker-image": "ubuntu:resolute",
+      "test-incus-image": "images:ubuntu/26.04"
     }
   ]
 }
