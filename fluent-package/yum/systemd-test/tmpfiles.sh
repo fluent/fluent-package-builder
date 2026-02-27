@@ -4,6 +4,11 @@ set -exu
 
 . $(dirname $0)/common.sh
 
+if [ "$distribution" = "amazon" ]; then
+    sudo $DNF repolist -v
+    sudo $DNF --releasever=latest update -y
+fi
+
 # Display unit info for debug
 sudo systemctl cat systemd-tmpfiles-clean.service
 sudo systemctl cat systemd-tmpfiles-clean.timer
