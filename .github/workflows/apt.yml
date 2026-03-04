@@ -32,7 +32,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: cache deb
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         id: cache-deb
         with:
           path: |
