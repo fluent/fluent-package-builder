@@ -74,7 +74,7 @@ jobs:
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: packages-${{ matrix.rake-job }}-aarch64
           path: fluent-package/yum/repositories
@@ -90,7 +90,7 @@ jobs:
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: packages-${{ matrix.rake-job }}-aarch64
           path: fluent-package/yum/repositories
@@ -113,7 +113,7 @@ jobs:
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: packages-${{ matrix.rake-job }}-aarch64
           path: fluent-package/yum/repositories
@@ -136,7 +136,7 @@ jobs:
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: packages-${{ matrix.rake-job }}-aarch64
           path: fluent-package/yum/repositories
@@ -159,7 +159,7 @@ jobs:
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: packages-${{ matrix.rake-job }}-aarch64
           path: fluent-package/yum/repositories
