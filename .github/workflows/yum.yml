@@ -17,7 +17,7 @@ jobs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
       label: ${{ steps.set-matrix.outputs.label }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - id: set-matrix
         # See https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/evaluate-expressions-in-workflows-and-actions#example-returning-a-json-object
         run: |
@@ -33,7 +33,7 @@ jobs:
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: cache rpm
         uses: actions/cache@v5
         id: cache-rpm
@@ -55,7 +55,7 @@ jobs:
         if: ${{ ! steps.cache-rpm.outputs.cache-hit }}
         run: |
           rake yum:build YUM_TARGETS=${{ matrix.rake-job }}
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         if: ${{ ! steps.cache-rpm.outputs.cache-hit }}
         with:
           path: v7-test
@@ -95,7 +95,7 @@ jobs:
       fail-fast: false
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: actions/download-artifact@v8
         with:
           name: packages-${{ matrix.rake-job }}
@@ -112,7 +112,7 @@ jobs:
       fail-fast: false
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: actions/download-artifact@v8
         with:
           name: packages-${{ matrix.rake-job }}
@@ -136,7 +136,7 @@ jobs:
       fail-fast: false
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: actions/download-artifact@v8
         with:
           name: packages-${{ matrix.rake-job }}
@@ -160,7 +160,7 @@ jobs:
       fail-fast: false
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: actions/download-artifact@v8
         with:
           name: packages-${{ matrix.rake-job }}
@@ -221,7 +221,7 @@ jobs:
   #         - label: AmazonLinux 2 x86_64
   #           rake-job: amazonlinux-2
   #   steps:
-  #     - uses: actions/checkout@v4
+  #     - uses: actions/checkout@v6
   #     - uses: actions/download-artifact@v8
   #       with:
   #         name: packages-${{ matrix.rake-job }}
@@ -331,7 +331,7 @@ jobs:
           - label: AlmaLinux 10 x86_64
             test: update-to-next-version-with-auto-and-manual.sh
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: actions/download-artifact@v8
         with:
           name: packages-${{ matrix.rake-job }}
@@ -355,7 +355,7 @@ jobs:
       fail-fast: false
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: actions/download-artifact@v8
         with:
           name: packages-${{ matrix.rake-job }}
@@ -384,7 +384,7 @@ jobs:
           - install-from-r2.sh
         include: ${{ fromJSON(needs.define-matrix.outputs.matrix).include }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: actions/download-artifact@v8
         with:
           name: packages-release-${{ matrix.rake-job }}
@@ -406,7 +406,7 @@ jobs:
           - install-from-r2.sh
         include: ${{ fromJSON(needs.define-matrix.outputs.matrix).include }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: actions/download-artifact@v8
         with:
           name: packages-lts-release-${{ matrix.rake-job }}
@@ -423,7 +423,7 @@ jobs:
       fail-fast: false
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: actions/download-artifact@v8
         with:
           name: packages-${{ matrix.rake-job }}
@@ -448,7 +448,7 @@ jobs:
       fail-fast: false
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: actions/download-artifact@v8
         with:
           name: packages-${{ matrix.rake-job }}
@@ -476,7 +476,7 @@ jobs:
       fail-fast: false
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: actions/download-artifact@v8
         with:
           name: packages-${{ matrix.rake-job }}
