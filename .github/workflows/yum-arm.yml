@@ -51,17 +51,17 @@ jobs:
         run: |
           rake yum:build YUM_TARGETS=${{ matrix.rake-job }}-aarch64
       - name: Upload fluent-package rpm
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: packages-${{ matrix.rake-job }}-aarch64
           path: fluent-package/yum/repositories
       - name: Upload fluent-release rpm
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: packages-release-${{ matrix.rake-job }}-aarch64
           path: fluent-release/yum/repositories
       - name: Upload fluent-lts-release rpm
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: packages-lts-release-${{ matrix.rake-job }}-aarch64
           path: fluent-lts-release/yum/repositories
