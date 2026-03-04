@@ -17,7 +17,7 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.4 # Use same Ruby version with fluent-package bundled
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Bundle Update
         run: |
           cd fluent-package
