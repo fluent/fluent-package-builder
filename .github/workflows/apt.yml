@@ -94,7 +94,7 @@ jobs:
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: packages-${{ matrix.rake-job }}
           path: fluent-package/apt/repositories
@@ -110,7 +110,7 @@ jobs:
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: packages-${{ matrix.rake-job }}
           path: fluent-package/apt/repositories
@@ -133,7 +133,7 @@ jobs:
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: packages-${{ matrix.rake-job }}
           path: fluent-package/apt/repositories
@@ -157,7 +157,7 @@ jobs:
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: packages-${{ matrix.rake-job }}
           path: fluent-package/apt/repositories
@@ -180,7 +180,7 @@ jobs:
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: packages-${{ matrix.rake-job }}
           path: fluent-package/apt/repositories
@@ -283,14 +283,14 @@ jobs:
             test: downgrade-to-v4.sh
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: packages-${{ matrix.rake-job }}
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: v7-packages-${{ matrix.rake-job }}
           path: v7-test
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: packages-apt-source-${{ matrix.rake-job }}
       - name: Setup Incus
@@ -307,7 +307,7 @@ jobs:
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: packages-${{ matrix.rake-job }}
           path: fluent-package/apt/repositories
@@ -331,7 +331,7 @@ jobs:
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: packages-${{ matrix.rake-job }}
       - name: Setup Incus
@@ -356,7 +356,7 @@ jobs:
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: packages-${{ matrix.rake-job }}
       - name: Setup Incus
@@ -384,7 +384,7 @@ jobs:
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: packages-${{ matrix.rake-job }}
       - name: Setup Incus
