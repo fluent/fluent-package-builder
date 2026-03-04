@@ -17,7 +17,7 @@ jobs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
       label: ${{ steps.set-matrix.outputs.label }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - id: set-matrix
         # See https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/evaluate-expressions-in-workflows-and-actions#example-returning-a-json-object
         run: |
@@ -33,9 +33,9 @@ jobs:
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: cache rpm
-        uses: actions/cache@v5
+        uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
         id: cache-rpm
         with:
           path: |
@@ -44,7 +44,7 @@ jobs:
             fluent-lts-release/yum/repositories
             v7-test/fluent-package/yum/repositories
           key: ${{ runner.os }}-cache-${{ matrix.rake-job }}-${{ hashFiles('**/config.rb', '**/Rakefile', '**/Gemfile*', '**/*.spec.in', 'fluent-package/templates/**', 'fluent-package/yum/**/Dockerfile') }}
-      - uses: ruby/setup-ruby@v1
+      - uses: ruby/setup-ruby@09a7688d3b55cf0e976497ff046b70949eeaccfd # v1.288.0
         with:
           ruby-version: '3.4'
       - name: Install dependencies
@@ -55,7 +55,7 @@ jobs:
         if: ${{ ! steps.cache-rpm.outputs.cache-hit }}
         run: |
           rake yum:build YUM_TARGETS=${{ matrix.rake-job }}
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         if: ${{ ! steps.cache-rpm.outputs.cache-hit }}
         with:
           path: v7-test
@@ -68,22 +68,22 @@ jobs:
           git am fluent-package/bump-version-v7.patch
           rake yum:build YUM_TARGETS=${{ matrix.rake-job }}
       - name: Upload fluent-package rpm
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         with:
           name: packages-${{ matrix.rake-job }}
           path: fluent-package/yum/repositories
       - name: Upload fluent-release rpm
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         with:
           name: packages-release-${{ matrix.rake-job }}
           path: fluent-release/yum/repositories
       - name: Upload fluent-lts-release rpm
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         with:
           name: packages-lts-release-${{ matrix.rake-job }}
           path: fluent-lts-release/yum/repositories
       - name: Upload v7 fluent-package rpm
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         with:
           name: v7-packages-${{ matrix.rake-job }}
           path: v7-test/fluent-package/yum/repositories
@@ -95,8 +95,8 @@ jobs:
       fail-fast: false
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/download-artifact@v8
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
         with:
           name: packages-${{ matrix.rake-job }}
           path: fluent-package/yum/repositories
@@ -112,8 +112,8 @@ jobs:
       fail-fast: false
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/download-artifact@v8
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
         with:
           name: packages-${{ matrix.rake-job }}
           path: fluent-package/yum/repositories
@@ -136,8 +136,8 @@ jobs:
       fail-fast: false
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/download-artifact@v8
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
         with:
           name: packages-${{ matrix.rake-job }}
           path: fluent-package/yum/repositories
@@ -160,8 +160,8 @@ jobs:
       fail-fast: false
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/download-artifact@v8
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
         with:
           name: packages-${{ matrix.rake-job }}
           path: fluent-package/yum/repositories
@@ -221,11 +221,11 @@ jobs:
   #         - label: AmazonLinux 2 x86_64
   #           rake-job: amazonlinux-2
   #   steps:
-  #     - uses: actions/checkout@v6
-  #     - uses: actions/download-artifact@v8
+  #     - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+  #     - uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
   #       with:
   #         name: packages-${{ matrix.rake-job }}
-  #     - uses: actions/download-artifact@v8
+  #     - uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
   #       with:
   #         name: v7-packages-${{ matrix.rake-job }}
   #         path: v7-test
@@ -331,14 +331,14 @@ jobs:
           - label: AlmaLinux 10 x86_64
             test: update-to-next-version-with-auto-and-manual.sh
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/download-artifact@v8
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
         with:
           name: packages-${{ matrix.rake-job }}
-      - uses: actions/download-artifact@v8
+      - uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
         with:
           name: packages-release-${{ matrix.rake-job }}
-      - uses: actions/download-artifact@v8
+      - uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
         with:
           name: v7-packages-${{ matrix.rake-job }}
           path: v7-test
@@ -355,8 +355,8 @@ jobs:
       fail-fast: false
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/download-artifact@v8
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
         with:
           name: packages-${{ matrix.rake-job }}
           path: fluent-package/yum/repositories
@@ -384,8 +384,8 @@ jobs:
           - install-from-r2.sh
         include: ${{ fromJSON(needs.define-matrix.outputs.matrix).include }}
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/download-artifact@v8
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
         with:
           name: packages-release-${{ matrix.rake-job }}
       - name: Setup Incus
@@ -406,8 +406,8 @@ jobs:
           - install-from-r2.sh
         include: ${{ fromJSON(needs.define-matrix.outputs.matrix).include }}
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/download-artifact@v8
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
         with:
           name: packages-lts-release-${{ matrix.rake-job }}
       - name: Setup Incus
@@ -423,8 +423,8 @@ jobs:
       fail-fast: false
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/download-artifact@v8
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
         with:
           name: packages-${{ matrix.rake-job }}
       - name: Setup Incus
@@ -448,8 +448,8 @@ jobs:
       fail-fast: false
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/download-artifact@v8
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
         with:
           name: packages-${{ matrix.rake-job }}
       - name: Setup Incus
@@ -476,8 +476,8 @@ jobs:
       fail-fast: false
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/download-artifact@v8
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
         with:
           name: packages-${{ matrix.rake-job }}
       - name: Setup Incus
