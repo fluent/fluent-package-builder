@@ -68,22 +68,22 @@ jobs:
           git am fluent-package/bump-version-v7.patch
           rake yum:build YUM_TARGETS=${{ matrix.rake-job }}
       - name: Upload fluent-package rpm
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: packages-${{ matrix.rake-job }}
           path: fluent-package/yum/repositories
       - name: Upload fluent-release rpm
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: packages-release-${{ matrix.rake-job }}
           path: fluent-release/yum/repositories
       - name: Upload fluent-lts-release rpm
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: packages-lts-release-${{ matrix.rake-job }}
           path: fluent-lts-release/yum/repositories
       - name: Upload v7 fluent-package rpm
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: v7-packages-${{ matrix.rake-job }}
           path: v7-test/fluent-package/yum/repositories
