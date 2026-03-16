@@ -1,17 +1,17 @@
-From c8d4773262556bcd0ba7b47f67efcd3d30b6946d Mon Sep 17 00:00:00 2001
+From 3f9f7082ba57fd19964cc31276801e0a68917903 Mon Sep 17 00:00:00 2001
 From: Kentaro Hayashi <hayashi@clear-code.com>
-Date: Fri, 13 Feb 2026 15:21:38 +0900
-Subject: [PATCH] Bump version to v7.0.0
+Date: Mon, 16 Mar 2026 15:33:12 +0900
+Subject: [PATCH] Update test patch for v7
 
 Signed-off-by: Kentaro Hayashi <hayashi@clear-code.com>
 ---
- fluent-package/config.rb                  | 10 +++++-----
- fluent-package/debian/changelog           |  6 ++++++
- fluent-package/yum/fluent-package.spec.in |  3 +++
- 3 files changed, 14 insertions(+), 5 deletions(-)
+ fluent-package/config.rb                  | 6 +++---
+ fluent-package/debian/changelog           | 6 ++++++
+ fluent-package/yum/fluent-package.spec.in | 3 +++
+ 3 files changed, 12 insertions(+), 3 deletions(-)
 
 diff --git a/fluent-package/config.rb b/fluent-package/config.rb
-index bbecffb..ddc0dec 100644
+index bbecffb..eeda9e1 100644
 --- a/fluent-package/config.rb
 +++ b/fluent-package/config.rb
 @@ -1,5 +1,5 @@
@@ -32,19 +32,8 @@ index bbecffb..ddc0dec 100644
  
  BUNDLED_RUBY_PATCHES = [
    # An example entry:
-@@ -32,8 +32,8 @@ BUNDLED_RUBY_PATCHES = [
- ]
- 
- # https://rubyinstaller.org/downloads/ (7-ZIP ARCHIVES)
--BUNDLED_RUBY_INSTALLER_X64_VERSION = "3.4.8-1"
--BUNDLED_RUBY_INSTALLER_X64_SHA256SUM = "d1c3ba83ae748c08e35e0b1d9939d45dbca7925e0a8bf84a42860bf19847e0d6"
-+BUNDLED_RUBY_INSTALLER_X64_VERSION = "4.0.1-1"
-+BUNDLED_RUBY_INSTALLER_X64_SHA256SUM = "45cd5ac6aa0fdd976acbc0b0c768e38e8f5357b1b07d2c803cccafd7de758fb1"
- 
- # Files under rubyinstaller/ are patches for RubyInstaller's binary package.
- # Other patches for Ruby's source tree which can be shared with BUNDLED_RUBY_PATCHES.
 diff --git a/fluent-package/debian/changelog b/fluent-package/debian/changelog
-index 56073b5..3c760ab 100644
+index 56073b5..dd40807 100644
 --- a/fluent-package/debian/changelog
 +++ b/fluent-package/debian/changelog
 @@ -1,3 +1,9 @@
@@ -52,25 +41,25 @@ index 56073b5..3c760ab 100644
 +
 +  * New upstream release.
 +
-+ -- Shizuo Fujita <fujita@clear-code.com>  Sun, 29 Aug 2027 13:55:06 -0000
++ -- Kentaro Hayashi <hayashi@clear-code.com>  Sun, 29 Aug 2027 06:31:51 -0000
 +
  fluent-package (6.0.2-1) unstable; urgency=low
  
    * New upstream release.
 diff --git a/fluent-package/yum/fluent-package.spec.in b/fluent-package/yum/fluent-package.spec.in
-index 9e3e81f..a663057 100644
+index cc395a8..458c222 100644
 --- a/fluent-package/yum/fluent-package.spec.in
 +++ b/fluent-package/yum/fluent-package.spec.in
-@@ -448,6 +448,9 @@ fi
+@@ -472,6 +472,9 @@ fi
  # NOTE: %{_tmpfilesdir} is available since CentOS 7
  %attr(0755,fluentd,fluentd) %dir /tmp/@PACKAGE_DIR@
  %changelog
-+* Sun Aug 29 2027 Shizuo Fujita <fujita@clear-code.com> - 7.0.0-1
++* Sun Aug 29 2027 Kentaro Hayashi <hayashi@clear-code.com> - 7.0.0-1
 +- New upstream release.
 +
  * Fri Feb 27 2026 Kentaro Hayashi <hayashi@clear-code.com> - 6.0.2-1
  - New upstream release.
  
 -- 
-2.51.0
+2.53.0
 
