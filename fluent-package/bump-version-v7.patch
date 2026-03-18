@@ -1,18 +1,17 @@
-From 1f249c067ff43a5a181856a9646719d333cc1083 Mon Sep 17 00:00:00 2001
-From: Shizuo Fujita <fujita@clear-code.com>
-Date: Fri, 25 Jul 2025 11:09:35 +0900
-Subject: [PATCH] Bump version to v7.0.0
+From e39987075b16b376598ca7baed0faca5a1626ad6 Mon Sep 17 00:00:00 2001
+From: Kentaro Hayashi <hayashi@clear-code.com>
+Date: Tue, 17 Mar 2026 15:56:08 +0900
+Subject: [PATCH] Bump version to 7.0.0
 
-Signed-off-by: Shizuo Fujita <fujita@clear-code.com>
+Signed-off-by: Kentaro Hayashi <hayashi@clear-code.com>
 ---
- fluent-package/config.rb                  | 10 +++++-----
- fluent-package/debian/changelog           |  6 ++++++
- fluent-package/msi/Dockerfile             |  2 +-
- fluent-package/yum/fluent-package.spec.in |  5 ++++-
- 4 files changed, 16 insertions(+), 7 deletions(-)
+ fluent-package/config.rb                  | 6 +++---
+ fluent-package/debian/changelog           | 6 ++++++
+ fluent-package/yum/fluent-package.spec.in | 3 +++
+ 3 files changed, 12 insertions(+), 3 deletions(-)
 
 diff --git a/fluent-package/config.rb b/fluent-package/config.rb
-index 5aa9799..fd6e938 100644
+index 173bc70..e0132cd 100644
 --- a/fluent-package/config.rb
 +++ b/fluent-package/config.rb
 @@ -1,5 +1,5 @@
@@ -22,28 +21,17 @@ index 5aa9799..fd6e938 100644
  
  # Keep internal path (/opt/td-agent) for package name migration
  SERVICE_NAME = "fluentd"
-@@ -23,8 +23,8 @@
+@@ -23,8 +23,8 @@ OPENSSL_FOR_MACOS_SHA256SUM = "6c13d2bf38fdf31eac3ce2a347073673f5d63263398f1f69d
  BUNDLER_VERSION= "2.3.27"
  
  # https://www.ruby-lang.org/en/downloads/ (tar.gz)
--BUNDLED_RUBY_VERSION = "3.4.5"
--BUNDLED_RUBY_SOURCE_SHA256SUM = "1d88d8a27b442fdde4aa06dc99e86b0bbf0b288963d8433112dd5fac798fd5ee"
-+BUNDLED_RUBY_VERSION = "3.3.8"
-+BUNDLED_RUBY_SOURCE_SHA256SUM = "5ae28a87a59a3e4ad66bc2931d232dbab953d0aa8f6baf3bc4f8f80977c89cab"
+-BUNDLED_RUBY_VERSION = "3.4.9"
+-BUNDLED_RUBY_SOURCE_SHA256SUM = "7bb4d4f5e807cc27251d14d9d6086d182c5b25875191e44ab15b709cd7a7dd9c"
++BUNDLED_RUBY_VERSION = "4.0.1"
++BUNDLED_RUBY_SOURCE_SHA256SUM = "3924be2d05db30f4e35f859bf028be85f4b7dd01714142fd823e4af5de2faf9d"
  
  BUNDLED_RUBY_PATCHES = [
    # An example entry:
-@@ -32,8 +32,8 @@
- ]
- 
- # https://rubyinstaller.org/downloads/ (7-ZIP ARCHIVES)
--BUNDLED_RUBY_INSTALLER_X64_VERSION = "3.4.5-1"
--BUNDLED_RUBY_INSTALLER_X64_SHA256SUM = "61634b204f808deec191a6819e4c25c7b3005d84537b24c4fbe7c604aeece89f"
-+BUNDLED_RUBY_INSTALLER_X64_VERSION = "3.3.8-1"
-+BUNDLED_RUBY_INSTALLER_X64_SHA256SUM = "2aa7d8fa7bc527b7373b91c75fae9549f5926fa918ba808b8744c1f0d8ad9f52"
- 
- # Files under rubyinstaller/ are patches for RubyInstaller's binary package.
- # Other patches for Ruby's source tree which can be shared with BUNDLED_RUBY_PATCHES.
 diff --git a/fluent-package/debian/changelog b/fluent-package/debian/changelog
 index 2614fac..95eb903 100644
 --- a/fluent-package/debian/changelog
@@ -58,35 +46,20 @@ index 2614fac..95eb903 100644
  fluent-package (6.0.0-1) unstable; urgency=low
  
    * New upstream release.
-diff --git a/fluent-package/msi/Dockerfile b/fluent-package/msi/Dockerfile
-index a064784..99c36c6 100644
---- a/fluent-package/msi/Dockerfile
-+++ b/fluent-package/msi/Dockerfile
-@@ -32,7 +32,7 @@ RUN \
-   # Required CMake 3.x to build cmetrics gem
-   choco install -y cmake --version=3.31.6 --installargs 'ADD_CMAKE_TO_PATH=System' && \
-   choco install -y msys2 --params /NoUpdate --version=20250221.0.0 && \
--  choco install ruby -y --version=3.4.4.2 && \
-+  choco install ruby -y --version=3.3.8.1 && \
-   refreshenv && \
-   ridk install 3 && \
-   gem install --no-document --force bundler builder
 diff --git a/fluent-package/yum/fluent-package.spec.in b/fluent-package/yum/fluent-package.spec.in
-index 34f0060..eb970f0 100644
+index 9a13f9a..1ab7905 100644
 --- a/fluent-package/yum/fluent-package.spec.in
 +++ b/fluent-package/yum/fluent-package.spec.in
-@@ -437,7 +437,10 @@ fi
+@@ -472,6 +472,9 @@ fi
  # NOTE: %{_tmpfilesdir} is available since CentOS 7
  %attr(0755,fluentd,fluentd) %dir /tmp/@PACKAGE_DIR@
  %changelog
--* Fri Aug 29 2025 Kentaro Hayashi <hayashi@clear-code.com> - 6.0.0-1
-+* Sun Aug 29 2027 Shizuo Fujita <fujita@clear-code.com> - 6.0.0-1
++* Sun Aug 29 2027 Shizuo Fujita <fujita@clear-code.com> - 7.0.0-1
 +- New upstream release.
 +
-+* Tue Aug 29 2025 Kentaro Hayashi <hayashi@clear-code.com> - 6.0.0-1
+ * Fri Aug 29 2025 Kentaro Hayashi <hayashi@clear-code.com> - 6.0.0-1
  - New upstream release.
  
- * Sat Dec 14 2024 Kentaro Hayashi <hayashi@clear-code.com> - 5.2.0-1
 -- 
-2.50.1
+2.53.0
 
