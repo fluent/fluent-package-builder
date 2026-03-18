@@ -83,7 +83,7 @@ case $COMMAND in
 	$command
 	;;
     dry-upload|upload)
-	TARGETS="amazon redhat windows debian/bookworm debian/trixie ubuntu/jammy ubuntu/noble"
+	TARGETS="amazon redhat windows debian/bookworm debian/trixie ubuntu/jammy ubuntu/noble ubuntu/resolute"
 	DRYRUN_OPTION="--dryrun"
 	if [ $COMMAND = "upload" ]; then
 	   DRYRUN_OPTION=""
@@ -147,7 +147,7 @@ EOF
 	echo "Ready to type signing passphrase? (process starts in 10 seconds, Ctrl+C to abort)"
 	sleep 10
 	export GPG_TTY=$(tty)
-	for d in bookworm trixie jammy noble; do
+	for d in bookworm trixie jammy noble resolute; do
 	    aptly -config="$aptly_conf" repo create -distribution=$d -component=contrib fluent-package6-$d
 	    case $d in
 		bookworm|trixie)
@@ -160,7 +160,7 @@ EOF
 		    # Place generated files, package files themselves are already in there
 		    tar cf - --exclude="td-agent_*.deb" --exclude="fluent-package_*.deb" -C "$aptly_rootdir/public" $d | tar xvf - -C $FLUENT_RELEASE_DIR/6/debian/
 		    ;;
-		jammy|noble)
+		jammy|noble|resolute)
 		    aptly -config="$aptly_conf" repo add fluent-package6-$d $FLUENT_RELEASE_DIR/6/ubuntu/$d/
 		    aptly -config="$aptly_conf" snapshot create fluent-package6-$d-${FLUENT_PACKAGE_VERSION}-1 from repo fluent-package6-$d
 		    # publish snapshot with prefix, InRelease looks like (e.g. focal):

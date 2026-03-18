@@ -34,7 +34,7 @@ class FluentdAptSourcePackageTask < PackageTask
   end
 
   def repository_version
-    "2025.9.29"
+    "2026.4.29"
   end
 
   def repository_name
@@ -89,7 +89,8 @@ class FluentdAptSourcePackageTask < PackageTask
       "debian-bookworm",
       "debian-trixie",
       "ubuntu-jammy",
-      "ubuntu-noble"
+      "ubuntu-noble",
+      "ubuntu-resolute"
     ]
   end
 

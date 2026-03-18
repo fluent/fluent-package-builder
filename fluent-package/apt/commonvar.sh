@@ -6,7 +6,7 @@ td_agent_version=4.5.2
 fluent_package_lts_version=5.0.5
 
 case ${code_name} in
-  jammy|noble)
+  jammy|noble|resolute)
     distribution=ubuntu
     channel=universe
     mirror=http://archive.ubuntu.com/ubuntu/
