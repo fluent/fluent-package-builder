@@ -328,13 +328,14 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
-      # FIXME: 26.04 incus image is not ready yet
-      exclude:
-        - label: "Ubuntu Resolute amd64"
-          rake-job: "ubuntu-resolute"
-          test-docker-image: "ubuntu:resolute"
-          test-incus-image: "images:ubuntu/26.04"
+      matrix:
+        include: ${{ fromJSON(needs.define-matrix.outputs.matrix).include }}
+        # FIXME: 26.04 incus image is not ready yet
+        exclude:
+          - label: "Ubuntu Resolute amd64"
+            rake-job: "ubuntu-resolute"
+            test-docker-image: "ubuntu:resolute"
+            test-incus-image: "images:ubuntu/26.04"
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
@@ -359,13 +360,14 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
-      # FIXME: 26.04 incus image is not ready yet
-      exclude:
-        - label: "Ubuntu Resolute amd64"
-          rake-job: "ubuntu-resolute"
-          test-docker-image: "ubuntu:resolute"
-          test-incus-image: "images:ubuntu/26.04"
+      matrix:
+        include: ${{ fromJSON(needs.define-matrix.outputs.matrix).include }}
+        # FIXME: 26.04 incus image is not ready yet
+        exclude:
+          - label: "Ubuntu Resolute amd64"
+            rake-job: "ubuntu-resolute"
+            test-docker-image: "ubuntu:resolute"
+            test-incus-image: "images:ubuntu/26.04"
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
@@ -393,13 +395,14 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
-      # FIXME: 26.04 incus image is not ready yet
-      exclude:
-        - label: "Ubuntu Resolute amd64"
-          rake-job: "ubuntu-resolute"
-          test-docker-image: "ubuntu:resolute"
-          test-incus-image: "images:ubuntu/26.04"
+      matrix:
+        include: ${{ fromJSON(needs.define-matrix.outputs.matrix).include }}
+        # FIXME: 26.04 incus image is not ready yet
+        exclude:
+          - label: "Ubuntu Resolute amd64"
+            rake-job: "ubuntu-resolute"
+            test-docker-image: "ubuntu:resolute"
+            test-incus-image: "images:ubuntu/26.04"
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
