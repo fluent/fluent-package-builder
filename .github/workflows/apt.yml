@@ -331,9 +331,9 @@ jobs:
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
       # FIXME: 26.04 incus image is not ready yet
       exclude:
-        - label: "Ubuntu Resolute amd64",
-          rake-job: "ubuntu-resolute",
-          test-docker-image: "ubuntu:resolute",
+        - label: "Ubuntu Resolute amd64"
+          rake-job: "ubuntu-resolute"
+          test-docker-image: "ubuntu:resolute"
           test-incus-image: "images:ubuntu/26.04"
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -362,9 +362,9 @@ jobs:
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
       # FIXME: 26.04 incus image is not ready yet
       exclude:
-        - label: "Ubuntu Resolute amd64",
-          rake-job: "ubuntu-resolute",
-          test-docker-image: "ubuntu:resolute",
+        - label: "Ubuntu Resolute amd64"
+          rake-job: "ubuntu-resolute"
+          test-docker-image: "ubuntu:resolute"
           test-incus-image: "images:ubuntu/26.04"
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -396,9 +396,9 @@ jobs:
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
       # FIXME: 26.04 incus image is not ready yet
       exclude:
-        - label: "Ubuntu Resolute amd64",
-          rake-job: "ubuntu-resolute",
-          test-docker-image: "ubuntu:resolute",
+        - label: "Ubuntu Resolute amd64"
+          rake-job: "ubuntu-resolute"
+          test-docker-image: "ubuntu:resolute"
           test-incus-image: "images:ubuntu/26.04"
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
