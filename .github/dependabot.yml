@@ -1,6 +1,14 @@
 version: 2
 updates:
+  # master branch
   - package-ecosystem: 'github-actions'
     directory: '/'
     schedule:
       interval: 'weekly'
+
+  # fluent-package-v6 branch
+  - package-ecosystem: 'github-actions'
+    directory: '/'
+    target-branch: 'fluent-package-v6'
+    schedule:
+      interval: 'monthly'
