@@ -1,5 +1,5 @@
 PACKAGE_NAME = "fluent-package"
-PACKAGE_VERSION = "6.0.2"
+PACKAGE_VERSION = "6.0.3"
 
 # Keep internal path (/opt/td-agent) for package name migration
 SERVICE_NAME = "fluentd"
@@ -23,8 +23,8 @@ OPENSSL_FOR_MACOS_SHA256SUM = "6c13d2bf38fdf31eac3ce2a347073673f5d63263398f1f69d
 BUNDLER_VERSION= "2.3.27"
 
 # https://www.ruby-lang.org/en/downloads/ (tar.gz)
-BUNDLED_RUBY_VERSION = "3.4.8"
-BUNDLED_RUBY_SOURCE_SHA256SUM = "53c4ddad41fbb6189f1f5ee0db57a51d54bd1f87f8755b3d68604156a35b045b"
+BUNDLED_RUBY_VERSION = "3.4.9"
+BUNDLED_RUBY_SOURCE_SHA256SUM = "7bb4d4f5e807cc27251d14d9d6086d182c5b25875191e44ab15b709cd7a7dd9c"
 
 BUNDLED_RUBY_PATCHES = [
   # An example entry:
