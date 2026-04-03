@@ -28,7 +28,7 @@
       "label": "Ubuntu Resolute amd64",
       "rake-job": "ubuntu-resolute",
       "test-docker-image": "ubuntu:resolute",
-      "test-incus-image": "images:ubuntu/26.04"
+      "test-incus-image": "fluent:ubuntu/26.04"
     }
   ]
 }
