@@ -4,6 +4,11 @@ set -exu
 
 . $(dirname $0)/common.sh
 
+if [ "$distribution" = "amazon" ]; then
+    sudo $DNF repolist -v
+    sudo $DNF --releasever=latest update -y
+fi
+
 case $1 in
   local)
     install_current
