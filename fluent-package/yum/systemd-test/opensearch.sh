@@ -4,6 +4,11 @@ set -exu
 
 . $(dirname $0)/common.sh
 
+if [ "$distribution" = "amazon" ]; then
+    sudo $DNF repolist -v
+    sudo $DNF --releasever=latest update -y
+fi
+
 GATEWAY=$(ip route | grep default | cut -d' ' -f3)
 
 # install latest fluent-package
