@@ -29,6 +29,20 @@ jobs:
         with:
           path: fluent-package/msi/repositories
           key: ${{ runner.os }}-cache-windows-${{ hashFiles('**/config.rb', '**/Rakefile', '**/Gemfile*', 'fluent-package/msi/assets/*', 'fluent-package/msi/source.wxs', 'fluent-package/msi/parameters.wxi.erb', 'fluent-package/msi/localization-en-us.wxl', 'fluent-package/msi/exclude-files.xslt', 'fluent-package/msi/Dockerfile') }}
+      - name: Ensure availability of Docker
+        shell: pwsh
+        run: |
+          Start-Service docker
+          1..3 | ForEach-Object {
+            try {
+              docker version
+              Write-Host "Docker is ready"
+              exit 0
+            } catch {
+              Write-Host "Waiting for Docker..."
+              Start-Sleep -Seconds 10
+            }
+          }
       - name: Build
         if: ${{ ! steps.cache-msi.outputs.cache-hit }}
         run: |
