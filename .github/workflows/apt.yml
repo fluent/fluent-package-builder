@@ -207,6 +207,7 @@ jobs:
           - Debian trixie amd64
           - Ubuntu Jammy amd64
           - Ubuntu Noble amd64
+          - Ubuntu Resolute amd64
         test:
           - "update-from-v4.sh"
           - "update-from-v4.sh via-v5"
@@ -247,6 +248,9 @@ jobs:
           - label: Ubuntu Noble amd64
             rake-job: ubuntu-noble
             container-image: images:ubuntu/24.04
+          - label: Ubuntu Resolute amd64
+            rake-job: ubuntu-resolute
+            container-image: fluent:ubuntu/26.04
         exclude:
           - label: Debian bookworm amd64
             test: update-from-v4.sh
@@ -281,6 +285,27 @@ jobs:
             test: update-to-next-version-with-backward-compat-for-v4.sh
           - label: Ubuntu Noble amd64
             test: downgrade-to-v4.sh
+          # Resolute
+          - label: Ubuntu Resolute amd64
+            test: update-from-v4.sh
+          - label: Ubuntu Resolute amd64
+            test: update-from-v4.sh via-v5
+          - label: Ubuntu Resolute amd64
+            test: update-from-v5-lts.sh
+          - label: Ubuntu Resolute amd64
+            test: downgrade-to-v4.sh
+          - label: Ubuntu Resolute amd64
+            test: downgrade-to-v4.sh
+          - label: Ubuntu Resolute amd64
+            test: downgrade-to-v5-lts.sh
+          - label: Ubuntu Resolute amd64
+            test: downgrade-to-v6-lts-tmpfiles.sh
+          - label: Ubuntu Resolute amd64
+            test: update-to-next-version-with-backward-compat-for-v4.sh
+          - label: Ubuntu Resolute amd64
+            test: install-newly.sh v6
+          - label: Ubuntu Resolute amd64
+            test: install-newly.sh lts
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
