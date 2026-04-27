@@ -295,8 +295,6 @@ jobs:
           - label: Ubuntu Resolute amd64
             test: downgrade-to-v4.sh
           - label: Ubuntu Resolute amd64
-            test: downgrade-to-v4.sh
-          - label: Ubuntu Resolute amd64
             test: downgrade-to-v5-lts.sh
           - label: Ubuntu Resolute amd64
             test: downgrade-to-v6-lts-tmpfiles.sh
