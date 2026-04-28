@@ -23,7 +23,7 @@ jobs:
         working-directory: .github/workflows/
   build:
     name: Build
-    timeout-minutes: 120
+    timeout-minutes: 180
     needs: define-matrix
     strategy:
       fail-fast: false
