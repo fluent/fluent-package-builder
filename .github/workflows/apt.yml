@@ -23,67 +23,29 @@ jobs:
         working-directory: .github/workflows/
   build:
     name: Build
-    timeout-minutes: 180
     needs: define-matrix
+    uses: ./.github/workflows/_build_deb_reusable.yml
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - name: cache deb
-        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
-        id: cache-deb
-        with:
-          path: |
-            fluent-package/apt/repositories
-            fluent-apt-source/apt/repositories
-            fluent-lts-apt-source/apt/repositories
-            v7-test/fluent-package/apt/repositories
-          key: ${{ runner.os }}-cache-${{ matrix.rake-job }}-${{ hashFiles('**/config.rb', '**/Rakefile', '**/Gemfile*', 'fluent-package/templates/**', 'fluent-package/debian/**', 'fluent-package/apt/**/Dockerfile') }}
-      - uses: ruby/setup-ruby@3ff19f5e2baf30647122352b96108b1fbe250c64 # v1.299.0
-        with:
-          ruby-version: '3.4'
-      - name: Install dependencies
-        if: ${{ ! steps.cache-deb.outputs.cache-hit }}
-        run: |
-          gem install serverspec --no-document
-      - name: Build deb with Docker
-        if: ${{ ! steps.cache-deb.outputs.cache-hit }}
-        run: |
-          rake apt:build APT_TARGETS=${{ matrix.rake-job }}
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-        if: ${{ ! steps.cache-deb.outputs.cache-hit }}
-        with:
-          path: v7-test
-      - name: Build v7 deb with Docker
-        if: ${{ ! steps.cache-deb.outputs.cache-hit }}
-        run: |
-          cd v7-test
-          git config user.email "fluentd@googlegroups.com"
-          git config user.name "Fluentd developers"
-          git am fluent-package/bump-version-v7.patch
-          rake apt:build APT_TARGETS=${{ matrix.rake-job }}
-      - name: Upload fluent-package deb
-        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
-        with:
-          name: packages-${{ matrix.rake-job }}
-          path: fluent-package/apt/repositories
-      - name: Upload v7 fluent-package deb
-        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
-        with:
-          name: v7-packages-${{ matrix.rake-job }}
-          path: v7-test/fluent-package/apt/repositories
-      - name: Upload fluent-apt-source deb
-        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
-        with:
-          name: packages-apt-source-${{ matrix.rake-job }}
-          path: fluent-apt-source/apt/repositories
-      - name: Upload fluent-lts-apt-source deb
-        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
-        with:
-          name: packages-lts-apt-source-${{ matrix.rake-job }}
-          path: fluent-lts-apt-source/apt/repositories
+    with:
+      rake-job: ${{ matrix.rake-job }}
+      run-on: ubuntu-latest
+      next-major: false
+      cache-group: v6
+
+  build-next:
+    name: Build next major
+    needs: define-matrix
+    uses: ./.github/workflows/_build_deb_reusable.yml
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
+    with:
+      rake-job: ${{ matrix.rake-job }}
+      run-on: ubuntu-latest
+      next-major: true
+      cache-group: v7
 
   check_package_size:
     name: Check Package Size
@@ -196,7 +158,7 @@ jobs:
           /fluentd/fluent-package/apt/binstubs-test.sh
   test:
     name: Test ${{ matrix.label }} ${{ matrix.test }}
-    needs: [check_package_size, installation_test, piuparts_test, serverspec_test, binstubs_test]
+    needs: [build-next, check_package_size, installation_test, piuparts_test, serverspec_test, binstubs_test]
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
