@@ -24,47 +24,27 @@ jobs:
   build:
     name: Build
     needs: define-matrix
+    uses: ./.github/workflows/_build_rpm_reusable.yml
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
-    runs-on: ubuntu-24.04-arm
-    steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - name: cache rpm
-        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
-        id: cache-rpm
-        with:
-          path: |
-            fluent-package/yum/repositories
-            fluent-release/yum/repositories
-            fluent-lts-release/yum/repositories
-          key: ${{ runner.os }}-cache-${{ matrix.rake-job }}-aarch64-${{ hashFiles('**/config.rb', '**/Rakefile', '**/Gemfile*', '**/*.spec.in', 'fluent-package/templates/**', 'fluent-package/yum/**/Dockerfile') }}
-      - uses: ruby/setup-ruby@3ff19f5e2baf30647122352b96108b1fbe250c64 # v1.299.0
-        with:
-          ruby-version: '3.4'
-      - name: Install dependencies
-        if: ${{ ! steps.cache-rpm.outputs.cache-hit }}
-        run: |
-          gem install serverspec --no-document
-      - name: Build rpm with Docker
-        if: ${{ ! steps.cache-rpm.outputs.cache-hit }}
-        run: |
-          rake yum:build YUM_TARGETS=${{ matrix.rake-job }}-aarch64
-      - name: Upload fluent-package rpm
-        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
-        with:
-          name: packages-${{ matrix.rake-job }}-aarch64
-          path: fluent-package/yum/repositories
-      - name: Upload fluent-release rpm
-        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
-        with:
-          name: packages-release-${{ matrix.rake-job }}-aarch64
-          path: fluent-release/yum/repositories
-      - name: Upload fluent-lts-release rpm
-        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
-        with:
-          name: packages-lts-release-${{ matrix.rake-job }}-aarch64
-          path: fluent-lts-release/yum/repositories
+    with:
+      rake-job: ${{ matrix.rake-job }}-aarch64
+      runs-on: ubuntu-24.04-arm
+      next-major: false
+      cache-group: v6
+  build-next:
+    name: Build next major
+    needs: define-matrix
+    uses: ./.github/workflows/_build_rpm_reusable.yml
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
+    with:
+      rake-job: ${{ matrix.rake-job }}-aarch64
+      runs-on: ubuntu-24.04-arm
+      next-major: true
+      cache-group: v7
   check_package_size:
     name: Check Package Size
     runs-on: ubuntu-24.04-arm
