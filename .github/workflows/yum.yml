@@ -27,66 +27,27 @@ jobs:
   build:
     needs: define-matrix
     name: Build
-    timeout-minutes: 120
+    uses: ./.github/workflows/_build_rpm_reusable.yml
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - name: cache rpm
-        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
-        id: cache-rpm
-        with:
-          path: |
-            fluent-package/yum/repositories
-            fluent-release/yum/repositories
-            fluent-lts-release/yum/repositories
-            v7-test/fluent-package/yum/repositories
-          key: ${{ runner.os }}-cache-${{ matrix.rake-job }}-${{ hashFiles('**/config.rb', '**/Rakefile', '**/Gemfile*', '**/*.spec.in', 'fluent-package/templates/**', 'fluent-package/yum/**/Dockerfile') }}
-      - uses: ruby/setup-ruby@3ff19f5e2baf30647122352b96108b1fbe250c64 # v1.299.0
-        with:
-          ruby-version: '3.4'
-      - name: Install dependencies
-        if: ${{ ! steps.cache-rpm.outputs.cache-hit }}
-        run: |
-          gem install serverspec --no-document
-      - name: Build rpm with Docker
-        if: ${{ ! steps.cache-rpm.outputs.cache-hit }}
-        run: |
-          rake yum:build YUM_TARGETS=${{ matrix.rake-job }}
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-        if: ${{ ! steps.cache-rpm.outputs.cache-hit }}
-        with:
-          path: v7-test
-      - name: Build v7 rpm with Docker
-        if: ${{ ! steps.cache-rpm.outputs.cache-hit }}
-        run: |
-          cd v7-test
-          git config user.email "fluentd@googlegroups.com"
-          git config user.name "Fluentd developers"
-          git am fluent-package/bump-version-v7.patch
-          rake yum:build YUM_TARGETS=${{ matrix.rake-job }}
-      - name: Upload fluent-package rpm
-        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
-        with:
-          name: packages-${{ matrix.rake-job }}
-          path: fluent-package/yum/repositories
-      - name: Upload fluent-release rpm
-        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
-        with:
-          name: packages-release-${{ matrix.rake-job }}
-          path: fluent-release/yum/repositories
-      - name: Upload fluent-lts-release rpm
-        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
-        with:
-          name: packages-lts-release-${{ matrix.rake-job }}
-          path: fluent-lts-release/yum/repositories
-      - name: Upload v7 fluent-package rpm
-        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
-        with:
-          name: v7-packages-${{ matrix.rake-job }}
-          path: v7-test/fluent-package/yum/repositories
+    with:
+      rake-job: ${{ matrix.rake-job }}
+      runs-on: ubuntu-latest
+      next-major: false
+      cache-group: v6
+  build-next:
+    needs: define-matrix
+    name: Build next major
+    uses: ./.github/workflows/_build_rpm_reusable.yml
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
+    with:
+      rake-job: ${{ matrix.rake-job }}
+      runs-on: ubuntu-latest
+      next-major: true
+      cache-group: v7
   check_package_size:
     name: Check Package Size
     runs-on: ubuntu-latest
@@ -255,7 +216,7 @@ jobs:
 
   v2test:
     name: Test ${{ matrix.label }} ${{ matrix.test }} (CGroup V2)
-    needs: [define-matrix, check_package_size, installation_test, serverspec_test, binstubs_test]
+    needs: [define-matrix, check_package_size, installation_test, serverspec_test, binstubs_test, build-next]
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
