@@ -1,0 +1,66 @@
+name: Run test on docker
+
+on:
+  workflow_call:
+    inputs:
+      rake-job:
+        required: true
+        type: string
+      repository-type:
+        required: true
+        type: string
+      docker-options:
+        required: false
+        type: string
+        default: ""
+      centos-stream:
+        required: false
+        type: string
+        default: ""
+      runs-on:
+        required: true
+        type: string
+      test-label:
+        required: true
+        type: string
+      test-docker-image:
+        required: true
+        type: string
+      test-script:
+        required: true
+        type: string
+
+jobs:
+  test:
+    runs-on: ${{ inputs.runs-on }}
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: packages-${{ inputs.rake-job }}
+          path: fluent-package/${{ inputs.repository_type }}/repositories
+      - name: ${{ inputs.test-label }} for ${{ inputs.repository_type }}
+        if: ${{ inputs.repository_type == 'apt' }}
+        run: |
+          mkdir -p .bundle
+          docker run \
+          ${{ inputs.docker-options }} \
+          --rm \
+          --tty \
+          --env CI=true \
+          --volume ${PWD}:/fluentd:ro \
+          ${{ inputs.test-docker-image }}
+          /fluentd/fluent-package/${{ inputs.repository_type }}/${{ inputs.test-script }}
+      - name: ${{ inputs.test-label }} for ${{ inputs.repository_type }}
+        if: ${{ inputs.repository_type == 'yum' }}
+        run: |
+          mkdir -p .bundle
+          docker run \
+          --rm \
+          --tty \
+          --env CI=true \
+          --volume ${PWD}:/fluentd:ro \
+          --env CENTOS_STREAM=${{ inputs.centos-stream }} \
+          ${{ inputs.test-docker-image }} \
+          /fluentd/fluent-package/${{ inputs.repository_type }}/${{ inputs.test-script }}
+
