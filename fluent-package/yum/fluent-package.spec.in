@@ -163,6 +163,7 @@ cd -
 mkdir -p %{buildroot}%{_localstatedir}/run/@PACKAGE_DIR@
 mkdir -p %{buildroot}%{_localstatedir}/log/@PACKAGE_DIR@
 mkdir -p %{buildroot}%{_localstatedir}/log/@PACKAGE_DIR@/buffer
+mkdir -p %{buildroot}%{_localstatedir}/lib/@PACKAGE_DIR@
 mkdir -p %{buildroot}%{_sysconfdir}/@PACKAGE_DIR@/plugin
 mkdir -p %{buildroot}%{_sysconfdir}/@PACKAGE_DIR@/conf.d
 mkdir -p %{buildroot}/tmp/@PACKAGE_DIR@
@@ -462,6 +463,7 @@ fi
 %config(noreplace) %{_sysconfdir}/sysconfig/@SERVICE_NAME@
 %config(noreplace) %{_sysconfdir}/@PACKAGE_DIR@/@SERVICE_NAME@.conf
 %config(noreplace) %{_sysconfdir}/logrotate.d/@SERVICE_NAME@
+%attr(0755,fluentd,fluentd) %dir %{_localstatedir}/lib/@PACKAGE_DIR@
 %attr(0755,fluentd,fluentd) %dir %{_localstatedir}/log/@PACKAGE_DIR@
 %attr(0755,fluentd,fluentd) %dir %{_localstatedir}/log/@PACKAGE_DIR@/buffer
 %attr(0755,fluentd,fluentd) %dir %{_sysconfdir}/@PACKAGE_DIR@
