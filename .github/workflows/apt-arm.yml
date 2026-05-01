@@ -53,117 +53,71 @@ jobs:
           fluent-package/apt/pkgsize-test.sh ${{ matrix.rake-job }} arm64
   binstubs_test:
     name: Binstubs Test
-    runs-on: ubuntu-24.04-arm
     needs: [define-matrix, build]
+    uses: ./.github/workflows/_run_test_on_docker.yml
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
-    steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
-        with:
-          name: packages-${{ matrix.rake-job }}-arm64
-          path: fluent-package/apt/repositories
-      - name: Binstubs Test
-        run: |
-          mkdir -p .bundle
-          docker run \
-          --rm \
-          --tty \
-          --env CI=true \
-          --volume ${PWD}:/fluentd:ro \
-          ${{ matrix.test-docker-image }} \
-          /fluentd/fluent-package/apt/binstubs-test.sh
+    with:
+      runs-on: ubuntu-24.04-arm
+      rake-job: ${{ matrix.rake-job }}-arm64
+      repository-type: apt
+      test-label: Binstubs Test
+      test-docker-image: ${{ matrix.test-docker-image }}
+      test-script: binstubs-test.sh
   installation_test:
     name: Installation Test
-    runs-on: ubuntu-24.04-arm
     needs: [define-matrix, build]
+    uses: ./.github/workflows/_run_test_on_docker.yml
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
-    steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
-        with:
-          name: packages-${{ matrix.rake-job }}-arm64
-          path: fluent-package/apt/repositories
-      - name: Installation Test
-        run: |
-          mkdir -p .bundle
-          docker run \
-          --rm \
-          --tty \
-          --env CI=true \
-          --volume ${PWD}:/fluentd:ro \
-          ${{ matrix.test-docker-image }} \
-          /fluentd/fluent-package/apt/install-test.sh
+    with:
+      runs-on: ubuntu-24.04-arm
+      rake-job: ${{ matrix.rake-job }}-arm64
+      repository-type: apt
+      test-label: Installation Test
+      test-docker-image: ${{ matrix.test-docker-image }}
+      test-script: install-test.sh
   piuparts_test:
     name: Piuparts Test
-    runs-on: ubuntu-24.04-arm
     needs: [define-matrix, build]
+    uses: ./.github/workflows/_run_test_on_docker.yml
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
-    steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
-        with:
-          name: packages-${{ matrix.rake-job }}-arm64
-          path: fluent-package/apt/repositories
-      - name: Piuparts (Install/Remove/Upgrade) Test
-        run: |
-          mkdir -p .bundle
-          docker run \
-          --privileged \
-          --rm \
-          --tty \
-          --env CI=true \
-          --volume ${PWD}:/fluentd:ro \
-          ${{ matrix.test-docker-image }} \
-          /fluentd/fluent-package/apt/piuparts-test.sh
+    with:
+      runs-on: ubuntu-24.04-arm
+      rake-job: ${{ matrix.rake-job }}-arm64
+      repository-type: apt
+      test-label: Piuparts (Install/Remove/Upgrade) Test
+      test-docker-image: ${{ matrix.test-docker-image }}
+      test-script: piuparts-test.sh
   serverspec_test:
     name: Serverspec Test
-    runs-on: ubuntu-24.04-arm
     needs: [define-matrix, build]
+    uses: ./.github/workflows/_run_test_on_docker.yml
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
-    steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
-        with:
-          name: packages-${{ matrix.rake-job }}-arm64
-          path: fluent-package/apt/repositories
-      - name: Serverspec Test
-        run: |
-          mkdir -p .bundle
-          docker run \
-          --rm \
-          --tty \
-          --env CI=true \
-          --volume ${PWD}:/fluentd:ro \
-          ${{ matrix.test-docker-image }} \
-          /fluentd/fluent-package/apt/serverspec-test.sh
+    with:
+      runs-on: ubuntu-24.04-arm
+      rake-job: ${{ matrix.rake-job }}-arm64
+      repository-type: apt
+      test-label: Serverspec Test
+      test-docker-image: ${{ matrix.test-docker-image }}
+      test-script: serverspec-test.sh
   confluent_test:
     name: Confluent Test
-    runs-on: ubuntu-24.04-arm
     needs: [define-matrix, build]
+    uses: ./.github/workflows/_run_test_on_docker.yml
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
-    steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
-        with:
-          name: packages-${{ matrix.rake-job }}-arm64
-          path: fluent-package/apt/repositories
-      - name: Confluent Test
-        run: |
-          mkdir -p .bundle
-          docker run \
-          --rm \
-          --tty \
-          --env CI=true \
-          --volume ${PWD}:/fluentd:ro \
-          ${{ matrix.test-docker-image }} \
-          /fluentd/fluent-package/apt/confluent-test.sh
+    with:
+      runs-on: ubuntu-24.04-arm
+      rake-job: ${{ matrix.rake-job }}-arm64
+      repository-type: apt
+      test-label: Confluent Test
+      test-docker-image: ${{ matrix.test-docker-image }}
+      test-script: confluent-test.sh
