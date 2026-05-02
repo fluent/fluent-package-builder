@@ -1,22 +1,22 @@
-From 9e1837728f192a7829df30a1f92423a1f3708760 Mon Sep 17 00:00:00 2001
+From 861f52e0d842fddd098c16546070d5c030d2805e Mon Sep 17 00:00:00 2001
 From: Kentaro Hayashi <hayashi@clear-code.com>
-Date: Mon, 23 Mar 2026 16:07:31 +0900
+Date: Mon, 27 Apr 2026 11:56:42 +0900
 Subject: [PATCH] Bump version to v7
 
 Signed-off-by: Kentaro Hayashi <hayashi@clear-code.com>
 ---
- fluent-package/config.rb                  | 6 +++---
- fluent-package/debian/changelog           | 6 ++++++
- fluent-package/yum/fluent-package.spec.in | 3 +++
- 3 files changed, 12 insertions(+), 3 deletions(-)
+ fluent-package/config.rb                  | 10 +++++-----
+ fluent-package/debian/changelog           |  6 ++++++
+ fluent-package/yum/fluent-package.spec.in |  3 +++
+ 3 files changed, 14 insertions(+), 5 deletions(-)
 
 diff --git a/fluent-package/config.rb b/fluent-package/config.rb
-index 03a3fbd..322bf6d 100644
+index ca5dd6c..c8e7b68 100644
 --- a/fluent-package/config.rb
 +++ b/fluent-package/config.rb
 @@ -1,5 +1,5 @@
  PACKAGE_NAME = "fluent-package"
--PACKAGE_VERSION = "6.0.3"
+-PACKAGE_VERSION = "6.0.4"
 +PACKAGE_VERSION = "7.0.0"
  
  # Keep internal path (/opt/td-agent) for package name migration
@@ -27,11 +27,22 @@ index 03a3fbd..322bf6d 100644
  # https://www.ruby-lang.org/en/downloads/ (tar.gz)
 -BUNDLED_RUBY_VERSION = "3.4.9"
 -BUNDLED_RUBY_SOURCE_SHA256SUM = "7bb4d4f5e807cc27251d14d9d6086d182c5b25875191e44ab15b709cd7a7dd9c"
-+BUNDLED_RUBY_VERSION = "4.0.2"
-+BUNDLED_RUBY_SOURCE_SHA256SUM = "51502b26b50b68df4963336ca41e368cde92c928faf91654de4c4c1791f82aac"
++BUNDLED_RUBY_VERSION = "4.0.3"
++BUNDLED_RUBY_SOURCE_SHA256SUM = "77964acc370d5c8375b9502e5ba6c13c03ef91ab9eb9f521c84fb42b9c9a6b0f"
  
  BUNDLED_RUBY_PATCHES = [
    # An example entry:
+@@ -32,8 +32,8 @@ BUNDLED_RUBY_PATCHES = [
+ ]
+ 
+ # https://rubyinstaller.org/downloads/ (7-ZIP ARCHIVES)
+-BUNDLED_RUBY_INSTALLER_X64_VERSION = "3.4.9-1"
+-BUNDLED_RUBY_INSTALLER_X64_SHA256SUM = "4375268618b61dadf53bf8e54beaca74ea30580c90d3c47ea9f2a134bd3e494e"
++BUNDLED_RUBY_INSTALLER_X64_VERSION = "4.0.3-1"
++BUNDLED_RUBY_INSTALLER_X64_SHA256SUM = "a4094317397511e09242be1c95b32c8700fe91ebca713fb4e190de595eea5699"
+ 
+ # Files under rubyinstaller/ are patches for RubyInstaller's binary package.
+ # Other patches for Ruby's source tree which can be shared with BUNDLED_RUBY_PATCHES.
 diff --git a/fluent-package/debian/changelog b/fluent-package/debian/changelog
 index 07b315b..2bf9599 100644
 --- a/fluent-package/debian/changelog
