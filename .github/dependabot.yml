@@ -5,6 +5,7 @@ updates:
     directory: '/'
     schedule:
       interval: 'monthly'
+    open-pull-requests-limit: 1
 
   # fluent-package-v6 branch
   - package-ecosystem: 'github-actions'
@@ -12,3 +13,4 @@ updates:
     target-branch: 'fluent-package-v6'
     schedule:
       interval: 'monthly'
+    open-pull-requests-limit: 1
