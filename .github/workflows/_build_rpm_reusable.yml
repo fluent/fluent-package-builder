@@ -1,0 +1,80 @@
+name: Reusable Build Deb
+
+on:
+  workflow_call:
+    inputs:
+      rake-job:
+        required: true
+        type: string
+      runs-on:
+        required: true
+        type: string
+      next-major:
+        required: true
+        type: boolean
+      cache-group:
+        required: true
+        type: string
+
+jobs:
+  build:
+    runs-on: ${{ inputs.runs-on }}
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: cache rpm
+        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
+        id: cache-rpm
+        with:
+          path: |
+            fluent-package/yum/repositories
+            fluent-release/yum/repositories
+            fluent-lts-release/yum/repositories
+            v7-test/fluent-package/yum/repositories
+          key: ${{ runner.os }}-cache-${{ inputs.rake-job }}-${{ runner.arch }}-${{ inputs.cache-group }}-${{ hashFiles('**/config.rb', '**/Rakefile', '**/Gemfile*', '**/*.spec.in', 'fluent-package/templates/**', 'fluent-package/yum/**/Dockerfile') }}
+      - uses: ruby/setup-ruby@3ff19f5e2baf30647122352b96108b1fbe250c64 # v1.299.0
+        with:
+          ruby-version: '3.4'
+      - name: Install dependencies
+        if: ${{ ! steps.cache-rpm.outputs.cache-hit }}
+        run: |
+          gem install serverspec --no-document
+      - name: Build rpm with Docker
+        if: ${{ ! steps.cache-rpm.outputs.cache-hit }}
+        run: |
+          rake yum:build YUM_TARGETS=${{ inputs.rake-job }}
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        if: ${{ ! steps.cache-rpm.outputs.cache-hit && inputs.next-major }}
+        with:
+          path: v7-test
+      - name: Build v7 rpm with Docker
+        if: ${{ ! steps.cache-rpm.outputs.cache-hit && inputs.next-major }}
+        run: |
+          cd v7-test
+          git config user.email "fluentd@googlegroups.com"
+          git config user.name "Fluentd developers"
+          git am fluent-package/bump-version-v7.patch
+          rake yum:build YUM_TARGETS=${{ inputs.rake-job }}
+      - name: Upload fluent-package rpm
+        if: ${{ ! inputs.next-major }}
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        with:
+          name: packages-${{ inputs.rake-job }}
+          path: fluent-package/yum/repositories
+      - name: Upload fluent-release rpm
+        if: ${{ ! inputs.next-major }}
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        with:
+          name: packages-release-${{ inputs.rake-job }}
+          path: fluent-release/yum/repositories
+      - name: Upload fluent-lts-release rpm
+        if: ${{ ! inputs.next-major }}
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        with:
+          name: packages-lts-release-${{ inputs.rake-job }}
+          path: fluent-lts-release/yum/repositories
+      - name: Upload v7 fluent-package rpm
+        if: ${{ inputs.next-major }}
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        with:
+          name: v7-packages-${{ inputs.rake-job }}
+          path: v7-test/fluent-package/yum/repositories
