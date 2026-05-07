@@ -210,7 +210,7 @@ jobs:
             container-image: images:ubuntu/24.04
           - label: Ubuntu Resolute amd64
             rake-job: ubuntu-resolute
-            container-image: fluent:ubuntu/26.04
+            container-image: images:ubuntu/26.04
         exclude:
           - label: Debian bookworm amd64
             test: update-from-v4.sh
