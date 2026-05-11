@@ -87,6 +87,7 @@ jobs:
     with:
       runs-on: ubuntu-24.04-arm
       rake-job: ${{ matrix.rake-job }}-arm64
+      docker-options: --privileged
       repository-type: apt
       test-label: Piuparts (Install/Remove/Upgrade) Test
       test-docker-image: ${{ matrix.test-docker-image }}
