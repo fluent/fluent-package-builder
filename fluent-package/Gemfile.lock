@@ -9,8 +9,8 @@ GIT
 
 GIT
   remote: https://github.com/fluent/fluentd
-  revision: 1b849cb95719eefd72ac37213797d4b6d15ea9e1
-  ref: 1b849cb95719eefd72ac37213797d4b6d15ea9e1
+  revision: 00d3a1ed4ef5c3e48ed537c5960efecfe68df69d
+  ref: 00d3a1ed4ef5c3e48ed537c5960efecfe68df69d
   specs:
     fluentd (1.19.2)
       async-http (~> 0.86)
@@ -253,7 +253,7 @@ GEM
       net-ssh (>= 2.6.5, < 8.0.0)
     net-ssh (7.3.2)
     net-telnet (0.2.0)
-    nokogiri (1.19.2)
+    nokogiri (1.19.3)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     oj (3.16.11)
@@ -398,7 +398,7 @@ DEPENDENCIES
   jmespath (= 1.6.2)
   mini_portile2 (= 2.8.9)
   msgpack (= 1.8.0)
-  nokogiri (= 1.19.2)
+  nokogiri (= 1.19.3)
   oj (= 3.16.11)
   opensearch-ruby (= 3.4.0)
   prometheus-client (= 4.2.5)
