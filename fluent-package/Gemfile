@@ -44,12 +44,19 @@ if ENV["INSTALL_GEM_FROM_LOCAL_REPO"]
     # https://github.com/fluent/fluent-package-builder/issues/618
     # NOTE: platforms: does not work in source ... do block
     gem "win32-service" if RUBY_PLATFORM =~ /mswin|mingw/
+    # Bundle forked version of ffi-win32-extensions until
+    # ffi 1.17.1 or later is supported.
+    # This workaround should be applied to fluent-package not to block using
+    # newer rdkafka to fix SEGV issue.
+    # https://github.com/fluent/fluent-package-builder/issues/1051
+    gem "ffi-win32-extensions" if RUBY_PLATFORM =~ /mswin|mingw/
   end
 else
   # Lock to specific revision
   git_source(:github) {|repo_name| "https://github.com/#{repo_name}" }
   gem "fluentd", github: "fluent/fluentd", ref: FLUENTD_REVISION
   gem "win32-service", github: "fluent-plugins-nursery/win32-service", branch: "fluent-package", platforms: [:mingw, :x64_mingw]
+  gem "ffi-win32-extensions", github: "fluent-plugins-nursery/ffi-win32-extensions", branch: "fluent-package", platforms: [:mingw, :x64_mingw]
 end
 
 # plugin gems
@@ -95,8 +102,9 @@ gem "faraday", "2.14.1"
 
 windows_platforms = [:mingw, :x64_mingw] # :mswin
 # ffi-win32-extensions doesn't support ffi 1.17.1 or later
-gem "ffi", "1.17.0", platforms: windows_platforms
-gem "ffi-win32-extensions", "1.1.0", platforms: windows_platforms
+gem "ffi", "1.17.1", platforms: windows_platforms
+# Use officially released version when PR was merged and released.
+#gem "ffi-win32-extensions", "1.1.0", platforms: windows_platforms
 # fiddle gem that isn't default gems as of Ruby 3.5
 gem "fiddle", "1.1.8", platforms: windows_platforms
 gem "nokogiri", "1.19.3", platforms: windows_platforms
