@@ -1,4 +1,12 @@
 GIT
+  remote: https://github.com/fluent-plugins-nursery/ffi-win32-extensions
+  revision: da0b5539fe35c02a6d17da83ddef7cda688e7628
+  branch: fluent-package
+  specs:
+    ffi-win32-extensions (1.1.1)
+      ffi (~> 1.15)
+
+GIT
   remote: https://github.com/fluent-plugins-nursery/win32-service
   revision: cfcc2007b3843127329d6a7307a62a927a714327
   branch: fluent-package
@@ -125,9 +133,7 @@ GEM
     faraday_middleware-aws-sigv4 (1.0.1)
       aws-sigv4 (~> 1.0)
       faraday (>= 2.0, < 3)
-    ffi (1.17.0)
-    ffi-win32-extensions (1.1.0)
-      ffi (>= 1.15.5, <= 1.17.0)
+    ffi (1.17.1)
     fiber-annotation (0.2.0)
     fiber-local (1.1.0)
       fiber-storage
@@ -276,8 +282,16 @@ GEM
     public_suffix (6.0.2)
     racc (1.8.1)
     rake (13.3.1)
-    rdkafka (0.21.0)
-      ffi (~> 1.15)
+    rdkafka (0.27.0-aarch64-linux-gnu)
+      ffi (~> 1.17.1)
+      json (> 2.0)
+      logger
+      mini_portile2 (~> 2.6)
+      rake (> 12)
+    rdkafka (0.27.0-x86_64-linux-gnu)
+      ffi (~> 1.17.1)
+      json (> 2.0)
+      logger
       mini_portile2 (~> 2.6)
       rake (> 12)
     rexml (3.4.4)
@@ -367,8 +381,8 @@ DEPENDENCIES
   digest-murmurhash (= 1.1.1)
   elasticsearch (= 8.19.2)
   faraday (= 2.14.1)
-  ffi (= 1.17.0)
-  ffi-win32-extensions (= 1.1.0)
+  ffi (= 1.17.1)
+  ffi-win32-extensions!
   fiddle (= 1.1.8)
   fluent-diagtool (= 1.0.5)
   fluent-plugin-elasticsearch (= 6.0.0)
@@ -403,7 +417,7 @@ DEPENDENCIES
   opensearch-ruby (= 3.4.0)
   prometheus-client (= 4.2.5)
   rake
-  rdkafka (= 0.21.0)
+  rdkafka (= 0.27.0)
   ruby-kafka (= 1.5.0)
   serverengine (= 2.4.0)
   sigdump (= 0.2.5)
