@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/fluent-plugins-nursery/ffi-win32-extensions
-  revision: da0b5539fe35c02a6d17da83ddef7cda688e7628
+  revision: a549365f60c06635bd9b14dd961db118721a2aec
   branch: fluent-package
   specs:
     ffi-win32-extensions (1.1.1)
@@ -17,8 +17,8 @@ GIT
 
 GIT
   remote: https://github.com/fluent/fluentd
-  revision: 00d3a1ed4ef5c3e48ed537c5960efecfe68df69d
-  ref: 00d3a1ed4ef5c3e48ed537c5960efecfe68df69d
+  revision: c16dd7ed11b9c158d30c189481b80099bcf9c5f8
+  ref: c16dd7ed11b9c158d30c189481b80099bcf9c5f8
   specs:
     fluentd (1.19.2)
       async-http (~> 0.86)
@@ -121,14 +121,14 @@ GEM
       multi_json
     excon (1.3.2)
       logger
-    faraday (2.14.1)
+    faraday (2.14.2)
       faraday-net_http (>= 2.0, < 3.5)
       json
       logger
     faraday-excon (2.3.0)
       excon (>= 1.0.0)
       faraday (>= 2.11.0, < 3)
-    faraday-net_http (3.4.2)
+    faraday-net_http (3.4.3)
       net-http (~> 0.5)
     faraday_middleware-aws-sigv4 (1.0.1)
       aws-sigv4 (~> 1.0)
@@ -374,7 +374,7 @@ DEPENDENCIES
   cool.io (= 1.9.4)
   digest-murmurhash (= 1.1.1)
   elasticsearch (= 8.19.2)
-  faraday (= 2.14.1)
+  faraday (= 2.14.2)
   ffi (= 1.17.1)
   ffi-win32-extensions!
   fiddle (= 1.1.8)
