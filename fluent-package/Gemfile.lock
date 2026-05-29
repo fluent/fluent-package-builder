@@ -1,4 +1,12 @@
 GIT
+  remote: https://github.com/fluent-plugins-nursery/ffi-win32-extensions
+  revision: a549365f60c06635bd9b14dd961db118721a2aec
+  branch: fluent-package
+  specs:
+    ffi-win32-extensions (1.1.1)
+      ffi (~> 1.15)
+
+GIT
   remote: https://github.com/fluent-plugins-nursery/win32-service
   revision: cfcc2007b3843127329d6a7307a62a927a714327
   branch: fluent-package
@@ -9,8 +17,8 @@ GIT
 
 GIT
   remote: https://github.com/fluent/fluentd
-  revision: 76841666b4e4aade23f0c100a7e048995f7d52c8
-  ref: 76841666b4e4aade23f0c100a7e048995f7d52c8
+  revision: c16dd7ed11b9c158d30c189481b80099bcf9c5f8
+  ref: c16dd7ed11b9c158d30c189481b80099bcf9c5f8
   specs:
     fluentd (1.19.2)
       async-http (~> 0.86)
@@ -35,6 +43,7 @@ GIT
       webrick (~> 1.4)
       win32-event (~> 0.6.3)
       win32-ipc (~> 0.7.0)
+      win32-registry (~> 0.1)
       win32-service (~> 2.3.0)
       yajl-ruby (~> 1.0)
       zstd-ruby (~> 1.5)
@@ -42,7 +51,7 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    addressable (2.8.8)
+    addressable (2.9.0)
       public_suffix (>= 2.0.2, < 8.0)
     async (2.24.0)
       console (~> 1.29)
@@ -60,7 +69,7 @@ GEM
       protocol-http1 (~> 0.30)
       protocol-http2 (~> 0.22)
       traces (~> 0.10)
-    async-pool (0.11.1)
+    async-pool (0.11.2)
       async (>= 2.0)
     aws-eventstream (1.4.0)
     aws-partitions (1.1150.0)
@@ -112,21 +121,19 @@ GEM
       multi_json
     excon (1.3.2)
       logger
-    faraday (2.14.1)
+    faraday (2.14.2)
       faraday-net_http (>= 2.0, < 3.5)
       json
       logger
     faraday-excon (2.3.0)
       excon (>= 1.0.0)
       faraday (>= 2.11.0, < 3)
-    faraday-net_http (3.4.2)
+    faraday-net_http (3.4.3)
       net-http (~> 0.5)
     faraday_middleware-aws-sigv4 (1.0.1)
       aws-sigv4 (~> 1.0)
       faraday (>= 2.0, < 3)
-    ffi (1.17.0)
-    ffi-win32-extensions (1.1.0)
-      ffi (>= 1.15.5, <= 1.17.0)
+    ffi (1.17.1)
     fiber-annotation (0.2.0)
     fiber-local (1.1.0)
       fiber-storage
@@ -181,7 +188,7 @@ GEM
       csv (~> 3.2)
       fluentd (>= 0.14.12, < 2)
       nokogiri (>= 1.12.5)
-    fluent-plugin-prometheus (2.2.1)
+    fluent-plugin-prometheus (2.2.2)
       fluentd (>= 1.9.1, < 2)
       prometheus-client (>= 2.1.0)
     fluent-plugin-prometheus_pushgateway (0.2.1)
@@ -250,9 +257,9 @@ GEM
       uri (>= 0.11.1)
     net-scp (4.1.0)
       net-ssh (>= 2.6.5, < 8.0.0)
-    net-ssh (7.3.0)
+    net-ssh (7.3.2)
     net-telnet (0.2.0)
-    nokogiri (1.19.2)
+    nokogiri (1.19.3)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     oj (3.16.11)
@@ -275,8 +282,10 @@ GEM
     public_suffix (6.0.2)
     racc (1.8.1)
     rake (13.3.1)
-    rdkafka (0.21.0)
-      ffi (~> 1.15)
+    rdkafka (0.27.0)
+      ffi (~> 1.17.1)
+      json (> 2.0)
+      logger
       mini_portile2 (~> 2.6)
       rake (> 12)
     rexml (3.4.4)
@@ -290,7 +299,7 @@ GEM
       sigdump (~> 0.2.2)
     sfl (2.3)
     sigdump (0.2.5)
-    specinfra (2.94.1)
+    specinfra (2.94.2)
       base64
       net-scp
       net-ssh (>= 2.7)
@@ -325,7 +334,7 @@ GEM
     traces (0.18.2)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
-    tzinfo-data (1.2026.1)
+    tzinfo-data (1.2026.2)
       tzinfo (>= 1.0.0)
     uri (1.0.4)
     webhdfs (0.11.0)
@@ -337,7 +346,9 @@ GEM
       ffi
     win32-ipc (0.7.0)
       ffi
-    winevt_c (0.11.2)
+    win32-registry (0.1.2)
+      fiddle (~> 1.0)
+    winevt_c (0.11.3)
     yajl-ruby (1.4.3)
     zip-zip (0.3)
       rubyzip (>= 1.0.0)
@@ -363,9 +374,9 @@ DEPENDENCIES
   cool.io (= 1.9.4)
   digest-murmurhash (= 1.1.1)
   elasticsearch (= 8.19.2)
-  faraday (= 2.14.1)
-  ffi (= 1.17.0)
-  ffi-win32-extensions (= 1.1.0)
+  faraday (= 2.14.2)
+  ffi (= 1.17.1)
+  ffi-win32-extensions!
   fiddle (= 1.1.8)
   fluent-diagtool (= 1.0.5)
   fluent-plugin-elasticsearch (= 6.0.0)
@@ -377,7 +388,7 @@ DEPENDENCIES
   fluent-plugin-opensearch (= 1.1.5)
   fluent-plugin-opentelemetry (= 0.5.2)
   fluent-plugin-parser-winevt_xml (= 0.2.8)
-  fluent-plugin-prometheus (= 2.2.1)
+  fluent-plugin-prometheus (= 2.2.2)
   fluent-plugin-prometheus_pushgateway (= 0.2.1)
   fluent-plugin-record-modifier (= 2.2.1)
   fluent-plugin-rewrite-tag-filter (= 2.4.0)
@@ -395,26 +406,26 @@ DEPENDENCIES
   jmespath (= 1.6.2)
   mini_portile2 (= 2.8.9)
   msgpack (= 1.8.0)
-  nokogiri (= 1.19.2)
+  nokogiri (= 1.19.3)
   oj (= 3.16.11)
   opensearch-ruby (= 3.4.0)
   prometheus-client (= 4.2.5)
   rake
-  rdkafka (= 0.21.0)
+  rdkafka (= 0.27.0)
   ruby-kafka (= 1.5.0)
   serverengine (= 2.4.0)
   sigdump (= 0.2.5)
   td (= 0.19.1)
   td-client (= 3.0.0)
   tzinfo (= 2.0.6)
-  tzinfo-data (= 1.2026.1)
+  tzinfo-data (= 1.2026.2)
   webhdfs (= 0.11.0)
   webrick (= 1.9.2)
   win32-event (= 0.6.3)
   win32-eventlog (= 0.6.7)
   win32-ipc (= 0.7.0)
   win32-service!
-  winevt_c (= 0.11.2)
+  winevt_c (= 0.11.3)
   yajl-ruby (= 1.4.3)
 
 BUNDLED WITH
