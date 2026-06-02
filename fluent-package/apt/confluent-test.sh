@@ -28,10 +28,10 @@ case ${code_name} in
 esac
 
 /usr/sbin/fluent-gem install --no-document serverspec
-wget https://packages.confluent.io/deb/7.6/archive.key
+wget https://packages.confluent.io/deb/7.9/archive.key
 gpg2 --homedir /tmp --no-default-keyring --keyring gnupg-ring:/usr/share/keyrings/confluent-archive-keyring.gpg --import archive.key
 chmod 644 /usr/share/keyrings/confluent-archive-keyring.gpg
-echo "deb [arch=${architecture} signed-by=/usr/share/keyrings/confluent-archive-keyring.gpg] https://packages.confluent.io/deb/7.6 stable main" > /etc/apt/sources.list.d/confluent.list
+echo "deb [arch=${architecture} signed-by=/usr/share/keyrings/confluent-archive-keyring.gpg] https://packages.confluent.io/deb/7.9 stable main" > /etc/apt/sources.list.d/confluent.list
 apt update && apt install -y confluent-community-2.13 ${java_jdk} netcat-openbsd
 
 CONFLUENT_SCRIPT=$(dirname $(realpath $0))/../run-confluent.sh
