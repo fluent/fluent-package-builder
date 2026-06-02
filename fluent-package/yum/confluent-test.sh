@@ -46,14 +46,14 @@ ${DNF} install -y \
 fluentd --version
 
 /usr/sbin/fluent-gem install --no-document serverspec
-rpm --import https://packages.confluent.io/rpm/7.6/archive.key
+rpm --import https://packages.confluent.io/rpm/7.9/archive.key
 
 cat <<EOF > /etc/yum.repos.d/confluent.repo
 [Confluent]
 name=Confluent repository
-baseurl=https://packages.confluent.io/rpm/7.6
+baseurl=https://packages.confluent.io/rpm/7.9
 gpgcheck=1
-gpgkey=https://packages.confluent.io/rpm/7.6/archive.key
+gpgkey=https://packages.confluent.io/rpm/7.9/archive.key
 enabled=1
 EOF
 ${DNF} update -y && ${DNF} install -y confluent-community-2.13 nmap-ncat
