@@ -17,8 +17,8 @@ GIT
 
 GIT
   remote: https://github.com/fluent/fluentd
-  revision: c16dd7ed11b9c158d30c189481b80099bcf9c5f8
-  ref: c16dd7ed11b9c158d30c189481b80099bcf9c5f8
+  revision: a16ca30e1ca16f7dc95a2411839e070c471f8222
+  ref: a16ca30e1ca16f7dc95a2411839e070c471f8222
   specs:
     fluentd (1.19.2)
       async-http (~> 0.86)
@@ -100,7 +100,7 @@ GEM
     certstore_c (0.1.7)
     cmetrics (0.3.3)
       mini_portile2 (~> 2.7)
-    concurrent-ruby (1.3.6)
+    concurrent-ruby (1.3.7)
     console (1.33.0)
       fiber-annotation
       fiber-local (~> 1.1)
@@ -111,7 +111,7 @@ GEM
       rake (>= 12.0.0, < 14.0.0)
     digest-murmurhash (1.1.1)
     drb (2.2.3)
-    elastic-transport (8.4.1)
+    elastic-transport (8.4.2)
       faraday (< 3)
       multi_json
     elasticsearch (8.19.2)
@@ -128,12 +128,12 @@ GEM
     faraday-excon (2.3.0)
       excon (>= 1.0.0)
       faraday (>= 2.11.0, < 3)
-    faraday-net_http (3.4.3)
+    faraday-net_http (3.4.4)
       net-http (~> 0.5)
     faraday_middleware-aws-sigv4 (1.0.1)
       aws-sigv4 (~> 1.0)
       faraday (>= 2.0, < 3)
-    ffi (1.17.1)
+    ffi (1.17.4)
     fiber-annotation (0.2.0)
     fiber-local (1.1.0)
       fiber-storage
@@ -158,7 +158,7 @@ GEM
     fluent-plugin-fluent-package-update-notifier (0.2.3)
       fluentd (>= 0.14.10, < 2)
       specinfra (~> 2.94.1)
-    fluent-plugin-kafka (0.19.6)
+    fluent-plugin-kafka (0.19.7)
       bigdecimal (~> 3.1)
       fluentd (>= 0.10.58, < 2)
       ltsv
@@ -168,7 +168,7 @@ GEM
       fluentd (>= 0.14.0, < 2)
     fluent-plugin-obsolete-plugins (0.2.2)
       fluentd (>= 0.14.10, < 2)
-    fluent-plugin-opensearch (1.1.5)
+    fluent-plugin-opensearch (1.1.6)
       aws-sdk-core (~> 3)
       excon
       faraday (>= 2.0.0)
@@ -250,7 +250,7 @@ GEM
     ltsv (0.1.2)
     metrics (0.14.1)
     mini_portile2 (2.8.9)
-    msgpack (1.8.0)
+    msgpack (1.8.1)
     multi_json (1.17.0)
     mutex_m (0.3.0)
     net-http (0.8.0)
@@ -348,7 +348,7 @@ GEM
       ffi
     win32-registry (0.1.2)
       fiddle (~> 1.0)
-    winevt_c (0.11.3)
+    winevt_c (0.11.4)
     yajl-ruby (1.4.3)
     zip-zip (0.3)
       rubyzip (>= 1.0.0)
@@ -375,17 +375,17 @@ DEPENDENCIES
   digest-murmurhash (= 1.1.1)
   elasticsearch (= 8.19.2)
   faraday (= 2.14.2)
-  ffi (= 1.17.1)
+  ffi (= 1.17.4)
   ffi-win32-extensions!
   fiddle (= 1.1.8)
   fluent-diagtool (= 1.0.5)
   fluent-plugin-elasticsearch (= 6.0.0)
   fluent-plugin-flowcounter-simple (= 0.1.0)
   fluent-plugin-fluent-package-update-notifier (= 0.2.3)
-  fluent-plugin-kafka (= 0.19.6)
+  fluent-plugin-kafka (= 0.19.7)
   fluent-plugin-metrics-cmetrics (= 0.1.2)
   fluent-plugin-obsolete-plugins (= 0.2.2)
-  fluent-plugin-opensearch (= 1.1.5)
+  fluent-plugin-opensearch (= 1.1.6)
   fluent-plugin-opentelemetry (= 0.5.2)
   fluent-plugin-parser-winevt_xml (= 0.2.8)
   fluent-plugin-prometheus (= 2.2.2)
@@ -405,7 +405,7 @@ DEPENDENCIES
   httpclient (= 2.9.0)
   jmespath (= 1.6.2)
   mini_portile2 (= 2.8.9)
-  msgpack (= 1.8.0)
+  msgpack (= 1.8.1)
   nokogiri (= 1.19.3)
   oj (= 3.16.11)
   opensearch-ruby (= 3.4.0)
@@ -425,7 +425,7 @@ DEPENDENCIES
   win32-eventlog (= 0.6.7)
   win32-ipc (= 0.7.0)
   win32-service!
-  winevt_c (= 0.11.3)
+  winevt_c (= 0.11.4)
   yajl-ruby (= 1.4.3)
 
 BUNDLED WITH
