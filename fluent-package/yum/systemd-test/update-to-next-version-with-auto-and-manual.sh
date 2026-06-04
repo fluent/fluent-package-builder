@@ -7,6 +7,8 @@ set -exu
 if [ "$distribution" = "amazon" ]; then
     sudo $DNF repolist -v
     sudo $DNF --releasever=latest update -y
+else
+    fixup_broken_mirrors
 fi
 
 package="/host/${distribution}/${DISTRIBUTION_VERSION}/x86_64/Packages/fluent-package-[0-9]*.rpm"
