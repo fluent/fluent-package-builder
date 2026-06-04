@@ -31,7 +31,7 @@ jobs:
             fluent-lts-release/yum/repositories
             v7-test/fluent-package/yum/repositories
           key: ${{ runner.os }}-cache-${{ inputs.rake-job }}-${{ runner.arch }}-${{ inputs.cache-group }}-${{ hashFiles('**/config.rb', '**/Rakefile', '**/Gemfile*', '**/*.spec.in', 'fluent-package/templates/**', 'fluent-package/yum/**/Dockerfile') }}
-      - uses: ruby/setup-ruby@3ff19f5e2baf30647122352b96108b1fbe250c64 # v1.299.0
+      - uses: ruby/setup-ruby@afeafc3d1ab54a631816aba4c914a0081c12ff2f # v1.310.0
         with:
           ruby-version: '3.4'
       - name: Install dependencies

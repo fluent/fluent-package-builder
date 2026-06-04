@@ -35,7 +35,7 @@ jobs:
             fluent-lts-apt-source/apt/repositories
             v7-test/fluent-package/apt/repositories
           key: ${{ runner.os }}-cache-${{ inputs.rake-job }}-${{ runner.arch }}-${{ inputs.cache-group }}-${{ hashFiles('**/config.rb', '**/Rakefile', '**/Gemfile*', 'fluent-package/templates/**', 'fluent-package/debian/**', 'fluent-package/apt/**/Dockerfile') }}
-      - uses: ruby/setup-ruby@c4e5b1316158f92e3d49443a9d58b31d25ac0f8f # v1.306.0
+      - uses: ruby/setup-ruby@afeafc3d1ab54a631816aba4c914a0081c12ff2f # v1.310.0
         with:
           ruby-version: '3.4'
       - name: Install dependencies
