@@ -7,6 +7,8 @@ set -exu
 if [ "$distribution" = "amazon" ]; then
     sudo $DNF repolist -v
     sudo $DNF --releasever=latest update -y
+else
+    fixup_broken_mirrors
 fi
 
 enabled_before_update=$1 # enabled / disabled
