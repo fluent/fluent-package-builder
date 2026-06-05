@@ -179,6 +179,9 @@ function fixup_broken_mirrors()
                 ;;
             9|10*)
                 FALLBACK_URL=https://ftp.iij.ad.jp/pub/linux/almalinux
+                sudo $DNF install -y dnf-plugins-core --setopt=baseos.mirrorlist= \
+                     --setopt=baseos.baseurl=${FALLBACK_URL}/\$releasever/BaseOS/\$basearch/os/
+
                 sudo $DNF config-manager --setopt=baseos.mirrorlist= \
                      --setopt=baseos.baseurl=${FALLBACK_URL}/\$releasever/BaseOS/\$basearch/os/ --save
                 sudo $DNF config-manager --setopt=appstream.mirrorlist= \
