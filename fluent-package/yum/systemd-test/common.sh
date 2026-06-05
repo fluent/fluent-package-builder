@@ -152,3 +152,50 @@ function install_aws_cli()
     unzip awscliv2.zip
     sudo ./aws/install
 }
+
+function fixup_broken_mirrors()
+{
+    if [ "$DISTRIBUTION" = "amazon" ]; then
+        return 0
+    fi
+
+    # When mirrorlist in .repo is not accessible temporary,
+    # CI stops unexpectedly. This is last resort that I hope it will not fire.
+    if ! sudo $DNF repolist -v; then
+        # Avoid broken mirrorlist, enable baseurl explicitly
+        case $DISTRIBUTION_VERSION in
+            8)
+                # install missing dnf-config-manager
+                FALLBACK_URL=https://ftp.iij.ad.jp/pub/linux/rocky
+                sudo $DNF install -y dnf-plugins-core --setopt=baseos.mirrorlist= \
+                     --setopt=baseos.baseurl=${FALLBACK_URL}/\$releasever/BaseOS/\$basearch/os/
+
+                sudo $DNF config-manager --setopt=baseos.mirrorlist= \
+                     --setopt=baseos.baseurl=${FALLBACK_URL}/\$releasever/BaseOS/\$basearch/os/ --save
+                sudo $DNF config-manager --setopt=appstream.mirrorlist= \
+                     --setopt=appstream.baseurl=${FALLBACK_URL}/\$releasever/AppStream/\$basearch/os/ --save
+                sudo $DNF config-manager --setopt=extras.mirrorlist= \
+                     --setopt=extras.baseurl=${FALLBACK_URL}/\$releasever/extras/\$basearch/os/ --save
+                ;;
+            9|10*)
+                FALLBACK_URL=https://ftp.iij.ad.jp/pub/linux/almalinux
+                sudo $DNF config-manager --setopt=baseos.mirrorlist= \
+                     --setopt=baseos.baseurl=${FALLBACK_URL}/\$releasever/BaseOS/\$basearch/os/ --save
+                sudo $DNF config-manager --setopt=appstream.mirrorlist= \
+                     --setopt=appstream.baseurl=${FALLBACK_URL}/\$releasever/AppStream/\$basearch/os/ --save
+                sudo $DNF config-manager --setopt=extras.mirrorlist= \
+                     --setopt=extras.baseurl=${FALLBACK_URL}/\$releasever/extras/\$basearch/os/ --save
+                case $DISTRIBUTION_VERSION in
+                    10*)
+                        sudo $DNF config-manager --setopt=crb.mirrorlist= \
+                         --setopt=crb.baseurl=${FALLBACK_URL}/\$releasever/CRB/\$basearch/os/ --save
+                        ;;
+                esac
+                ;;
+            *)
+                echo "ERROR: unsupported $DISTRIBUTION $DISTRIBUTION_VERSION"
+                exit 1
+                ;;
+        esac
+    fi
+}
