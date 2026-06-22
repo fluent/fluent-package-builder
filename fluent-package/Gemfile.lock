@@ -259,7 +259,7 @@ GEM
       net-ssh (>= 2.6.5, < 8.0.0)
     net-ssh (7.3.2)
     net-telnet (0.2.0)
-    nokogiri (1.19.3)
+    nokogiri (1.19.4)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     oj (3.16.11)
@@ -282,7 +282,13 @@ GEM
     public_suffix (6.0.2)
     racc (1.8.1)
     rake (13.3.1)
-    rdkafka (0.27.0)
+    rdkafka (0.27.0-aarch64-linux-gnu)
+      ffi (~> 1.17.1)
+      json (> 2.0)
+      logger
+      mini_portile2 (~> 2.6)
+      rake (> 12)
+    rdkafka (0.27.0-x86_64-linux-gnu)
       ffi (~> 1.17.1)
       json (> 2.0)
       logger
@@ -348,7 +354,7 @@ GEM
       ffi
     win32-registry (0.1.2)
       fiddle (~> 1.0)
-    winevt_c (0.11.4)
+    winevt_c (0.11.5)
     yajl-ruby (1.4.3)
     zip-zip (0.3)
       rubyzip (>= 1.0.0)
@@ -406,7 +412,7 @@ DEPENDENCIES
   jmespath (= 1.6.2)
   mini_portile2 (= 2.8.9)
   msgpack (= 1.8.1)
-  nokogiri (= 1.19.3)
+  nokogiri (= 1.19.4)
   oj (= 3.16.11)
   opensearch-ruby (= 3.4.0)
   prometheus-client (= 4.2.5)
@@ -425,7 +431,7 @@ DEPENDENCIES
   win32-eventlog (= 0.6.7)
   win32-ipc (= 0.7.0)
   win32-service!
-  winevt_c (= 0.11.4)
+  winevt_c (= 0.11.5)
   yajl-ruby (= 1.4.3)
 
 BUNDLED WITH
