@@ -107,7 +107,7 @@ gem "ffi", "1.17.4", platforms: windows_platforms
 #gem "ffi-win32-extensions", "1.1.0", platforms: windows_platforms
 # fiddle gem that isn't default gems as of Ruby 3.5
 gem "fiddle", "1.1.8", platforms: windows_platforms
-gem "nokogiri", "1.19.3", platforms: windows_platforms
+gem "nokogiri", "1.19.4", platforms: windows_platforms
 gem "win32-event", "0.6.3", platforms: windows_platforms
 gem "win32-ipc", "0.7.0", platforms: windows_platforms
 # Use officially released version when PR was merged and released.
