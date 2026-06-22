@@ -11,6 +11,8 @@ $ENV:PATH="C:\\opt\\fluent;" + $ENV:PATH
 
 td-agent --version
 
+C:\opt\fluent\bin\fluent-gem.bat env
+
 td-agent-gem install --no-document serverspec
 $ENV:INSTALLATION_TEST=$TRUE
 cd C:\fluentd; rake serverspec:windows
