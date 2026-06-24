@@ -121,7 +121,7 @@ GEM
       multi_json
     excon (1.5.0)
       logger
-    faraday (2.14.2)
+    faraday (2.14.3)
       faraday-net_http (>= 2.0, < 3.5)
       json
       logger
@@ -262,7 +262,7 @@ GEM
     nokogiri (1.19.4)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
-    oj (3.16.11)
+    oj (3.17.3)
       bigdecimal (>= 3.0)
       ostruct (>= 0.2)
     opensearch-ruby (3.4.0)
@@ -282,7 +282,13 @@ GEM
     public_suffix (6.0.2)
     racc (1.8.1)
     rake (13.3.1)
-    rdkafka (0.27.0)
+    rdkafka (0.27.0-aarch64-linux-gnu)
+      ffi (~> 1.17.1)
+      json (> 2.0)
+      logger
+      mini_portile2 (~> 2.6)
+      rake (> 12)
+    rdkafka (0.27.0-x86_64-linux-gnu)
       ffi (~> 1.17.1)
       json (> 2.0)
       logger
@@ -374,7 +380,7 @@ DEPENDENCIES
   cool.io (= 1.9.4)
   digest-murmurhash (= 1.1.1)
   elasticsearch (= 8.19.2)
-  faraday (= 2.14.2)
+  faraday (= 2.14.3)
   ffi (= 1.17.4)
   ffi-win32-extensions!
   fiddle (= 1.1.8)
@@ -407,7 +413,7 @@ DEPENDENCIES
   mini_portile2 (= 2.8.9)
   msgpack (= 1.8.1)
   nokogiri (= 1.19.4)
-  oj (= 3.16.11)
+  oj (= 3.17.3)
   opensearch-ruby (= 3.4.0)
   prometheus-client (= 4.2.5)
   rake
