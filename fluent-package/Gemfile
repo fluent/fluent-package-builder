@@ -21,7 +21,8 @@ gem "http_parser.rb", "0.8.1"
 gem "yajl-ruby", "1.4.3"
 gem "serverengine", "2.4.0"
 gem "msgpack", "1.8.1"
-gem "oj", "3.16.11"
+# fix  CVE-2026-54500, CVE-2026-54502, CVE-2026-54592
+gem "oj", "3.17.3"
 gem "tzinfo", "2.0.6"
 gem "tzinfo-data", "1.2026.2"
 
@@ -98,7 +99,8 @@ gem "fluent-plugin-obsolete-plugins", "0.2.2"
 gem "fluent-plugin-opentelemetry", "0.5.2"
 
 # fix CVE-2026-25765,CVE-2026-33637 for elasticseach and opensearch
-gem "faraday", "2.14.2"
+# fix CVE-2026-54297
+gem "faraday", "2.14.3"
 
 windows_platforms = [:mingw, :x64_mingw] # :mswin
 # ffi-win32-extensions doesn't support ffi 1.17.1 or later
