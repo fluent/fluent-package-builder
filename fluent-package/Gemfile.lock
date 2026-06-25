@@ -17,10 +17,10 @@ GIT
 
 GIT
   remote: https://github.com/fluent/fluentd
-  revision: 987eeabe9a905beb21b33047e8967595f8677362
-  ref: 987eeabe9a905beb21b33047e8967595f8677362
+  revision: 43c860907e3d6a92c922233fd16eb2ed9ea16b69
+  ref: 43c860907e3d6a92c922233fd16eb2ed9ea16b69
   specs:
-    fluentd (1.19.2)
+    fluentd (1.19.3)
       async-http (~> 0.86)
       base64 (~> 0.2)
       bundler
@@ -176,7 +176,7 @@ GEM
       faraday_middleware-aws-sigv4 (~> 1.0.1)
       fluentd (>= 0.14.22)
       opensearch-ruby (>= 3.0.1)
-    fluent-plugin-opentelemetry (0.5.2)
+    fluent-plugin-opentelemetry (0.5.3)
       async-http (~> 0.88)
       excon (~> 1.2)
       fluentd (~> 1.18)
@@ -198,7 +198,7 @@ GEM
     fluent-plugin-rewrite-tag-filter (2.4.0)
       fluent-config-regexp-type
       fluentd (>= 0.14.2, < 2)
-    fluent-plugin-s3 (1.8.4)
+    fluent-plugin-s3 (1.8.5)
       aws-sdk-s3 (~> 1.60)
       aws-sdk-sqs (~> 1.23)
       fluentd (>= 0.14.22, < 2)
@@ -386,13 +386,13 @@ DEPENDENCIES
   fluent-plugin-metrics-cmetrics (= 0.1.2)
   fluent-plugin-obsolete-plugins (= 0.2.2)
   fluent-plugin-opensearch (= 1.1.6)
-  fluent-plugin-opentelemetry (= 0.5.2)
+  fluent-plugin-opentelemetry (= 0.5.3)
   fluent-plugin-parser-winevt_xml (= 0.2.8)
   fluent-plugin-prometheus (= 2.2.2)
   fluent-plugin-prometheus_pushgateway (= 0.2.1)
   fluent-plugin-record-modifier (= 2.2.1)
   fluent-plugin-rewrite-tag-filter (= 2.4.0)
-  fluent-plugin-s3 (= 1.8.4)
+  fluent-plugin-s3 (= 1.8.5)
   fluent-plugin-sd-dns (= 0.1.0)
   fluent-plugin-systemd (= 1.1.1)
   fluent-plugin-td (= 1.2.0)
