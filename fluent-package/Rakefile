@@ -178,6 +178,7 @@ class DownloadTask
   attr_reader :file_ruby_source, :file_ruby_installer_x64
   attr_reader :file_fluentd_archive
   attr_reader :file_win32_service_archive
+  attr_reader :file_ffi_win32_extensions_archive
   attr_reader :files_ruby_gems
   attr_reader :file_openssl_source
 
@@ -201,6 +202,7 @@ class DownloadTask
     define_ruby_files
     define_fluentd_archive
     define_win32_service_archive if windows?
+    define_ffi_win32_extensions_archive if windows?
     define_gem_files
     define_openssl_file
 
@@ -216,6 +218,9 @@ class DownloadTask
 
       desc "Clone win32-service repository and create a tarball"
       task :win32_service => [@file_win32_service_archive]
+
+      desc "Clone ffi-win32-extensions repository and create a tarball"
+      task :ffi_win32_extensions => [@file_ffi_win32_extensions_archive]
 
       desc "Download ruby gems"
       task :ruby_gems => @files_ruby_gems
@@ -340,6 +345,21 @@ class DownloadTask
     end
   end
 
+  def define_ffi_win32_extensions_archive
+    @file_ffi_win32_extensions_archive = File.join(DOWNLOADS_DIR, "ffi-win32-extensions.tar.gz")
+    file @file_ffi_win32_extensions_archive do
+      ensure_directory(DOWNLOADS_DIR) do
+        dirname = "ffi-win32-extensions"
+        rm_rf(dirname) if File.exist?(dirname)
+        sh("git", "clone", "https://github.com/fluent-plugins-nursery/ffi-win32-extensions.git")
+        cd("ffi-win32-extensions") do
+          sh("git", "checkout", "fluent-package")
+        end
+        sh(*tar_command, "cvfz", "#{dirname}.tar.gz", dirname)
+      end
+    end
+  end
+
   def define_gem_files
     paths = []
     Dir.glob("#{DOWNLOADS_DIR}/*.gem") do |path|
@@ -445,7 +465,7 @@ class BuildTask
       end
 
       desc "Install ruby gems"
-      task :ruby_gems => windows? ? [:"download:ruby_gems", :fluentd, :win32_service] : [:"download:ruby_gems", :fluentd] do
+      task :ruby_gems => windows? ? [:"download:ruby_gems", :fluentd, :win32_service, :ffi_win32_extensions] : [:"download:ruby_gems", :fluentd] do
         puts "::group::Install ruby gems" if ENV["CI"]
         gem_install("bundler", BUNDLER_VERSION)
 
@@ -491,6 +511,23 @@ class BuildTask
           sh(*tar_command, "xvf", archive_path, *tar_options) unless File.exist?("win32-service")
           cd("win32-service") do
             sh("rake", "build")
+            setup_local_gem_repo
+          end
+        end
+      end
+
+      desc "Install ffi-win32-extensions"
+      task :ffi_win32_extensions => [:"download:ffi_win32_extensions"] do
+        cd(DOWNLOADS_DIR) do
+          tar_options = ["--no-same-owner", "--force-local"]
+          archive_path = @download_task.file_ffi_win32_extensions_archive
+          sh(*tar_command, "xvf", archive_path, *tar_options) unless File.exist?("ffi-win32-extensions")
+          cd("ffi-win32-extensions") do
+            sh("bundle", "install")
+            sh("rake", "gem:create")
+            sh("rake", "gem:create")
+            mkdir_p("pkg")
+            mv(Dir.glob("*.gem"), "pkg/")
             setup_local_gem_repo
           end
         end
@@ -882,6 +919,7 @@ class BuildTask
       # included gem such as winevt_c. We didn't find how to link them statically yet.
       dlls = [
         "libstdc++-6",
+        "libgcc_s_seh-1"
       ]
       dlls.each do |dll|
         mingw_bin_path = RubyInstaller::Runtime.msys2_installation.mingw_bin_path
