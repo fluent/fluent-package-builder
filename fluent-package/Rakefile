@@ -919,6 +919,7 @@ class BuildTask
       # included gem such as winevt_c. We didn't find how to link them statically yet.
       dlls = [
         "libstdc++-6",
+        "libgcc_s_seh-1"
       ]
       dlls.each do |dll|
         mingw_bin_path = RubyInstaller::Runtime.msys2_installation.mingw_bin_path
