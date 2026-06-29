@@ -7,7 +7,7 @@ $xml = @"
       <image id="1" placement="appLogoOverride" src="$(Join-Path $topDir -ChildPath "share/fluent-package-toast-icon.png")" alt="Fluentd logo"/>
       <text>Fluent Package has been installed!</text>
       <text>If you want enterprise technical support, access the following URL</text>
-      <text>https://www.fluentd.org/enterprise=services</text>
+      <text>https://www.fluentd.org/enterprise_services</text>
     </binding>
   </visual>
   <actions>
