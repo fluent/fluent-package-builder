@@ -19,12 +19,12 @@ jobs:
     runs-on: windows-2022
     steps:
       - name: Set up Ruby
-        uses: ruby/setup-ruby@afeafc3d1ab54a631816aba4c914a0081c12ff2f # v1.310.0
+        uses: ruby/setup-ruby@0dafeac902942906541bc140009cdbf32665b601 # v1.315.0
         with:
           ruby-version: 3.2
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - name: cache msi
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         id: cache-msi
         with:
           path: fluent-package/msi/repositories
