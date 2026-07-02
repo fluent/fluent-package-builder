@@ -24,7 +24,7 @@ jobs:
   build:
     runs-on: ${{ inputs.run-on }}
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - name: cache deb
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         id: cache-deb
@@ -46,7 +46,7 @@ jobs:
         if: ${{ ! steps.cache-deb.outputs.cache-hit && ! inputs.next-major }}
         run: |
           rake apt:build APT_TARGETS=${{ inputs.rake-job }} ${{ inputs.rake-options }}
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         if: ${{ ! steps.cache-deb.outputs.cache-hit && inputs.next-major }}
         with:
           path: v7-test

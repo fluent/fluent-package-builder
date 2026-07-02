@@ -20,7 +20,7 @@ jobs:
   build:
     runs-on: ${{ inputs.runs-on }}
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - name: cache rpm
         uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
         id: cache-rpm
@@ -42,7 +42,7 @@ jobs:
         if: ${{ ! steps.cache-rpm.outputs.cache-hit }}
         run: |
           rake yum:build YUM_TARGETS=${{ inputs.rake-job }}
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         if: ${{ ! steps.cache-rpm.outputs.cache-hit && inputs.next-major }}
         with:
           path: v7-test
