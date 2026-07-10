@@ -52,6 +52,18 @@ jobs:
           else
             echo "Compatibility with GLIBC_ and OPENSSL_ ABI check passed. No incompatible dependencies found."
           fi
+      - name: Ensure RHEL10 compatibility
+        if: ${{ ! steps.cache-rpm.outputs.cache-hit && startsWith(inputs.rake-job, 'almalinux-10') }}
+        run: |
+          if find fluent-package/yum/repositories -type f -name 'fluent-package-*.rpm' \
+            ! -name '*debug*' ! -name '*.src.rpm' | xargs rpm -qp --requires | grep -qE "GLIBC_2\.(4[0-9]|[5-9][0-9])|OPENSSL_3\.[3-9]"; then
+            echo "::error::Incompatible dependencies (GLIBC_2.40, OPENSSL_3.3.0 or later) were detected!"
+            find fluent-package/yum/repositories -type f -name 'fluent-package-*.rpm' \
+              ! -name '*debug*' ! -name '*.src.rpm' | xargs rpm -qp --requires
+            exit 1
+          else
+            echo "Compatibility with GLIBC_ and OPENSSL_ API check passed. No incompatible dependencies found."
+          fi
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         if: ${{ ! steps.cache-rpm.outputs.cache-hit && inputs.next-major }}
         with:
