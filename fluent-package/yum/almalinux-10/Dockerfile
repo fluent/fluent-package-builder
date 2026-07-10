@@ -16,23 +16,26 @@
 # under the License.
 
 # FIXME: Change from beta version to almalinux:10 later
-ARG FROM=almalinux:10
+ARG FROM=almalinux:10.0
 FROM ${FROM}
 
 COPY qemu-* /usr/bin/
+COPY almalinux-vault-10.0.repo /etc/yum.repos.d/
 
 ARG DEBUG
 
+# Keep compatibility with older RHEL 10.x, hold on specific version
+# not to introduce GLIBC_2.40, OPENSSL_3.3.0, OPENSSL_3.4.0, OPENSSL_3.5.0
 RUN \
   quiet=$([ "${DEBUG}" = "yes" ] || echo "--quiet") && \
   dnf install redhat-release -y && \
   dnf install --enablerepo=crb -y ${quiet} \
     make \
-    gcc-c++ \
-    ruby-devel  \
-    rubygems \
-    rubygem-rake \
-    rubygem-bundler \
+    gcc-c++-14.3.1-4.4.el10.alma.2 \
+    ruby-devel-3.3.8-10.el10_0  \
+    rubygems-3.5.22-10.el10_0 \
+    rubygem-rake-13.1.0-10.el10_0 \
+    rubygem-bundler-2.5.22-10.el10_0 \
     libcap-ng-devel \
     libedit-devel \
     ncurses-devel \
@@ -42,10 +45,11 @@ RUN \
     cyrus-sasl-devel \
     nss-softokn-freebl-devel \
     pkg-config \
-    rpm-build \
+    rpm-build-4.19.1.1-12.el10.alma.1 \
     rpmdevtools \
     redhat-rpm-config \
-    openssl-devel \
+    openssl-libs-3.2.2-16.el10_0.4.alma.1 \
+    openssl-devel-3.2.2-16.el10_0.4.alma.1 \
     tar \
     zlib-devel \
     cmake \
