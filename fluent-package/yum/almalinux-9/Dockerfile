@@ -15,10 +15,11 @@
 # specific language governing permissions and limitations
 # under the License.
 
-ARG FROM=almalinux:9
+ARG FROM=almalinux:9.2
 FROM ${FROM}
 
 COPY qemu-* /usr/bin/
+COPY almalinux-vault-9.2.repo /etc/yum.repos.d/almalinux-vault-9.2.repo
 
 ARG DEBUG
 
@@ -27,11 +28,12 @@ RUN \
   dnf install redhat-release -y && \
   dnf install --enablerepo=crb -y ${quiet} \
     make \
-    gcc-c++ \
-    ruby-devel  \
-    rubygems \
-    rubygem-rake \
-    rubygem-bundler \
+    gcc-c++-11.3.1-4.3.el9.alma \
+    glibc-devel-2.34-60.el9_2.7 \
+    ruby-devel-3.0.4-160.el9_0 \
+    rubygems-3.2.33-160.el9_0 \
+    rubygem-rake-13.0.3-160.el9_0 \
+    rubygem-bundler-2.2.33-160.el9_0 \
     libcap-ng-devel \
     libedit-devel \
     ncurses-devel \
@@ -41,10 +43,10 @@ RUN \
     cyrus-sasl-devel \
     nss-softokn-freebl-devel \
     pkg-config \
-    rpm-build \
+    rpm-build-4.16.1.3-22.el9 \
     rpmdevtools \
     redhat-rpm-config \
-    openssl-devel \
+    openssl-devel-3.0.7-17.el9_2 \
     tar \
     zlib-devel \
     rpmlint \
