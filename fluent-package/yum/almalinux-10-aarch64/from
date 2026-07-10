@@ -15,5 +15,5 @@
 # specific language governing permissions and limitations
 # under the License.
 
-arm64v8/almalinux:10
+arm64v8/almalinux:10.0
 
