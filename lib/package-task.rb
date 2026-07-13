@@ -49,7 +49,7 @@ class PackageTask
     else
       @deb_upstream_version = @version
       @rpm_version = @version
-      @rpm_release = "1"
+      @rpm_release = "2"
     end
     @deb_release = "1"
   end
