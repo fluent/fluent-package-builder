@@ -23,17 +23,20 @@ jobs:
         working-directory: .github/workflows/
   build:
     name: Build
+    runs-on: ubuntu-24.04-arm
     needs: define-matrix
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
-    uses: ./.github/workflows/_build_deb_reusable.yml
-    with:
-      rake-job: ${{ matrix.rake-job }}-arm64
-      run-on: ubuntu-24.04-arm
-      next-major: false
-      cache-group: v6
-      rake-options: ${{ matrix.rake-options }}
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - name: Build deb on ${{ matrix.label }}
+        uses: ./.github/actions/build-deb
+        with:
+          rake-job: ${{ matrix.rake-job }}-arm64
+          next-major: 'false'
+          cache-group: v6
+          rake-options: ${{ matrix.rake-options }}
 
   check_package_size:
     name: Check Package Size
@@ -53,72 +56,82 @@ jobs:
           fluent-package/apt/pkgsize-test.sh ${{ matrix.rake-job }} arm64
   binstubs_test:
     name: Binstubs Test
+    runs-on: ubuntu-24.04-arm
     needs: [define-matrix, build]
-    uses: ./.github/workflows/_run_test_on_docker.yml
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
-    with:
-      runs-on: ubuntu-24.04-arm
-      rake-job: ${{ matrix.rake-job }}-arm64
-      repository-type: apt
-      test-label: Binstubs Test
-      test-docker-image: ${{ matrix.test-docker-image }}
-      test-script: binstubs-test.sh
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - name: Binstubs Test on ${{ matrix.label }}
+        uses: ./.github/actions/test-on-docker
+        with:
+          rake-job: ${{ matrix.rake-job }}-arm64
+          repository-type: apt
+          test-docker-image: ${{ matrix.test-docker-image }}
+          test-script: binstubs-test.sh
   installation_test:
     name: Installation Test
+    runs-on: ubuntu-24.04-arm
     needs: [define-matrix, build]
-    uses: ./.github/workflows/_run_test_on_docker.yml
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
-    with:
-      runs-on: ubuntu-24.04-arm
-      rake-job: ${{ matrix.rake-job }}-arm64
-      repository-type: apt
-      test-label: Installation Test
-      test-docker-image: ${{ matrix.test-docker-image }}
-      test-script: install-test.sh
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - name: Installation Test on ${{ matrix.label }}
+        uses: ./.github/actions/test-on-docker
+        with:
+          rake-job: ${{ matrix.rake-job }}-arm64
+          repository-type: apt
+          test-docker-image: ${{ matrix.test-docker-image }}
+          test-script: install-test.sh
   piuparts_test:
     name: Piuparts Test
+    runs-on: ubuntu-24.04-arm
     needs: [define-matrix, build]
-    uses: ./.github/workflows/_run_test_on_docker.yml
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
-    with:
-      runs-on: ubuntu-24.04-arm
-      rake-job: ${{ matrix.rake-job }}-arm64
-      docker-options: --privileged
-      repository-type: apt
-      test-label: Piuparts (Install/Remove/Upgrade) Test
-      test-docker-image: ${{ matrix.test-docker-image }}
-      test-script: piuparts-test.sh
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - name: Piuparts Test on ${{ matrix.label }}
+        uses: ./.github/actions/test-on-docker
+        with:
+          rake-job: ${{ matrix.rake-job }}-arm64
+          docker-options: --privileged
+          repository-type: apt
+          test-docker-image: ${{ matrix.test-docker-image }}
+          test-script: piuparts-test.sh
   serverspec_test:
     name: Serverspec Test
+    runs-on: ubuntu-24.04-arm
     needs: [define-matrix, build]
-    uses: ./.github/workflows/_run_test_on_docker.yml
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
-    with:
-      runs-on: ubuntu-24.04-arm
-      rake-job: ${{ matrix.rake-job }}-arm64
-      repository-type: apt
-      test-label: Serverspec Test
-      test-docker-image: ${{ matrix.test-docker-image }}
-      test-script: serverspec-test.sh
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - name: Serverspec Test on ${{ matrix.label }}
+        uses: ./.github/actions/test-on-docker
+        with:
+          rake-job: ${{ matrix.rake-job }}-arm64
+          repository-type: apt
+          test-docker-image: ${{ matrix.test-docker-image }}
+          test-script: serverspec-test.sh
   confluent_test:
     name: Confluent Test
+    runs-on: ubuntu-24.04-arm
     needs: [define-matrix, build]
-    uses: ./.github/workflows/_run_test_on_docker.yml
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
-    with:
-      runs-on: ubuntu-24.04-arm
-      rake-job: ${{ matrix.rake-job }}-arm64
-      repository-type: apt
-      test-label: Confluent Test
-      test-docker-image: ${{ matrix.test-docker-image }}
-      test-script: confluent-test.sh
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - name: Confluent Test on ${{ matrix.label }}
+        uses: ./.github/actions/test-on-docker
+        with:
+          rake-job: ${{ matrix.rake-job }}-arm64
+          repository-type: apt
+          test-docker-image: ${{ matrix.test-docker-image }}
+          test-script: confluent-test.sh

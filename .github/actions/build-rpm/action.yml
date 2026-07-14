@@ -1,0 +1,112 @@
+name: 'Build RPM Action'
+description: 'Composite action to build RPM packages for fluent-package'
+
+inputs:
+  rake-job:
+    description: 'Target rake job'
+    required: true
+  next-major:
+    description: 'Whether it is next major version'
+    required: true
+  cache-group:
+    description: 'Cache group identifier'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: cache rpm
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      id: cache-rpm
+      with:
+        path: |
+          fluent-package/yum/repositories
+          fluent-release/yum/repositories
+          fluent-lts-release/yum/repositories
+          v7-test/fluent-package/yum/repositories
+        key: ${{ runner.os }}-cache-${{ inputs.rake-job }}-${{ runner.arch }}-${{ inputs.cache-group }}-${{ hashFiles('**/config.rb', '**/Rakefile', '**/Gemfile*', '**/*.spec.in', 'fluent-package/templates/**', 'fluent-package/yum/**/Dockerfile') }}
+
+    - uses: ruby/setup-ruby@0dafeac902942906541bc140009cdbf32665b601 # v1.315.0
+      with:
+        ruby-version: '3.4'
+
+    - name: Install dependencies
+      if: ${{ steps.cache-rpm.outputs.cache-hit != 'true' }}
+      shell: bash
+      run: |
+        gem install serverspec --no-document
+
+    - name: Build rpm with Docker
+      if: ${{ steps.cache-rpm.outputs.cache-hit != 'true' }}
+      shell: bash
+      run: |
+        rake yum:build YUM_TARGETS=${{ inputs.rake-job }}
+
+    - name: Ensure RHEL9 compatibility
+      if: ${{ steps.cache-rpm.outputs.cache-hit != 'true' && startsWith(inputs.rake-job, 'almalinux-9') }}
+      shell: bash
+      run: |
+        if find fluent-package/yum/repositories -type f -name 'fluent-package-*.rpm' \
+          ! -name '*debug*' ! -name '*.src.rpm' | xargs rpm -qp --requires | grep -qE "GLIBC_2\.(3[6-9]|[4-9][0-9])|OPENSSL_3\.[1-9]"; then
+          echo "::error::Incompatible dependencies (GLIBC_2.36 or later, OPENSSL_3.1.x or later) were detected!"
+          exit 1
+        else
+          echo "Compatibility with GLIBC_ and OPENSSL_ ABI check passed. No incompatible dependencies found."
+        fi
+
+    - name: Ensure RHEL10 compatibility
+      if: ${{ steps.cache-rpm.outputs.cache-hit != 'true' && startsWith(inputs.rake-job, 'almalinux-10') }}
+      shell: bash
+      run: |
+        if find fluent-package/yum/repositories -type f -name 'fluent-package-*.rpm' \
+          ! -name '*debug*' ! -name '*.src.rpm' | xargs rpm -qp --requires | grep -qE "GLIBC_2\.(4[0-9]|[5-9][0-9])|OPENSSL_3\.[3-9]"; then
+          echo "::error::Incompatible dependencies (GLIBC_2.40, OPENSSL_3.3.0 or later) were detected!"
+          find fluent-package/yum/repositories -type f -name 'fluent-package-*.rpm' \
+            ! -name '*debug*' ! -name '*.src.rpm' | xargs rpm -qp --requires
+          exit 1
+        else
+          echo "Compatibility with GLIBC_ and OPENSSL_ API check passed. No incompatible dependencies found."
+        fi
+
+    - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      if: ${{ steps.cache-rpm.outputs.cache-hit != 'true' && inputs.next-major == 'true' }}
+      with:
+        path: v7-test
+
+    - name: Build v7 rpm with Docker
+      if: ${{ steps.cache-rpm.outputs.cache-hit != 'true' && inputs.next-major == 'true' }}
+      shell: bash
+      run: |
+        cd v7-test
+        git config user.email "fluentd@googlegroups.com"
+        git config user.name "Fluentd developers"
+        git am fluent-package/bump-version-v7.patch
+        rake yum:build YUM_TARGETS=${{ inputs.rake-job }}
+
+    - name: Upload fluent-package rpm
+      if: ${{ inputs.next-major != 'true' }}
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      with:
+        name: packages-${{ inputs.rake-job }}
+        path: fluent-package/yum/repositories
+
+    - name: Upload fluent-release rpm
+      if: ${{ inputs.next-major != 'true' }}
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      with:
+        name: packages-release-${{ inputs.rake-job }}
+        path: fluent-release/yum/repositories
+
+    - name: Upload fluent-lts-release rpm
+      if: ${{ inputs.next-major != 'true' }}
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      with:
+        name: packages-lts-release-${{ inputs.rake-job }}
+        path: fluent-lts-release/yum/repositories
+
+    - name: Upload v7 fluent-package rpm
+      if: ${{ inputs.next-major == 'true' }}
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      with:
+        name: v7-packages-${{ inputs.rake-job }}
+        path: v7-test/fluent-package/yum/repositories
