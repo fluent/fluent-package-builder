@@ -23,29 +23,35 @@ jobs:
           echo "label=$(cat yum.matrix.json | jq '[.include[].label]' --compact-output)" >> $GITHUB_OUTPUT
         working-directory: .github/workflows/
   build:
+    runs-on: ubuntu-latest
     needs: define-matrix
     name: Build
-    uses: ./.github/workflows/_build_rpm_reusable.yml
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
-    with:
-      rake-job: ${{ matrix.rake-job }}
-      runs-on: ubuntu-latest
-      next-major: false
-      cache-group: v6
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - name: Build rpm on ${{ matrix.label }}
+        uses: ./.github/actions/build-rpm
+        with:
+          rake-job: ${{ matrix.rake-job }}
+          next-major: 'false'
+          cache-group: v6
   build-next:
+    runs-on: ubuntu-latest
     needs: define-matrix
     name: Build next major
-    uses: ./.github/workflows/_build_rpm_reusable.yml
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
-    with:
-      rake-job: ${{ matrix.rake-job }}
-      runs-on: ubuntu-latest
-      next-major: true
-      cache-group: v7
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - name: Build next major rpm on ${{ matrix.label }}
+        uses: ./.github/actions/build-rpm
+        with:
+          rake-job: ${{ matrix.rake-job }}
+          next-major: 'true'
+          cache-group: v7
   check_package_size:
     name: Check Package Size
     runs-on: ubuntu-latest
@@ -65,49 +71,55 @@ jobs:
 
   installation_test:
     name: Installation Test
+    runs-on: ubuntu-latest
     needs: [define-matrix, build]
-    uses: ./.github/workflows/_run_test_on_docker.yml
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
-    with:
-      runs-on: ubuntu-latest
-      test-label: Installation Test
-      repository-type: yum
-      rake-job: ${{ matrix.rake-job }}
-      test-script: install-test.sh
-      test-docker-image: ${{ matrix.test-docker-image }}
-      centos-stream: ${{ matrix.centos-stream }}
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - name: Installation Test on ${{ matrix.label }}
+        uses: ./.github/actions/test-on-docker
+        with:
+          repository-type: yum
+          rake-job: ${{ matrix.rake-job }}
+          test-script: install-test.sh
+          test-docker-image: ${{ matrix.test-docker-image }}
+          centos-stream: ${{ matrix.centos-stream }}
   serverspec_test:
+    runs-on: ubuntu-latest
     name: Serverspec Test
     needs: [define-matrix, build]
-    uses: ./.github/workflows/_run_test_on_docker.yml
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
-    with:
-      runs-on: ubuntu-latest
-      test-label: Serverspec Test
-      repository-type: yum
-      rake-job: ${{ matrix.rake-job }}
-      test-script: serverspec-test.sh
-      test-docker-image: ${{ matrix.test-docker-image }}
-      centos-stream: ${{ matrix.centos-stream }}
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - name: Serverspec Test on ${{ matrix.label }}
+        uses: ./.github/actions/test-on-docker
+        with:
+          repository-type: yum
+          rake-job: ${{ matrix.rake-job }}
+          test-script: serverspec-test.sh
+          test-docker-image: ${{ matrix.test-docker-image }}
+          centos-stream: ${{ matrix.centos-stream }}
   binstubs_test:
+    runs-on: ubuntu-latest
     name: Binstubs Test
     needs: [define-matrix, build]
-    uses: ./.github/workflows/_run_test_on_docker.yml
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
-    with:
-      runs-on: ubuntu-latest
-      test-label: Binstubs Test
-      repository-type: yum
-      rake-job: ${{ matrix.rake-job }}
-      test-script: binstubs-test.sh
-      test-docker-image: ${{ matrix.test-docker-image }}
-      centos-stream: ${{ matrix.centos-stream }}
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - name: Binstubs Test on ${{ matrix.label }}
+        uses: ./.github/actions/test-on-docker
+        with:
+          repository-type: yum
+          rake-job: ${{ matrix.rake-job }}
+          test-script: binstubs-test.sh
+          test-docker-image: ${{ matrix.test-docker-image }}
+          centos-stream: ${{ matrix.centos-stream }}
 
   #
   # NOTE: It is hard to keep testing environment for AmazonLinux:2 properly and it is not sustainable enough at this time.
