@@ -1,4 +1,7 @@
 name: Retry Workflows
+
+run-name: Retry ${{ github.event.workflow_run.name }} (Run Attempt ${{ github.event.workflow_run.run_attempt }})
+
 on:
   workflow_run:
     workflows:
