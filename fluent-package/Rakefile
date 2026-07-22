@@ -693,8 +693,9 @@ class BuildTask
     puts "::group::Build jemalloc from source" if ENV["CI"]
     tarball = @download_task.file_jemalloc_source
     source_dir = tarball.sub(/\.tar\.bz2$/, '')
+    tar_options = ["--no-same-owner"]
 
-    sh(*tar_command, "xvf", tarball, "-C", DOWNLOADS_DIR)
+    sh(*tar_command, "xvf", tarball, "-C", DOWNLOADS_DIR, *tar_options)
 
     configure_opts = [
       "--prefix=#{install_prefix}",
@@ -1051,7 +1052,7 @@ class BuildTask
       tarball = @download_task.file_jemalloc_source
       source_dir = File.basename(tarball.sub(/\.tar\.bz2$/, ''))
       license_file = File.join(source_dir, "COPYING")
-      tar_options = []
+      tar_options = ["--no-same-owner"]
       tar_options << "--force-local" if windows?
       sh(*tar_command, "xf", tarball, license_file, *tar_options)
       mv(license_file, "LICENSE-jemalloc.txt")
