@@ -19,6 +19,8 @@ jobs:
           ruby-version: 3.4 # Use same Ruby version with fluent-package bundled
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - name: Bundle Update
+        env:
+          CMAKE_POLICY_VERSION_MINIMUM: "3.5"
         run: |
           cd fluent-package
           gem install bundler:2.3.27
