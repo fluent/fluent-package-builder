@@ -42,6 +42,18 @@ purge_var_log() {
 	done
 }
 
+purge_var_lib() {
+	for target_dir in /var/lib/<%= compat_package_dir %> /var/lib/<%= package_dir %>; do
+  	    dpkg-statoverride --list $target_dir > /dev/null && \
+		dpkg-statoverride --remove $target_dir
+	    if [ "$target_dir" = "/var/lib/<%= compat_package_dir %>" ]; then
+		rm -f $target_dir
+	    elif [ "$target_dir" = "/var/lib/<%= package_dir %>" ]; then
+		rm -rf $target_dir
+	    fi
+	done
+}
+
 purge_users() {
 	if getent passwd _<%= service_name %>; then
 	    userdel --remove --force _<%= service_name %>
@@ -84,6 +96,7 @@ case $1 in
 	purge_conf_files
 	purge_var_run
 	purge_var_log
+	purge_var_lib
 	purge_users
 	purge_bin_symlinks
 	purge_working_dir
