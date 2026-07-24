@@ -1,5 +1,5 @@
 PACKAGE_NAME = "fluent-package"
-PACKAGE_VERSION = "6.0.0"
+PACKAGE_VERSION = "6.1.0"
 
 # Keep internal path (/opt/td-agent) for package name migration
 SERVICE_NAME = "fluentd"
