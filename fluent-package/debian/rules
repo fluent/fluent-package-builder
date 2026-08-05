@@ -3,6 +3,15 @@
 export GEM2DEB_TEST_RUNNER = --check-dependencies
 export DH_RUBY = --gem-install
 
+# Ubuntu turns LTO on by default in dpkg-buildflags, and dpkg-buildpackage
+# exports those flags, so they leak into our own Ruby and every native gem
+# extension built by override_dh_auto_install. LTO is useless for us because
+# we build Ruby with its own optflags anyway, and it slows down extconf.rb
+# dramatically since mkmf links a small test program on every check. On
+# Ubuntu Jammy it turned "configuring ext/*" from 21s into 964s.
+# This is a no-op on Debian, which does not enable LTO.
+export DEB_BUILD_MAINT_OPTIONS = optimize=-lto
+
 %:
 	dh $@
 
