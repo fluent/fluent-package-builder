@@ -54,7 +54,7 @@ index 2614fac..95eb903 100644
 +
 + -- Shizuo Fujita <fujita@clear-code.com>  Sun, 29 Aug 2027 13:55:06 -0000
 +
- fluent-package (6.0.0-1) unstable; urgency=low
+ fluent-package (6.1.0-1) unstable; urgency=low
  
    * New upstream release.
 diff --git a/fluent-package/yum/fluent-package.spec.in b/fluent-package/yum/fluent-package.spec.in
@@ -68,7 +68,7 @@ index 9a13f9a..1ab7905 100644
 +* Sun Aug 29 2027 Shizuo Fujita <fujita@clear-code.com> - 7.0.0-1
 +- New upstream release.
 +
- * Fri Aug 29 2025 Kentaro Hayashi <hayashi@clear-code.com> - 6.0.0-1
+ * Wed Aug 05 2026 Shizuo Fujita <fujita@clear-code.com> - 6.1.0-1
  - New upstream release.
  
 -- 
