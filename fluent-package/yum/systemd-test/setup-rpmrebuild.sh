@@ -1,9 +1,16 @@
+# Installing rpmrebuild from EPEL keeps hanging on the CI runners, so take it
+# straight from the upstream project instead.
+function install_rpmrebuild()
+{
+    curl -L -o rpmrebuild.noarch.rpm https://sourceforge.net/projects/rpmrebuild/files/latest/download
+    sudo $DNF install -y ./rpmrebuild.noarch.rpm
+}
+
 case $distribution in
     amazon)
         case $version in
             2023)
-                curl -L -o rpmrebuild.noarch.rpm https://sourceforge.net/projects/rpmrebuild/files/latest/download
-                sudo $DNF install -y ./rpmrebuild.noarch.rpm
+                install_rpmrebuild
                 ;;
             2)
                 sudo amazon-linux-extras install -y epel
@@ -12,8 +19,7 @@ case $distribution in
         esac
         ;;
     *)
-        sudo $DNF install -y epel-release
-        sudo $DNF install -y rpmrebuild
+        install_rpmrebuild
         # hotfix for rpmrebuild 2.20 bug
         # See https://sourceforge.net/p/rpmrebuild/bugs/18/
         pkg_version=$(rpm -q rpmrebuild)
