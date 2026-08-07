@@ -699,6 +699,7 @@ class BuildTask
 
     configure_opts = [
       "--prefix=#{install_prefix}",
+      "--disable-cxx"
     ]
 
     if JEMALLOC_VERSION.split('.')[0].to_i >= 4
