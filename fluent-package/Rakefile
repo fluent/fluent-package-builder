@@ -693,27 +693,20 @@ class BuildTask
     puts "::group::Build jemalloc from source" if ENV["CI"]
     tarball = @download_task.file_jemalloc_source
     source_dir = tarball.sub(/\.tar\.bz2$/, '')
+    tar_options = ["--no-same-owner"]
 
-    sh(*tar_command, "xvf", tarball, "-C", DOWNLOADS_DIR)
+    sh(*tar_command, "xvf", tarball, "-C", DOWNLOADS_DIR, *tar_options)
 
     configure_opts = [
       "--prefix=#{install_prefix}",
+      "--disable-cxx"
     ]
 
     if JEMALLOC_VERSION.split('.')[0].to_i >= 4
-      if ENV["FLUENT_PACKAGE_STAGING_PATH"] and
-        (ENV["FLUENT_PACKAGE_STAGING_PATH"].end_with?("el8.aarch64") or
-         ENV["FLUENT_PACKAGE_STAGING_PATH"].end_with?("el7.aarch64"))
-        # NOTE: There is a case that PAGE_SIZE detection on
-        # CentOS 7 CentOS 8 with aarch64 AWS ARM instance.
-        # So, explicitly set PAGE_SIZE by with-lg-page 16 (2^16 = 65536)
-        configure_opts.concat(["--with-lg-page=16"])
-      end
-      if ENV["FLUENT_PACKAGE_STAGING_PATH"] and
-        ENV["FLUENT_PACKAGE_STAGING_PATH"].end_with?("el8.ppc64le")
-        # NOTE: There is a case that PAGE_SIZE detection on
-        # CentOS 8 with ppc64le.
-        # So, explicitly set PAGE_SIZE by with-lg-page 16 (2^16 = 65536)
+      if ["aarch64", "ppc64le"].include?(Etc.uname[:machine])
+        # NOTE: Improve compatibility with kernel-64K.
+        # Then, explicitly set PAGE_SIZE=16 by --with-lg-page 16 (2^16 = 65536)
+        # Forcing PAGE_SIZE=16 to avoid "Unsuported system page size" runtime error.
         configure_opts.concat(["--with-lg-page=16"])
       end
     end
@@ -1051,7 +1044,7 @@ class BuildTask
       tarball = @download_task.file_jemalloc_source
       source_dir = File.basename(tarball.sub(/\.tar\.bz2$/, ''))
       license_file = File.join(source_dir, "COPYING")
-      tar_options = []
+      tar_options = ["--no-same-owner"]
       tar_options << "--force-local" if windows?
       sh(*tar_command, "xf", tarball, license_file, *tar_options)
       mv(license_file, "LICENSE-jemalloc.txt")
