@@ -2,6 +2,73 @@
 
 About the past changelog entries, see [CHANGELOG v4](CHANGELOG-v4.md) [CHANGELOG v5](CHANGELOG-v5.md) instead.
 
+## Release v6.1.0 - 2026/MM/DD
+
+### News
+
+* Update bundled Fluentd to v1.20.0
+* Update bundled gems
+* Changed to keep compatibility with older RHEL 9.x/10.x (#1087, #1088)
+* msi: fix broken link to enterprise services (#1078)
+* Drop LTO flags on RHEL 10.x and Ubuntu. Note that hardening flags are kept. (#1101)
+
+### Core component
+
+* ruby v3.4.10 (update)
+* jemalloc v5.3.1 (update)
+* OpenSSL 3.6.3 Windows (update)
+* OpenSSL 3.0.8 macOS
+* gems
+  * fluentd v1.20.0 (update)
+  * msgpack 1.8.4 (update)
+  * oj 3.17.6 (update)
+  * webrick 1.9.2
+  * openssl 4.0.2 (update)
+
+### Bundled plugins and gems
+
+* aws-partitions v1.1281.0 (update)
+* aws-sdk-core v3.254.1 (update)
+* aws-sdk-kms v1.130.0 (update)
+* aws-sdk-s3 v1.229.0 (update)
+* aws-sdk-sqs v1.117.0 (update)
+* aws-sigv4 v1.12.1
+* elasticsearch v9.5.0 (update)
+* fluent-diagtool v1.0.5
+* fluent-plugin-elasticsearch v6.0.0
+* fluent-plugin-flowcounter-simple 0.1.0
+* fluent-plugin-kafka v0.19.7 (update)
+* fluent-plugin-metrics-cmetrics v0.1.2
+* fluent-plugin-fluent-package-update-notifier 0.2.3
+* fluent-plugin-obsolete-plugins v0.2.2
+* fluent-plugin-opensearch v1.1.6 (update)
+* fluent-plugin-opentelemetry 0.5.3 (update)
+* fluent-plugin-prometheus v2.2.2 (update)
+* fluent-plugin-prometheus_pushgateway v0.2.1
+* fluent-plugin-record-modifier v2.2.1
+* fluent-plugin-rewrite-tag-filter v2.4.0
+* fluent-plugin-s3 v1.8.5 (update)
+* fluent-plugin-sigdump v1.0.1 (new)
+* fluent-plugin-sd-dns 0.1.0
+* fluent-plugin-systemd v1.1.1
+* fluent-plugin-td v1.2.0
+* fluent-plugin-utmpx v0.5.0
+* fluent-plugin-webhdfs v1.6.0
+* mini_portile2 v2.8.9
+* prometheus-client v4.2.5
+* rdkafka v0.21.0
+* ruby-kafka v1.5.0
+* systemd-journal v2.1.1
+* td-client v3.0.0
+* webhdfs v0.11.0
+
+On Windows
+
+* fluent-plugin-parser-winevt_xml v0.3.0 (update)
+* fluent-plugin-windows-exporter v1.0.0
+* winevt_c v0.11.6 (update)
+* nokogiri v1.19.4
+
 ## Release v6.0.4 - 2026/06/26
 
 ### News

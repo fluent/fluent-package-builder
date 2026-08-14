@@ -477,7 +477,7 @@ class BuildTask
         if windows?
           # Ensure to set pem, it avoids "unable to get local issuer certificate" error
           ENV["SSL_CERT_FILE"] = File.join(STAGING_DIR,
-                                           "lib/ruby/#{BUNDLED_RUBY_VERSION.rpartition('.').first}.0/etc/ssl/cert.pem"
+                                           "lib/ruby/#{BUNDLED_RUBY_VERSION.rpartition('.').first}.0/etc/ssl/cert.pem")
         end
 
         sh(bundle_command, "_#{BUNDLER_VERSION}_", "install", "-j#{Etc.nprocessors}")
