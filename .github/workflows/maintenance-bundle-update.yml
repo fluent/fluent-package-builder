@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   bundle-update:
-    runs-on: windows-2022
+    runs-on: windows-2025
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:

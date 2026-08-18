@@ -16,7 +16,7 @@ jobs:
     timeout-minutes: 90
     strategy:
       fail-fast: false
-    runs-on: windows-2022
+    runs-on: windows-2025
     steps:
       - name: Set up Ruby
         uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b # v1.321.0
