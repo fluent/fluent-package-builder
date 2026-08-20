@@ -110,5 +110,5 @@ jobs:
           --rm `
           --tty `
           --volume ${PWD}:C:\fluentd:ro `
-          mcr.microsoft.com/dotnet/framework/runtime:3.5 `
+          mcr.microsoft.com/dotnet/framework/runtime:4.8.1-windowsservercore-ltsc2025 `
           powershell -ExecutionPolicy Bypass -Command "C:\fluentd\fluent-package\msi\${{ matrix.test }}"

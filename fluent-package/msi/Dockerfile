@@ -14,13 +14,17 @@
 #    limitations under the License.
 #
 
-# The latest chocolatey requires .net 4.8, and wixtoolset requires .net 3.5,
-# To satisfy both of them without reboot, use sdk image.
-ARG FROM=mcr.microsoft.com/dotnet/framework/sdk:3.5-windowsservercore-ltsc2022
+# The latest chocolatey requires .net 4.8, and wixtoolset requires .net 3.5.
+# The 3.5 tagged image is not published for ltsc2025 anymore, so add .net 3.5
+# to the 4.8.1 runtime image by Features on Demand instead.
+ARG FROM=mcr.microsoft.com/dotnet/framework/runtime:4.8.1-windowsservercore-ltsc2025
 FROM ${FROM}
 
 # Launch the following command as if cmd /S /C ...
 SHELL ["cmd", "/S", "/C"]
+
+# Install .NET Framework 3.5 which wixtoolset requires
+RUN dism /Online /Add-Capability /CapabilityName:NetFx3
 
 # Install Chocolatey to set up toolchain
 RUN @"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "[System.Net.ServicePointManager]::SecurityProtocol = 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))" && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"
