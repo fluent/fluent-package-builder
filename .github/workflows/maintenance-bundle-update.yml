@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   bundle-update:
-    runs-on: windows-2022
+    runs-on: windows-2025
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
@@ -19,10 +19,12 @@ jobs:
           ruby-version: 3.4 # Use same Ruby version with fluent-package bundled
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Bundle Update
+        env:
+          CMAKE_POLICY_VERSION_MINIMUM: "3.5"
         run: |
           cd fluent-package
-          gem install bundler:2.3.27
-          bundle _2.3.27_ update -j 4
+          gem install bundler:2.7.2
+          bundle _2.7.2_ update -j 4
       - name: Create Pull Request
         run: |
           $today=Get-Date -Format "yyyy-MM-dd-HHmmss"

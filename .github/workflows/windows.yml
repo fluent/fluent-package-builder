@@ -16,12 +16,12 @@ jobs:
     timeout-minutes: 90
     strategy:
       fail-fast: false
-    runs-on: windows-2022
+    runs-on: windows-2025
     steps:
       - name: Set up Ruby
         uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b # v1.321.0
         with:
-          ruby-version: 3.2
+          ruby-version: 3.4
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: cache msi
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
@@ -47,7 +47,7 @@ jobs:
         if: ${{ ! steps.cache-msi.outputs.cache-hit }}
         run: |
           gem install serverspec
-          gem install bundler:2.2.9 --no-document
+          gem install bundler:2.7.2 --no-document
           rake msi:build
       - name: Upload td-agent msi
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -57,7 +57,7 @@ jobs:
   check_package_size:
     name: Check Package Size
     needs: build
-    runs-on: windows-2022
+    runs-on: windows-2025
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
@@ -71,7 +71,7 @@ jobs:
   test:
     name: Test ${{ matrix.test }}
     needs: build
-    runs-on: windows-2022
+    runs-on: windows-2025
     strategy:
       fail-fast: false
       matrix:
@@ -110,5 +110,5 @@ jobs:
           --rm `
           --tty `
           --volume ${PWD}:C:\fluentd:ro `
-          mcr.microsoft.com/dotnet/framework/runtime:3.5 `
+          mcr.microsoft.com/dotnet/framework/runtime:4.8.1-windowsservercore-ltsc2025 `
           powershell -ExecutionPolicy Bypass -Command "C:\fluentd\fluent-package\msi\${{ matrix.test }}"
