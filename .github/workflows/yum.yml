@@ -432,7 +432,7 @@ jobs:
       - name: Setup Opensearch on host
         run: |
           docker run -d -p 9200:9200 -p 9600:9600 \
-            -e "discovery.type=single-node" -e OPENSEARCH_INITIAL_ADMIN_PASSWORD=Passvv0rd@ opensearchproject/opensearch:2
+            -e "discovery.type=single-node" -e OPENSEARCH_INITIAL_ADMIN_PASSWORD=Passvv0rd@ opensearchproject/opensearch:3
       - name: Copy opensearch.conf
         run: cp fluent-package/test-tools/opensearch.conf fluent-package/yum/systemd-test
       - name: Ensure Opensearch availability from host
