@@ -403,7 +403,7 @@ jobs:
         run: ./fluent-package/test-tools/setup-incus.sh
       - name: Setup Elasticsearch on host
         run: |
-          docker run -d -p 9200:9200 -e "discovery.type=single-node" -e "xpack.security.enabled=false" docker.elastic.co/elasticsearch/elasticsearch:8.19.11
+          docker run -d -p 9200:9200 -e "discovery.type=single-node" -e "xpack.security.enabled=false" docker.elastic.co/elasticsearch/elasticsearch:9.5.2
       - name: Copy elasticsearch.conf
         run: cp fluent-package/test-tools/elasticsearch.conf fluent-package/yum/systemd-test
       - name: Ensure elasticsearch availability from host
