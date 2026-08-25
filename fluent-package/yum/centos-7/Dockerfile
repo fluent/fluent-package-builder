@@ -68,6 +68,8 @@ FROM ${FROM}
 #     tar \
 #     zlib-devel \
 #     rpmlint \
+#     perl-IPC-Cmd \
+#     perl-Time-Piece \
 #     cmake3 && \
 #   # raise IPv4 priority
 #   echo "precedence ::ffff:0:0/96 100" > /etc/gai.conf && \
