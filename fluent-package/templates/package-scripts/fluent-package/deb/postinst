@@ -36,6 +36,7 @@ add_directories() {
     mkdir -p /etc/<%= package_dir %>/plugin
     mkdir -p /etc/<%= package_dir %>/conf.d
     mkdir -p /var/log/<%= package_dir %>
+    mkdir -p /var/lib/<%= package_dir %>
 }
 
 fixperms() {
@@ -46,6 +47,8 @@ fixperms() {
         dpkg-statoverride --update --add _<%= service_name %> _<%= service_name %> 0755 /etc/<%= package_dir %>
     dpkg-statoverride --list /var/log/<%= package_dir %> >/dev/null || \
         dpkg-statoverride --update --add _<%= service_name %> _<%= service_name %> 0755 /var/log/<%= package_dir %>
+    dpkg-statoverride --list /var/lib/<%= package_dir %> >/dev/null || \
+        dpkg-statoverride --update --add _<%= service_name %> _<%= service_name %> 0755 /var/lib/<%= package_dir %>
     # Remove obsolete statoverride
     if dpkg-statoverride --list /var/run/<%= compat_package_dir %> >/dev/null; then
         dpkg-statoverride --force-all --remove /var/run/<%= compat_package_dir %>
@@ -55,6 +58,9 @@ fixperms() {
     fi
     if dpkg-statoverride --list /var/log/<%= compat_package_dir %> >/dev/null; then
         dpkg-statoverride --force-all --remove /var/log/<%= compat_package_dir %>
+    fi
+    if dpkg-statoverride --list /var/lib/<%= compat_package_dir %> >/dev/null; then
+        dpkg-statoverride --force-all --remove /var/lib/<%= compat_package_dir %>
     fi
 }
 
