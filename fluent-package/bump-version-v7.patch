@@ -1,7 +1,7 @@
-From 57b6f35a86c63f715ce8c59a695c8fd933d292f6 Mon Sep 17 00:00:00 2001
+From bc83a3ca9e4c537fb53cfab992e5156ee4a5bc8c Mon Sep 17 00:00:00 2001
 From: Kentaro Hayashi <hayashi@clear-code.com>
-Date: Thu, 20 Aug 2026 14:40:47 +0900
-Subject: [PATCH] Bump version to 7.0.0
+Date: Wed, 2 Sep 2026 16:35:05 +0900
+Subject: [PATCH] Bump version to v7
 
 Signed-off-by: Kentaro Hayashi <hayashi@clear-code.com>
 ---
@@ -11,7 +11,7 @@ Signed-off-by: Kentaro Hayashi <hayashi@clear-code.com>
  3 files changed, 14 insertions(+), 5 deletions(-)
 
 diff --git a/fluent-package/config.rb b/fluent-package/config.rb
-index f505af6..65c449f 100644
+index ed61b64..7207f8b 100644
 --- a/fluent-package/config.rb
 +++ b/fluent-package/config.rb
 @@ -1,5 +1,5 @@
@@ -21,23 +21,23 @@ index f505af6..65c449f 100644
  
  # Keep internal path (/opt/td-agent) for package name migration
  SERVICE_NAME = "fluentd"
-@@ -23,8 +23,8 @@ OPENSSL_FOR_MACOS_SHA256SUM = "6c13d2bf38fdf31eac3ce2a347073673f5d63263398f1f69d
- BUNDLER_VERSION= "2.7.2"
+@@ -26,8 +26,8 @@ OPENSSL_FOR_LTS_VERSION = "3.5.8"
+ OPENSSL_FOR_LTS_SHA256SUM = "a8f84a39918ec6415ce765d9b429d313ba97b8143169c172e734b9514464f5b2"
  
  # https://www.ruby-lang.org/en/downloads/ (tar.gz)
--BUNDLED_RUBY_VERSION = "3.4.9"
--BUNDLED_RUBY_SOURCE_SHA256SUM = "7bb4d4f5e807cc27251d14d9d6086d182c5b25875191e44ab15b709cd7a7dd9c"
+-BUNDLED_RUBY_VERSION = "3.4.10"
+-BUNDLED_RUBY_SOURCE_SHA256SUM = "ecee2d072a14f2d14347dd56dfd8fe5c3130abf5117bfaacbda0f4ef9cc429ec"
 +BUNDLED_RUBY_VERSION = "4.0.6"
 +BUNDLED_RUBY_SOURCE_SHA256SUM = "837d299e8f7ddf2be31a229a7a7e019d354979825117989acb3b32b1a9be262a"
  
  BUNDLED_RUBY_PATCHES = [
    # An example entry:
-@@ -32,8 +32,8 @@ BUNDLED_RUBY_PATCHES = [
+@@ -35,8 +35,8 @@ BUNDLED_RUBY_PATCHES = [
  ]
  
  # https://rubyinstaller.org/downloads/ (7-ZIP ARCHIVES)
--BUNDLED_RUBY_INSTALLER_X64_VERSION = "3.4.9-1"
--BUNDLED_RUBY_INSTALLER_X64_SHA256SUM = "4375268618b61dadf53bf8e54beaca74ea30580c90d3c47ea9f2a134bd3e494e"
+-BUNDLED_RUBY_INSTALLER_X64_VERSION = "3.4.10-1"
+-BUNDLED_RUBY_INSTALLER_X64_SHA256SUM = "89e3c5e235ac88b9b7e8daaf639eaaab74d7c470667354f6bf0f7432f3191ebb"
 +BUNDLED_RUBY_INSTALLER_X64_VERSION = "4.0.6-1"
 +BUNDLED_RUBY_INSTALLER_X64_SHA256SUM = "328d7a86bea2f4c432783025050c9ffa1c36fcfc54ebccc466b63450ec3af223"
  
