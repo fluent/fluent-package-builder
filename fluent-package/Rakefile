@@ -83,6 +83,15 @@ def macos?
   /darwin/ =~ RUBY_PLATFORM
 end
 
+def centos7?
+  return false unless File.exist?("/etc/os-release")
+  os_release = File.readlines("/etc/os-release").each_with_object({}) do |line, params|
+    key, _, value = line.chomp.partition("=")
+    params[key] = value.delete('"')
+  end
+  os_release["ID"] == "centos" and os_release["VERSION_ID"] == "7"
+end
+
 def ensure_directory(dirname)
   mkdir_p(dirname) unless File.exist?(dirname)
   if block_given?
@@ -181,6 +190,7 @@ class DownloadTask
   attr_reader :file_ffi_win32_extensions_archive
   attr_reader :files_ruby_gems
   attr_reader :file_openssl_source
+  attr_reader :file_openssl_lts_source
 
   def initialize(logger:)
     @logger = logger || Logger.new(STDOUT, level: Logger::Severity::INFO)
@@ -205,6 +215,7 @@ class DownloadTask
     define_ffi_win32_extensions_archive if windows?
     define_gem_files
     define_openssl_file
+    define_openssl_lts_file
 
     namespace :download do
       desc "Download jemalloc source"
@@ -227,6 +238,9 @@ class DownloadTask
 
       desc "Download openssl source"
       task :openssl => @file_openssl_source
+
+      desc "Download openssl LTS source"
+      task :openssl_lts => @file_openssl_lts_source
     end
   end
 
@@ -277,6 +291,17 @@ class DownloadTask
     file @file_openssl_source do
       url = "#{url_base}/#{filename}"
       download_file(url, filename, OPENSSL_FOR_MACOS_SHA256SUM)
+    end
+  end
+
+  def define_openssl_lts_file
+    version = OPENSSL_FOR_LTS_VERSION
+    filename = "openssl-#{version}.tar.gz"
+    url_base = "https://www.openssl.org/source/"
+    @file_openssl_lts_source = File.join(DOWNLOADS_DIR, filename)
+    file @file_openssl_lts_source do
+      url = "#{url_base}/#{filename}"
+      download_file(url, filename, OPENSSL_FOR_LTS_SHA256SUM)
     end
   end
 
@@ -444,10 +469,12 @@ class BuildTask
       end
 
       desc "Install OpenSSL"
-      task :openssl => [:"download:openssl"] do
+      task :openssl => [:"download:openssl", :"download:openssl_lts"] do
         if macos?
           build_openssl
           create_certs
+        elsif centos7?
+          build_openssl_lts
         end
       end
 
@@ -478,6 +505,11 @@ class BuildTask
           # Ensure to set pem, it avoids "unable to get local issuer certificate" error
           ENV["SSL_CERT_FILE"] = File.join(STAGING_DIR,
                                            "lib/ruby/#{BUNDLED_RUBY_VERSION.rpartition('.').first}.0/etc/ssl/cert.pem")
+        elsif centos7?
+          ENV["SSL_CERT_FILE"] = "/etc/pki/tls/certs/ca-bundle.crt"
+          ENV["CPPFLAGS"] = "-I#{File.join(install_prefix, 'include')}"
+          ENV["LDFLAGS"] = "-L#{File.join(install_prefix, 'lib')} -Wl,-rpath,#{File.join(install_prefix, 'lib')}"
+          ENV["PKG_CONFIG_PATH"] = File.join(install_prefix, "lib", "pkgconfig")
         end
 
         sh(bundle_command, "_#{BUNDLER_VERSION}_", "install", "-j#{Etc.nprocessors}")
@@ -838,6 +870,36 @@ class BuildTask
     puts "::endgroup::" if ENV["CI"]
   end
 
+  def build_openssl_lts
+    puts "::group::Build openssl from source" if ENV["CI"]
+    tarball = @download_task.file_openssl_lts_source
+    source_dir = tarball.sub(/\.tar\.gz$/, '')
+    sh(*tar_command, "xvf", tarball, "-C", DOWNLOADS_DIR)
+    configure_opts = [
+      "--prefix=#{install_prefix}",
+      "--openssldir=#{File.join(install_prefix, 'etc', 'openssl')}",
+      "--libdir=lib",
+      "-Wl,-rpath,#{File.join(install_prefix, 'lib')}",
+      "enable-rc5",
+      "no-comp",
+      "no-docs",
+      "no-tests",
+      "no-zlib",
+      "shared",
+      "zlib",
+    ]
+    arch_opts = ["linux-x86_64"]
+    cd(source_dir) do
+      sh("perl", "./Configure", *(configure_opts + arch_opts))
+      sh("make", "depend")
+      sh("make")
+      # For building rdkafka gem. The built openssl library for built Ruby cannot use without install.
+      sh("make", "install")
+      sh("make", "install", "DESTDIR=#{STAGING_DIR}")
+    end
+    puts "::endgroup::" if ENV["CI"]
+  end
+
   def build_ruby_from_source
     puts "::group::Build ruby from source" if ENV["CI"]
     tarball = @download_task.file_ruby_source
@@ -856,6 +918,8 @@ class BuildTask
       configure_opts.push("--without-gdbm")
       configure_opts.push("--without-tk")
       configure_opts.push("-C")
+      configure_opts.push("--with-openssl-dir=#{File.join(STAGING_DIR, install_prefix)}")
+    elsif centos7?
       configure_opts.push("--with-openssl-dir=#{File.join(STAGING_DIR, install_prefix)}")
     end
     cd(ruby_source_dir) do
