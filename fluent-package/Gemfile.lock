@@ -371,7 +371,7 @@ DEPENDENCIES
   aws-sdk-s3 (= 1.229.0)
   aws-sdk-sqs (= 1.117.0)
   aws-sigv4 (= 1.12.1)
-  bundler (= 2.7.2)
+  bundler (= 4.0.19)
   capng_c (= 0.2.5)
   cmetrics (= 0.3.3)
   cool.io (= 1.9.5)
@@ -432,4 +432,4 @@ DEPENDENCIES
   yajl-ruby (= 1.4.3)
 
 BUNDLED WITH
-   2.7.2
+   4.0.19

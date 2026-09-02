@@ -47,7 +47,7 @@ jobs:
         if: ${{ ! steps.cache-msi.outputs.cache-hit }}
         run: |
           gem install serverspec
-          gem install bundler:2.7.2 --no-document
+          gem install bundler:4.0.19 --no-document
           rake msi:build
       - name: Upload td-agent msi
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
