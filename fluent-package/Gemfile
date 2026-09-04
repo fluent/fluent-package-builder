@@ -102,6 +102,9 @@ gem "fluent-plugin-opentelemetry", "0.5.4"
 # fix CVE-2026-54297
 gem "faraday", "2.14.3"
 
+# fix CVE-2026-54696
+gem "json", "2.19.9"
+
 windows_platforms = [:mingw, :x64_mingw] # :mswin
 # ffi-win32-extensions doesn't support ffi 1.17.1 or later
 gem "ffi", "1.17.4", platforms: windows_platforms
