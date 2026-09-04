@@ -158,7 +158,7 @@ GEM
     fluent-plugin-fluent-package-update-notifier (0.2.3)
       fluentd (>= 0.14.10, < 2)
       specinfra (~> 2.94.1)
-    fluent-plugin-kafka (0.19.7)
+    fluent-plugin-kafka (0.19.8)
       bigdecimal (~> 3.1)
       fluentd (>= 0.10.58, < 2)
       ltsv
@@ -381,7 +381,7 @@ DEPENDENCIES
   fluent-plugin-elasticsearch (= 6.0.0)
   fluent-plugin-flowcounter-simple (= 0.1.0)
   fluent-plugin-fluent-package-update-notifier (= 0.2.3)
-  fluent-plugin-kafka (= 0.19.7)
+  fluent-plugin-kafka (= 0.19.8)
   fluent-plugin-metrics-cmetrics (= 0.1.2)
   fluent-plugin-obsolete-plugins (= 0.2.2)
   fluent-plugin-opensearch (= 1.1.6)
