@@ -216,7 +216,7 @@ GEM
     fluent-plugin-webhdfs (1.6.0)
       fluentd (>= 0.14.22)
       webhdfs (>= 0.11.0)
-    fluent-plugin-windows-eventlog (0.9.2)
+    fluent-plugin-windows-eventlog (0.9.3)
       fluentd (>= 0.14.12, < 2)
       win32-eventlog
       winevt_c (>= 0.11.0)
@@ -397,7 +397,7 @@ DEPENDENCIES
   fluent-plugin-td (= 1.2.0)
   fluent-plugin-utmpx (= 0.5.0)
   fluent-plugin-webhdfs (= 1.6.0)
-  fluent-plugin-windows-eventlog (= 0.9.2)
+  fluent-plugin-windows-eventlog (= 0.9.3)
   fluent-plugin-windows-exporter (= 1.0.0)
   fluentd!
   http_parser.rb (= 0.8.1)
