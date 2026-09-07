@@ -327,7 +327,7 @@ jobs:
         run: ./fluent-package/test-tools/setup-incus.sh
       - name: Setup Elasticsearch on host
         run: |
-          docker run -d -p 9200:9200 -e "discovery.type=single-node" -e "xpack.security.enabled=false" docker.elastic.co/elasticsearch/elasticsearch:8.19.11
+          docker run -d -p 9200:9200 -e "discovery.type=single-node" -e "xpack.security.enabled=false" docker.elastic.co/elasticsearch/elasticsearch:9.5.2
       - name: Copy elasticsearch.conf
         run: cp fluent-package/test-tools/elasticsearch.conf fluent-package/apt/systemd-test
       - name: Ensure elasticsearch availability from host
@@ -356,7 +356,7 @@ jobs:
       - name: Setup Opensearch on host
         run: |
           docker run -d -p 9200:9200 -p 9600:9600 \
-            -e "discovery.type=single-node" -e OPENSEARCH_INITIAL_ADMIN_PASSWORD=Passvv0rd@ opensearchproject/opensearch:2
+            -e "discovery.type=single-node" -e OPENSEARCH_INITIAL_ADMIN_PASSWORD=Passvv0rd@ opensearchproject/opensearch:3
       - name: Copy opensearch.conf
         run: cp fluent-package/test-tools/opensearch.conf fluent-package/apt/systemd-test
       - name: Ensure Opensearch availability from host

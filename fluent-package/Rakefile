@@ -83,6 +83,15 @@ def macos?
   /darwin/ =~ RUBY_PLATFORM
 end
 
+def centos7?
+  return false unless File.exist?("/etc/os-release")
+  os_release = File.readlines("/etc/os-release").each_with_object({}) do |line, params|
+    key, _, value = line.chomp.partition("=")
+    params[key] = value.delete('"')
+  end
+  os_release["ID"] == "centos" and os_release["VERSION_ID"] == "7"
+end
+
 def ensure_directory(dirname)
   mkdir_p(dirname) unless File.exist?(dirname)
   if block_given?
@@ -178,8 +187,10 @@ class DownloadTask
   attr_reader :file_ruby_source, :file_ruby_installer_x64
   attr_reader :file_fluentd_archive
   attr_reader :file_win32_service_archive
+  attr_reader :file_ffi_win32_extensions_archive
   attr_reader :files_ruby_gems
   attr_reader :file_openssl_source
+  attr_reader :file_openssl_lts_source
 
   def initialize(logger:)
     @logger = logger || Logger.new(STDOUT, level: Logger::Severity::INFO)
@@ -201,8 +212,10 @@ class DownloadTask
     define_ruby_files
     define_fluentd_archive
     define_win32_service_archive if windows?
+    define_ffi_win32_extensions_archive if windows?
     define_gem_files
     define_openssl_file
+    define_openssl_lts_file
 
     namespace :download do
       desc "Download jemalloc source"
@@ -217,11 +230,17 @@ class DownloadTask
       desc "Clone win32-service repository and create a tarball"
       task :win32_service => [@file_win32_service_archive]
 
+      desc "Clone ffi-win32-extensions repository and create a tarball"
+      task :ffi_win32_extensions => [@file_ffi_win32_extensions_archive]
+
       desc "Download ruby gems"
       task :ruby_gems => @files_ruby_gems
 
       desc "Download openssl source"
       task :openssl => @file_openssl_source
+
+      desc "Download openssl LTS source"
+      task :openssl_lts => @file_openssl_lts_source
     end
   end
 
@@ -272,6 +291,17 @@ class DownloadTask
     file @file_openssl_source do
       url = "#{url_base}/#{filename}"
       download_file(url, filename, OPENSSL_FOR_MACOS_SHA256SUM)
+    end
+  end
+
+  def define_openssl_lts_file
+    version = OPENSSL_FOR_LTS_VERSION
+    filename = "openssl-#{version}.tar.gz"
+    url_base = "https://www.openssl.org/source/"
+    @file_openssl_lts_source = File.join(DOWNLOADS_DIR, filename)
+    file @file_openssl_lts_source do
+      url = "#{url_base}/#{filename}"
+      download_file(url, filename, OPENSSL_FOR_LTS_SHA256SUM)
     end
   end
 
@@ -333,6 +363,21 @@ class DownloadTask
         rm_rf(dirname) if File.exist?(dirname)
         sh("git", "clone", "https://github.com/fluent-plugins-nursery/win32-service.git")
         cd("win32-service") do
+          sh("git", "checkout", "fluent-package")
+        end
+        sh(*tar_command, "cvfz", "#{dirname}.tar.gz", dirname)
+      end
+    end
+  end
+
+  def define_ffi_win32_extensions_archive
+    @file_ffi_win32_extensions_archive = File.join(DOWNLOADS_DIR, "ffi-win32-extensions.tar.gz")
+    file @file_ffi_win32_extensions_archive do
+      ensure_directory(DOWNLOADS_DIR) do
+        dirname = "ffi-win32-extensions"
+        rm_rf(dirname) if File.exist?(dirname)
+        sh("git", "clone", "https://github.com/fluent-plugins-nursery/ffi-win32-extensions.git")
+        cd("ffi-win32-extensions") do
           sh("git", "checkout", "fluent-package")
         end
         sh(*tar_command, "cvfz", "#{dirname}.tar.gz", dirname)
@@ -424,10 +469,12 @@ class BuildTask
       end
 
       desc "Install OpenSSL"
-      task :openssl => [:"download:openssl"] do
+      task :openssl => [:"download:openssl", :"download:openssl_lts"] do
         if macos?
           build_openssl
           create_certs
+        elsif centos7?
+          build_openssl_lts
         end
       end
 
@@ -445,7 +492,7 @@ class BuildTask
       end
 
       desc "Install ruby gems"
-      task :ruby_gems => windows? ? [:"download:ruby_gems", :fluentd, :win32_service] : [:"download:ruby_gems", :fluentd] do
+      task :ruby_gems => windows? ? [:"download:ruby_gems", :fluentd, :win32_service, :ffi_win32_extensions] : [:"download:ruby_gems", :fluentd] do
         puts "::group::Install ruby gems" if ENV["CI"]
         gem_install("bundler", BUNDLER_VERSION)
 
@@ -454,6 +501,17 @@ class BuildTask
         ENV["INSTALL_GEM_FROM_LOCAL_REPO"] = "yes"
         # Workaround for "Compatibility with CMake < 3.5 has been removed" error
         ENV["CMAKE_POLICY_VERSION_MINIMUM"] = "3.5"
+        if windows?
+          # Ensure to set pem, it avoids "unable to get local issuer certificate" error
+          ENV["SSL_CERT_FILE"] = File.join(STAGING_DIR,
+                                           "lib/ruby/#{BUNDLED_RUBY_VERSION.rpartition('.').first}.0/etc/ssl/cert.pem")
+        elsif centos7?
+          ENV["SSL_CERT_FILE"] = "/etc/pki/tls/certs/ca-bundle.crt"
+          ENV["CPPFLAGS"] = "-I#{File.join(install_prefix, 'include')}"
+          ENV["LDFLAGS"] = "-L#{File.join(install_prefix, 'lib')} -Wl,-rpath,#{File.join(install_prefix, 'lib')}"
+          ENV["PKG_CONFIG_PATH"] = File.join(install_prefix, "lib", "pkgconfig")
+        end
+
         sh(bundle_command, "_#{BUNDLER_VERSION}_", "install", "-j#{Etc.nprocessors}")
         # Ensure to install binstubs under /opt/td-agent/bin
         sh(gem_command, "pristine", "--only-executables", "--all", "--bindir", staging_bindir)
@@ -491,6 +549,23 @@ class BuildTask
           sh(*tar_command, "xvf", archive_path, *tar_options) unless File.exist?("win32-service")
           cd("win32-service") do
             sh("rake", "build")
+            setup_local_gem_repo
+          end
+        end
+      end
+
+      desc "Install ffi-win32-extensions"
+      task :ffi_win32_extensions => [:"download:ffi_win32_extensions"] do
+        cd(DOWNLOADS_DIR) do
+          tar_options = ["--no-same-owner", "--force-local"]
+          archive_path = @download_task.file_ffi_win32_extensions_archive
+          sh(*tar_command, "xvf", archive_path, *tar_options) unless File.exist?("ffi-win32-extensions")
+          cd("ffi-win32-extensions") do
+            sh("bundle", "install")
+            sh("rake", "gem:create")
+            sh("rake", "gem:create")
+            mkdir_p("pkg")
+            mv(Dir.glob("*.gem"), "pkg/")
             setup_local_gem_repo
           end
         end
@@ -795,6 +870,36 @@ class BuildTask
     puts "::endgroup::" if ENV["CI"]
   end
 
+  def build_openssl_lts
+    puts "::group::Build openssl from source" if ENV["CI"]
+    tarball = @download_task.file_openssl_lts_source
+    source_dir = tarball.sub(/\.tar\.gz$/, '')
+    sh(*tar_command, "xvf", tarball, "-C", DOWNLOADS_DIR)
+    configure_opts = [
+      "--prefix=#{install_prefix}",
+      "--openssldir=#{File.join(install_prefix, 'etc', 'openssl')}",
+      "--libdir=lib",
+      "-Wl,-rpath,#{File.join(install_prefix, 'lib')}",
+      "enable-rc5",
+      "no-comp",
+      "no-docs",
+      "no-tests",
+      "no-zlib",
+      "shared",
+      "zlib",
+    ]
+    arch_opts = ["linux-x86_64"]
+    cd(source_dir) do
+      sh("perl", "./Configure", *(configure_opts + arch_opts))
+      sh("make", "depend")
+      sh("make")
+      # For building rdkafka gem. The built openssl library for built Ruby cannot use without install.
+      sh("make", "install")
+      sh("make", "install", "DESTDIR=#{STAGING_DIR}")
+    end
+    puts "::endgroup::" if ENV["CI"]
+  end
+
   def build_ruby_from_source
     puts "::group::Build ruby from source" if ENV["CI"]
     tarball = @download_task.file_ruby_source
@@ -813,6 +918,8 @@ class BuildTask
       configure_opts.push("--without-gdbm")
       configure_opts.push("--without-tk")
       configure_opts.push("-C")
+      configure_opts.push("--with-openssl-dir=#{File.join(STAGING_DIR, install_prefix)}")
+    elsif centos7?
       configure_opts.push("--with-openssl-dir=#{File.join(STAGING_DIR, install_prefix)}")
     end
     cd(ruby_source_dir) do
@@ -875,6 +982,7 @@ class BuildTask
       # included gem such as winevt_c. We didn't find how to link them statically yet.
       dlls = [
         "libstdc++-6",
+        "libgcc_s_seh-1"
       ]
       dlls.each do |dll|
         mingw_bin_path = RubyInstaller::Runtime.msys2_installation.mingw_bin_path
