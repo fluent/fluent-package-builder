@@ -134,6 +134,7 @@ GEM
       aws-sigv4 (~> 1.0)
       faraday (>= 2.0, < 3)
     ffi (1.17.4)
+    ffi (1.17.4-x64-mingw-ucrt)
     fiber-annotation (0.2.0)
     fiber-local (1.1.0)
       fiber-storage
@@ -250,7 +251,7 @@ GEM
     ltsv (0.1.2)
     metrics (0.14.1)
     mini_portile2 (2.8.9)
-    msgpack (1.8.4)
+    msgpack (1.8.5)
     multi_json (1.17.0)
     mutex_m (0.3.0)
     net-http (0.8.0)
@@ -282,6 +283,18 @@ GEM
     racc (1.8.1)
     rake (13.3.1)
     rdkafka (0.27.0)
+      ffi (~> 1.17.1)
+      json (> 2.0)
+      logger
+      mini_portile2 (~> 2.6)
+      rake (> 12)
+    rdkafka (0.27.0-aarch64-linux-gnu)
+      ffi (~> 1.17.1)
+      json (> 2.0)
+      logger
+      mini_portile2 (~> 2.6)
+      rake (> 12)
+    rdkafka (0.27.0-x86_64-linux-gnu)
       ffi (~> 1.17.1)
       json (> 2.0)
       logger
