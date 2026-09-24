@@ -121,7 +121,7 @@ GEM
       multi_json
     excon (1.5.0)
       logger
-    faraday (2.14.3)
+    faraday (2.14.4)
       faraday-net_http (>= 2.0, < 3.5)
       json
       logger
@@ -195,7 +195,7 @@ GEM
       fluent-plugin-prometheus (>= 2.0.0, < 3)
     fluent-plugin-record-modifier (2.2.1)
       fluentd (>= 1.1, < 2)
-    fluent-plugin-rewrite-tag-filter (2.4.0)
+    fluent-plugin-rewrite-tag-filter (2.4.1)
       fluent-config-regexp-type
       fluentd (>= 0.14.2, < 2)
     fluent-plugin-s3 (1.8.6)
@@ -204,7 +204,7 @@ GEM
       fluentd (>= 0.14.22, < 2)
     fluent-plugin-sd-dns (0.1.0)
       fluentd (>= 1.8)
-    fluent-plugin-systemd (1.1.1)
+    fluent-plugin-systemd (1.1.2)
       fluentd (>= 0.14.11, < 2)
       systemd-journal (~> 2.1.0)
     fluent-plugin-td (1.2.0)
@@ -373,7 +373,7 @@ DEPENDENCIES
   cool.io (= 1.9.5)
   digest-murmurhash (= 1.1.1)
   elasticsearch (= 8.19.2)
-  faraday (= 2.14.3)
+  faraday (= 2.14.4)
   ffi (= 1.17.4)
   ffi-win32-extensions!
   fiddle (= 1.1.8)
@@ -390,10 +390,10 @@ DEPENDENCIES
   fluent-plugin-prometheus (= 2.3.0)
   fluent-plugin-prometheus_pushgateway (= 0.2.1)
   fluent-plugin-record-modifier (= 2.2.1)
-  fluent-plugin-rewrite-tag-filter (= 2.4.0)
+  fluent-plugin-rewrite-tag-filter (= 2.4.1)
   fluent-plugin-s3 (= 1.8.6)
   fluent-plugin-sd-dns (= 0.1.0)
-  fluent-plugin-systemd (= 1.1.1)
+  fluent-plugin-systemd (= 1.1.2)
   fluent-plugin-td (= 1.2.0)
   fluent-plugin-utmpx (= 0.5.0)
   fluent-plugin-webhdfs (= 1.6.0)
