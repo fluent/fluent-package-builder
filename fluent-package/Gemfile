@@ -86,7 +86,7 @@ gem "fluent-plugin-td", "1.2.0"
 gem "webhdfs", "0.11.0"
 gem "fluent-plugin-webhdfs", "1.6.0"
 gem "fluent-plugin-record-modifier", "2.2.1"
-gem "fluent-plugin-rewrite-tag-filter", "2.4.0"
+gem "fluent-plugin-rewrite-tag-filter", "2.4.1"
 gem "fluent-plugin-sd-dns", "0.1.0"
 gem "fluent-plugin-flowcounter-simple", "0.1.0"
 gem "mini_portile2", "2.8.9"
@@ -100,7 +100,7 @@ gem "fluent-plugin-opentelemetry", "0.5.4"
 
 # fix CVE-2026-25765,CVE-2026-33637 for elasticseach and opensearch
 # fix CVE-2026-54297
-gem "faraday", "2.14.3"
+gem "faraday", "2.14.4"
 
 # fix CVE-2026-54696
 gem "json", "2.19.9"
@@ -131,5 +131,5 @@ gem "capng_c", "0.2.5", platforms: not_windows_platforms
 unless platform_centos7?
   gem "rdkafka", "0.27.0", platforms: not_windows_platforms
 end
-gem "fluent-plugin-systemd", "1.1.1", platforms: not_windows_platforms
+gem "fluent-plugin-systemd", "1.1.2", platforms: not_windows_platforms
 gem "fluent-plugin-utmpx", "0.5.0", platforms: not_windows_platforms
