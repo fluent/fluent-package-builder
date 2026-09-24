@@ -48,10 +48,10 @@ About the past changelog entries, see [CHANGELOG v4](CHANGELOG-v4.md) [CHANGELOG
 * fluent-plugin-prometheus v2.3.0 (update)
 * fluent-plugin-prometheus_pushgateway v0.2.1
 * fluent-plugin-record-modifier v2.2.1
-* fluent-plugin-rewrite-tag-filter v2.4.0
+* fluent-plugin-rewrite-tag-filter v2.4.1 (update)
 * fluent-plugin-s3 v1.8.6 (update)
 * fluent-plugin-sd-dns 0.1.0
-* fluent-plugin-systemd v1.1.1
+* fluent-plugin-systemd v1.1.2 (update)
 * fluent-plugin-td v1.2.0
 * fluent-plugin-utmpx v0.5.0
 * fluent-plugin-webhdfs v1.6.0
