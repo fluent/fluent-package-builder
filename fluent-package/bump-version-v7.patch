@@ -1,6 +1,6 @@
-From 9feaea31991564ef6b85f2c52d31073a4916d6ff Mon Sep 17 00:00:00 2001
+From f5dc29960c41e7c9f6584761a8d598739037b79e Mon Sep 17 00:00:00 2001
 From: Kentaro Hayashi <hayashi@clear-code.com>
-Date: Mon, 31 Aug 2026 18:41:19 +0900
+Date: Fri, 25 Sep 2026 18:14:41 +0900
 Subject: [PATCH] Bump version to v7
 
 Signed-off-by: Kentaro Hayashi <hayashi@clear-code.com>
@@ -11,7 +11,7 @@ Signed-off-by: Kentaro Hayashi <hayashi@clear-code.com>
  3 files changed, 14 insertions(+), 5 deletions(-)
 
 diff --git a/fluent-package/config.rb b/fluent-package/config.rb
-index 8261d92..91ed60c 100644
+index 6de2295..2596189 100644
 --- a/fluent-package/config.rb
 +++ b/fluent-package/config.rb
 @@ -1,5 +1,5 @@
@@ -25,10 +25,10 @@ index 8261d92..91ed60c 100644
  BUNDLER_VERSION= "2.7.2"
  
  # https://www.ruby-lang.org/en/downloads/ (tar.gz)
--BUNDLED_RUBY_VERSION = "3.4.10"
--BUNDLED_RUBY_SOURCE_SHA256SUM = "ecee2d072a14f2d14347dd56dfd8fe5c3130abf5117bfaacbda0f4ef9cc429ec"
-+BUNDLED_RUBY_VERSION = "4.0.6"
-+BUNDLED_RUBY_SOURCE_SHA256SUM = "837d299e8f7ddf2be31a229a7a7e019d354979825117989acb3b32b1a9be262a"
+-BUNDLED_RUBY_VERSION = "3.4.11"
+-BUNDLED_RUBY_SOURCE_SHA256SUM = "5c22be44524312b3d433d68739bcc530633b1da5ef8ba0afa0a37680da17d3de"
++BUNDLED_RUBY_VERSION = "4.0.7"
++BUNDLED_RUBY_SOURCE_SHA256SUM = "911ace20f90d068ca0e4dda6d0e4f0f81e52e52f2dd4f4004c721e253412e82d"
  
  BUNDLED_RUBY_PATCHES = [
    # An example entry:
@@ -36,10 +36,10 @@ index 8261d92..91ed60c 100644
  ]
  
  # https://rubyinstaller.org/downloads/ (7-ZIP ARCHIVES)
--BUNDLED_RUBY_INSTALLER_X64_VERSION = "3.4.10-1"
--BUNDLED_RUBY_INSTALLER_X64_SHA256SUM = "89e3c5e235ac88b9b7e8daaf639eaaab74d7c470667354f6bf0f7432f3191ebb"
-+BUNDLED_RUBY_INSTALLER_X64_VERSION = "4.0.6-1"
-+BUNDLED_RUBY_INSTALLER_X64_SHA256SUM = "328d7a86bea2f4c432783025050c9ffa1c36fcfc54ebccc466b63450ec3af223"
+-BUNDLED_RUBY_INSTALLER_X64_VERSION = "3.4.11-1"
+-BUNDLED_RUBY_INSTALLER_X64_SHA256SUM = "a9aca84326a90422c0905bcb47be629b687a881dcad96149604c2cb074d03154"
++BUNDLED_RUBY_INSTALLER_X64_VERSION = "4.0.7"
++BUNDLED_RUBY_INSTALLER_X64_SHA256SUM = "7a9be96d3448ecbd9a81eccae1f619131dfcc761f2c98dded03ece6c05d0474f"
  
  # Files under rubyinstaller/ are patches for RubyInstaller's binary package.
  # Other patches for Ruby's source tree which can be shared with BUNDLED_RUBY_PATCHES.
