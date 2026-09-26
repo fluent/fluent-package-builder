@@ -16,7 +16,7 @@ About the past changelog entries, see [CHANGELOG v4](CHANGELOG-v4.md) [CHANGELOG
 
 ### Core component
 
-* ruby v3.4.10 (update)
+* ruby v3.4.11 (update)
 * jemalloc v3.6.0
 * OpenSSL 3.6.3 Windows (update)
 * OpenSSL 3.0.8 macOS
