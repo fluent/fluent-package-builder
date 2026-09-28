@@ -17,10 +17,10 @@ GIT
 
 GIT
   remote: https://github.com/fluent/fluentd
-  revision: 43c860907e3d6a92c922233fd16eb2ed9ea16b69
-  ref: 43c860907e3d6a92c922233fd16eb2ed9ea16b69
+  revision: 8729f544eebe0e8df6f79764a16a0f3f0c7fc59f
+  ref: 8729f544eebe0e8df6f79764a16a0f3f0c7fc59f
   specs:
-    fluentd (1.19.3)
+    fluentd (1.19.4)
       async-http (~> 0.86)
       base64 (~> 0.2)
       bundler
