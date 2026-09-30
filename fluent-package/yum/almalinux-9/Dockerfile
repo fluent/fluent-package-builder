@@ -26,14 +26,15 @@ ARG DEBUG
 RUN \
   quiet=$([ "${DEBUG}" = "yes" ] || echo "--quiet") && \
   dnf install redhat-release -y && \
+  dnf module enable ruby:3.1 -y && \
   dnf install --enablerepo=crb -y ${quiet} \
     make \
     gcc-c++-11.3.1-4.3.el9.alma \
     glibc-devel-2.34-60.el9_2.7 \
-    ruby-devel-3.0.4-160.el9_0 \
-    rubygems-3.2.33-160.el9_0 \
-    rubygem-rake-13.0.3-160.el9_0 \
-    rubygem-bundler-2.2.33-160.el9_0 \
+    ruby-devel-3.1.2-141.module_el9.1.0+8+503f6fbd \
+    rubygems-3.3.7-141.module_el9.1.0+8+503f6fbd \
+    rubygem-rake-13.0.6-141.module_el9.1.0+8+503f6fbd \
+    rubygem-bundler-2.3.7-141.module_el9.1.0+8+503f6fbd \
     libcap-ng-devel \
     libedit-devel \
     ncurses-devel \
