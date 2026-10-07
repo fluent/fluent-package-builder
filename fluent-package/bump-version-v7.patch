@@ -1,7 +1,7 @@
-From 57b6f35a86c63f715ce8c59a695c8fd933d292f6 Mon Sep 17 00:00:00 2001
+From e5016ee48d18ca8e132b70024ec9c29af09e65a6 Mon Sep 17 00:00:00 2001
 From: Kentaro Hayashi <hayashi@clear-code.com>
-Date: Thu, 20 Aug 2026 14:40:47 +0900
-Subject: [PATCH] Bump version to 7.0.0
+Date: Wed, 7 Oct 2026 16:30:25 +0900
+Subject: [PATCH 1/2] Update patch for v7
 
 Signed-off-by: Kentaro Hayashi <hayashi@clear-code.com>
 ---
@@ -11,7 +11,7 @@ Signed-off-by: Kentaro Hayashi <hayashi@clear-code.com>
  3 files changed, 14 insertions(+), 5 deletions(-)
 
 diff --git a/fluent-package/config.rb b/fluent-package/config.rb
-index f505af6..65c449f 100644
+index 2884615..a3671ae 100644
 --- a/fluent-package/config.rb
 +++ b/fluent-package/config.rb
 @@ -1,5 +1,5 @@
@@ -21,25 +21,25 @@ index f505af6..65c449f 100644
  
  # Keep internal path (/opt/td-agent) for package name migration
  SERVICE_NAME = "fluentd"
-@@ -23,8 +23,8 @@ OPENSSL_FOR_MACOS_SHA256SUM = "6c13d2bf38fdf31eac3ce2a347073673f5d63263398f1f69d
- BUNDLER_VERSION= "2.7.2"
+@@ -26,8 +26,8 @@ OPENSSL_FOR_LTS_VERSION = "3.5.8"
+ OPENSSL_FOR_LTS_SHA256SUM = "a8f84a39918ec6415ce765d9b429d313ba97b8143169c172e734b9514464f5b2"
  
  # https://www.ruby-lang.org/en/downloads/ (tar.gz)
--BUNDLED_RUBY_VERSION = "3.4.9"
--BUNDLED_RUBY_SOURCE_SHA256SUM = "7bb4d4f5e807cc27251d14d9d6086d182c5b25875191e44ab15b709cd7a7dd9c"
-+BUNDLED_RUBY_VERSION = "4.0.6"
-+BUNDLED_RUBY_SOURCE_SHA256SUM = "837d299e8f7ddf2be31a229a7a7e019d354979825117989acb3b32b1a9be262a"
+-BUNDLED_RUBY_VERSION = "3.4.11"
+-BUNDLED_RUBY_SOURCE_SHA256SUM = "5c22be44524312b3d433d68739bcc530633b1da5ef8ba0afa0a37680da17d3de"
++BUNDLED_RUBY_VERSION = "4.0.7"
++BUNDLED_RUBY_SOURCE_SHA256SUM = "911ace20f90d068ca0e4dda6d0e4f0f81e52e52f2dd4f4004c721e253412e82d"
  
  BUNDLED_RUBY_PATCHES = [
    # An example entry:
-@@ -32,8 +32,8 @@ BUNDLED_RUBY_PATCHES = [
+@@ -35,8 +35,8 @@ BUNDLED_RUBY_PATCHES = [
  ]
  
  # https://rubyinstaller.org/downloads/ (7-ZIP ARCHIVES)
--BUNDLED_RUBY_INSTALLER_X64_VERSION = "3.4.9-1"
--BUNDLED_RUBY_INSTALLER_X64_SHA256SUM = "4375268618b61dadf53bf8e54beaca74ea30580c90d3c47ea9f2a134bd3e494e"
-+BUNDLED_RUBY_INSTALLER_X64_VERSION = "4.0.6-1"
-+BUNDLED_RUBY_INSTALLER_X64_SHA256SUM = "328d7a86bea2f4c432783025050c9ffa1c36fcfc54ebccc466b63450ec3af223"
+-BUNDLED_RUBY_INSTALLER_X64_VERSION = "3.4.11-1"
+-BUNDLED_RUBY_INSTALLER_X64_SHA256SUM = "a9aca84326a90422c0905bcb47be629b687a881dcad96149604c2cb074d03154"
++BUNDLED_RUBY_INSTALLER_X64_VERSION = "4.0.7-1"
++BUNDLED_RUBY_INSTALLER_X64_SHA256SUM = "7a9be96d3448ecbd9a81eccae1f619131dfcc761f2c98dded03ece6c05d0474f"
  
  # Files under rubyinstaller/ are patches for RubyInstaller's binary package.
  # Other patches for Ruby's source tree which can be shared with BUNDLED_RUBY_PATCHES.
