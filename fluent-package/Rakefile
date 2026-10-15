@@ -474,6 +474,8 @@ class BuildTask
         sh(gem_command, "pristine", "--only-executables", "--all", "--bindir", staging_bindir)
         ENV["GEM_HOME"] = gem_home
 
+        replace_ffi_for_windows_arm64
+
         # for fat gems which depend on nonexistent libraries
         # mainly for nokogiri 1.11 or later on CentOS 6
         rebuild_gems
@@ -1046,6 +1048,21 @@ class BuildTask
     sh(*gem_uninstallation_command)
 
     ENV["GEM_HOME"] = gem_home
+  end
+
+  # ffi 1.17.0 segfaults on ARM64 Windows, but ffi-win32-extensions 1.1.0
+  # doesn't allow newer ffi. See chef/ffi-win32-extensions#14.
+  def replace_ffi_for_windows_arm64
+    return unless windows_arm64?
+
+    gem_install("ffi", WINDOWS_ARM64_FFI_VERSION)
+    Dir.glob(File.join(gem_staging_dir, "specifications", "ffi-win32-extensions-*.gemspec")).each do |spec|
+      content = File.read(spec)
+      relaxed = content.sub('"<= 1.17.0".freeze', '"< 2".freeze')
+      fail "Unexpected ffi dependency in #{spec}" if relaxed == content
+      File.write(spec, relaxed)
+    end
+    gem_uninstall("ffi", "1.17.0")
   end
 
   def rebuild_gems

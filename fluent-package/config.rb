@@ -41,3 +41,6 @@ BUNDLED_RUBY_INSTALLER_ARM64_SHA256SUM = "ba73f9c75ad119413e444996db3b4865d55221
 # Other patches for Ruby's source tree which can be shared with BUNDLED_RUBY_PATCHES.
 BUNDLED_RUBY_INSTALLER_PATCHES = [
 ]
+
+# ffi in Gemfile.lock segfaults on ARM64 Windows, so it's replaced with this version.
+WINDOWS_ARM64_FFI_VERSION = "1.17.4"
