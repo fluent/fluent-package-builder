@@ -338,7 +338,7 @@ GEM
       ffi
     win32-ipc (0.7.0)
       ffi
-    winevt_c (0.11.2)
+    winevt_c (0.11.6)
     yajl-ruby (1.4.3)
     zip-zip (0.3)
       rubyzip (>= 1.0.0)
@@ -416,7 +416,7 @@ DEPENDENCIES
   win32-eventlog (= 0.6.7)
   win32-ipc (= 0.7.0)
   win32-service!
-  winevt_c (= 0.11.2)
+  winevt_c (= 0.11.6)
   yajl-ruby (= 1.4.3)
 
 BUNDLED WITH
