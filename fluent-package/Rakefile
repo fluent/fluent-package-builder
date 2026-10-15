@@ -79,6 +79,14 @@ def windows?
   /mswin|mingw/ =~ RUBY_PLATFORM
 end
 
+def windows_arm64?
+  windows? && /aarch64/ =~ RUBY_PLATFORM
+end
+
+def bundled_ruby_installer_version
+  windows_arm64? ? BUNDLED_RUBY_INSTALLER_ARM64_VERSION : BUNDLED_RUBY_INSTALLER_X64_VERSION
+end
+
 def macos?
   /darwin/ =~ RUBY_PLATFORM
 end
@@ -102,7 +110,7 @@ end
 
 def gem_dir_version
   if windows?
-    ruby_version = BUNDLED_RUBY_INSTALLER_X64_VERSION
+    ruby_version = bundled_ruby_installer_version
   else
     ruby_version = BUNDLED_RUBY_VERSION
   end
@@ -175,7 +183,7 @@ class DownloadTask
   include Rake::DSL
 
   attr_reader :file_jemalloc_source
-  attr_reader :file_ruby_source, :file_ruby_installer_x64
+  attr_reader :file_ruby_source, :file_ruby_installer
   attr_reader :file_fluentd_archive
   attr_reader :file_win32_service_archive
   attr_reader :files_ruby_gems
@@ -190,7 +198,7 @@ class DownloadTask
       @file_jemalloc_source,
       @file_openssl_source,
       @file_ruby_source,
-      @file_ruby_installer_x64,
+      @file_ruby_installer,
       @file_fluentd_archive,
       *@files_ruby_gems
     ]
@@ -209,7 +217,7 @@ class DownloadTask
       task :jemalloc => [@file_jemalloc_source]
 
       desc "Download Ruby source"
-      task :ruby => [@file_ruby_source, @file_ruby_installer_x64]
+      task :ruby => [@file_ruby_source, @file_ruby_installer]
 
       desc "Clone fluentd repository and create a tarball"
       task :fluentd => [@file_fluentd_archive]
@@ -293,15 +301,22 @@ class DownloadTask
   end
 
   def define_ruby_installer_file
-    version = BUNDLED_RUBY_INSTALLER_X64_VERSION
-    sha256sum = BUNDLED_RUBY_INSTALLER_X64_SHA256SUM
-    filename = "rubyinstaller-#{version}-x64.7z"
+    if windows_arm64?
+      version = BUNDLED_RUBY_INSTALLER_ARM64_VERSION
+      sha256sum = BUNDLED_RUBY_INSTALLER_ARM64_SHA256SUM
+      arch = "arm"
+    else
+      version = BUNDLED_RUBY_INSTALLER_X64_VERSION
+      sha256sum = BUNDLED_RUBY_INSTALLER_X64_SHA256SUM
+      arch = "x64"
+    end
+    filename = "rubyinstaller-#{version}-#{arch}.7z"
     url_base = "https://github.com/oneclick/rubyinstaller2/releases/download/"
     url = "#{url_base}RubyInstaller-#{version}/#{filename}"
 
-    @file_ruby_installer_x64 = File.join(DOWNLOADS_DIR, filename)
+    @file_ruby_installer = File.join(DOWNLOADS_DIR, filename)
 
-    file @file_ruby_installer_x64 do
+    file @file_ruby_installer do
       download_file(url, filename, sha256sum)
     end
   end
@@ -828,7 +843,7 @@ class BuildTask
 
   def extract_ruby_installer
     ensure_directory(fluent_package_staging_dir) do
-      path = File.expand_path(@download_task.file_ruby_installer_x64)
+      path = File.expand_path(@download_task.file_ruby_installer)
       src_dir = File.basename(path).sub(/\.7z$/, '')
       sh("7z",
          "x",    # Extract files with full paths
@@ -842,7 +857,7 @@ class BuildTask
   def apply_ruby_installer_patches
     return if BUNDLED_RUBY_INSTALLER_PATCHES.nil?
 
-    ruby_version = BUNDLED_RUBY_INSTALLER_X64_VERSION.sub(/-\d+$/, '')
+    ruby_version = bundled_ruby_installer_version.sub(/-\d+$/, '')
     feature_version = ruby_version.sub(/\d+$/, '0')
     ruby_lib_dir = File.join(fluent_package_staging_dir, "lib", "ruby", feature_version)
 
@@ -873,9 +888,16 @@ class BuildTask
 
       # These dlls are required to put in staging_bindir to run C++ based extension
       # included gem such as winevt_c. We didn't find how to link them statically yet.
-      dlls = [
-        "libstdc++-6",
-      ]
+      dlls = if windows_arm64?
+               # MSYS2 for ARM64 uses clang, so the C++ runtime is libc++ instead of libstdc++.
+               [
+                 "libc++",
+               ]
+             else
+               [
+                 "libstdc++-6",
+               ]
+             end
       dlls.each do |dll|
         mingw_bin_path = RubyInstaller::Runtime.msys2_installation.mingw_bin_path
         windows_path = "#{mingw_bin_path}/#{dll}.dll"
@@ -937,7 +959,7 @@ class BuildTask
 
   def gem_dir_version
     if windows?
-      ruby_version = BUNDLED_RUBY_INSTALLER_X64_VERSION
+      ruby_version = bundled_ruby_installer_version
     else
       ruby_version = BUNDLED_RUBY_VERSION
     end
@@ -1778,6 +1800,8 @@ SET ARCH=#{arch}
   def arch
     if RUBY_PLATFORM =~ /x64/
       "x64"
+    elsif RUBY_PLATFORM =~ /aarch64/
+      "arm64"
     elsif RUBY_PLATFORM =~ /i386/
       "x86"
     else

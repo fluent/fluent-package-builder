@@ -217,6 +217,9 @@ GEM
     fluent-plugin-windows-exporter (1.0.0)
       bindata (~> 2.4)
       fluentd (>= 0.14.10, < 2)
+    google-protobuf (4.32.0)
+      bigdecimal
+      rake (>= 13)
     google-protobuf (4.32.0-aarch64-linux-gnu)
       bigdecimal
       rake (>= 13)
@@ -343,6 +346,7 @@ GEM
 
 PLATFORMS
   aarch64-linux
+  aarch64-mingw-ucrt
   x64-mingw-ucrt
   x86_64-linux
 
