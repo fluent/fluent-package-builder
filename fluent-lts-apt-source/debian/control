@@ -1,7 +1,7 @@
 Source: fluent-lts-apt-source
 Section: misc
 Priority: optional
-Maintainer: Fluentd developers <fluentd@googlegroups.com>
+Maintainer: Fluentd developers <cncf-fluentd-maintainers@lists.cncf.io>
 Build-Depends:
   debhelper-compat (= 12),
   gnupg,
