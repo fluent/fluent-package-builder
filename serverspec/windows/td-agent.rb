@@ -24,8 +24,10 @@ describe "gem files" do
     if spec.should_include?
       gem = parser.specs.collect do |lock_spec| lock_spec if lock_spec.name == spec.name end.compact.first
       next unless gem
+      version = gem.version.to_s
+      version = WINDOWS_ARM64_FFI_VERSION if gem.name == "ffi" && RUBY_PLATFORM.start_with?("aarch64")
       describe package("#{gem.name}") do
-        it { should be_installed.by("gem").with_version(gem.version) }
+        it { should be_installed.by("gem").with_version(version) }
       end
     end
   end
