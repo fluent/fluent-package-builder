@@ -174,11 +174,11 @@ GEM
       excon (~> 1.2)
       fluentd (~> 1.18)
       google-protobuf (~> 4.30)
-    fluent-plugin-parser-winevt_xml (0.2.8)
+    fluent-plugin-parser-winevt_xml (0.3.1)
       base64 (~> 0.2)
       csv (~> 3.2)
       fluentd (>= 0.14.12, < 2)
-      nokogiri (>= 1.12.5)
+      rexml (~> 3.2)
     fluent-plugin-prometheus (2.2.1)
       fluentd (>= 1.9.1, < 2)
       prometheus-client (>= 2.1.0)
@@ -217,6 +217,9 @@ GEM
     fluent-plugin-windows-exporter (1.0.0)
       bindata (~> 2.4)
       fluentd (>= 0.14.10, < 2)
+    google-protobuf (4.32.0)
+      bigdecimal
+      rake (>= 13)
     google-protobuf (4.32.0-aarch64-linux-gnu)
       bigdecimal
       rake (>= 13)
@@ -250,11 +253,6 @@ GEM
       net-ssh (>= 2.6.5, < 8.0.0)
     net-ssh (7.3.0)
     net-telnet (0.2.0)
-    nokogiri (1.18.9)
-      mini_portile2 (~> 2.8.2)
-      racc (~> 1.4)
-    nokogiri (1.18.9-x64-mingw-ucrt)
-      racc (~> 1.4)
     oj (3.16.11)
       bigdecimal (>= 3.0)
       ostruct (>= 0.2)
@@ -273,7 +271,6 @@ GEM
       protocol-hpack (~> 1.4)
       protocol-http (~> 0.47)
     public_suffix (6.0.2)
-    racc (1.8.1)
     rake (13.3.0)
     rdkafka (0.21.0)
       ffi (~> 1.15)
@@ -335,7 +332,7 @@ GEM
       ffi
     win32-ipc (0.7.0)
       ffi
-    winevt_c (0.11.2)
+    winevt_c (0.11.6)
     yajl-ruby (1.4.3)
     zip-zip (0.3)
       rubyzip (>= 1.0.0)
@@ -343,6 +340,7 @@ GEM
 
 PLATFORMS
   aarch64-linux
+  aarch64-mingw-ucrt
   x64-mingw-ucrt
   x86_64-linux
 
@@ -373,7 +371,7 @@ DEPENDENCIES
   fluent-plugin-obsolete-plugins (= 0.2.2)
   fluent-plugin-opensearch (= 1.1.5)
   fluent-plugin-opentelemetry (= 0.3.0)
-  fluent-plugin-parser-winevt_xml (= 0.2.8)
+  fluent-plugin-parser-winevt_xml (= 0.3.1)
   fluent-plugin-prometheus (= 2.2.1)
   fluent-plugin-prometheus_pushgateway (= 0.2.1)
   fluent-plugin-record-modifier (= 2.2.1)
@@ -393,7 +391,6 @@ DEPENDENCIES
   jmespath (= 1.6.2)
   mini_portile2 (= 2.8.9)
   msgpack (= 1.8.0)
-  nokogiri (= 1.18.9)
   oj (= 3.16.11)
   opensearch-ruby (= 3.4.0)
   prometheus-client (= 4.2.5)
@@ -412,7 +409,7 @@ DEPENDENCIES
   win32-eventlog (= 0.6.7)
   win32-ipc (= 0.7.0)
   win32-service!
-  winevt_c (= 0.11.2)
+  winevt_c (= 0.11.6)
   yajl-ruby (= 1.4.3)
 
 BUNDLED WITH

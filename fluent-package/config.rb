@@ -34,8 +34,13 @@ BUNDLED_RUBY_PATCHES = [
 # https://rubyinstaller.org/downloads/ (7-ZIP ARCHIVES)
 BUNDLED_RUBY_INSTALLER_X64_VERSION = "3.4.9-1"
 BUNDLED_RUBY_INSTALLER_X64_SHA256SUM = "4375268618b61dadf53bf8e54beaca74ea30580c90d3c47ea9f2a134bd3e494e"
+BUNDLED_RUBY_INSTALLER_ARM64_VERSION = "3.4.9-1"
+BUNDLED_RUBY_INSTALLER_ARM64_SHA256SUM = "ba73f9c75ad119413e444996db3b4865d55221673172dbb6329f250bd4ca6156"
 
 # Files under rubyinstaller/ are patches for RubyInstaller's binary package.
 # Other patches for Ruby's source tree which can be shared with BUNDLED_RUBY_PATCHES.
 BUNDLED_RUBY_INSTALLER_PATCHES = [
 ]
+
+# ffi in Gemfile.lock segfaults on ARM64 Windows, so it's replaced with this version.
+WINDOWS_ARM64_FFI_VERSION = "1.17.4"
