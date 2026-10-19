@@ -41,7 +41,7 @@ About the past changelog entries, see [CHANGELOG v4](CHANGELOG-v4.md) [CHANGELOG
 * fluent-plugin-flowcounter-simple 0.1.0
 * fluent-plugin-kafka v0.19.8 (update)
 * fluent-plugin-metrics-cmetrics v0.1.2
-* fluent-plugin-fluent-package-update-notifier 0.2.3
+* fluent-plugin-fluent-package-update-notifier 0.2.4 (update)
 * fluent-plugin-obsolete-plugins v0.2.2
 * fluent-plugin-opensearch v1.1.8 (update)
 * fluent-plugin-opentelemetry 0.5.4 (update)
