@@ -134,6 +134,7 @@ GEM
       aws-sigv4 (~> 1.0)
       faraday (>= 2.0, < 3)
     ffi (1.17.4)
+    ffi (1.17.4-aarch64-mingw-ucrt)
     ffi (1.17.4-x64-mingw-ucrt)
     fiber-annotation (0.2.0)
     fiber-local (1.1.0)
@@ -231,6 +232,9 @@ GEM
     get_process_mem (1.0.0)
       bigdecimal (>= 2.0)
       ffi (~> 1.0)
+    google-protobuf (4.36.2)
+      bigdecimal
+      rake (~> 13.3)
     google-protobuf (4.36.2-aarch64-linux-gnu)
       bigdecimal
       rake (~> 13.3)
@@ -361,6 +365,7 @@ GEM
 
 PLATFORMS
   aarch64-linux
+  aarch64-mingw-ucrt
   x64-mingw-ucrt
   x86_64-linux
 

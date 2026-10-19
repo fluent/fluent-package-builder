@@ -5,10 +5,10 @@ Subject: [PATCH] Update patch for v7
 
 Signed-off-by: Kentaro Hayashi <hayashi@clear-code.com>
 ---
- fluent-package/config.rb                  | 10 +++++-----
+ fluent-package/config.rb                  | 14 +++++++-------
  fluent-package/debian/changelog           |  6 ++++++
  fluent-package/yum/fluent-package.spec.in |  3 +++
- 3 files changed, 14 insertions(+), 5 deletions(-)
+ 3 files changed, 16 insertions(+), 7 deletions(-)
 
 diff --git a/fluent-package/config.rb b/fluent-package/config.rb
 index 2884615..a3671ae 100644
@@ -32,14 +32,18 @@ index 2884615..a3671ae 100644
  
  BUNDLED_RUBY_PATCHES = [
    # An example entry:
-@@ -35,8 +35,8 @@ BUNDLED_RUBY_PATCHES = [
+@@ -35,10 +35,10 @@ BUNDLED_RUBY_PATCHES = [
  ]
  
  # https://rubyinstaller.org/downloads/ (7-ZIP ARCHIVES)
 -BUNDLED_RUBY_INSTALLER_X64_VERSION = "3.4.11-1"
 -BUNDLED_RUBY_INSTALLER_X64_SHA256SUM = "a9aca84326a90422c0905bcb47be629b687a881dcad96149604c2cb074d03154"
+-BUNDLED_RUBY_INSTALLER_ARM64_VERSION = "3.4.11-1"
+-BUNDLED_RUBY_INSTALLER_ARM64_SHA256SUM = "48b43e9aa362c7590475aa2d011ece7c352632c55f71fa0a482d92fc8edbc521"
 +BUNDLED_RUBY_INSTALLER_X64_VERSION = "4.0.7-1"
 +BUNDLED_RUBY_INSTALLER_X64_SHA256SUM = "7a9be96d3448ecbd9a81eccae1f619131dfcc761f2c98dded03ece6c05d0474f"
++BUNDLED_RUBY_INSTALLER_ARM64_VERSION = "4.0.7-1"
++BUNDLED_RUBY_INSTALLER_ARM64_SHA256SUM = "54f55648f2e700f497ba1057974824c829ec63336bf4802619837548af6bdcfb"
  
  # Files under rubyinstaller/ are patches for RubyInstaller's binary package.
  # Other patches for Ruby's source tree which can be shared with BUNDLED_RUBY_PATCHES.
