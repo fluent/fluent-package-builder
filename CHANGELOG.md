@@ -11,6 +11,7 @@ About the past changelog entries, see [CHANGELOG v4](CHANGELOG-v4.md) [CHANGELOG
 * Changed to keep compatibility with older RHEL 9.x/10.x (#1087, #1088)
 * msi: fix broken link to enterprise services (#1078)
 * Drop LTO flags on RHEL 10.x and Ubuntu. Note that hardening flags are kept. (#1101)
+* msi: stop bundling nokogiri. The winevt_xml parser uses REXML instead, and in_windows_eventlog2 checks bookmarks less strictly. Install nokogiri with `fluent-gem install nokogiri` to keep the previous behavior or to use `parser nokogiri`. (PR #1132)
 
 ### Core component
 
@@ -68,7 +69,6 @@ On Windows
 * fluent-plugin-windows-eventlog v0.9.3 (update)
 * fluent-plugin-windows-exporter v1.0.0
 * winevt_c v0.11.6 (update)
-* nokogiri v1.19.4
 
 ## Release v6.0.5 - 2026/09/29
 
