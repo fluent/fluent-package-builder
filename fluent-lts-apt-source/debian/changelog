@@ -1,3 +1,10 @@
+fluent-lts-apt-source (2026.10.29-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Use packages.fluentd.org as gateway.
+
+ -- Kentaro Hayashi <hayashi@clear-code.com>  Thu, 29 Oct 2026 18:44:25 +0900
+
 fluent-lts-apt-source (2026.4.29-1) unstable; urgency=medium
 
   * New upstream release.

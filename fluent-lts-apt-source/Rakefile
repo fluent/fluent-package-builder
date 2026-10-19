@@ -34,7 +34,7 @@ class FluentdAptLtsSourcePackageTask < PackageTask
   end
 
   def repository_version
-    "2026.4.29"
+    "2026.10.29"
   end
 
   def repository_name
@@ -50,7 +50,11 @@ class FluentdAptLtsSourcePackageTask < PackageTask
   end
 
   def repository_url
-    "https://fluentd.cdn.cncf.io"
+    # Navigate to scarf.sh by default
+    # packages.fluentd.org
+    # => fluentd.gateway.scarf.sh
+    # => fluentd.cdn.cncf.io
+    "https://packages.fluentd.org"
   end
 
   def repository_gpg_key_ids
