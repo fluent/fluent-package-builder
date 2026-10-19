@@ -51,6 +51,10 @@ fi
 %config(noreplace) %{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-fluent-package
 
 %changelog
+* Thu Oct 29 2026 Kentaro Hayashi <hayashi@clear-code.com> - 2026.10.29-1
+- New upstream release.
+- Use packages.fluentd.org as gateway.
+
 * Wed Sep 24 2025 Shizuo Fujita <fujita@clear-code.com> - 2025.9.29-1
 - New upstream release.
 
