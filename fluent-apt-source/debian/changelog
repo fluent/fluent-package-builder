@@ -1,3 +1,10 @@
+fluent-apt-source (2026.10.29-1) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  * Use packages.fluentd.org as gateway.
+
+ -- Kentaro Hayashi <hayashi@clear-code.com>  Thu, 29 Oct 2026 18:45:55 +0900
+
 fluent-apt-source (2026.4.29-1) unstable; urgency=medium
 
   * New upstream release.
