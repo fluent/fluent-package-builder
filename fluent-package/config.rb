@@ -37,6 +37,8 @@ BUNDLED_RUBY_PATCHES = [
 # https://rubyinstaller.org/downloads/ (7-ZIP ARCHIVES)
 BUNDLED_RUBY_INSTALLER_X64_VERSION = "3.4.11-1"
 BUNDLED_RUBY_INSTALLER_X64_SHA256SUM = "a9aca84326a90422c0905bcb47be629b687a881dcad96149604c2cb074d03154"
+BUNDLED_RUBY_INSTALLER_ARM64_VERSION = "3.4.11-1"
+BUNDLED_RUBY_INSTALLER_ARM64_SHA256SUM = "48b43e9aa362c7590475aa2d011ece7c352632c55f71fa0a482d92fc8edbc521"
 
 # Files under rubyinstaller/ are patches for RubyInstaller's binary package.
 # Other patches for Ruby's source tree which can be shared with BUNDLED_RUBY_PATCHES.
