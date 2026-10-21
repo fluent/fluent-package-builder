@@ -1,0 +1,30 @@
+fluent-lts-apt-source (2026.10.29-1) unstable; urgency=medium
+
+  The default URI of package repository was changed
+  from fluentd.cdn.cncf.io to packages.fluentd.org.
+
+  Why: we want to know how Fluent Package is used, such as which
+  distributions, versions and architectures are popular. This helps us
+  decide which platforms to support and when to end support for old ones.
+  The new URI goes through scarf.sh (https://scarf.sh) to collect download
+  statistics, and then redirects your request to the same CDN as before
+  (https://fluentd.cdn.cncf.io).
+
+  What is collected: the Fluentd developers can see the type of client
+  (apt, dnf and so on) and the country of the request. We cannot see your
+  IP address. See the scarf.sh privacy policy for details:
+  https://about.scarf.sh/privacy-policy/
+
+  Packages and their GPG signatures are not changed. They are still served
+  from https://fluentd.cdn.cncf.io.
+
+  If your network limits outgoing access, you may need to allow
+  packages.fluentd.org, fluentd.gateway.scarf.sh in addition to
+  fluentd.cdn.cncf.io.
+
+  If you do not want to be counted, change the URI in
+  /etc/apt/sources.list.d/fluent-lts.sources back to
+  https://fluentd.cdn.cncf.io. We have no plan to stop serving packages
+  from that URI.
+
+ -- Kentaro Hayashi <hayashi@clear-code.com>  Thu, 29 Oct 2026 18:45:55 +0900
