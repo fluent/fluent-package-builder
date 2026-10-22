@@ -77,10 +77,12 @@ fi
   packages.fluentd.org, fluentd.gateway.scarf.sh in addition to
   fluentd.cdn.cncf.io.
 
-  If you do not want to be counted, change the URI in
-  /etc/yum.repos.d/fluent-package-lts.repo back to
-  https://fluentd.cdn.cncf.io. We have no plan to stop serving packages
-  from that URI.
+  If you do not want to be counted, replace packages.fluentd.org with
+  fluentd.cdn.cncf.io in /etc/yum.repos.d/fluent-package-lts.repo.
+  Keep the rest of the URI. For example:
+
+    sudo sed -i 's/packages\.fluentd\.org/fluentd.cdn.cncf.io/' \
+      /etc/yum.repos.d/fluent-package-lts.repo
 
 * Wed Sep 24 2025 Shizuo Fujita <fujita@clear-code.com> - 2025.9.29-1
 - New upstream release.
