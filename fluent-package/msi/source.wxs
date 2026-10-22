@@ -13,9 +13,15 @@
 
     <!--
       Minimum installer version (2.0) - Window XP and above.
+      ARM64 packages require Windows Installer 5.0.
       The install scope is per machine, not the current user
     -->
-    <Package InstallerVersion="200" InstallPrivileges="elevated"
+    <?if $(sys.BUILDARCH) = "arm64" ?>
+      <?define InstallerVersion = "500" ?>
+    <?else ?>
+      <?define InstallerVersion = "200" ?>
+    <?endif ?>
+    <Package InstallerVersion="$(var.InstallerVersion)" InstallPrivileges="elevated"
              Compressed="yes" InstallScope="perMachine" />
 
     <Media Id="1" Cabinet="Project.cab" EmbedCab="yes" CompressionLevel="high" />

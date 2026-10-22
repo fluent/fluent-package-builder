@@ -47,7 +47,7 @@ jobs:
         if: ${{ ! steps.cache-msi.outputs.cache-hit }}
         run: |
           gem install serverspec
-          gem install bundler:2.7.2 --no-document
+          gem install bundler:4.0.20 --no-document
           rake msi:build
       - name: Upload td-agent msi
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -82,6 +82,7 @@ jobs:
           - "update-from-v4-test.ps1 -ViaV5"
           - "update-from-v5-test.ps1"
           - "serverspec-test.ps1"
+          - "load-extensions-test.ps1"
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
