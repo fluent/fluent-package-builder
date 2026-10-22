@@ -10,9 +10,14 @@ fluent-lts-apt-source (2026.10.29-1) unstable; urgency=medium
   statistics, and then redirects your request to the same CDN as before
   (https://fluentd.cdn.cncf.io).
 
-  What is collected: the Fluentd developers can see the type of client
-  (apt, dnf and so on) and the country of the request. We cannot see your
-  IP address. See the scarf.sh privacy policy for details:
+  What is collected: Scarf records metadata derived from your IP
+  address, such as coarse location, company and cloud provider.
+  It also records the type of client (apt, dnf and so on), basic OS
+  information and the requested path. The path shows the
+  distribution, version, architecture and package. Scarf discards
+  the raw IP address, and we cannot see it. Requests over IPv6 are
+  not counted. See the Scarf FAQ and privacy policy for details:
+  https://docs.scarf.sh/faq/
   https://about.scarf.sh/privacy-policy/
 
   Packages and their GPG signatures are not changed. They are still served
@@ -22,9 +27,11 @@ fluent-lts-apt-source (2026.10.29-1) unstable; urgency=medium
   packages.fluentd.org, fluentd.gateway.scarf.sh in addition to
   fluentd.cdn.cncf.io.
 
-  If you do not want to be counted, change the URI in
-  /etc/apt/sources.list.d/fluent-lts.sources back to
-  https://fluentd.cdn.cncf.io. We have no plan to stop serving packages
-  from that URI.
+  If you do not want to be counted, replace packages.fluentd.org with
+  fluentd.cdn.cncf.io in /etc/apt/sources.list.d/fluent-lts.sources.
+  Keep the rest of the URI. For example:
+
+    sudo sed -i 's/packages\.fluentd\.org/fluentd.cdn.cncf.io/' \
+      /etc/apt/sources.list.d/fluent-lts.sources
 
  -- Kentaro Hayashi <hayashi@clear-code.com>  Thu, 29 Oct 2026 18:45:55 +0900
