@@ -1,0 +1,39 @@
+fluent-apt-source (2026.10.29-1) unstable; urgency=medium
+
+  The default URI of package repository was changed
+  from fluentd.cdn.cncf.io to packages.fluentd.org.
+
+  Why: we want to know how Fluent Package is used, such as which
+  distributions, versions and architectures are popular. This helps us
+  decide which platforms to support and when to end support for old ones.
+  The new URI goes through scarf.sh (https://scarf.sh) to collect download
+  statistics, and then redirects your request to the same CDN as before
+  (https://fluentd.cdn.cncf.io).
+
+  What is collected: Scarf records metadata derived from your IP
+  address, such as coarse location, company and cloud provider.
+  It also records the type of client (apt, dnf and so on), basic OS
+  information and the requested path. The path shows the
+  distribution, version, architecture and package. Scarf discards
+  the raw IP address, and we cannot see it. Requests over IPv6 are
+  not counted. See the Scarf FAQ and privacy policy for details:
+  https://docs.scarf.sh/faq/
+  https://about.scarf.sh/privacy-policy/
+
+  Packages and their GPG signatures are not changed. They are still served
+  from https://fluentd.cdn.cncf.io.
+
+  If your network limits outgoing access, you may need to allow
+  packages.fluentd.org, fluentd.gateway.scarf.sh in addition to
+  fluentd.cdn.cncf.io.
+
+  If you do not want to be counted, replace packages.fluentd.org with
+  fluentd.cdn.cncf.io in /etc/apt/sources.list.d/fluent.sources.
+  Keep the rest of the URI. For example:
+
+    sudo sed -i 's/packages\.fluentd\.org/fluentd.cdn.cncf.io/' \
+      /etc/apt/sources.list.d/fluent.sources
+
+  We have no plan to stop serving packages from fluentd.cdn.cncf.io.
+
+ -- Kentaro Hayashi <hayashi@clear-code.com>  Thu, 29 Oct 2026 18:45:55 +0900
