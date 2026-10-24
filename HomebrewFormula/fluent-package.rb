@@ -602,12 +602,14 @@ class FluentPackage < Formula
     install_wrappers
 
     # Persistent user-gem directories are namespaced by Ruby ABI (see
-    # ruby_abi); move entries of the pre-namespacing layout, which sat
-    # directly in var/fluent/gems, into the current ABI directory.
+    # ruby_abi). Anything else already in var/fluent/gems -- the layout
+    # from before this namespacing (gems/, specifications/, ... directly
+    # in var/fluent/gems), or directories of other Ruby ABIs -- is
+    # deliberately left in place: this formula never moves or deletes
+    # user data, and GEM_HOME/GEM_PATH point at user_gem_dir only, so
+    # such gems are kept on disk but never loaded. Plugins are recovered
+    # by reinstalling them (see stale_abi_notice and the README).
     user_gem_dir.mkpath
-    Dir.glob(var/"fluent/gems/*").each do |entry|
-      mv(entry, user_gem_dir) unless File.basename(entry).match?(/\A\d+(\.\d+)*\z/)
-    end
     (var/"log/fluent").mkpath
   end
 
@@ -643,22 +645,23 @@ class FluentPackage < Formula
     (etc/"fluent").install buildpath/"fluentd.conf"
   end
 
-  # Gems from a previous Ruby ABI, if any, with the recovery instructions
-  # (they are kept on disk but intentionally not loaded: their native
-  # extensions would break the daemon in confusing ways if they were).
+  # Everything still found in var/fluent/gems besides the current ABI
+  # directory: gems from other Ruby ABIs and gems in the layout from
+  # before this namespacing (kept on disk, intentionally never loaded --
+  # their native extensions would break the daemon in confusing ways if
+  # they were), with the recovery instructions.
   def stale_abi_notice
-    stale = Dir.glob(var/"fluent/gems/*").select do |d|
-      File.directory?(d) && File.basename(d).match?(/\A\d+(\.\d+)*\z/) && d != user_gem_dir.to_s
-    end
+    stale = Dir.glob(var/"fluent/gems/*").reject { |d| d == user_gem_dir.to_s }
     return if stale.empty?
 
     <<~EOS
-      Gems built for other Ruby ABIs are kept in
+      Gems in
         #{stale.join("\n  ")}
-      but are not loaded by Ruby #{ruby_abi}. To recover those plugins,
-      rebuild them with `fluent-gem install <gem-name>` (recompiling
-      against the current Ruby), or copy the directories into
-      #{user_gem_dir} if the gems are pure Ruby.
+      are not loaded by Ruby #{ruby_abi} (they were installed for a
+      different Ruby, or before the gem directories were namespaced by
+      Ruby ABI). The formula leaves them in place; to use those plugins
+      again, reinstall them with `fluent-gem install <gem-name>`. Pure
+      Ruby gems may also be moved into #{user_gem_dir} by hand.
 
     EOS
   end

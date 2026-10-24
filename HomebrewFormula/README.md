@@ -20,7 +20,8 @@ a clear error); use the `.dmg` or build from source for those.
 | `etc/fluent/fluentd.conf` | configuration; the packaged default never overwrites user edits (standard Homebrew `etc` behaviour): a changed default from a new release arrives as `etc/fluent/fluentd.conf.default` |
 | `var/log/fluent/fluentd.log` | log file used by `brew services` |
 | `var/fluent/gems/<ruby version>` | where `fluent-gem install` puts user plugins (one directory per Ruby ABI, e.g. `3.4.0`) |
-| `var/fluent/gems/<other ruby versions>` | directories from an older pinned Ruby, left in place as the source for recovery after an ABI change |
+| `var/fluent/gems/<other ruby versions>` | gems from an older pinned Ruby; kept on disk but never loaded (reinstall them with `fluent-gem`) |
+| anything else under `var/fluent/gems/` (e.g. `gems/`, `specifications/` directly below it) | layout from before per-ABI namespacing; kept on disk but never loaded (reinstall those plugins with `fluent-gem`) |
 | `Cellar/fluent-package/<version>/libexec` | the packaged gems (read-only gem home) |
 
 The Cellar is replaced on every `brew upgrade`, so configuration, logs and
@@ -50,6 +51,15 @@ $ fluent-gem list
 Plugins go to `var/fluent/gems/<ruby version>` and are found by every
 fluent command through `GEM_PATH`. Do not edit the wrapper scripts in
 `bin/`; they are replaced on upgrade.
+
+Plugins that are not in the current ABI directory -- because they were
+installed before per-ABI namespacing, or for a different Ruby version --
+are kept under `var/fluent/gems` but are not loaded. The formula never
+moves them; reinstall the ones you need:
+
+```console
+$ fluent-gem install fluent-plugin-s3   # repeat for each plugin
+```
 
 To remove: `brew uninstall fluent/package-builder/fluent-package` leaves
 the configuration, logs and user gems in place (delete them by hand to
@@ -84,12 +94,13 @@ remove everything).
   binary of `google-protobuf` (a fluentd dependency) refuses Ruby 3.5 or
   newer, and 3.4 matches `BUNDLED_RUBY_VERSION` in `fluent-package/config.rb`.
 * User gem directories are per Ruby ABI (`RbConfig::CONFIG["ruby_version"]`,
-  e.g. `3.4.0`). Layouts from before this scheme are migrated into the
-  current ABI directory at install time, and if `ruby@3.4` is ever
-  replaced by a different major.minor, the wrappers stop seeing the old
-  directories (no broken native gems are ever reused), caveats remind
-  about them on install/upgrade, and rebuilding them (or copying them
-  over) recovers the plugins.
+  e.g. `3.4.0`). Everything else under `var/fluent/gems` -- directories
+  of other Ruby ABIs, or the layout from before this namespacing (gems
+  installed directly in `var/fluent/gems`) -- is never moved, renamed or
+  deleted by the formula, and it stays outside `GEM_HOME`/`GEM_PATH`, so
+  it is kept but never loaded (no broken native gems are ever reused).
+  If such gems exist, caveats list them on install/upgrade; recover the
+  plugins by reinstalling them with `fluent-gem install <gem-name>`.
 
 ## Known limitations
 
