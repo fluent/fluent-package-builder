@@ -35,6 +35,8 @@
 #    from RubyGems, but the locked revision is verified against the
 #    release tag of that repository on GitHub (cached) and the revision
 #    is annotated on the resource block; generation aborts on mismatch.
+#    This checks tag==revision only: the published .gem's content is
+#    never compared against that revision.
 # 4. Replaces the block between the BEGIN/END GENERATED RESOURCE BLOCK
 #    markers in the formula, ordered dependency-first so `gem install
 #    --ignore-dependencies` can build native gems that use other gems
@@ -187,10 +189,11 @@ def git_sources_from_lock(lock)
 end
 
 # The formula downloads gems from rubygems.org even for GIT-locked entries,
-# so the locked revision must be the very tagged release whose .gem is
-# published, or the packaged source silently diverges from what upstream
-# built its packages from. Verify that against GitHub (cached like the
-# RubyGems metadata) and record the revision on the resource block.
+# so the locked revision must be the very tagged release that upstream built
+# its packages from, or the packaged source silently diverges. Verify that
+# the tag points at the locked commit (cached like the RubyGems metadata)
+# and record the revision on the resource block; the published .gem's own
+# content is not compared against the revision.
 def verify_git_source(cache_dir, name, version, source)
   repo = source[:remote][%r{\Ahttps://github\.com/([^/]+/[^/.]+)}, 1]
   abort "#{name} is locked from #{source[:remote]}@#{source[:ref]}: this script only verifies github.com sources" if repo.nil?

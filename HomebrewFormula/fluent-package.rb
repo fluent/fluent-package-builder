@@ -19,9 +19,10 @@ class FluentPackage < Formula
   end
 
   # `ruby@3.4` matches the Ruby the upstream 6.x packages bundle
-  # (fluent-package/config.rb BUNDLED_RUBY_VERSION), and the locked
-  # google-protobuf gem refuses Ruby >= 3.5, so the bare `ruby` formula
-  # (currently 4.x) cannot install this gem set.
+  # (fluent-package/config.rb BUNDLED_RUBY_VERSION), and the prebuilt
+  # arm64-darwin google-protobuf gem of the lock declares
+  # required_ruby_version < 3.5.dev (checked in its 4.32.1 gemspec), so
+  # the bare `ruby` formula (currently 4.x) cannot install this gem set.
   depends_on "cmake" => :build # the cmetrics gem builds a bundled C++ library
   depends_on "pkgconf" => :build
   depends_on arch: :arm64
@@ -496,8 +497,12 @@ class FluentPackage < Formula
   # GitHub during extension building, which `gem install --local` cannot
   # prevent; the install step below repacks the gem so mini_portile
   # unpacks this Homebrew-mirrored copy (a file:// URL) instead, still
-  # verifying the sha256 the gem itself pins. Kept outside the generated
-  # block because it is not a gem.
+  # verifying the sha256 the gem itself pins. The offline build was
+  # verified with the network blocked in Homebrew's standard build
+  # sandbox (`HOMEBREW_FORMULA_BUILD_NETWORK=deny brew reinstall`); the
+  # unpatched gem fails such a build with a codeload.github.com
+  # connection attempt. Kept outside the generated block because it is
+  # not a gem.
   resource "cmetrics-c" do
     url "https://github.com/calyptia/cmetrics/archive/refs/tags/v0.3.3.tar.gz"
     sha256 "9f0bdc64268ddaa0906ebd8ae4e5cb396f9730695e5697514fc3a5287fe41826"
@@ -534,7 +539,12 @@ class FluentPackage < Formula
     # `gem install --local` cannot prevent that. Unpack the gem, repoint
     # its extconf.rb at the Homebrew-mirrored `cmetrics-c` resource
     # (mini_portile reads file:// URLs and verifies the locked sha256
-    # itself), and rebuild the gem from the patched source.
+    # itself), and rebuild the gem from the patched source. Everything
+    # below is keyed to exact cmetrics-0.3.3 upstream strings and
+    # structures -- the extconf's codeload URL literal, the gemspec's
+    # git-ls-files line, and `gem unpack` naming the unpacked directory
+    # after the cached download file -- so revisit it when bumping the
+    # cmetrics gem.
     unpack_dir = buildpath/"gem-sources"
     unpack_dir.mkpath
     system formula_opt_bin("ruby@3.4")/"gem", "unpack", resource("cmetrics").cached_download.to_s,
@@ -572,7 +582,9 @@ class FluentPackage < Formula
 
         # `--local` forbids fetching gems from rubygems.org (every gem is
         # installed from its mirrored resource file, and the patched
-        # cmetrics build fetches nothing either), and
+        # cmetrics build fetches nothing either -- the whole install has
+        # been verified to work with the build-phase network blocked in
+        # Homebrew's sandbox), and
         # `--ignore-dependencies` keeps the gem set exactly the one the
         # release locked -- the generated resources are listed
         # dependency-first, so native builds find the gems they invoke
