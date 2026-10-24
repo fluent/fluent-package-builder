@@ -21,6 +21,8 @@ class FluentPackage < Formula
   # (currently 4.x) cannot install this gem set.
   depends_on "cmake" => :build # the cmetrics gem builds a bundled C++ library
   depends_on "pkgconf" => :build
+  depends_on arch: :arm64
+  depends_on :macos
   depends_on "openssl@3" # native gems build against it via Ruby's rbconfig
   depends_on "ruby@3.4"
 
@@ -498,8 +500,6 @@ class FluentPackage < Formula
   WRAPPED_COMMANDS = %w[fluentd fluent-gem fluent-cat td].freeze
 
   def install
-    raise InstallError, "The fluent-package formula supports Apple Silicon (arm64) macOS only." if !OS.mac? || !Hardware::CPU.arm?
-
     gem_home = libexec
     gem_home.mkpath
 
@@ -555,13 +555,10 @@ class FluentPackage < Formula
   end
 
   # `etc` is outside the Cellar: this file survives upgrades and is only
-  # ever created when missing, mirroring how dpkg/rpm treat conffiles.
+  # installed with Homebrew's standard preservation of modified configs.
   def install_default_config
-    conf = etc/"fluent/fluentd.conf"
-    return if conf.exist?
-
-    conf.dirname.mkpath
-    conf.write(default_config)
+    (buildpath/"fluentd.conf").write(default_config)
+    (etc/"fluent").install buildpath/"fluentd.conf"
   end
 
   # The gem executables of the release (fluentd, fluent-gem, fluent-cat,
@@ -576,13 +573,9 @@ class FluentPackage < Formula
   # the gem installer, so no interpreter is picked up from PATH.
   def install_wrappers
     WRAPPED_COMMANDS.each do |name|
-      (bin/name).write <<~BASH
-        #!/bin/bash
-        # Fluent Package launcher (installed by the fluent-package formula)
-        export GEM_HOME="#{var}/fluent/gems"
-        export GEM_PATH="#{var}/fluent/gems:#{opt_prefix}/libexec"
-        exec "#{opt_prefix}/libexec/bin/#{name}" "$@"
-      BASH
+      (bin/name).write_env_script opt_prefix/"libexec/bin/#{name}",
+                                GEM_HOME: var/"fluent/gems",
+                                GEM_PATH: "#{var}/fluent/gems:#{opt_prefix}/libexec"
     end
   end
 
