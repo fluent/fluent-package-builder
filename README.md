@@ -46,19 +46,20 @@ fluent-package as a service with `brew services`:
 ```
 
 Configuration, logs and user-installed plugins live outside Homebrew's
-Cellar and survive `brew upgrade`:
+Cellar. User plugins are separated by Ruby ABI:
 
   * configuration: `$(brew --prefix)/etc/fluent/fluentd.conf`
   * log file (used by `brew services`): `$(brew --prefix)/var/log/fluent/fluentd.log`
   * user plugins: install with `fluent-gem install <gem-name>`, they are
-    kept in `$(brew --prefix)/var/fluent/gems`
+    kept in `$(brew --prefix)/var/fluent/gems/<ruby ABI>` (e.g. `3.4.0`)
 
-`brew uninstall` keeps the configuration, logs and user plugins; add
-`--purge` to remove them too.
+`brew uninstall` keeps the configuration, logs and user plugins. Remove
+those files manually if they are no longer needed. After a Ruby ABI change,
+reinstall the user plugins you need; gems for the previous ABI stay on disk
+but are not loaded.
 
 NOTE: The Homebrew formula requires Apple Silicon (arm64). Intel Macs are
-not supported by the formula; build the macOS package (.dmg) as described
-below for them. See [HomebrewFormula/README.md](HomebrewFormula/README.md)
+not supported by this formula. See [HomebrewFormula/README.md](HomebrewFormula/README.md)
 for details and for how to update the formula for new releases.
 
 ## Prerequisites
