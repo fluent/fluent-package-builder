@@ -630,15 +630,17 @@ class FluentPackage < Formula
   end
 
   # `etc` is outside the Cellar: this file survives upgrades. Like the
-  # conffiles of the deb/rpm packages (and unlike Pathname#install, which
-  # would *replace* an existing file with `FileUtils.mv`), it is created
-  # once and then only ever modified by the user.
+  # conffiles of the deb/rpm packages, user edits are never overwritten.
+  # Formula#etc is extended with Homebrew's InstallRenamed module (and the
+  # extension propagates through `/`), so installing the default through
+  # it follows the standard Homebrew conffile behaviour (verified against
+  # Homebrew 7.0.10): no existing file -> install it; existing file with
+  # identical content -> leave it untouched; existing file with different
+  # (user-modified) content -> keep it and install the new default next
+  # to it as `fluentd.conf.default`.
   def install_default_config
-    conf = etc/"fluent/fluentd.conf"
-    return if conf.exist?
-
-    conf.dirname.mkpath
-    conf.write(default_config)
+    (buildpath/"fluentd.conf").write(default_config)
+    (etc/"fluent").install buildpath/"fluentd.conf"
   end
 
   # Gems from a previous Ruby ABI, if any, with the recovery instructions
