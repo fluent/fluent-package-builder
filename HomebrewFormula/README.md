@@ -17,7 +17,7 @@ a clear error); use the `.dmg` or build from source for those.
 | Path (under `brew --prefix`, i.e. `/opt/homebrew`) | Contents |
 | --- | --- |
 | `bin/fluentd`, `bin/fluent-gem`, `bin/fluent-cat`, `bin/td` | wrapper commands, on your PATH |
-| `etc/fluent/fluentd.conf` | configuration (a starter config is created only if the file does not exist, and is never overwritten) |
+| `etc/fluent/fluentd.conf` | configuration; the packaged default never overwrites user edits (standard Homebrew `etc` behaviour): a changed default from a new release arrives as `etc/fluent/fluentd.conf.default` |
 | `var/log/fluent/fluentd.log` | log file used by `brew services` |
 | `var/fluent/gems/<ruby version>` | where `fluent-gem install` puts user plugins (one directory per Ruby ABI, e.g. `3.4.0`) |
 | `var/fluent/gems/<other ruby versions>` | directories from an older pinned Ruby, left in place as the source for recovery after an ABI change |
