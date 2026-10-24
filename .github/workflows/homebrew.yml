@@ -77,17 +77,38 @@ jobs:
           grep '"ci":true' "$(brew --prefix)/var/log/fluent/fluentd.log"
       - name: Check native extensions
         run: |
-          GEM_HOME="$(brew --prefix)/var/fluent/gems" \
-          GEM_PATH="$(brew --prefix)/var/fluent/gems:$(brew --prefix fluent/package-builder/fluent-package)/libexec" \
-            "$(brew --prefix ruby@3.4)/bin/ruby" -e '
-              %w[msgpack cool.io yajl oj cmetrics ffi google/protobuf nokogiri rdkafka].each { |lib| require lib }
+          # Compiled gems of the package itself, loaded through the same
+          # gem paths the formula's wrappers use. Nokogiri is deliberately
+          # absent: the upstream Gemfile pins it to Windows platforms and
+          # the formula excludes it, so there is nothing to load (and a
+          # pure-Ruby fallback would mask missing gems anyway).
+          ruby_version="$(brew --prefix ruby@3.4)/bin/ruby"
+          gem_dir="$(brew --prefix)/var/fluent/gems/$("$ruby_version" -rrbconfig -e 'print RbConfig::CONFIG["ruby_version"]')"
+          GEM_HOME="$gem_dir" \
+          GEM_PATH="$gem_dir:$(brew --prefix fluent/package-builder/fluent-package)/libexec" \
+            "$ruby_version" -e '
+              %w[msgpack cool.io yajl oj cmetrics ffi google/protobuf rdkafka].each { |lib| require lib }
             '
+      - name: Check user-installed native gem
+        run: |
+          # A user compiling a native extension through the formula's own
+          # fluent-gem wrapper, then loading it through the wrapper gem
+          # paths (the ABI-specific persistent user gem directory).
+          ruby_version="$(brew --prefix ruby@3.4)/bin/ruby"
+          gem_dir="$(brew --prefix)/var/fluent/gems/$("$ruby_version" -rrbconfig -e 'print RbConfig::CONFIG["ruby_version"]')"
+          /opt/homebrew/bin/fluent-gem install oj --platform ruby --no-document # compiles from source
+          GEM_HOME="$gem_dir" \
+          GEM_PATH="$gem_dir:$(brew --prefix fluent/package-builder/fluent-package)/libexec" \
+            "$ruby_version" -e 'require "oj"; puts Oj::VERSION'
       - name: Check persistent files across reinstall and uninstall
         run: |
           conf="$(brew --prefix)/etc/fluent/fluentd.conf"
-          state="$(brew --prefix)/var/fluent/gems/ci-preservation-check"
+          ruby_version="$(brew --prefix ruby@3.4)/bin/ruby"
+          gem_dir="$(brew --prefix)/var/fluent/gems/$("$ruby_version" -rrbconfig -e 'print RbConfig::CONFIG["ruby_version"]')"
+          state="$gem_dir/ci-preservation-check"
           echo '# CI preservation check' >> "$conf"
           cp "$conf" "$RUNNER_TEMP/fluentd.conf"
+          mkdir -p "$gem_dir"
           touch "$state"
           brew reinstall fluent/package-builder/fluent-package
           cmp "$conf" "$RUNNER_TEMP/fluentd.conf"

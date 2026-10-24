@@ -31,8 +31,14 @@
 #    example google-protobuf ships x86_64-darwin and arm64-darwin gems),
 #    with the plain ruby build as fallback. The platform sha256 reported
 #    by RubyGems is embedded in the formula.
-# 3. Replaces the block between the BEGIN/END GENERATED RESOURCE BLOCK
-#    markers in the formula.
+# 3. Gems locked from GIT sections (fluentd itself) are still sourced
+#    from RubyGems, but the locked revision is verified against the
+#    release tag of that repository on GitHub (cached) and the revision
+#    is annotated on the resource block; generation aborts on mismatch.
+# 4. Replaces the block between the BEGIN/END GENERATED RESOURCE BLOCK
+#    markers in the formula, ordered dependency-first so `gem install
+#    --ignore-dependencies` can build native gems that use other gems
+#    at build time (e.g. cmetrics needs mini_portile2).
 
 require "json"
 require "net/http"
@@ -51,6 +57,9 @@ require "open3"
 #   ffi-win32-extensions, nokogiri, rmail, win32-event, win32-eventlog,
 #   win32-ipc, win32-service, winevt_c, fluent-plugin-parser-winevt_xml,
 #   fluent-plugin-windows-eventlog, fluent-plugin-windows-exporter
+#   (nokogiri is a direct Gemfile dependency only under the windows
+#   platform filter, and its sole consumer, the winevt_xml parser plugin,
+#   is Windows-only; nothing macOS-side requires it)
 # Linux only (Gemfile platform filter):
 #   capng_c (needs libcap headers; upstream only supports Linux),
 #   fluent-plugin-systemd and systemd-journal (need libsystemd),
@@ -67,6 +76,7 @@ EXCLUDED_GEMS = %w[
   fluent-plugin-windows-eventlog
   fluent-plugin-windows-exporter
   linux-utmpx
+  nokogiri
   systemd-journal
   winevt_c
   win32-event
@@ -158,6 +168,50 @@ def deps_from_lock(lock)
   deps
 end
 
+# Gems whose lock entry comes from a `GIT` section rather than RubyGems
+# (fluentd itself and the Windows-only win32 helpers upstream vendors
+# through git branches). gem name => {remote:, ref:}.
+def git_sources_from_lock(lock)
+  sources = {}
+  lock.split(/^GIT\n/m).drop(1).each do |section|
+    body = section[/\A(.*?)(?=^(?:GIT|PATH|GEM|PLATFORMS|DEPENDENCIES|CHECKSUMS|RUBY VERSION|BUNDLED WITH)\b)/m, 1]
+    next if body.nil?
+
+    remote = body[/^  remote: (\S+)/, 1]
+    ref = body[/^  revision: (\S+)/, 1] || body[/^  ref: (\S+)/, 1]
+    next if remote.nil? || ref.nil?
+
+    body.scan(/^    ([a-zA-Z0-9_.-]+) \(/) { sources[Regexp.last_match(1)] = { remote:, ref: } }
+  end
+  sources
+end
+
+# The formula downloads gems from rubygems.org even for GIT-locked entries,
+# so the locked revision must be the very tagged release whose .gem is
+# published, or the packaged source silently diverges from what upstream
+# built its packages from. Verify that against GitHub (cached like the
+# RubyGems metadata) and record the revision on the resource block.
+def verify_git_source(cache_dir, name, version, source)
+  repo = source[:remote][%r{\Ahttps://github\.com/([^/]+/[^/.]+)}, 1]
+  abort "#{name} is locked from #{source[:remote]}@#{source[:ref]}: this script only verifies github.com sources" if repo.nil?
+
+  tag = "v#{version}"
+  data = fetch_json("https://api.github.com/repos/#{repo}/git/ref/tags/#{tag}", cache_dir)
+  object = data["object"]
+  abort "cannot verify #{name}: #{repo} has no tag #{tag} (#{data["message"]})" if object.nil?
+
+  if object["type"] == "tag" # annotated tag: follow the tag object to its commit
+    tagged = fetch_json("https://api.github.com/repos/#{repo}/git/tags/#{object["sha"]}", cache_dir)
+    object = tagged["object"]
+    abort "cannot dereference annotated tag #{tag} of #{repo}" if object.nil? || object["type"] != "commit"
+  end
+  if object["sha"] != source[:ref]
+    abort "#{name} #{version} is locked from git revision #{source[:ref]} but tag #{tag} of #{repo} points at #{object["sha"]}: install source would not match the lock"
+  end
+
+  "locked from git #{repo}@#{source[:ref][0, 12]} (verified to be tag #{tag})"
+end
+
 # Gems are installed with `gem install --ignore-dependencies` in the exact
 # locked versions, but some gems' native builds invoke other gems at build
 # time (digest-crc runs rake, cmetrics requires mini_portile2), so the
@@ -222,9 +276,10 @@ def resolve_gem(cache_dir, name, version)
   [nil, nil, version, nil]
 end
 
-def resource_block(name, version, url, sha, platform)
+def resource_block(name, version, url, sha, platform, notes = [])
   lines = ["  resource \"#{name}\" do", "    url \"#{url}\"", "    sha256 \"#{sha}\"", "  end"]
   lines.unshift("  # platform: #{platform}") unless platform == "ruby"
+  notes.reverse_each { |note| lines.unshift("  # #{note}") }
   lines.join("\n")
 end
 
@@ -257,6 +312,7 @@ def main
 
   blocks = []
   missing = []
+  git_sources = git_sources_from_lock(lock_text)
   order.each do |name|
     version = specs.fetch(name)
     url, sha, = resolve_gem(cache_dir, name, version)
@@ -264,8 +320,10 @@ def main
       missing << "#{name}-#{version}"
       next
     end
+    notes = []
+    notes << verify_git_source(cache_dir, name, version, git_sources[name]) if git_sources.key?(name)
     plat = url =~ /-(arm64-darwin|x86_64-darwin)\.gem\z/ ? $1 : "ruby"
-    blocks << resource_block(name, version, url, sha, plat)
+    blocks << resource_block(name, version, url, sha, plat, notes)
   end
 
   abort "no gems resolved from the lock" if blocks.empty?
