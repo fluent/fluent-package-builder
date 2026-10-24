@@ -32,7 +32,7 @@ user-installed plugins deliberately live outside it and survive upgrades
 $ brew services start fluent/package-builder/fluent-package   # launchd job, starts at login
 $ brew services stop fluent/package-builder/fluent-package
 $ brew services restart fluent/package-builder/fluent-package
-$ brew services run fluent/package-builder/fluent-package     # one-shot, no launchd job
+$ brew services run fluent/package-builder/fluent-package     # run without registering at login
 ```
 
 `brew services` runs `fluentd -c $(brew --prefix)/etc/fluent/fluentd.conf`
@@ -51,8 +51,7 @@ through `GEM_PATH`. Do not edit the wrapper scripts in `bin/`; they are
 replaced on upgrade.
 
 To remove: `brew uninstall fluent/package-builder/fluent-package` leaves
-the configuration, logs and user gems in place (delete them by hand, or
-use `brew uninstall --purge`, to remove everything).
+the configuration, logs and user gems in place (delete them by hand to remove everything).
 
 ## Formula design
 
@@ -70,7 +69,9 @@ use `brew uninstall --purge`, to remove everything).
   binary of `google-protobuf` (a fluentd dependency) refuses Ruby 3.5 or
   newer, and 3.4 matches `BUNDLED_RUBY_VERSION` in `fluent-package/config.rb`.
   When a future fluent-package moves to a newer Ruby and its gems support
-  it, change the `depends_on "ruby@3.4"` line (and its comment) only.
+  it, update the Ruby dependency, rebuild all packaged native gems, and
+  migrate or reinstall user gems for the new ABI. Changing the dependency
+  alone is insufficient; the current user gem directory is not ABI-isolated.
 
 ## Updating the formula for a new release
 

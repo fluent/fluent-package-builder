@@ -7,11 +7,17 @@ on:
     paths:
       - HomebrewFormula/**
       - homebrew/**
+      - fluent-package/Gemfile
+      - fluent-package/Gemfile.lock
+      - fluent-package/config.rb
       - .github/workflows/homebrew.yml
   pull_request:
     paths:
       - HomebrewFormula/**
       - homebrew/**
+      - fluent-package/Gemfile
+      - fluent-package/Gemfile.lock
+      - fluent-package/config.rb
       - .github/workflows/homebrew.yml
   schedule:
     # Weekly, so that `update_formula.rb --check` flags upstream releases
@@ -25,9 +31,13 @@ concurrency:
   cancel-in-progress: true
 jobs:
   formula:
-    name: brew install (macOS arm64)
+    name: brew install (${{ matrix.os }} arm64)
     timeout-minutes: 45
-    runs-on: macos-14 # the formula is Apple Silicon only
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-14, macos-15, macos-26]
+    runs-on: ${{ matrix.os }}
     env:
       HOMEBREW_NO_ANALYTICS: "1"
       HOMEBREW_NO_AUTO_UPDATE: "1"
@@ -65,6 +75,29 @@ jobs:
           done
           sleep 3
           grep '"ci":true' "$(brew --prefix)/var/log/fluent/fluentd.log"
+      - name: Check native extensions
+        run: |
+          GEM_HOME="$(brew --prefix)/var/fluent/gems" \
+          GEM_PATH="$(brew --prefix)/var/fluent/gems:$(brew --prefix fluent/package-builder/fluent-package)/libexec" \
+            "$(brew --prefix ruby@3.4)/bin/ruby" -e '
+              %w[msgpack cool.io yajl oj cmetrics ffi google/protobuf nokogiri rdkafka].each { |lib| require lib }
+            '
+      - name: Check persistent files across reinstall and uninstall
+        run: |
+          conf="$(brew --prefix)/etc/fluent/fluentd.conf"
+          state="$(brew --prefix)/var/fluent/gems/ci-preservation-check"
+          echo '# CI preservation check' >> "$conf"
+          cp "$conf" "$RUNNER_TEMP/fluentd.conf"
+          touch "$state"
+          brew reinstall fluent/package-builder/fluent-package
+          cmp "$conf" "$RUNNER_TEMP/fluentd.conf"
+          test -f "$state"
+          brew test fluent/package-builder/fluent-package
+          brew uninstall fluent/package-builder/fluent-package
+          cmp "$conf" "$RUNNER_TEMP/fluentd.conf"
+          test -f "$state"
+          test -f "$(brew --prefix)/var/log/fluent/fluentd.log"
+          test ! -e "$(brew --prefix)/bin/fluentd"
   update-check:
     name: Formula resources up to date
     if: github.event_name != 'pull_request'

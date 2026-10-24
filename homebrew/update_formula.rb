@@ -39,8 +39,7 @@ require "net/http"
 require "uri"
 require "tmpdir"
 require "fileutils"
-
-DEFAULT_TAG = "v6.0.5" # matches newest upstream release tag (checked 2026-10-24)
+require "open3"
 
 # Gems that the macOS formula does not install. The formula installs gems
 # with `gem install --ignore-dependencies` (dependency resolution happens
@@ -118,7 +117,9 @@ def read_lock(opts)
     tag = opts[:tag] || latest_tag
     abort "tag #{tag} not found" unless system("git", "rev-parse", "-q", "--verify", "#{tag}^{commit}", out: File::NULL, err: File::NULL)
     warn "reading fluent-package/Gemfile.lock from #{tag}"
-    `git show #{tag}:fluent-package/Gemfile.lock`
+    lock, status = Open3.capture2("git", "show", "#{tag}:fluent-package/Gemfile.lock")
+    abort "could not read Gemfile.lock from #{tag}" unless status.success?
+    lock
   end
 end
 
@@ -233,6 +234,15 @@ def main
                  File.expand_path("../HomebrewFormula/fluent-package.rb", script_dir)
   cache_dir = opts[:cache] || File.join(Dir.tmpdir, "fluent-package-formula-cache")
   FileUtils.mkdir_p(cache_dir)
+
+  unless opts[:lock]
+    opts[:tag] ||= latest_tag
+    formula = File.read(formula_path)
+    source_tag = formula[%r{archive/refs/tags/(v[^/"\s]+)\.tar\.gz}, 1]
+    unless source_tag == opts[:tag]
+      abort "formula source tag #{source_tag.inspect} differs from #{opts[:tag]}; update its URL and checksum first"
+    end
+  end
 
   lock_text = read_lock(opts)
   specs = specs_from_lock(lock_text).to_h
