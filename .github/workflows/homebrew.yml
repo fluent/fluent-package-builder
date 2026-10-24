@@ -1,0 +1,82 @@
+name: Homebrew formula
+on:
+  push:
+    branches:
+      - master
+      - fluent-package-v6
+    paths:
+      - HomebrewFormula/**
+      - homebrew/**
+      - .github/workflows/homebrew.yml
+  pull_request:
+    paths:
+      - HomebrewFormula/**
+      - homebrew/**
+      - .github/workflows/homebrew.yml
+  schedule:
+    # Weekly, so that `update_formula.rb --check` flags upstream releases
+    # whose gem set is not yet reflected in the formula's resources.
+    - cron: 0 21 * * 1
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: ${{ github.head_ref || github.sha }}-${{ github.workflow }}
+  cancel-in-progress: true
+jobs:
+  formula:
+    name: brew install (macOS arm64)
+    timeout-minutes: 45
+    runs-on: macos-14 # the formula is Apple Silicon only
+    env:
+      HOMEBREW_NO_ANALYTICS: "1"
+      HOMEBREW_NO_AUTO_UPDATE: "1"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Tap the checkout as a local Homebrew tap
+        run: |
+          mkdir -p "$RUNNER_TEMP/tap/HomebrewFormula"
+          cp HomebrewFormula/fluent-package.rb "$RUNNER_TEMP/tap/HomebrewFormula/"
+          cd "$RUNNER_TEMP/tap"
+          git init -q -b main
+          git add -A
+          GIT_AUTHOR_NAME=ci GIT_AUTHOR_EMAIL=ci@invalid \
+          GIT_COMMITTER_NAME=ci GIT_COMMITTER_EMAIL=ci@invalid \
+            git commit -qm "tap of $GITHUB_SHA"
+          brew tap fluent/package-builder "file://$RUNNER_TEMP/tap"
+          brew trust fluent/package-builder
+      - name: Check style
+        run: brew style fluent/package-builder/fluent-package
+      - name: Audit
+        run: brew audit --strict fluent/package-builder/fluent-package
+      - name: Install
+        run: brew install --display-times fluent/package-builder/fluent-package
+      - name: Test
+        run: brew test fluent/package-builder/fluent-package
+      - name: Run through brew services
+        run: |
+          brew services start fluent/package-builder/fluent-package
+          trap 'brew services stop fluent/package-builder/fluent-package' EXIT
+          for _ in $(seq 1 30); do
+            if fluent-cat ci.e2e >/dev/null 2>&1 <<< '{"ci":true}'; then
+              break
+            fi
+            sleep 2
+          done
+          sleep 3
+          grep '"ci":true' "$(brew --prefix)/var/log/fluent/fluentd.log"
+  update-check:
+    name: Formula resources up to date
+    if: github.event_name != 'pull_request'
+    timeout-minutes: 10
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0 # the script reads Gemfile.lock from release tags
+      - name: Check the formula against the newest release tag
+        run: |
+          if ! ruby homebrew/update_formula.rb --check; then
+            echo "::error::HomebrewFormula/fluent-package.rb does not carry the gem set of the newest release tag. Bump the formula version and run 'ruby homebrew/update_formula.rb --tag <new-tag>'; see HomebrewFormula/README.md."
+            exit 1
+          fi

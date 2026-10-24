@@ -33,6 +33,34 @@ NOTE: Discussed why re-branding is required [Rebranding td-agent-builder](https:
 
 See also [this issue](https://github.com/treasure-data/omnibus-td-agent/issues/219) for omnibus problems.
 
+## Installing fluent-package on Apple Silicon Macs with Homebrew
+
+For Macs with Apple Silicon (arm64), this repository also provides a
+Homebrew formula (`HomebrewFormula/fluent-package.rb`), which can run
+fluent-package as a service with `brew services`:
+
+```console
+% brew tap fluent/package-builder https://github.com/fluent/fluent-package-builder
+% brew install fluent/package-builder/fluent-package
+% brew services start fluent/package-builder/fluent-package
+```
+
+Configuration, logs and user-installed plugins live outside Homebrew's
+Cellar and survive `brew upgrade`:
+
+  * configuration: `$(brew --prefix)/etc/fluent/fluentd.conf`
+  * log file (used by `brew services`): `$(brew --prefix)/var/log/fluent/fluentd.log`
+  * user plugins: install with `fluent-gem install <gem-name>`, they are
+    kept in `$(brew --prefix)/var/fluent/gems`
+
+`brew uninstall` keeps the configuration, logs and user plugins; add
+`--purge` to remove them too.
+
+NOTE: The Homebrew formula requires Apple Silicon (arm64). Intel Macs are
+not supported by the formula; build the macOS package (.dmg) as described
+below for them. See [HomebrewFormula/README.md](HomebrewFormula/README.md)
+for details and for how to update the formula for new releases.
+
 ## Prerequisites
 
 ### For building .rpm & .deb packages
