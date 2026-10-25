@@ -36,7 +36,7 @@ See also [this issue](https://github.com/treasure-data/omnibus-td-agent/issues/2
 ## Installing fluent-package on Apple Silicon Macs with Homebrew
 
 For Macs with Apple Silicon (arm64), this repository also provides a
-Homebrew formula (`HomebrewFormula/fluent-package.rb`), which can run
+Homebrew formula (`homebrew/Formula/fluent-package.rb`), which can run
 fluent-package as a service with `brew services`:
 
 ```console
@@ -59,7 +59,7 @@ reinstall the user plugins you need; gems for the previous ABI stay on disk
 but are not loaded.
 
 NOTE: The Homebrew formula requires Apple Silicon (arm64). Intel Macs are
-not supported by this formula. See [HomebrewFormula/README.md](HomebrewFormula/README.md)
+not supported by this formula. See [homebrew/README.md](homebrew/README.md)
 for details and for how to update the formula for new releases.
 
 ## Prerequisites

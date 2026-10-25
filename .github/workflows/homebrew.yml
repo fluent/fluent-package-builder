@@ -5,7 +5,6 @@ on:
       - master
       - fluent-package-v6
     paths:
-      - HomebrewFormula/**
       - homebrew/**
       - fluent-package/Gemfile
       - fluent-package/Gemfile.lock
@@ -13,7 +12,6 @@ on:
       - .github/workflows/homebrew.yml
   pull_request:
     paths:
-      - HomebrewFormula/**
       - homebrew/**
       - fluent-package/Gemfile
       - fluent-package/Gemfile.lock
@@ -45,8 +43,8 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Tap the checkout as a local Homebrew tap
         run: |
-          mkdir -p "$RUNNER_TEMP/tap/HomebrewFormula"
-          cp HomebrewFormula/fluent-package.rb "$RUNNER_TEMP/tap/HomebrewFormula/"
+          mkdir -p "$RUNNER_TEMP/tap/Formula"
+          cp homebrew/Formula/fluent-package.rb "$RUNNER_TEMP/tap/Formula/"
           cd "$RUNNER_TEMP/tap"
           git init -q -b main
           git add -A
@@ -131,6 +129,6 @@ jobs:
       - name: Check the formula against the newest release tag
         run: |
           if ! ruby homebrew/update_formula.rb --check; then
-            echo "::error::HomebrewFormula/fluent-package.rb does not carry the gem set of the newest release tag. Bump the formula version and run 'ruby homebrew/update_formula.rb --tag <new-tag>'; see HomebrewFormula/README.md."
+            echo "::error::homebrew/Formula/fluent-package.rb does not carry the gem set of the newest release tag. Bump the formula version and run 'ruby homebrew/update_formula.rb --tag <new-tag>'; see homebrew/README.md."
             exit 1
           fi

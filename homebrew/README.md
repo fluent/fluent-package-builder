@@ -1,6 +1,6 @@
 # Homebrew formula for fluent-package
 
-`HomebrewFormula/fluent-package.rb` installs fluent-package on **Apple
+`homebrew/Formula/fluent-package.rb` installs fluent-package on **Apple
 Silicon (arm64) Macs** with Homebrew. It includes launchd integration
 through `brew services`.
 
@@ -137,7 +137,7 @@ The `td` CLI is included as part of the release's plugin and tool set.
 ## Updating the formula for a new release
 
 1. Update `url` and `sha256` at the top of
-   `fluent-package.rb` to the new release tag (the sha256 of
+   `homebrew/Formula/fluent-package.rb` to the new release tag (the sha256 of
    `https://github.com/fluent/fluent-package-builder/archive/refs/tags/<tag>.tar.gz`).
    The formula version is inferred from the URL.
 2. Regenerate the resource blocks from the new tag's `Gemfile.lock`:

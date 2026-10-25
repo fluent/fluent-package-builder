@@ -16,7 +16,7 @@
 #   --lock FILE      Read the lock from FILE instead of a git tag. For
 #                    sandboxed environments or debugging only.
 #   --formula FILE   Formula to rewrite (default: the tap formula in
-#                    HomebrewFormula/, resolved relative to the repository).
+#                    homebrew/Formula/, resolved relative to the repository).
 #   --cache DIR      Cache directory for RubyGems API responses
 #                    (default: <tmpdir>/fluent-package-formula-cache).
 #
@@ -289,7 +289,7 @@ end
 def main
   opts = parse_args
   formula_path = opts[:formula] ||
-                 File.expand_path("../HomebrewFormula/fluent-package.rb", script_dir)
+                 File.expand_path("Formula/fluent-package.rb", script_dir)
   cache_dir = opts[:cache] || File.join(Dir.tmpdir, "fluent-package-formula-cache")
   FileUtils.mkdir_p(cache_dir)
 
