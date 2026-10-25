@@ -9,6 +9,11 @@ $ brew tap fluent/package-builder https://github.com/fluent/fluent-package-build
 $ brew install fluent/package-builder/fluent-package
 ```
 
+Homebrew only discovers formulae under a top-level `Formula/` (or legacy
+`HomebrewFormula/`) directory of a tap repository, so the repository's
+top-level `Formula` entry is a symlink to this directory's `Formula/`;
+keep it if files are moved around.
+
 Intel Macs are **not** supported by this formula.
 
 ## What you get
