@@ -12,7 +12,7 @@ class FluentPackage < Formula
 
   # The release tags of fluent-package-builder are the canonical source of
   # versions (the same tags the upstream deb/rpm packages are built from),
-  # and the newest tag is the formula version (see HomebrewFormula/README.md).
+  # and the newest tag is the formula version (see homebrew/README.md).
   livecheck do
     url :stable
     strategy :github_latest
