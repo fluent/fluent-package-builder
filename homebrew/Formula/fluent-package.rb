@@ -606,7 +606,7 @@ class FluentPackage < Formula
     # paths, which `brew audit` rightfully objects to.
     Dir.glob([gem_home/"gems/cmetrics-*/ext/cmetrics/tmp",
               gem_home/"gems/cmetrics-*/ports"]) do |dir|
-      rm_rf dir
+      rm_r dir
     end
 
     pkgshare.install "LICENSE"
