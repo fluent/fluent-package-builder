@@ -103,7 +103,7 @@ GEM
       fiber-annotation
       fiber-local (~> 1.1)
       json
-    cool.io (1.10.1)
+    cool.io (1.11.0)
     csv (3.3.6)
     digest-crc (0.7.0)
       rake (>= 12.0.0, < 14.0.0)
@@ -382,7 +382,7 @@ DEPENDENCIES
   bundler (= 4.0.20)
   capng_c (= 0.2.5)
   cmetrics (= 0.3.3)
-  cool.io (= 1.10.1)
+  cool.io (= 1.11.0)
   digest-murmurhash (= 1.1.1)
   elasticsearch (= 9.5.0)
   ffi (= 1.17.4)

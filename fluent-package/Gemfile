@@ -15,7 +15,7 @@ source "https://rubygems.org"
 no_fat_gem = [:ruby]
 gem "rake"
 gem "bundler", BUNDLER_VERSION
-gem "cool.io", "1.10.1",  platforms: no_fat_gem
+gem "cool.io", "1.11.0",  platforms: no_fat_gem
 gem "sigdump", "0.2.5"
 gem "http_parser.rb", "0.8.1"
 gem "yajl-ruby", "1.4.3"
