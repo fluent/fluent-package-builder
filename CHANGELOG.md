@@ -21,7 +21,7 @@ About the past changelog entries, see [CHANGELOG v4](CHANGELOG-v4.md) [CHANGELOG
 * OpenSSL 3.6.3 Windows (update)
 * OpenSSL 3.0.8 macOS
 * gems
-  * fluentd v1.20.0 (update)
+  * fluentd v1.20.1 (update)
   * msgpack 1.8.5 (update)
   * oj 3.17.7 (update)
   * webrick 1.9.2
