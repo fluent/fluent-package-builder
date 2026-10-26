@@ -29,11 +29,11 @@ About the past changelog entries, see [CHANGELOG v4](CHANGELOG-v4.md) [CHANGELOG
 
 ### Bundled plugins and gems
 
-* aws-partitions v1.1296.0 (update)
-* aws-sdk-core v3.257.0 (update)
-* aws-sdk-kms v1.132.0 (update)
-* aws-sdk-s3 v1.233.2 (update)
-* aws-sdk-sqs v1.119.0 (update)
+* aws-partitions v1.1298.0 (update)
+* aws-sdk-core v3.260.0 (update)
+* aws-sdk-kms v1.135.0 (update)
+* aws-sdk-s3 v1.235.0 (update)
+* aws-sdk-sqs v1.122.0 (update)
 * aws-sigv4 v1.12.1
 * elasticsearch v9.5.0 (update)
 * fluent-diagtool v1.0.5
