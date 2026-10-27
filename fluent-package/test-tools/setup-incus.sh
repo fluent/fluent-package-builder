@@ -1,7 +1,11 @@
 #!/bin/bash
 
 sudo apt update
-sudo apt install -y -V incus
+if apt-cache show incus-base > /dev/null 2>&1; then
+  sudo apt install -y -V incus-base
+else
+  sudo apt install -y -V incus
+fi
 
 # Allow egress network traffic flows for Incus
 # https://linuxcontainers.org/incus/docs/main/howto/network_bridge_firewalld/#prevent-connectivity-issues-with-incus-and-docker
