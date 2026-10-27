@@ -8,5 +8,7 @@ sudo apt install -y -V incus
 sudo iptables -I DOCKER-USER -i incusbr0 -j ACCEPT
 sudo iptables -I DOCKER-USER -o incusbr0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 sudo incus admin init --auto
+sudo incus profile set default raw.apparmor="signal peer=@{profile_name}//&unconfined,
+ptrace peer=@{profile_name}//&unconfined,"
 # enable incus legacy/snapshot images
 sudo incus remote add fluent https://fluentd.cdn.cncf.io/test/incus-images --accept-certificate --protocol=simplestreams
