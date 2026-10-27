@@ -294,8 +294,10 @@ GEM
     protocol-url (0.19.0)
     public_suffix (7.0.5)
     rake (13.4.2)
-    rdkafka (0.21.0)
-      ffi (~> 1.15)
+    rdkafka (0.31.0)
+      ffi (~> 1.17.1)
+      json (> 2.0)
+      logger
       mini_portile2 (~> 2.6)
       rake (> 12)
     rexml (3.4.4)
@@ -421,7 +423,7 @@ DEPENDENCIES
   opensearch-ruby (= 3.4.0)
   prometheus-client (= 5.0.0)
   rake
-  rdkafka (= 0.21.0)
+  rdkafka (= 0.31.0)
   ruby-kafka (= 1.5.0)
   serverengine (= 2.4.0)
   sigdump (= 0.2.5)

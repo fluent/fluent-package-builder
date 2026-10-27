@@ -58,7 +58,7 @@ About the past changelog entries, see [CHANGELOG v4](CHANGELOG-v4.md) [CHANGELOG
 * fluent-plugin-webhdfs v1.6.0
 * mini_portile2 v2.8.9
 * prometheus-client v5.0.0 (update)
-* rdkafka v0.21.0
+* rdkafka v0.31.0 (update)
 * ruby-kafka v1.5.0
 * systemd-journal v2.1.1
 * td-client v3.0.1 (update)
