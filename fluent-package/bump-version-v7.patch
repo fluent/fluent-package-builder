@@ -1,17 +1,17 @@
-From 57b6f35a86c63f715ce8c59a695c8fd933d292f6 Mon Sep 17 00:00:00 2001
+From f6306e5ebead0d755ed79909023a0fe2d2739e53 Mon Sep 17 00:00:00 2001
 From: Kentaro Hayashi <hayashi@clear-code.com>
-Date: Thu, 20 Aug 2026 14:40:47 +0900
-Subject: [PATCH] Bump version to 7.0.0
+Date: Mon, 26 Oct 2026 12:08:20 +0900
+Subject: [PATCH] Update patch for v7
 
 Signed-off-by: Kentaro Hayashi <hayashi@clear-code.com>
 ---
- fluent-package/config.rb                  | 10 +++++-----
+ fluent-package/config.rb                  | 14 +++++++-------
  fluent-package/debian/changelog           |  6 ++++++
  fluent-package/yum/fluent-package.spec.in |  3 +++
- 3 files changed, 14 insertions(+), 5 deletions(-)
+ 3 files changed, 16 insertions(+), 7 deletions(-)
 
 diff --git a/fluent-package/config.rb b/fluent-package/config.rb
-index f505af6..65c449f 100644
+index 276eadf..d76a3b1 100644
 --- a/fluent-package/config.rb
 +++ b/fluent-package/config.rb
 @@ -1,5 +1,5 @@
@@ -21,30 +21,34 @@ index f505af6..65c449f 100644
  
  # Keep internal path (/opt/td-agent) for package name migration
  SERVICE_NAME = "fluentd"
-@@ -23,8 +23,8 @@ OPENSSL_FOR_MACOS_SHA256SUM = "6c13d2bf38fdf31eac3ce2a347073673f5d63263398f1f69d
- BUNDLER_VERSION= "2.7.2"
+@@ -26,8 +26,8 @@ OPENSSL_FOR_LTS_VERSION = "3.5.8"
+ OPENSSL_FOR_LTS_SHA256SUM = "a8f84a39918ec6415ce765d9b429d313ba97b8143169c172e734b9514464f5b2"
  
  # https://www.ruby-lang.org/en/downloads/ (tar.gz)
--BUNDLED_RUBY_VERSION = "3.4.9"
--BUNDLED_RUBY_SOURCE_SHA256SUM = "7bb4d4f5e807cc27251d14d9d6086d182c5b25875191e44ab15b709cd7a7dd9c"
-+BUNDLED_RUBY_VERSION = "4.0.6"
-+BUNDLED_RUBY_SOURCE_SHA256SUM = "837d299e8f7ddf2be31a229a7a7e019d354979825117989acb3b32b1a9be262a"
+-BUNDLED_RUBY_VERSION = "3.4.12"
+-BUNDLED_RUBY_SOURCE_SHA256SUM = "5e5d85ad93b0adcccbad47733680f4892bd0078e3342437f7babce01c1872479"
++BUNDLED_RUBY_VERSION = "4.0.9"
++BUNDLED_RUBY_SOURCE_SHA256SUM = "c35350682ff050b79702d57ade4516e7336063f510155d19fb2fb5b3f3909511"
  
  BUNDLED_RUBY_PATCHES = [
    # An example entry:
-@@ -32,8 +32,8 @@ BUNDLED_RUBY_PATCHES = [
+@@ -35,10 +35,10 @@ BUNDLED_RUBY_PATCHES = [
  ]
  
  # https://rubyinstaller.org/downloads/ (7-ZIP ARCHIVES)
--BUNDLED_RUBY_INSTALLER_X64_VERSION = "3.4.9-1"
--BUNDLED_RUBY_INSTALLER_X64_SHA256SUM = "4375268618b61dadf53bf8e54beaca74ea30580c90d3c47ea9f2a134bd3e494e"
-+BUNDLED_RUBY_INSTALLER_X64_VERSION = "4.0.6-1"
-+BUNDLED_RUBY_INSTALLER_X64_SHA256SUM = "328d7a86bea2f4c432783025050c9ffa1c36fcfc54ebccc466b63450ec3af223"
+-BUNDLED_RUBY_INSTALLER_X64_VERSION = "3.4.12-1"
+-BUNDLED_RUBY_INSTALLER_X64_SHA256SUM = "3806f164377824bcb17e1cf39b17d967e2bdc01e8547ce0254cd786dbe2cfe13"
+-BUNDLED_RUBY_INSTALLER_ARM64_VERSION = "3.4.12-1"
+-BUNDLED_RUBY_INSTALLER_ARM64_SHA256SUM = "6462eea40a8399420708518b82d121eec0d24daf5bb64abdf238a54d85362d29"
++BUNDLED_RUBY_INSTALLER_X64_VERSION = "4.0.9-1"
++BUNDLED_RUBY_INSTALLER_X64_SHA256SUM = "1dc0715916251a13c4f6a550a3da1f2c726bff869371fd573a65234c008f47b4"
++BUNDLED_RUBY_INSTALLER_ARM64_VERSION = "4.0.9-1"
++BUNDLED_RUBY_INSTALLER_ARM64_SHA256SUM = "d13273600bff5ca349f3866a0492517b144510ceb916525e891e2e1a3f728b78"
  
  # Files under rubyinstaller/ are patches for RubyInstaller's binary package.
  # Other patches for Ruby's source tree which can be shared with BUNDLED_RUBY_PATCHES.
 diff --git a/fluent-package/debian/changelog b/fluent-package/debian/changelog
-index 8b17497..de4615c 100644
+index d14de2a..f3754a7 100644
 --- a/fluent-package/debian/changelog
 +++ b/fluent-package/debian/changelog
 @@ -1,3 +1,9 @@
@@ -58,7 +62,7 @@ index 8b17497..de4615c 100644
  
    * New upstream release.
 diff --git a/fluent-package/yum/fluent-package.spec.in b/fluent-package/yum/fluent-package.spec.in
-index ad9eb89..e6ede97 100644
+index 8157ae6..e343ef6 100644
 --- a/fluent-package/yum/fluent-package.spec.in
 +++ b/fluent-package/yum/fluent-package.spec.in
 @@ -482,6 +482,9 @@ fi
@@ -68,7 +72,7 @@ index ad9eb89..e6ede97 100644
 +* Sun Aug 29 2027 Shizuo Fujita <fujita@clear-code.com> - 7.0.0-1
 +- New upstream release.
 +
- * Wed Aug 05 2026 Shizuo Fujita <fujita@clear-code.com> - 6.1.0-1
+ * Thu Oct 29 2026 Shizuo Fujita <fujita@clear-code.com> - 6.1.0-1
  - New upstream release.
  
 -- 

@@ -12,7 +12,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   define-matrix:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
@@ -23,7 +23,7 @@ jobs:
         working-directory: .github/workflows/
   build:
     name: Build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: define-matrix
     strategy:
       fail-fast: false
@@ -39,7 +39,7 @@ jobs:
 
   build-next:
     name: Build next major
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: define-matrix
     strategy:
       fail-fast: false
@@ -55,7 +55,7 @@ jobs:
 
   check_package_size:
     name: Check Package Size
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [define-matrix, build]
     strategy:
       fail-fast: false
@@ -72,7 +72,7 @@ jobs:
 
   installation_test:
     name: Installation Test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [define-matrix, build]
     strategy:
       fail-fast: false
@@ -88,7 +88,7 @@ jobs:
           test-docker-image: ${{ matrix.test-docker-image }}
   piuparts_test:
     name: Piuparts Test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [define-matrix, build]
     strategy:
       fail-fast: false
@@ -105,7 +105,7 @@ jobs:
           test-script: piuparts-test.sh
   serverspec_test:
     name: Serverspec Test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [define-matrix, build]
     strategy:
       fail-fast: false
@@ -121,7 +121,7 @@ jobs:
           test-script: serverspec-test.sh
   binstubs_test:
     name: Binstubs Test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [define-matrix, build]
     strategy:
       fail-fast: false
@@ -138,7 +138,7 @@ jobs:
   test:
     name: Test ${{ matrix.label }} ${{ matrix.test }}
     needs: [build-next, check_package_size, installation_test, piuparts_test, serverspec_test, binstubs_test]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     strategy:
       fail-fast: false
@@ -264,7 +264,7 @@ jobs:
 
   confluent_test:
     name: Confluent Test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [define-matrix, test]
     strategy:
       fail-fast: false
@@ -289,7 +289,7 @@ jobs:
   s3_test:
     name: S3 Test (${{ matrix.label }} s3.sh
     needs: [define-matrix, test]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
@@ -314,7 +314,7 @@ jobs:
   elasticsearch_test:
     name: Elasticsearch Test ${{ matrix.label }}
     needs: [define-matrix, test]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
@@ -327,7 +327,7 @@ jobs:
         run: ./fluent-package/test-tools/setup-incus.sh
       - name: Setup Elasticsearch on host
         run: |
-          docker run -d -p 9200:9200 -e "discovery.type=single-node" -e "xpack.security.enabled=false" docker.elastic.co/elasticsearch/elasticsearch:8.19.11
+          docker run -d -p 9200:9200 -e "discovery.type=single-node" -e "xpack.security.enabled=false" docker.elastic.co/elasticsearch/elasticsearch:9.5.2
       - name: Copy elasticsearch.conf
         run: cp fluent-package/test-tools/elasticsearch.conf fluent-package/apt/systemd-test
       - name: Ensure elasticsearch availability from host
@@ -342,7 +342,7 @@ jobs:
   opensearch_test:
     name: Opensearch Test ${{ matrix.label }}
     needs: [define-matrix, test]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
@@ -356,7 +356,7 @@ jobs:
       - name: Setup Opensearch on host
         run: |
           docker run -d -p 9200:9200 -p 9600:9600 \
-            -e "discovery.type=single-node" -e OPENSEARCH_INITIAL_ADMIN_PASSWORD=Passvv0rd@ opensearchproject/opensearch:2
+            -e "discovery.type=single-node" -e OPENSEARCH_INITIAL_ADMIN_PASSWORD=Passvv0rd@ opensearchproject/opensearch:3
       - name: Copy opensearch.conf
         run: cp fluent-package/test-tools/opensearch.conf fluent-package/apt/systemd-test
       - name: Ensure Opensearch availability from host

@@ -12,7 +12,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   define-matrix:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
       label: ${{ steps.set-matrix.outputs.label }}
@@ -25,7 +25,7 @@ jobs:
           echo "label=$(cat yum.matrix.json | jq '[.include[].label]' --compact-output)" >> $GITHUB_OUTPUT
         working-directory: .github/workflows/
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: define-matrix
     name: Build
     strategy:
@@ -40,7 +40,7 @@ jobs:
           next-major: 'false'
           cache-group: v6
   build-next:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: define-matrix
     name: Build next major
     strategy:
@@ -56,7 +56,7 @@ jobs:
           cache-group: v7
   check_package_size:
     name: Check Package Size
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [define-matrix, build]
     strategy:
       fail-fast: false
@@ -73,7 +73,7 @@ jobs:
 
   installation_test:
     name: Installation Test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [define-matrix, build]
     strategy:
       fail-fast: false
@@ -89,7 +89,7 @@ jobs:
           test-docker-image: ${{ matrix.test-docker-image }}
           centos-stream: ${{ matrix.centos-stream }}
   serverspec_test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     name: Serverspec Test
     needs: [define-matrix, build]
     strategy:
@@ -106,7 +106,7 @@ jobs:
           test-docker-image: ${{ matrix.test-docker-image }}
           centos-stream: ${{ matrix.centos-stream }}
   binstubs_test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     name: Binstubs Test
     needs: [define-matrix, build]
     strategy:
@@ -203,7 +203,7 @@ jobs:
   v2test:
     name: Test ${{ matrix.label }} ${{ matrix.test }} (CGroup V2)
     needs: [define-matrix, check_package_size, installation_test, serverspec_test, binstubs_test, build-next]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     strategy:
       fail-fast: false
@@ -296,7 +296,7 @@ jobs:
 
   confluent_test:
     name: Confluent Test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [define-matrix, v2test]
     strategy:
       fail-fast: false
@@ -321,7 +321,7 @@ jobs:
   fluent-release-test:
     name: Test ${{ matrix.label }} ${{ matrix.test }} (CGroup V2)
     needs: [define-matrix, v2test]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     strategy:
       fail-fast: false
@@ -343,7 +343,7 @@ jobs:
   fluent-lts-release-test:
     name: Test ${{ matrix.label }} ${{ matrix.test }} (CGroup V2)
     needs: [define-matrix, v2test]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     strategy:
       fail-fast: false
@@ -365,7 +365,7 @@ jobs:
   s3_test:
     name: S3 Test (${{ matrix.label }} s3.sh
     needs: [define-matrix, v2test]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
@@ -390,7 +390,7 @@ jobs:
   elasticsearch_test:
     name: Elasticsearch Test ${{ matrix.label }} ${{ matrix.test }}
     needs: [define-matrix, v2test]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
@@ -403,7 +403,7 @@ jobs:
         run: ./fluent-package/test-tools/setup-incus.sh
       - name: Setup Elasticsearch on host
         run: |
-          docker run -d -p 9200:9200 -e "discovery.type=single-node" -e "xpack.security.enabled=false" docker.elastic.co/elasticsearch/elasticsearch:8.19.11
+          docker run -d -p 9200:9200 -e "discovery.type=single-node" -e "xpack.security.enabled=false" docker.elastic.co/elasticsearch/elasticsearch:9.5.2
       - name: Copy elasticsearch.conf
         run: cp fluent-package/test-tools/elasticsearch.conf fluent-package/yum/systemd-test
       - name: Ensure elasticsearch availability from host
@@ -418,7 +418,7 @@ jobs:
   opensearch_test:
     name: Opensearch Test ${{ matrix.label }}
     needs: [define-matrix, v2test]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
@@ -432,7 +432,7 @@ jobs:
       - name: Setup Opensearch on host
         run: |
           docker run -d -p 9200:9200 -p 9600:9600 \
-            -e "discovery.type=single-node" -e OPENSEARCH_INITIAL_ADMIN_PASSWORD=Passvv0rd@ opensearchproject/opensearch:2
+            -e "discovery.type=single-node" -e OPENSEARCH_INITIAL_ADMIN_PASSWORD=Passvv0rd@ opensearchproject/opensearch:3
       - name: Copy opensearch.conf
         run: cp fluent-package/test-tools/opensearch.conf fluent-package/yum/systemd-test
       - name: Ensure Opensearch availability from host
