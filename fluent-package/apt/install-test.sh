@@ -12,6 +12,9 @@ apt install -V -y --quiet \
 
 fluentd --version
 test -e /etc/logrotate.d/fluentd
+# logrotate must not fail before fluentd creates its log file (#796)
+apt install -V -y --quiet logrotate
+logrotate --debug /etc/logrotate.d/fluentd
 test -e /opt/fluent/share/fluentd.conf
 (! test -h /usr/sbin/td-agent)
 (! test -h /usr/sbin/td-agent-gem)
