@@ -12,7 +12,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   define-matrix:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
@@ -23,7 +23,7 @@ jobs:
         working-directory: .github/workflows/
   build:
     name: Build
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     needs: define-matrix
     strategy:
       fail-fast: false
@@ -39,7 +39,7 @@ jobs:
 
   build-next:
     name: Build next major
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     needs: define-matrix
     strategy:
       fail-fast: false
@@ -55,7 +55,7 @@ jobs:
 
   check_package_size:
     name: Check Package Size
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     needs: [define-matrix, build]
     strategy:
       fail-fast: false
@@ -72,7 +72,7 @@ jobs:
 
   installation_test:
     name: Installation Test
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     needs: [define-matrix, build]
     strategy:
       fail-fast: false
@@ -88,7 +88,7 @@ jobs:
           test-docker-image: ${{ matrix.test-docker-image }}
   piuparts_test:
     name: Piuparts Test
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     needs: [define-matrix, build]
     strategy:
       fail-fast: false
@@ -105,7 +105,7 @@ jobs:
           test-script: piuparts-test.sh
   serverspec_test:
     name: Serverspec Test
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     needs: [define-matrix, build]
     strategy:
       fail-fast: false
@@ -121,7 +121,7 @@ jobs:
           test-script: serverspec-test.sh
   binstubs_test:
     name: Binstubs Test
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     needs: [define-matrix, build]
     strategy:
       fail-fast: false
@@ -138,7 +138,7 @@ jobs:
   test:
     name: Test ${{ matrix.label }} ${{ matrix.test }}
     needs: [build-next, check_package_size, installation_test, piuparts_test, serverspec_test, binstubs_test]
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
       fail-fast: false
@@ -264,7 +264,7 @@ jobs:
 
   confluent_test:
     name: Confluent Test
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     needs: [define-matrix, test]
     strategy:
       fail-fast: false
@@ -289,7 +289,7 @@ jobs:
   s3_test:
     name: S3 Test (${{ matrix.label }} s3.sh
     needs: [define-matrix, test]
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
@@ -314,7 +314,7 @@ jobs:
   elasticsearch_test:
     name: Elasticsearch Test ${{ matrix.label }}
     needs: [define-matrix, test]
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
@@ -342,7 +342,7 @@ jobs:
   opensearch_test:
     name: Opensearch Test ${{ matrix.label }}
     needs: [define-matrix, test]
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
