@@ -1,0 +1,134 @@
+name: Homebrew formula
+on:
+  push:
+    branches:
+      - master
+      - fluent-package-v6
+    paths:
+      - homebrew/**
+      - fluent-package/Gemfile
+      - fluent-package/Gemfile.lock
+      - fluent-package/config.rb
+      - .github/workflows/homebrew.yml
+  pull_request:
+    paths:
+      - homebrew/**
+      - fluent-package/Gemfile
+      - fluent-package/Gemfile.lock
+      - fluent-package/config.rb
+      - .github/workflows/homebrew.yml
+  schedule:
+    # Weekly, so that `update_formula.rb --check` flags upstream releases
+    # whose gem set is not yet reflected in the formula's resources.
+    - cron: 0 21 * * 1
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: ${{ github.head_ref || github.sha }}-${{ github.workflow }}
+  cancel-in-progress: true
+jobs:
+  formula:
+    name: brew install (${{ matrix.os }} arm64)
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-14, macos-15, macos-26]
+    runs-on: ${{ matrix.os }}
+    env:
+      HOMEBREW_NO_ANALYTICS: "1"
+      HOMEBREW_NO_AUTO_UPDATE: "1"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Tap the checkout as a local Homebrew tap
+        run: |
+          mkdir -p "$RUNNER_TEMP/tap/Formula"
+          cp homebrew/Formula/fluent-package.rb "$RUNNER_TEMP/tap/Formula/"
+          cd "$RUNNER_TEMP/tap"
+          git init -q -b main
+          git add -A
+          GIT_AUTHOR_NAME=ci GIT_AUTHOR_EMAIL=ci@invalid \
+          GIT_COMMITTER_NAME=ci GIT_COMMITTER_EMAIL=ci@invalid \
+            git commit -qm "tap of $GITHUB_SHA"
+          brew tap fluent/package-builder "file://$RUNNER_TEMP/tap"
+          brew trust fluent/package-builder
+      - name: Check style
+        run: brew style fluent/package-builder/fluent-package
+      - name: Audit
+        run: brew audit --strict fluent/package-builder/fluent-package
+      - name: Install
+        run: brew install --display-times fluent/package-builder/fluent-package
+      - name: Test
+        run: brew test fluent/package-builder/fluent-package
+      - name: Run through brew services
+        run: |
+          brew services start fluent/package-builder/fluent-package
+          trap 'brew services stop fluent/package-builder/fluent-package' EXIT
+          for _ in $(seq 1 30); do
+            if fluent-cat ci.e2e >/dev/null 2>&1 <<< '{"ci":true}'; then
+              break
+            fi
+            sleep 2
+          done
+          sleep 3
+          grep '"ci":true' "$(brew --prefix)/var/log/fluent/fluentd.log"
+      - name: Check native extensions
+        run: |
+          # Compiled gems of the package itself, loaded through the same
+          # gem paths the formula's wrappers use. Nokogiri is deliberately
+          # absent: the upstream Gemfile pins it to Windows platforms and
+          # the formula excludes it, so there is nothing to load (and a
+          # pure-Ruby fallback would mask missing gems anyway).
+          ruby_version="$(brew --prefix ruby@3.4)/bin/ruby"
+          gem_dir="$(brew --prefix)/var/fluent/gems/$("$ruby_version" -rrbconfig -e 'print RbConfig::CONFIG["ruby_version"]')"
+          GEM_HOME="$gem_dir" \
+          GEM_PATH="$gem_dir:$(brew --prefix fluent/package-builder/fluent-package)/libexec" \
+            "$ruby_version" -e '
+              %w[msgpack cool.io yajl oj cmetrics ffi google/protobuf rdkafka].each { |lib| require lib }
+            '
+      - name: Check user-installed native gem
+        run: |
+          # A user compiling a native extension through the formula's own
+          # fluent-gem wrapper, then loading it through the wrapper gem
+          # paths (the ABI-specific persistent user gem directory).
+          ruby_version="$(brew --prefix ruby@3.4)/bin/ruby"
+          gem_dir="$(brew --prefix)/var/fluent/gems/$("$ruby_version" -rrbconfig -e 'print RbConfig::CONFIG["ruby_version"]')"
+          /opt/homebrew/bin/fluent-gem install oj --platform ruby --no-document # compiles from source
+          GEM_HOME="$gem_dir" \
+          GEM_PATH="$gem_dir:$(brew --prefix fluent/package-builder/fluent-package)/libexec" \
+            "$ruby_version" -e 'require "oj"; puts Oj::VERSION'
+      - name: Check persistent files across reinstall and uninstall
+        run: |
+          conf="$(brew --prefix)/etc/fluent/fluentd.conf"
+          ruby_version="$(brew --prefix ruby@3.4)/bin/ruby"
+          gem_dir="$(brew --prefix)/var/fluent/gems/$("$ruby_version" -rrbconfig -e 'print RbConfig::CONFIG["ruby_version"]')"
+          state="$gem_dir/ci-preservation-check"
+          echo '# CI preservation check' >> "$conf"
+          cp "$conf" "$RUNNER_TEMP/fluentd.conf"
+          mkdir -p "$gem_dir"
+          touch "$state"
+          brew reinstall fluent/package-builder/fluent-package
+          cmp "$conf" "$RUNNER_TEMP/fluentd.conf"
+          test -f "$state"
+          brew test fluent/package-builder/fluent-package
+          brew uninstall fluent/package-builder/fluent-package
+          cmp "$conf" "$RUNNER_TEMP/fluentd.conf"
+          test -f "$state"
+          test -f "$(brew --prefix)/var/log/fluent/fluentd.log"
+          test ! -e "$(brew --prefix)/bin/fluentd"
+  update-check:
+    name: Formula resources up to date
+    if: github.event_name != 'pull_request'
+    timeout-minutes: 10
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0 # the script reads Gemfile.lock from release tags
+      - name: Check the formula against the newest release tag
+        run: |
+          if ! ruby homebrew/update_formula.rb --check; then
+            echo "::error::homebrew/Formula/fluent-package.rb does not carry the gem set of the newest release tag. Bump the formula version and run 'ruby homebrew/update_formula.rb --tag <new-tag>'; see homebrew/README.md."
+            exit 1
+          fi
