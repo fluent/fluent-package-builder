@@ -19,6 +19,10 @@
 #                    homebrew/Formula/, resolved relative to the repository).
 #   --cache DIR      Cache directory for RubyGems API responses
 #                    (default: <tmpdir>/fluent-package-formula-cache).
+#                    Cached entries are reused as-is, but a locked version
+#                    missing from a cached response is re-fetched from the
+#                    network and the cache entry refreshed, so a stale
+#                    cache cannot report a published gem as missing.
 #
 # How it works:
 #
@@ -234,10 +238,10 @@ def topo_sort(names, deps)
   ordered
 end
 
-def fetch_json(url, cache_dir)
+def fetch_json(url, cache_dir, refresh: false)
   slug = url.gsub(%r{[^a-zA-Z0-9]+}, "_")
   cache_path = File.join(cache_dir, "#{slug}.json")
-  return JSON.parse(File.read(cache_path)) if File.exist?(cache_path)
+  return JSON.parse(File.read(cache_path)) if File.exist?(cache_path) && !refresh
 
   body = +""
   URI.parse(url)
@@ -259,8 +263,8 @@ end
 def platform_priority = ["arm64-darwin", "ruby"]
 
 # Returns [download_url, sha256, version, platform] for one gem.
-def resolve_gem(cache_dir, name, version)
-  meta = fetch_json("https://rubygems.org/api/v1/versions/#{name}.json", cache_dir)
+def resolve_gem(cache_dir, name, version, refresh: false)
+  meta = fetch_json("https://rubygems.org/api/v1/versions/#{name}.json", cache_dir, refresh: refresh)
   by_platform = {}
   meta.each do |entry|
     next unless entry["number"] == version
@@ -319,6 +323,13 @@ def main
   order.each do |name|
     version = specs.fetch(name)
     url, sha, = resolve_gem(cache_dir, name, version)
+    if url.nil?
+      # A cached versions list can predate a locked release (they are only
+      # ever fetched once); re-check against rubygems.org before declaring
+      # the gem missing so a stale --cache dir cannot abort the run.
+      url, sha, = resolve_gem(cache_dir, name, version, refresh: true)
+      warn "  refreshed stale metadata for #{name} #{version}" if url
+    end
     if url.nil?
       missing << "#{name}-#{version}"
       next
