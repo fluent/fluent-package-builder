@@ -5,8 +5,8 @@
 #
 # Usage (run from the repository root):
 #
-#   ruby homebrew/update_formula.rb --tag v6.0.5
-#   ruby homebrew/update_formula.rb --tag v6.0.5 --check
+#   ruby homebrew/update_formula.rb --tag v6.1.0
+#   ruby homebrew/update_formula.rb --tag v6.1.0 --check
 #
 # Options:
 #   --tag TAG        Release tag whose fluent-package/Gemfile.lock is used
