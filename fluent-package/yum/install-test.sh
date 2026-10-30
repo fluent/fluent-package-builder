@@ -65,6 +65,9 @@ ${DNF} install -y \
 
 fluentd --version
 test -e /etc/logrotate.d/fluentd
+# logrotate must not fail before fluentd creates its log file (#796)
+${DNF} install -y logrotate
+logrotate --debug /etc/logrotate.d/fluentd
 test -e /opt/fluent/share/fluentd.conf
 (! test -h /usr/sbin/td-agent)
 (! test -h /usr/sbin/td-agent-gem)
