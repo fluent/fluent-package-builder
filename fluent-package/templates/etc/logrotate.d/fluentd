@@ -3,6 +3,7 @@
   rotate 30
   compress
   delaycompress
+  missingok
   notifempty
 <% if pkg_type == 'deb' %>
   create 640 _<%= service_name %> _<%= service_name %>
