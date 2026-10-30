@@ -109,11 +109,9 @@ remove everything).
   (user gems first, then the Cellar).
 * The formula depends on Homebrew's `ruby@3.4` instead of bundling a Ruby,
   and native gems build against Homebrew's `openssl@3` through Ruby's
-  `rbconfig`. The `@3.4` pin is not cosmetic: the prebuilt `arm64-darwin`
-  binary of `google-protobuf` (a fluentd dependency) declares
-  `required_ruby_version >= 3.1, < 3.5.dev` in its gemspec (checked), so
-  it cannot serve Ruby 3.5 or newer, and 3.4 matches
-  `BUNDLED_RUBY_VERSION` in `fluent-package/config.rb`.
+  `rbconfig`. Ruby 3.4 matches `BUNDLED_RUBY_VERSION` in
+  `fluent-package/config.rb`, keeping the Homebrew runtime aligned with
+  the Ruby used by the other fluent-package distributions.
 * User gem directories are per Ruby ABI (`RbConfig::CONFIG["ruby_version"]`,
   e.g. `3.4.0`). Everything else under `var/fluent/gems` -- directories
   of other Ruby ABIs, or the layout from before this namespacing (gems
@@ -212,8 +210,8 @@ read-only repository permissions.
 
 ## Validation status
 
-As of 2026-10-25, the local implementation report records successful
-checks on Apple Silicon with Homebrew 7.0.10:
+The local implementation report records successful checks on Apple
+Silicon with Homebrew 7.0.10 against the previous v6.0.5 Formula:
 
 * Style, strict audit, source installation and `brew test`.
 * `brew services` start/stop and a record sent with `fluent-cat`.
@@ -225,9 +223,12 @@ checks on Apple Silicon with Homebrew 7.0.10:
   comparison tests.
 * ABI-directory selection and legacy-layout preservation using fixtures.
 
-These are reported local results, not GitHub Actions results. The workflow
-is defined for macOS 14, 15 and 26 but has not been run on GitHub as of
-that report. It does not currently enforce build-phase network denial.
+These are reported local results for v6.0.5; they do not validate the
+updated v6.1.0 gem resources. The v6.1.0 resources were regenerated from
+its lockfile, but the v6.1.0 Formula still needs a clean install and the
+workflow needs to run against this revision. The earlier report also
+records that the workflow itself had not yet run on GitHub. The workflow
+does not enforce build-phase network denial.
 
 The following remain unverified:
 
