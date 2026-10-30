@@ -226,19 +226,20 @@ Silicon with Homebrew 7.0.10 against the previous v6.0.5 Formula:
   comparison tests.
 * ABI-directory selection and legacy-layout preservation using fixtures.
 
-These are reported local results for v6.0.5; they do not validate the
-updated v6.1.0 gem resources. The v6.1.0 resources were regenerated from
-its lockfile, but the v6.1.0 Formula still needs a clean install and the
-workflow needs to run against this revision. The earlier report also
-records that the workflow itself had not yet run on GitHub. The workflow
-does not enforce build-phase network denial.
+These are reported local results for v6.0.5. The v6.1.0 formula was
+subsequently validated on the same kind of machine (Apple Silicon,
+macOS 26, Homebrew 7.0.11) with an offline (`HOMEBREW_FORMULA_BUILD_NETWORK=deny`)
+`brew reinstall` from the installed v6.0.5 formula: the version-changing
+install preserved configuration and the `var/fluent` layout, `brew test`
+and `brew linkage --test` passed, cmetrics build output carried no
+network references, and the new native `openssl 4.0.2` gem compiled
+against Homebrew's `openssl@4` (the OpenSSL `ruby@3.4` itself links)
+and loads at runtime. The GitHub workflow still had not run against
+this revision when this was written. The workflow does not enforce
+build-phase network denial.
 
 The following remain unverified:
 
-* A real upgrade between different formula versions. This can be tested
-  in a disposable tap by installing an older formula, updating the tap to
-  a newer version, and running `brew upgrade`; a public release is not
-  required for a controlled test.
 * A real Ruby ABI transition and rebuilding plugins for that new ABI.
 * Bottle creation, installation and relocation.
 * Published gem contents matching GIT-locked source revisions.
