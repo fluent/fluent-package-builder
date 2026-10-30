@@ -25,7 +25,7 @@ class FluentPackage < Formula
   depends_on "pkgconf" => :build
   depends_on arch: :arm64
   depends_on :macos
-  depends_on "openssl@3" # native gems build against it via Ruby's rbconfig
+  depends_on "openssl@4" # ruby@3.4's own OpenSSL; the openssl gem compiles against it
   depends_on "ruby@3.4"
 
   # The gem resources below are generated from the release's
