@@ -108,8 +108,11 @@ remove everything).
   set `GEM_HOME` (to `var/fluent/gems/<ruby ABI>`) and `GEM_PATH`
   (user gems first, then the Cellar).
 * The formula depends on Homebrew's `ruby@3.4` instead of bundling a Ruby,
-  and native gems build against Homebrew's `openssl@3` through Ruby's
-  `rbconfig`. Ruby 3.4 matches `BUNDLED_RUBY_VERSION` in
+  and native gems that compile against OpenSSL build against Homebrew's
+  `openssl@4` -- the same OpenSSL `ruby@3.4` links against (its shipped
+  `openssl.bundle` resolves to `opt/openssl@4`). The gems find it through
+  pkg-config in the build environment, not through `rbconfig`, which
+  carries no OpenSSL flags. Ruby 3.4 matches `BUNDLED_RUBY_VERSION` in
   `fluent-package/config.rb`, keeping the Homebrew runtime aligned with
   the Ruby used by the other fluent-package distributions.
 * User gem directories are per Ruby ABI (`RbConfig::CONFIG["ruby_version"]`,
