@@ -154,7 +154,7 @@ install_missing_plugins() {
         if ! grep --fixed-strings --line-regexp --invert-match "$local_current_plugins" $local_base_plugins; then
             echo "No missing plugins to install"
         else
-            if ! curl --fail --silent -O https://rubygems.org/specs.4.8.gz; then
+            if ! curl --fail --silent --head --output /dev/null https://rubygems.org/specs.4.8.gz; then
                 echo "No network connectivity..."
             else
                 grep --fixed-strings --line-regexp --invert-match "$local_current_plugins" $local_base_plugins | while read missing_gem
