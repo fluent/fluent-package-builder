@@ -35,6 +35,8 @@ if [ "$service_restart" != manual ] && [ "$status_before_update" = active ]; the
     /opt/fluent/bin/fluent-gem list | grep fluent-plugin-concat
     # Non fluent-plugin- prefix gem should not be installed automatically
     (! /opt/fluent/bin/fluent-gem list | grep gqtp)
+    # The network connectivity check should not leave the downloaded file
+    (! test -e /specs.4.8.gz)
 else
     # plugin gem should not be installed automatically
     (! /opt/fluent/bin/fluent-gem list | grep fluent-plugin-concat)
