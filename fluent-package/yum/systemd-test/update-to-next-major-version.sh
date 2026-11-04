@@ -71,6 +71,8 @@ else
         /opt/fluent/bin/fluent-gem list | grep fluent-plugin-concat
         # Test: Non fluent-plugin- prefix gem should not be installed automatically
         (! /opt/fluent/bin/fluent-gem list | grep gqtp)
+        # Test: The network connectivity check should not leave the downloaded file
+        (! test -e /specs.4.8.gz)
         # Test: Main process should be replaced automatically
         test $main_pid -ne $(eval $(systemctl show fluentd --property=MainPID) && echo $MainPID)
     fi
