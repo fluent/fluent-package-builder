@@ -51,7 +51,7 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    addressable (2.9.0)
+    addressable (2.9.2)
       public_suffix (>= 2.0.2, < 8.0)
     async (2.46.0)
       console (~> 1.29)
@@ -370,6 +370,7 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  addressable (= 2.9.2)
   async (= 2.46.0)
   async-http (= 0.105.0)
   aws-partitions (= 1.1298.0)
