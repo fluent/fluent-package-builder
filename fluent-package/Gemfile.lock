@@ -51,7 +51,7 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    addressable (2.9.0)
+    addressable (2.9.2)
       public_suffix (>= 2.0.2, < 8.0)
     async (2.46.0)
       console (~> 1.29)
@@ -245,7 +245,7 @@ GEM
       rake (~> 13.3)
     hirb (0.7.3)
     http_parser.rb (0.8.1)
-    httpclient (2.9.0)
+    httpclient (2.10.0)
       mutex_m
     io-endpoint (0.19.0)
       openssl (>= 3.3.0)
@@ -304,7 +304,7 @@ GEM
     ruby-kafka (1.5.0)
       digest-crc
     ruby-progressbar (1.13.0)
-    rubyzip (1.3.0)
+    rubyzip (3.4.0)
     serverengine (2.4.0)
       base64 (~> 0.1)
       logger (~> 1.4)
@@ -322,20 +322,19 @@ GEM
       ffi (~> 1.1)
     systemd-journal (2.1.2)
       ffi (~> 1.9)
-    td (0.19.1)
+    td (0.20.0)
       csv
       hirb (>= 0.4.5)
       msgpack
       parallel (~> 1.20.0)
       rexml
       ruby-progressbar (~> 1.7)
-      rubyzip (~> 1.3.0)
+      rubyzip (~> 3.4)
       td-client (>= 1.0.8, < 4)
       td-logger (>= 0.3.21, < 2)
       yajl-ruby (>= 1.3.1, < 2.0)
-      zip-zip (~> 0.3)
-    td-client (3.0.1)
-      httpclient (>= 2.7)
+    td-client (3.1.0)
+      httpclient (>= 2.10.0)
       msgpack (>= 0.5.6, < 2)
     td-logger (0.5.0)
       fluent-logger (>= 0.5.0, < 2.0)
@@ -362,8 +361,6 @@ GEM
       fiddle (~> 1.0)
     winevt_c (0.11.6)
     yajl-ruby (1.4.3)
-    zip-zip (0.3)
-      rubyzip (>= 1.0.0)
     zstd-ruby (1.5.7.1)
 
 PLATFORMS
@@ -415,7 +412,7 @@ DEPENDENCIES
   fluent-plugin-windows-exporter (= 1.0.0)
   fluentd!
   http_parser.rb (= 0.8.1)
-  httpclient (= 2.9.0)
+  httpclient (= 2.10.0)
   jmespath (= 1.6.2)
   mini_portile2 (= 2.8.9)
   msgpack (= 1.8.5)
@@ -427,8 +424,8 @@ DEPENDENCIES
   ruby-kafka (= 1.5.0)
   serverengine (= 2.4.0)
   sigdump (= 0.2.5)
-  td (= 0.19.1)
-  td-client (= 3.0.1)
+  td (= 0.20.0)
+  td-client (= 3.1.0)
   tzinfo (= 2.0.6)
   tzinfo-data (= 1.2026.5)
   webhdfs (= 0.11.0)
