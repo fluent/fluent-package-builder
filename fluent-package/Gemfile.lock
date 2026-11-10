@@ -370,7 +370,6 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
-  addressable (= 2.9.2)
   async (= 2.46.0)
   async-http (= 0.105.0)
   aws-partitions (= 1.1298.0)
