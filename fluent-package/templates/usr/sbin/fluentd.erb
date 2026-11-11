@@ -17,7 +17,9 @@ end
 if RUBY_PLATFORM =~ /linux/
   prevent_duplicate_launch = system("systemctl", "is-active", "fluentd", out: IO::NULL)
   if prevent_duplicate_launch
-    if ["-c", "--config", "--dry-run", "-h", "--help", "--show-plugin-config"].none? {|allowing_opt| ARGV.include? allowing_opt}
+    # Options may be given with an attached value such as "--config=PATH" or "-cPATH"
+    given_opts = ARGV.map {|arg| arg.start_with?("--") ? arg.split("=", 2).first : arg[0, 2]}
+    if ["-c", "--config", "--dry-run", "-h", "--help", "--show-plugin-config"].none? {|allowing_opt| given_opts.include? allowing_opt}
       puts("Error: Can't start duplicate Fluentd instance with the default config.")
       if ARGV.include?("-v")
         puts("To take the version, please use '--version', not '-v' ('--verbose').")
