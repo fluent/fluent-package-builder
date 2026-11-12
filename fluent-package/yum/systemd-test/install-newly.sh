@@ -45,6 +45,12 @@ fi
 (! sudo /usr/sbin/fluentd)
 (! sudo /usr/sbin/fluentd -v)
 sudo /usr/sbin/fluentd --dry-run
+if [ $1 = "local" ]; then
+    # Allowed options with an attached value must not be guarded
+    sudo /usr/sbin/fluentd --show-plugin-config=input:dummy
+    sudo /usr/sbin/fluentd --config=/tmp/nonexistent.conf 2>&1 | grep "/tmp/nonexistent.conf (Errno::ENOENT)"
+    sudo /usr/sbin/fluentd -c/tmp/nonexistent.conf 2>&1 | grep "/tmp/nonexistent.conf (Errno::ENOENT)"
+fi
 
 sudo $DNF remove -y fluent-package
 sudo systemctl daemon-reload
