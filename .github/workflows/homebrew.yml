@@ -34,7 +34,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-14, macos-15, macos-26]
+        os: [macos-15, macos-26]
     runs-on: ${{ matrix.os }}
     env:
       HOMEBREW_NO_ANALYTICS: "1"
@@ -132,7 +132,7 @@ jobs:
     name: Formula resources up to date
     if: github.event_name != 'pull_request'
     timeout-minutes: 10
-    runs-on: macos-14
+    runs-on: macos-15
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
