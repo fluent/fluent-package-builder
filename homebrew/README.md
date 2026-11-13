@@ -9,11 +9,6 @@ $ brew tap fluent/package-builder https://github.com/fluent/fluent-package-build
 $ brew install fluent/package-builder/fluent-package
 ```
 
-`brew tap` clones only the repository's **default branch**, so these
-commands become usable once the formula is merged into the default
-branch; a formula that exists only on a feature branch is not reachable
-through `brew tap` before that.
-
 Homebrew only discovers formulae under a top-level `Formula/` (or legacy
 `HomebrewFormula/`) directory of a tap repository, so the repository's
 top-level `Formula` entry is a symlink to this directory's `Formula/`;
@@ -78,74 +73,21 @@ remove everything).
 
 ## Formula design
 
-* Gem names and versions are generated from the release's
-  `fluent-package/Gemfile.lock`, with macOS-inapplicable entries excluded
-  by the generator's explicit list. Each included gem has a checksummed
-  `resource`; the generator may select a macOS platform variant instead
-  of the variant recorded in the lock. This is an adaptation of the
-  release dependency set, not a byte-identical copy of another package.
-* All gem resources, including `fluentd`, come from RubyGems. For included
-  GIT-locked gems, the generator checks that the locked revision matches
-  the repository's release tag. It does not compare the published gem's
-  contents with that revision. The GitHub API responses are cached; when
-  a locked version is missing from a cached payload, `update_formula.rb`
-  re-fetches that gem's metadata instead of failing on the stale cache.
-* All fetching happens through Homebrew `resource` blocks before the
-  build, and gems install with `gem install --local`. Build-phase network
-  denial was tested locally as described below; the formula does not
-  enforce it on every installation. The cmetrics gem is repacked before install:
-  its extconf downloads the C library it compiles from GitHub while the
-  native extension builds, which `gem install --local` cannot prevent,
-  so the extconf's download URL is repointed at the Homebrew-fetched
-  `cmetrics-c` resource (a `file://` URL: mini_portile copies it
-  locally and verifies the sha256 pinned by the gem itself) and the
-  gemspec's `git ls-files` file list is replaced with a glob (outside a
-  git checkout that list is empty, which would strip the library and
-  extension sources from the repacked gem). Both replacements pin exact
-  upstream cmetrics-0.3.3 strings (the extconf's
-  `url: "https://codeload.github.com/calyptia/cmetrics/tar.gz/v..."`
-  literal and the `spec.files = ...git ls-files...` line); a cmetrics
-  bump may require updating them. The offline behaviour was verified by
-  building with the network actually blocked: `brew reinstall` under
-  Homebrew's standard sandbox with `HOMEBREW_FORMULA_BUILD_NETWORK=deny`
-  (note Homebrew 7 allows network in the build phase by default)
-  succeeded, while the unpatched cmetrics gem fails under an equivalent
-  network block with a connection attempt to codeload.github.com.
-* The four `bin/` commands are Homebrew `write_env_script` wrappers that
-  set `GEM_HOME` (to `var/fluent/gems/<ruby ABI>`) and `GEM_PATH`
-  (user gems first, then the Cellar).
-* The formula depends on Homebrew's `ruby@3.4` instead of bundling a Ruby,
-  and native gems that compile against OpenSSL build against Homebrew's
-  `openssl@4` -- the same OpenSSL `ruby@3.4` links against (its shipped
-  `openssl.bundle` resolves to `opt/openssl@4`). The gems find it through
-  pkg-config in the build environment, not through `rbconfig`, which
-  carries no OpenSSL flags. Ruby 3.4 matches `BUNDLED_RUBY_VERSION` in
-  `fluent-package/config.rb`, keeping the Homebrew runtime aligned with
-  the Ruby used by the other fluent-package distributions.
-* User gem directories are per Ruby ABI (`RbConfig::CONFIG["ruby_version"]`,
-  e.g. `3.4.0`). Everything else under `var/fluent/gems` -- directories
-  of other Ruby ABIs, or the layout from before this namespacing (gems
-  installed directly in `var/fluent/gems`) -- is never moved, renamed or
-  deleted by the formula, and it stays outside `GEM_HOME`/`GEM_PATH`, so
-  it is kept but not selected by these wrappers. This isolates ABI
-  directories; it does not establish compatibility with a future Ruby.
-  If such gems exist, caveats list them on install/upgrade; recover the
-  plugins by reinstalling them with `fluent-gem install <gem-name>`.
-
-## Known limitations
-
-* `ffi`, `google-protobuf` and `rdkafka` use prebuilt `arm64-darwin`
-  gems. The formula does not currently build every native dependency
-  from source and is not ready for a homebrew/core submission. Source
-  builds and use of Homebrew libraries need a separate review.
-* The cmetrics repack step depends on upstream source layout and exact
-  strings. Review it whenever cmetrics changes; an upstream-supported
-  local-source or external-library option would reduce maintenance.
-* The published Fluentd gem is not verified to contain exactly the source
-  at `FLUENTD_REVISION`. Tag verification alone does not prove this.
-
-Nokogiri is excluded because its upstream Gemfile entry is Windows-only.
-The `td` CLI is included as part of the release's plugin and tool set.
+* The generator reads the release's `fluent-package/Gemfile.lock`, excludes
+  gems that do not apply to macOS, and can select prebuilt arm64 macOS gems.
+  Homebrew fetches the checksummed resources before installation.
+* For gems locked to Git revisions, the generator checks that the release
+  tag points to the locked commit. It does not compare the contents of the
+  published gem with that commit. If the cached RubyGems metadata lacks a
+  locked version, the generator fetches fresh metadata.
+* The formula repacks cmetrics so its native extension can use a C library
+  archive fetched by Homebrew. Review the patch and the archive resource
+  whenever cmetrics changes.
+* The formula uses Homebrew's Ruby and OpenSSL. Keep the Ruby series
+  aligned with the one bundled by Fluent Package. If the Ruby ABI
+  changes, reinstall user plugins with `fluent-gem`.
+* A submission to `homebrew/core` would need a separate review of prebuilt
+  gems and native library dependencies.
 
 ## Updating the formula for a new release
 
@@ -153,28 +95,21 @@ The `td` CLI is included as part of the release's plugin and tool set.
    `homebrew/Formula/fluent-package.rb` to the new release tag (the sha256 of
    `https://github.com/fluent/fluent-package-builder/archive/refs/tags/<tag>.tar.gz`).
    The formula version is inferred from the URL.
-2. Regenerate the resource blocks from the new tag's `Gemfile.lock`:
+2. Regenerate the resource blocks from the new tag's `Gemfile.lock`.
+   Replace `<release-tag>` with the tag used in step 1:
 
    ```console
-   $ ruby homebrew/update_formula.rb --tag v6.1.0
+   $ ruby homebrew/update_formula.rb --tag <release-tag>
    ```
 
-   The script keeps every gem locked by the release (minus the
-   macOS-irrelevant ones), resolves the correct `.gem` platform build
-   for arm64 macOS where one exists (e.g. `google-protobuf`), verifies
-   the `fluentd` git revision against its release tag (locked revision
-   == tag's commit; the published `.gem`'s content is not compared), and
-   rewrites the block between the `BEGIN/END GENERATED RESOURCE BLOCK`
-   markers. Do not edit generated blocks by hand.
-   `ruby homebrew/update_formula.rb --check` compares against the newest
-   release tag available in the local clone; fetch release tags first.
-   In the workflow, this check runs on non-pull-request events only.
-3. If the release moves to a newer Ruby, update `depends_on "ruby@X.Y"`,
-   the `ruby_abi`/`user_gem_dir` helpers and related comments; note that
-   source-built native gems must be rebuilt and prebuilt gems must
-   support the new Ruby. User gems from the old ABI
-   directory are intentionally not loaded (caveats say how to recover
-   them).
+   The script rewrites the generated resource block. Do not edit that
+   block by hand. To check the formula against the newest release tag in
+   the local clone, fetch the release tags and run
+   `ruby homebrew/update_formula.rb --check`.
+3. If the release changes Ruby series, review the formula's Ruby and
+   OpenSSL dependencies, the Ruby commands used during installation, and
+   compatibility with prebuilt gems. If the Ruby ABI changes, native
+   extensions built from source must be rebuilt.
 4. Review the macOS exclusion list and the cmetrics resource and repack
    code against the new release. Regenerating gem resources does not
    update these automatically.
@@ -211,43 +146,3 @@ $ brew services stop fluent/package-builder/fluent-package
 The formula's own `test do` block starts fluentd on a free port, sends a
 record with `fluent-cat` and checks that it is echoed to the log, so
 `brew test` is a full round trip.
-
-`.github/workflows/homebrew.yml` defines style, audit, install, `brew test`,
-service, native-extension and user-gem checks, plus persistence across
-reinstall/uninstall. The build matrix covers macOS 14, 15 and 26. A separate
-resource freshness job runs on non-pull-request events. The workflow has
-read-only repository permissions.
-
-## Validation status
-
-The local implementation report records successful checks on Apple
-Silicon with Homebrew 7.0.10 against the previous v6.0.5 Formula:
-
-* Style, strict audit, source installation and `brew test`.
-* `brew services` start/stop and a record sent with `fluent-cat`.
-* Loading the principal native extensions and building a user-installed
-  native gem through `fluent-gem`.
-* Configuration, user-gem and log preservation across same-version
-  reinstall and uninstall.
-* Build-phase network denial, including patched/unpatched cmetrics
-  comparison tests.
-* ABI-directory selection and legacy-layout preservation using fixtures.
-
-These are reported local results for v6.0.5. The v6.1.0 formula was
-subsequently validated on the same kind of machine (Apple Silicon,
-macOS 26, Homebrew 7.0.11) with an offline (`HOMEBREW_FORMULA_BUILD_NETWORK=deny`)
-`brew reinstall` from the installed v6.0.5 formula: the version-changing
-install preserved configuration and the `var/fluent` layout, `brew test`
-and `brew linkage --test` passed, cmetrics build output carried no
-network references, and the new native `openssl 4.0.2` gem compiled
-against Homebrew's `openssl@4` (the OpenSSL `ruby@3.4` itself links)
-and loads at runtime. The GitHub workflow still had not run against
-this revision when this was written. The workflow does not enforce
-build-phase network denial.
-
-The following remain unverified:
-
-* A real Ruby ABI transition and rebuilding plugins for that new ABI.
-* Bottle creation, installation and relocation.
-* Published gem contents matching GIT-locked source revisions.
-* The freshness check's failure path when a newer release tag is present.
