@@ -9,6 +9,11 @@ $ brew tap fluent/package-builder https://github.com/fluent/fluent-package-build
 $ brew install fluent/package-builder/fluent-package
 ```
 
+`brew tap` clones only the repository's **default branch**, so these
+commands become usable once the formula is merged into the default
+branch; a formula that exists only on a feature branch is not reachable
+through `brew tap` before that.
+
 Homebrew only discovers formulae under a top-level `Formula/` (or legacy
 `HomebrewFormula/`) directory of a tap repository, so the repository's
 top-level `Formula` entry is a symlink to this directory's `Formula/`;
@@ -82,7 +87,9 @@ remove everything).
 * All gem resources, including `fluentd`, come from RubyGems. For included
   GIT-locked gems, the generator checks that the locked revision matches
   the repository's release tag. It does not compare the published gem's
-  contents with that revision. The GitHub API responses are cached.
+  contents with that revision. The GitHub API responses are cached; when
+  a locked version is missing from a cached payload, `update_formula.rb`
+  re-fetches that gem's metadata instead of failing on the stale cache.
 * All fetching happens through Homebrew `resource` blocks before the
   build, and gems install with `gem install --local`. Build-phase network
   denial was tested locally as described below; the formula does not

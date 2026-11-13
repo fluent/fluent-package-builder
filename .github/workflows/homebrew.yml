@@ -59,6 +59,8 @@ jobs:
         run: brew audit --strict fluent/package-builder/fluent-package
       - name: Install
         run: brew install --display-times fluent/package-builder/fluent-package
+      - name: Check linkage
+        run: brew linkage --test fluent/package-builder/fluent-package
       - name: Test
         run: brew test fluent/package-builder/fluent-package
       - name: Run through brew services
@@ -81,12 +83,21 @@ jobs:
           # the formula excludes it, so there is nothing to load (and a
           # pure-Ruby fallback would mask missing gems anyway).
           ruby_version="$(brew --prefix ruby@3.4)/bin/ruby"
+          libexec="$(brew --prefix fluent/package-builder/fluent-package)/libexec"
           gem_dir="$(brew --prefix)/var/fluent/gems/$("$ruby_version" -rrbconfig -e 'print RbConfig::CONFIG["ruby_version"]')"
           GEM_HOME="$gem_dir" \
-          GEM_PATH="$gem_dir:$(brew --prefix fluent/package-builder/fluent-package)/libexec" \
+          GEM_PATH="$gem_dir:$libexec" \
             "$ruby_version" -e '
-              %w[msgpack cool.io yajl oj cmetrics ffi google/protobuf rdkafka].each { |lib| require lib }
-            '
+              %w[msgpack cool.io yajl oj cmetrics ffi google/protobuf rdkafka openssl].each { |lib| require lib }
+              # The package ships its own openssl gem; silently falling back
+              # to the one bundled with ruby@3.4 would mask a broken libexec.
+              spec = Gem.loaded_specs["openssl"]
+              # brew --prefix is an opt/ symlink; gem paths resolve under
+              # Cellar/, so compare realpaths.
+              abort "openssl gem not loaded from the package libexec: #{spec.full_gem_path}" unless
+                File.realpath(spec.full_gem_path).start_with?(File.realpath(ARGV[0]))
+              puts "openssl gem #{spec.version} from #{spec.full_gem_path}"
+            ' "$libexec"
       - name: Check user-installed native gem
         run: |
           # A user compiling a native extension through the formula's own
