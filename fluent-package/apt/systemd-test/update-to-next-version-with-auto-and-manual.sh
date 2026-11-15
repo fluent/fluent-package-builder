@@ -43,3 +43,22 @@ kill -USR2 $main_pid
 # Main process should be replaced by USR2 signal
 sleep 15
 test $main_pid -ne $(eval $(systemctl show fluentd --property=MainPID) && echo $MainPID)
+
+sudo apt purge -y fluent-package
+
+# Upgrade package without /etc/default/fluentd
+# It is optional, and dpkg does not restore the removed conffile on upgrade.
+# Without it, auto feature should be used.
+sudo apt install -V -y $package
+sudo systemctl enable --now fluentd
+sudo rm /etc/default/fluentd
+main_pid=$(eval $(systemctl show fluentd --property=MainPID) && echo $MainPID)
+
+sudo apt install -V -y ./next_version.deb 2>&1 | tee upgrade.log
+(! grep "pre-removal script subprocess returned error" upgrade.log)
+(! test -e /etc/default/fluentd)
+test $main_pid -eq $(eval $(systemctl show fluentd --property=MainPID) && echo $MainPID)
+
+# Main process should be replaced by USR2 signal in auto mode
+sleep 15
+test $main_pid -ne $(eval $(systemctl show fluentd --property=MainPID) && echo $MainPID)
