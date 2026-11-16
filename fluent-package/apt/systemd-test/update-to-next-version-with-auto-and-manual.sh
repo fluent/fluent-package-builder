@@ -54,7 +54,7 @@ sudo systemctl enable --now fluentd
 sudo rm /etc/default/fluentd
 main_pid=$(eval $(systemctl show fluentd --property=MainPID) && echo $MainPID)
 
-sudo apt install -V -y ./next_version.deb 2>&1 | tee upgrade.log
+(set -o pipefail; sudo apt install -V -y ./next_version.deb 2>&1 | tee upgrade.log)
 (! grep "pre-removal script subprocess returned error" upgrade.log)
 (! test -e /etc/default/fluentd)
 test $main_pid -eq $(eval $(systemctl show fluentd --property=MainPID) && echo $MainPID)
