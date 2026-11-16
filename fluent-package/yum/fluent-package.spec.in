@@ -238,11 +238,13 @@ fi
 
 %preun
 %systemd_preun @SERVICE_NAME@.service
-if [ $1 -eq 1 ]; then
+# Some environments (e.g. containers) don't run systemd, so disable auto restart feature in those cases.
+# Without systemd, systemctl can't tell MainPID, so "$pid" below would be empty.
+if [ $1 -eq 1 ] && [ -d /run/systemd/system ]; then
   # systemctl ... --property=MainPID --value is available since systemd 230 or later.
   # thus for amazonlinux:2, it can not be used.
   pid="$(systemctl show "@SERVICE_NAME@" --property=MainPID | cut -d'=' -f2)"
-  if [ "$pid" -eq 0 ]; then
+  if [ -z "$pid" ] || [ "$pid" -eq 0 ]; then
     echo "Do not use auto restart because the service is not active"
   else
     . %{_sysconfdir}/sysconfig/@SERVICE_NAME@
@@ -452,8 +454,11 @@ rm -f %{install_plugins}
 rm -f %{local_base_plugins}
 if [ -f %{pid_for_auto_restart} ]; then
   pid=$(cat %{pid_for_auto_restart})
-  echo "Kick auto restart to MainPID:$pid"
-  kill -USR2 $pid
+  # Older versions leave an empty PID when systemd is not running.
+  if [ -n "$pid" ]; then
+    echo "Kick auto restart to MainPID:$pid"
+    kill -USR2 $pid
+  fi
   rm -f %{pid_for_auto_restart}
 fi
 

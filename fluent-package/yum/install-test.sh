@@ -72,6 +72,15 @@ test -e /opt/fluent/share/fluentd.conf
 (! test -h /usr/sbin/td-agent)
 (! test -h /usr/sbin/td-agent-gem)
 
+echo "REINSTALL TEST WITHOUT SYSTEMD"
+# Reinstalling runs the scriptlets for upgrade.
+# systemd is not running in this container, so auto restart must be skipped.
+(set -o pipefail
+ ${DNF} reinstall -y \
+   ${repositories_dir}/${distribution}/${DISTRIBUTION_VERSION}/${ARCH}/Packages/*.rpm 2>&1 | tee reinstall.log)
+(! grep -e "integer expression expected" -e "Kick auto restart" -e "kill: usage" reinstall.log)
+(! test -e /tmp/fluent/.pid_for_auto_restart)
+
 echo "UNINSTALL TEST"
 ${DNF} remove -y fluent-package
 
