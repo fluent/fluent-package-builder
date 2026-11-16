@@ -240,7 +240,7 @@ if [ $1 -eq 1 ] && [ -d /run/systemd/system ]; then
   # systemctl ... --property=MainPID --value is available since systemd 230 or later.
   # thus for amazonlinux:2, it can not be used.
   pid="$(systemctl show "@SERVICE_NAME@" --property=MainPID | cut -d'=' -f2)"
-  if [ "$pid" -eq 0 ]; then
+  if [ -z "$pid" ] || [ "$pid" -eq 0 ]; then
     echo "Do not use auto restart because the service is not active"
   else
     . %{_sysconfdir}/sysconfig/@SERVICE_NAME@

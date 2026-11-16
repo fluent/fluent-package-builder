@@ -75,8 +75,9 @@ test -e /opt/fluent/share/fluentd.conf
 echo "REINSTALL TEST WITHOUT SYSTEMD"
 # Reinstalling runs the scriptlets for upgrade.
 # systemd is not running in this container, so auto restart must be skipped.
-${DNF} reinstall -y \
-  ${repositories_dir}/${distribution}/${DISTRIBUTION_VERSION}/${ARCH}/Packages/*.rpm 2>&1 | tee reinstall.log
+(set -o pipefail
+ ${DNF} reinstall -y \
+   ${repositories_dir}/${distribution}/${DISTRIBUTION_VERSION}/${ARCH}/Packages/*.rpm 2>&1 | tee reinstall.log)
 (! grep -e "integer expression expected" -e "Kick auto restart" -e "kill: usage" reinstall.log)
 (! test -e /tmp/fluent/.pid_for_auto_restart)
 
