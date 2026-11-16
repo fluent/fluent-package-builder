@@ -525,11 +525,13 @@ class FluentPackage < Formula
   # the persistent user-gem directories are namespaced by it so that
   # native extensions built for one Ruby can never be loaded by another.
   def ruby_abi
+    return @ruby_abi if @ruby_abi
+
     abi = Utils.safe_popen_read(formula_opt_bin("ruby@3.4")/"ruby", "-rrbconfig",
                                 "-e", 'print RbConfig::CONFIG["ruby_version"]').strip
     raise "could not determine the gem ABI of #{formula_opt_bin("ruby@3.4")}/ruby" if abi.empty?
 
-    @ruby_abi ||= abi
+    @ruby_abi = abi
   end
 
   def user_gem_dir
@@ -732,8 +734,9 @@ class FluentPackage < Formula
       them with fluent-gem (the details are printed on install/upgrade
       when such gems exist).
       #{stale_abi_notice}
-      Do not install this formula alongside the official td-agent packages
-      (deb/rpm/dmg); they install to /opt/fluent and use /etc/fluent.
+      Do not install this formula alongside packages that install
+      Fluentd into /opt/fluent and use /etc/fluent, such as the legacy
+      Fluent Package DMG.
     EOS
   end
 
@@ -755,9 +758,9 @@ class FluentPackage < Formula
       </match>
     CONF
 
-    pid = Process.spawn(bin/"fluentd", "-c", testpath/"fluentd.conf",
-                        "-o", testpath/"fluentd.log",
-                        out: File::NULL, err: File::NULL, chdir: testpath)
+    pid = Process.spawn((bin/"fluentd").to_s, "-c", (testpath/"fluentd.conf").to_s,
+                        "-o", (testpath/"fluentd.log").to_s,
+                        out: File::NULL, err: File::NULL, chdir: testpath.to_s)
     begin
       waited = 0
       log = ""
