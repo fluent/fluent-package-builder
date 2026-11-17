@@ -33,7 +33,12 @@ leave_info_for_auto_restart_if_need() {
         return
     fi
 
-    . "/etc/default/<%= service_name %>"
+    # /etc/default/<%= service_name %> is optional (EnvironmentFile=- in the unit file),
+    # and dpkg does not restore it on upgrade once it is removed.
+    # Without it, FLUENT_PACKAGE_SERVICE_RESTART is empty and treated as auto.
+    if [ -f "/etc/default/<%= service_name %>" ]; then
+        . "/etc/default/<%= service_name %>"
+    fi
     echo "FLUENT_PACKAGE_SERVICE_RESTART: $FLUENT_PACKAGE_SERVICE_RESTART"
     if [ "$FLUENT_PACKAGE_SERVICE_RESTART" = manual ]; then
         return
