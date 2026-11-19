@@ -2,6 +2,75 @@
 
 About the past changelog entries, see [CHANGELOG v4](CHANGELOG-v4.md) [CHANGELOG v5](CHANGELOG-v5.md) instead.
 
+## Release v6.1.1 - 2026/11/26
+
+### News
+
+* Update bundled gems
+* deb rpm: fixed logrotate failure with missing fluentd.log (#1140)
+* deb rpm: remove specs.4.8.gz when installing missing plugins (#1148)
+* Update httpclient and td-client for eMudhra CA distrust (#1146)
+* linux: do not guard allowed options given with an attached value (#1152)
+* rpm: skip auto restart when systemd is not running (#1155)
+* deb: do not fail prerm when /etc/default/fluentd is removed (#1157)
+
+### Core component
+
+* ruby v3.4.13
+* jemalloc v5.3.1
+* OpenSSL 3.6.3 Windows
+* OpenSSL 3.0.8 macOS
+* gems
+  * fluentd v1.20.1
+  * msgpack 1.8.7 (update)
+  * oj 3.17.8 (update)
+  * webrick 1.9.2
+  * openssl 4.0.2
+
+### Bundled plugins and gems
+
+* aws-partitions v1.1311.0 (update)
+* aws-sdk-core v3.272.0 (update)
+* aws-sdk-kms v1.145.0 (update)
+* aws-sdk-s3 v1.245.0 (update)
+* aws-sdk-sqs v1.131.0 (update)
+* aws-sigv4 v1.12.1
+* elasticsearch v9.5.0
+* fluent-diagtool v1.0.5
+* fluent-plugin-elasticsearch v6.0.0
+* fluent-plugin-flowcounter-simple 0.1.0
+* fluent-plugin-kafka v0.19.9 (update)
+* fluent-plugin-metrics-cmetrics v0.1.2
+* fluent-plugin-fluent-package-update-notifier 0.2.4
+* fluent-plugin-obsolete-plugins v0.2.2
+* fluent-plugin-opensearch v1.1.8
+* fluent-plugin-opentelemetry 0.5.4
+* fluent-plugin-prometheus v2.3.0
+* fluent-plugin-prometheus_pushgateway v0.2.1
+* fluent-plugin-record-modifier v2.2.1
+* fluent-plugin-rewrite-tag-filter v2.4.1
+* fluent-plugin-s3 v1.8.6
+* fluent-plugin-sigdump v1.0.1
+* fluent-plugin-sd-dns 0.1.0
+* fluent-plugin-systemd v1.1.2
+* fluent-plugin-td v1.2.0
+* fluent-plugin-utmpx v0.5.0
+* fluent-plugin-webhdfs v1.6.0
+* mini_portile2 v2.8.9
+* prometheus-client v5.0.0
+* rdkafka v0.31.0
+* ruby-kafka v1.5.0
+* systemd-journal v2.1.1
+* td-client v3.1.0
+* webhdfs v0.11.0
+
+On Windows
+
+* fluent-plugin-parser-winevt_xml v0.3.1
+* fluent-plugin-windows-eventlog v0.9.3
+* fluent-plugin-windows-exporter v1.0.0
+* winevt_c v0.11.6
+
 ## Release v6.1.0 - 2026/10/29
 
 ### News
