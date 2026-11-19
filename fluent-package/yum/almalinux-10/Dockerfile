@@ -30,7 +30,7 @@ ARG DEBUG
 # not to introduce GLIBC_2.40, OPENSSL_3.3.0, OPENSSL_3.4.0, OPENSSL_3.5.0
 RUN \
   quiet=$([ "${DEBUG}" = "yes" ] || echo "--quiet") && \
-  dnf install redhat-release -y && \
+  dnf install --enablerepo='vault-*' --disablerepo='base*' redhat-release -y && \
   dnf install --enablerepo=crb -y ${quiet} \
     make \
     gcc-c++-14.3.1-4.4.el10.alma.2 \
