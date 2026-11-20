@@ -6,6 +6,8 @@ About the past changelog entries, see [CHANGELOG v4](CHANGELOG-v4.md) [CHANGELOG
 
 ### News
 
+* Update bundled Ruby to 3.4.13.
+  It contains fixes for multiple vulnerabilities in Regexp and String case conversion.
 * Update bundled gems
 * deb rpm: fixed logrotate failure with missing fluentd.log (#1140)
 * deb rpm: remove specs.4.8.gz when installing missing plugins (#1148)
@@ -16,7 +18,7 @@ About the past changelog entries, see [CHANGELOG v4](CHANGELOG-v4.md) [CHANGELOG
 
 ### Core component
 
-* ruby v3.4.13
+* ruby v3.4.13 (update)
 * jemalloc v5.3.1
 * OpenSSL 4.1.0 Windows (update)
 * OpenSSL 3.0.8 macOS
