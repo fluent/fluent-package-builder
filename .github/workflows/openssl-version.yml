@@ -13,6 +13,7 @@ jobs:
       fail-fast: false
       matrix:
         ruby-version:
+          - '3.4.13'
           - '3.4.12'
           - '3.4.10'
           - '3.4.9'
