@@ -176,14 +176,17 @@ EOF
 	;;
     rpm)
 	# resign rpm packages
-	find $FLUENT_RELEASE_DIR/6 -name "*$FLUENT_PACKAGE_VERSION*.rpm"
+	# fluent-release and fluent-lts-release have a date version, so match them by name.
+	rpms=$(find $FLUENT_RELEASE_DIR/6 -name "*$FLUENT_PACKAGE_VERSION*.rpm" -o -name "fluent-*release-*.rpm")
+	echo "$rpms"
 	echo "Ready to type signing passphrase? (process starts in 10 seconds, Ctrl+C to abort)"
 	sleep 10
 	export GPG_TTY=$(tty)
-	find $FLUENT_RELEASE_DIR/6 -name "*$FLUENT_PACKAGE_VERSION*.rpm" | xargs rpm --resign --define "_gpg_name $SIGNING_KEY"
+	echo "$rpms" | xargs rpm --resign --define "_gpg_name $SIGNING_KEY"
 	# check whether packages are signed correctly.
-	find $FLUENT_RELEASE_DIR/6 -name "*$FLUENT_PACKAGE_VERSION*.rpm" | xargs rpm -K || \
-	    (echo -e "\e[37;41mERROR:\e[0m Import public key to verify: rpm --import https://fluentd/GPG-KEY-fluent-package" && exit 1)
+	# rpm 4.x accepts unsigned packages unless _pkgverify_level requires a signature.
+	echo "$rpms" | xargs rpm -K --define "_pkgverify_level signature" || \
+	    (echo -e "\e[37;41mERROR:\e[0m Some packages are unsigned or not verified. Import public key to verify: rpm --import https://fluentd/GPG-KEY-fluent-package" && exit 1)
 
 	# update & sign rpm repository
 	repodirs=`find "${FLUENT_RELEASE_DIR}" -regex "^${FLUENT_RELEASE_DIR}/6/\(redhat\|amazon\)/\([2789]\|10\|2023\)/\(x86_64\|aarch64\)$"`
