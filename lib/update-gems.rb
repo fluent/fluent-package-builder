@@ -29,13 +29,12 @@ class GemfileUpdateChecker
   end
 
   def fetch_latest_version(gem, version)
-    base_version = version.split(".")[0..-2].join(".")
     latest_version = version
     message = ""
     URI.open("https://rubygems.org/api/v1/gems/#{gem}.json") do |request|
       fetched_version = JSON.parse(request.read)["version"]
       if @options[:lts]
-        if Gem::Version.new(fetched_version) < Gem::Version.new("#{base_version.succ}")
+        if Gem::Version.new(fetched_version) < Gem::Version.new(version).bump
           if @freeze_in_lts.include?(gem)
             message = @pastel.red.on_black ( "WARN: skip even though teeny update #{gem} #{fetched_version} for LTS" )
           else
