@@ -175,14 +175,20 @@ EOF
 	rm -rf "$aptly_rootdir" "$aptly_conf"
 	;;
     rpm)
-	# resign rpm packages
+	# sign rpm packages
+	package_rpms=$(find $FLUENT_RELEASE_DIR/6 -name "*$FLUENT_PACKAGE_VERSION*.rpm")
+	if [ -z "$package_rpms" ]; then
+	    echo -e "\e[37;41mERROR:\e[0m No rpm packages for $FLUENT_PACKAGE_VERSION in $FLUENT_RELEASE_DIR/6"
+	    exit 1
+	fi
 	# fluent-release and fluent-lts-release have a date version, so match them by name.
-	rpms=$(find $FLUENT_RELEASE_DIR/6 -name "*$FLUENT_PACKAGE_VERSION*.rpm" -o -name "fluent-*release-*.rpm")
+	rpms=$(echo "$package_rpms"; find $FLUENT_RELEASE_DIR/6 -name "fluent-*release-*.rpm")
 	echo "$rpms"
 	echo "Ready to type signing passphrase? (process starts in 10 seconds, Ctrl+C to abort)"
 	sleep 10
 	export GPG_TTY=$(tty)
-	echo "$rpms" | xargs rpm --resign --define "_gpg_name $SIGNING_KEY"
+	# Use --addsign to skip signed packages. rpm 6 --resign rewrites them every time.
+	echo "$rpms" | xargs rpm --addsign --define "_gpg_name $SIGNING_KEY"
 	# check whether packages are signed correctly.
 	# rpm 4.x accepts unsigned packages unless _pkgverify_level requires a signature.
 	echo "$rpms" | xargs rpm -K --define "_pkgverify_level signature" || \
