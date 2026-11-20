@@ -18,7 +18,7 @@ About the past changelog entries, see [CHANGELOG v4](CHANGELOG-v4.md) [CHANGELOG
 
 * ruby v3.4.13
 * jemalloc v5.3.1
-* OpenSSL 3.6.3 Windows
+* OpenSSL 4.1.0 Windows (update)
 * OpenSSL 3.0.8 macOS
 * gems
   * fluentd v1.20.1
