@@ -192,7 +192,7 @@ EOF
 	# check whether packages are signed correctly.
 	# rpm 4.x accepts unsigned packages unless _pkgverify_level requires a signature.
 	echo "$rpms" | xargs rpm -K --define "_pkgverify_level signature" || \
-	    (echo -e "\e[37;41mERROR:\e[0m Some packages are unsigned or not verified. Import public key to verify: rpm --import https://fluentd/GPG-KEY-fluent-package" && exit 1)
+	    (echo -e "\e[37;41mERROR:\e[0m Some packages are unsigned or not verified. Import public key to verify: rpm --import https://fluentd.cdn.cncf.io/GPG-KEY-fluent-package" && exit 1)
 
 	# update & sign rpm repository
 	repodirs=`find "${FLUENT_RELEASE_DIR}" -regex "^${FLUENT_RELEASE_DIR}/6/\(redhat\|amazon\)/\([2789]\|10\|2023\)/\(x86_64\|aarch64\)$"`
