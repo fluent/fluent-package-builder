@@ -21,6 +21,8 @@ FROM ${FROM}
 
 COPY qemu-* /usr/bin/
 COPY almalinux-vault-10.0.repo /etc/yum.repos.d/
+# gcc-c++ below is from 10.2
+COPY almalinux-vault-10.2.repo /etc/yum.repos.d/
 
 ARG DEBUG
 
