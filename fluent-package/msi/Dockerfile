@@ -35,7 +35,9 @@ RUN \
   choco install -y git wixtoolset 7zip && \
   # Required CMake 3.x to build cmetrics gem
   choco install -y cmake --version=3.31.6 --installargs 'ADD_CMAKE_TO_PATH=System' && \
-  choco install -y msys2 --params /NoUpdate --version=20260611.0.0 && \
+  # The bundled openssl gem is built against the OpenSSL of this MSYS2.
+  # Keep its major version the same as the one in RubyInstaller.
+  choco install -y msys2 --params /NoUpdate --version=20261120.0.0 && \
   choco install ruby -y --version=3.4.10.1 && \
   refreshenv && \
   ridk install 3 && \
