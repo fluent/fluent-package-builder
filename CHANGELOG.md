@@ -73,6 +73,75 @@ On Windows
 * fluent-plugin-windows-exporter v1.0.0
 * winevt_c v0.11.6
 
+## Release v6.0.6 - 2026/11/24
+
+### News
+
+* Update bundled Ruby to 3.4.13.
+  It contains fixes for multiple vulnerabilities in Regexp and String case conversion.
+* Update bundled gems
+* deb rpm: fixed logrotate failure with missing fluentd.log (#1143)
+* deb rpm: remove specs.4.8.gz when installing missing plugins (#1149)
+* linux: do not guard allowed options given with an attached value (#1153)
+* rpm: skip auto restart when systemd is not running (#1158)
+* deb: do not fail prerm when /etc/default/fluentd is removed (#1159)
+
+### Core component
+
+* ruby v3.4.13 (update)
+* jemalloc v3.6.0
+* OpenSSL 4.1.0 Windows (update)
+* OpenSSL 3.0.8 macOS
+* gems
+  * fluentd v1.19.4
+  * msgpack 1.8.7 (update)
+  * oj 3.17.6
+  * webrick 1.9.2
+  * openssl 3.3.0
+
+### Bundled plugins and gems
+
+* aws-partitions v1.1150.0
+* aws-sdk-core v3.234.0
+* aws-sdk-kms v1.110.0
+* aws-sdk-s3 v1.208.0
+* aws-sdk-sqs v1.101.0
+* aws-sigv4 v1.12.1
+* elasticsearch v8.19.2
+* fluent-diagtool v1.0.5
+* fluent-plugin-elasticsearch v6.0.0
+* fluent-plugin-flowcounter-simple 0.1.0
+* fluent-plugin-kafka v0.19.9 (update)
+* fluent-plugin-metrics-cmetrics v0.1.2
+* fluent-plugin-fluent-package-update-notifier 0.2.4 (update)
+* fluent-plugin-obsolete-plugins v0.2.2
+* fluent-plugin-opensearch v1.1.8 (update)
+* fluent-plugin-opentelemetry 0.5.4
+* fluent-plugin-prometheus v2.3.0
+* fluent-plugin-prometheus_pushgateway v0.2.1
+* fluent-plugin-record-modifier v2.2.1
+* fluent-plugin-rewrite-tag-filter v2.4.1
+* fluent-plugin-s3 v1.8.6
+* fluent-plugin-sd-dns 0.1.0
+* fluent-plugin-systemd v1.1.2
+* fluent-plugin-td v1.2.0
+* fluent-plugin-utmpx v0.5.0
+* fluent-plugin-webhdfs v1.6.0
+* mini_portile2 v2.8.9
+* prometheus-client v4.2.5
+* rdkafka v0.27.0
+* ruby-kafka v1.5.0
+* systemd-journal v2.1.1
+* td-client v3.0.1
+* webhdfs v0.11.0
+
+On Windows
+
+* fluent-plugin-parser-winevt_xml v0.2.8
+* fluent-plugin-windows-exporter v1.0.0
+* winevt_c v0.11.6
+* nokogiri v1.19.7 (update)
+
 ## Release v6.1.0 - 2026/10/29
 
 ### News
