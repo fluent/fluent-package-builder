@@ -176,10 +176,20 @@ fluentd_auto_restart() {
     fi
 
     pid=$(cat "$pid_for_auto_restart")
+    rm -f "$pid_for_auto_restart"
+
+    # The service may be restarted or stopped after prerm recorded the PID,
+    # e.g. when the upgrade is interrupted by a reboot and completed later by
+    # dpkg --configure -a. Then the recorded PID is stale and may even belong
+    # to an unrelated process, so kick it only when it is still the MainPID.
+    main_pid="$(systemctl show "<%= service_name %>" --property=MainPID --value 2>/dev/null || true)"
+    if [ -z "$pid" ] || [ "$pid" != "$main_pid" ]; then
+        echo "Do not use auto restart because MainPID:$pid is no longer the main process of the service"
+        return
+    fi
+
     echo "Kick auto restart to MainPID:$pid"
     kill -USR2 $pid
-
-    rm -f "$pid_for_auto_restart"
 }
 
 case "$1" in
